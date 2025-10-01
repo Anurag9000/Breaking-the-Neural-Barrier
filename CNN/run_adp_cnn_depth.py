@@ -19,7 +19,7 @@ def make_loaders_cifar10(
     data_root="data",
     batch_size=128,
     val_split=5000,   # 10% of 50k train set by default
-    num_workers=4,
+    num_workers=0,
     pin_memory=True,
     download=False,   # do NOT re-download
 ):
@@ -105,12 +105,12 @@ def main():
         trials_width=10,
         patience=10,
         max_epochs=100000,
-        init_widths=[1],       # <<< init width = 10
+        init_widths=[5],       # <<< init width = 10
         num_classes=10,         # full CIFAR-10
         pooling_indices=[0],
         lr=1e-3,
         weight_decay=1e-2,
-        ex_k=1,                # <<< per-loop expansion factor = 10
+        ex_k=5,                # <<< per-loop expansion factor = 10
         max_neurons=1_000_000,
         max_depth=10000,
         max_width=10000,

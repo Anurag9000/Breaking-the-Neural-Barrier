@@ -18,7 +18,7 @@ def make_loaders_cifar10(
     data_root="data",
     batch_size=128,
     val_split=5000,   # 10% of the 50k train set by default
-    num_workers=4,
+    num_workers=0,
     pin_memory=True,
     download=False,   # do NOT re-download unless explicitly asked
 ):

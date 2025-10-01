@@ -14,7 +14,7 @@ CIFAR10_STD  = (0.2470, 0.2435, 0.2616)
 def make_loaders_cifar10(
     data_root="data",
     batch_size=128,
-    num_workers=4,
+    num_workers=0,
     pin_memory=True,
 ):
     train_tfms = T.Compose([
