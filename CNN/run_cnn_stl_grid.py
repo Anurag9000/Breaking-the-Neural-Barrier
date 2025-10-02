@@ -25,7 +25,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Tuple
-
+from collections import defaultdict
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
@@ -322,6 +322,73 @@ def _parse_pooling(arg: str) -> List[int]:
 def _ensure_dir(p: Path):
     p.mkdir(parents=True, exist_ok=True)
 
+def _save_combined_scatter(rows, results_dir: Path, acc_name: str, loss_name: str):
+    """
+    Make combined Neurons vs {Acc, Loss} figures, with:
+    - point label = "(width,depth)"
+    - color scheme keyed by 'depth'
+    - re-entrant: safe to call after each run
+    """
+    if not rows:
+        return
+
+    # Group by depth for color separation
+    by_depth = defaultdict(list)
+    for r in rows:
+        by_depth[int(r["depth"])].append(r)
+
+    # Stable ordering for legend
+    depths_sorted = sorted(by_depth.keys())
+    cmap = plt.get_cmap("tab20")  # good categorical palette
+    depth_to_color = {d: cmap(i % cmap.N) for i, d in enumerate(depths_sorted)}
+
+    # ---------- Accuracy vs Neurons ----------
+    plt.figure(figsize=(8, 6))
+    for d in depths_sorted:
+        grp = by_depth[d]
+        xs = [g["neurons"] for g in grp]
+        ys = [g["best_val_acc"] for g in grp]
+        labs = [f"({g['width']},{g['depth']})" for g in grp]
+
+        plt.scatter(xs, ys, label=f"depth={d}", s=28, alpha=0.9, edgecolors="none",
+                    c=[depth_to_color[d]]*len(xs))
+        for x, y, lab in zip(xs, ys, labs):
+            plt.annotate(lab, (x, y), textcoords="offset points", xytext=(5, 5), fontsize=7)
+
+    plt.xlabel("Total neurons (width × (depth + 1))")
+    plt.ylabel("Best validation accuracy")
+    plt.title("Accuracy vs Neurons (all configurations)")
+    plt.grid(True, ls="--", alpha=0.5)
+    # Keep legend compact even for many depths
+    plt.legend(title="Depth", fontsize=8, title_fontsize=9, ncol=2, frameon=True)
+    plt.tight_layout()
+    (Path(results_dir) / acc_name).parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig((Path(results_dir) / acc_name).as_posix())
+    plt.close()
+
+    # ---------- Loss vs Neurons ----------
+    plt.figure(figsize=(8, 6))
+    for d in depths_sorted:
+        grp = by_depth[d]
+        xs = [g["neurons"] for g in grp]
+        # guard against exact 0
+        ys = [max(g["best_val_loss"], 1e-12) for g in grp]
+        labs = [f"({g['width']},{g['depth']})" for g in grp]
+
+        # use semilog-y per your original plot
+        plt.semilogy(xs, ys, linestyle="", marker="o", markersize=4,
+                     c=depth_to_color[d], label=f"depth={d}")
+        for x, y, lab in zip(xs, ys, labs):
+            plt.annotate(lab, (x, y), textcoords="offset points", xytext=(5, 5), fontsize=7)
+
+    plt.xlabel("Total neurons (width × (depth + 1))")
+    plt.ylabel("Best validation loss (log scale)")
+    plt.title("Loss vs Neurons (all configurations)")
+    plt.grid(True, ls="--", alpha=0.5, which="both")
+    plt.legend(title="Depth", fontsize=8, title_fontsize=9, ncol=2, frameon=True)
+    plt.tight_layout()
+    plt.savefig((Path(results_dir) / loss_name).as_posix())
+    plt.close()
 
 # -----------------------------
 # Main
@@ -415,6 +482,13 @@ def main():
 
             logger.info("======== [End Run %d/%d] width=%d depth=%d | best_val=%.4f | test_acc=%.4f ========\n",
                         run_idx, total, w, d, stats.best_val_loss, test_acc)
+            _save_combined_scatter(
+                rows,
+                results_dir,
+                args.acc_plot,   # e.g., "acc_vs_neurons.png"
+                args.loss_plot,  # e.g., "loss_vs_neurons.png"
+            )
+ 
 
     # Persist CSV/JSON
     csv_path = results_dir / args.csv_name
@@ -432,41 +506,9 @@ def main():
     json_path = results_dir / args.json_name
     with open(json_path, "w") as f:
         json.dump(rows, f, indent=2)
-
-    # Combined scatter plots
-    xs = [r["neurons"] for r in rows]
-    ys_acc = [r["best_val_acc"] for r in rows]
-    ys_loss = [max(r["best_val_loss"], 1e-12) for r in rows]
-    labels = [f"({r['width']},{r['depth']})" for r in rows]
-
-    # Acc vs neurons
-    plt.figure(figsize=(8, 6))
-    plt.scatter(xs, ys_acc)
-    for x, y, lab in zip(xs, ys_acc, labels):
-        plt.annotate(lab, (x, y), textcoords="offset points", xytext=(5, 5), fontsize=7)
-    plt.xlabel("Total neurons (width * (depth + 1))")
-    plt.ylabel("Best validation accuracy")
-    plt.title("Accuracy vs Neurons (all configurations)")
-    plt.grid(True, ls="--", alpha=0.5)
-    plt.tight_layout()
+    _save_combined_scatter(rows, results_dir, args.acc_plot, args.loss_plot)
     acc_plot_path = results_dir / args.acc_plot
-    plt.savefig(acc_plot_path.as_posix())
-    plt.close()
-
-    # Loss vs neurons
-    plt.figure(figsize=(8, 6))
-    plt.semilogy(xs, ys_loss, linestyle="", marker="o")
-    for x, y, lab in zip(xs, ys_loss, labels):
-        plt.annotate(lab, (x, y), textcoords="offset points", xytext=(5, 5), fontsize=7)
-    plt.xlabel("Total neurons (width * (depth + 1))")
-    plt.ylabel("Best validation loss (log scale)")
-    plt.title("Loss vs Neurons (all configurations)")
-    plt.grid(True, ls="--", alpha=0.5)
-    plt.tight_layout()
     loss_plot_path = results_dir / args.loss_plot
-    plt.savefig(loss_plot_path.as_posix())
-    plt.close()
-
     logger = logging.getLogger("stl_grid")
     logger.info("CSV: %s", csv_path)
     logger.info("JSON: %s", json_path)

@@ -359,6 +359,73 @@ def sweep_train(
 
     return sweep_json
 
+def _save_combined_scatter(rows, results_dir: Path, acc_name: str, loss_name: str):
+    """
+    Make combined Neurons vs {Acc, Loss} figures, with:
+    - point label = "(width,depth)"
+    - color scheme keyed by 'depth'
+    - re-entrant: safe to call after each run
+    """
+    if not rows:
+        return
+
+    # Group by depth for color separation
+    by_depth = defaultdict(list)
+    for r in rows:
+        by_depth[int(r["depth"])].append(r)
+
+    # Stable ordering for legend
+    depths_sorted = sorted(by_depth.keys())
+    cmap = plt.get_cmap("tab20")  # good categorical palette
+    depth_to_color = {d: cmap(i % cmap.N) for i, d in enumerate(depths_sorted)}
+
+    # ---------- Accuracy vs Neurons ----------
+    plt.figure(figsize=(8, 6))
+    for d in depths_sorted:
+        grp = by_depth[d]
+        xs = [g["neurons"] for g in grp]
+        ys = [g["best_val_acc"] for g in grp]
+        labs = [f"({g['width']},{g['depth']})" for g in grp]
+
+        plt.scatter(xs, ys, label=f"depth={d}", s=28, alpha=0.9, edgecolors="none",
+                    c=[depth_to_color[d]]*len(xs))
+        for x, y, lab in zip(xs, ys, labs):
+            plt.annotate(lab, (x, y), textcoords="offset points", xytext=(5, 5), fontsize=7)
+
+    plt.xlabel("Total neurons (width × (depth + 1))")
+    plt.ylabel("Best validation accuracy")
+    plt.title("Accuracy vs Neurons (all configurations)")
+    plt.grid(True, ls="--", alpha=0.5)
+    # Keep legend compact even for many depths
+    plt.legend(title="Depth", fontsize=8, title_fontsize=9, ncol=2, frameon=True)
+    plt.tight_layout()
+    (Path(results_dir) / acc_name).parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig((Path(results_dir) / acc_name).as_posix())
+    plt.close()
+
+    # ---------- Loss vs Neurons ----------
+    plt.figure(figsize=(8, 6))
+    for d in depths_sorted:
+        grp = by_depth[d]
+        xs = [g["neurons"] for g in grp]
+        # guard against exact 0
+        ys = [max(g["best_val_loss"], 1e-12) for g in grp]
+        labs = [f"({g['width']},{g['depth']})" for g in grp]
+
+        # use semilog-y per your original plot
+        plt.semilogy(xs, ys, linestyle="", marker="o", markersize=4,
+                     c=depth_to_color[d], label=f"depth={d}")
+        for x, y, lab in zip(xs, ys, labs):
+            plt.annotate(lab, (x, y), textcoords="offset points", xytext=(5, 5), fontsize=7)
+
+    plt.xlabel("Total neurons (width × (depth + 1))")
+    plt.ylabel("Best validation loss (log scale)")
+    plt.title("Loss vs Neurons (all configurations)")
+    plt.grid(True, ls="--", alpha=0.5, which="both")
+    plt.legend(title="Depth", fontsize=8, title_fontsize=9, ncol=2, frameon=True)
+    plt.tight_layout()
+    plt.savefig((Path(results_dir) / loss_name).as_posix())
+    plt.close()
 
 def main():
     parser = argparse.ArgumentParser(description="Run ConvNetSTL on CIFAR-10/100 (with optional sweep mode)")
