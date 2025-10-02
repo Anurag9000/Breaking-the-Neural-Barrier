@@ -99,12 +99,12 @@ def main():
         trials_depth=10,     # kept at 10 if your width-search variant also iterates depth
         patience=10,
         max_epochs=100000,
-        init_widths=[10],    # <<< init width = 10
+        init_widths=[1],    # <<< init width = 10
         num_classes=10,      # full CIFAR-10
         pooling_indices=[0],
         lr=1e-3,
         weight_decay=1e-2,
-        ex_k=10,             # <<< per-loop expansion factor = 10 (if used)
+        ex_k=1,             # <<< per-loop expansion factor = 10 (if used)
         max_neurons=1_000_000,
         max_depth=10000,
         max_width=10000,
