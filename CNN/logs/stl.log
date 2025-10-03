@@ -634,3 +634,574 @@
 2025-10-03 10:23:25 - INFO - ======== [Run 13/200] width=130 depth=3 ========
 2025-10-03 10:23:25 - INFO - Device=cuda | dataset=cifar10 | batch=64 | max_epochs=50 | patience=10 | lr=1.00e-03 | wd=1.0e-04
 2025-10-03 10:23:25 - INFO - Model params=309800 | neurons=520 | pooling=[1, 3]
+2025-10-03 10:23:45 - INFO - [epoch 1/50] train_loss=1.5664 | val_loss=1.3416 | val_acc=0.5040 | best_val=1.3416@1 | bad=0/10 | lr=1.00e-03 | dt=19.2s
+2025-10-03 10:24:03 - INFO - [epoch 2/50] train_loss=1.2496 | val_loss=1.3096 | val_acc=0.5364 | best_val=1.3096@2 | bad=0/10 | lr=1.00e-03 | dt=18.5s
+2025-10-03 10:24:22 - INFO - [epoch 3/50] train_loss=1.1294 | val_loss=1.2639 | val_acc=0.5618 | best_val=1.2639@3 | bad=0/10 | lr=1.00e-03 | dt=18.6s
+2025-10-03 10:24:41 - INFO - [epoch 4/50] train_loss=1.0536 | val_loss=1.0563 | val_acc=0.6180 | best_val=1.0563@4 | bad=0/10 | lr=1.00e-03 | dt=19.0s
+2025-10-03 10:25:00 - INFO - [epoch 5/50] train_loss=0.9949 | val_loss=1.0665 | val_acc=0.6232 | best_val=1.0563@4 | bad=1/10 | lr=1.00e-03 | dt=18.9s
+2025-10-03 10:25:18 - INFO - [epoch 6/50] train_loss=0.9407 | val_loss=1.3224 | val_acc=0.5664 | best_val=1.0563@4 | bad=2/10 | lr=1.00e-03 | dt=18.7s
+2025-10-03 10:25:36 - INFO - [epoch 7/50] train_loss=0.9020 | val_loss=0.9571 | val_acc=0.6642 | best_val=0.9571@7 | bad=0/10 | lr=1.00e-03 | dt=18.2s
+2025-10-03 10:25:55 - INFO - [epoch 8/50] train_loss=0.8583 | val_loss=1.0252 | val_acc=0.6386 | best_val=0.9571@7 | bad=1/10 | lr=1.00e-03 | dt=18.2s
+2025-10-03 10:26:13 - INFO - [epoch 9/50] train_loss=0.8261 | val_loss=0.9304 | val_acc=0.6704 | best_val=0.9304@9 | bad=0/10 | lr=1.00e-03 | dt=18.3s
+2025-10-03 10:26:31 - INFO - [epoch 10/50] train_loss=0.7968 | val_loss=0.9076 | val_acc=0.6948 | best_val=0.9076@10 | bad=0/10 | lr=1.00e-03 | dt=18.3s
+2025-10-03 10:26:49 - INFO - [epoch 11/50] train_loss=0.7659 | val_loss=1.3260 | val_acc=0.5860 | best_val=0.9076@10 | bad=1/10 | lr=1.00e-03 | dt=18.3s
+2025-10-03 10:27:08 - INFO - [epoch 12/50] train_loss=0.7456 | val_loss=0.7772 | val_acc=0.7292 | best_val=0.7772@12 | bad=0/10 | lr=1.00e-03 | dt=18.2s
+2025-10-03 10:27:26 - INFO - [epoch 13/50] train_loss=0.7189 | val_loss=0.8693 | val_acc=0.7098 | best_val=0.7772@12 | bad=1/10 | lr=1.00e-03 | dt=18.2s
+2025-10-03 10:27:44 - INFO - [epoch 14/50] train_loss=0.7001 | val_loss=0.7757 | val_acc=0.7336 | best_val=0.7757@14 | bad=0/10 | lr=1.00e-03 | dt=18.2s
+2025-10-03 10:28:02 - INFO - [epoch 15/50] train_loss=0.6776 | val_loss=0.8020 | val_acc=0.7212 | best_val=0.7757@14 | bad=1/10 | lr=1.00e-03 | dt=18.3s
+2025-10-03 10:28:21 - INFO - [epoch 16/50] train_loss=0.6648 | val_loss=0.8808 | val_acc=0.7000 | best_val=0.7757@14 | bad=2/10 | lr=1.00e-03 | dt=18.2s
+2025-10-03 10:28:39 - INFO - [epoch 17/50] train_loss=0.6451 | val_loss=0.9737 | val_acc=0.6694 | best_val=0.7757@14 | bad=3/10 | lr=1.00e-03 | dt=18.4s
+2025-10-03 10:28:57 - INFO - [epoch 18/50] train_loss=0.6359 | val_loss=0.8350 | val_acc=0.7122 | best_val=0.7757@14 | bad=4/10 | lr=1.00e-03 | dt=18.4s
+2025-10-03 10:29:16 - INFO - [epoch 19/50] train_loss=0.6200 | val_loss=0.7162 | val_acc=0.7566 | best_val=0.7162@19 | bad=0/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:29:34 - INFO - [epoch 20/50] train_loss=0.6085 | val_loss=0.7566 | val_acc=0.7378 | best_val=0.7162@19 | bad=1/10 | lr=1.00e-03 | dt=18.3s
+2025-10-03 10:29:52 - INFO - [epoch 21/50] train_loss=0.5994 | val_loss=0.7910 | val_acc=0.7408 | best_val=0.7162@19 | bad=2/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:30:10 - INFO - [epoch 22/50] train_loss=0.5795 | val_loss=0.7624 | val_acc=0.7426 | best_val=0.7162@19 | bad=3/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:30:28 - INFO - [epoch 23/50] train_loss=0.5758 | val_loss=0.9395 | val_acc=0.6982 | best_val=0.7162@19 | bad=4/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:30:46 - INFO - [epoch 24/50] train_loss=0.5729 | val_loss=0.6601 | val_acc=0.7710 | best_val=0.6601@24 | bad=0/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:31:04 - INFO - [epoch 25/50] train_loss=0.5586 | val_loss=0.7301 | val_acc=0.7522 | best_val=0.6601@24 | bad=1/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:31:23 - INFO - [epoch 26/50] train_loss=0.5559 | val_loss=0.8374 | val_acc=0.7320 | best_val=0.6601@24 | bad=2/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:31:41 - INFO - [epoch 27/50] train_loss=0.5443 | val_loss=0.7647 | val_acc=0.7428 | best_val=0.6601@24 | bad=3/10 | lr=1.00e-03 | dt=18.2s
+2025-10-03 10:31:59 - INFO - [epoch 28/50] train_loss=0.5394 | val_loss=0.6965 | val_acc=0.7612 | best_val=0.6601@24 | bad=4/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:32:17 - INFO - [epoch 29/50] train_loss=0.5317 | val_loss=0.9419 | val_acc=0.7068 | best_val=0.6601@24 | bad=5/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:32:35 - INFO - [epoch 30/50] train_loss=0.5244 | val_loss=0.7480 | val_acc=0.7570 | best_val=0.6601@24 | bad=6/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:32:53 - INFO - [epoch 31/50] train_loss=0.5164 | val_loss=0.6626 | val_acc=0.7782 | best_val=0.6601@24 | bad=7/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:33:11 - INFO - [epoch 32/50] train_loss=0.5110 | val_loss=0.6435 | val_acc=0.7802 | best_val=0.6435@32 | bad=0/10 | lr=1.00e-03 | dt=18.0s
+2025-10-03 10:33:30 - INFO - [epoch 33/50] train_loss=0.5071 | val_loss=0.6916 | val_acc=0.7692 | best_val=0.6435@32 | bad=1/10 | lr=1.00e-03 | dt=18.5s
+2025-10-03 10:33:48 - INFO - [epoch 34/50] train_loss=0.5011 | val_loss=0.7349 | val_acc=0.7524 | best_val=0.6435@32 | bad=2/10 | lr=1.00e-03 | dt=18.3s
+2025-10-03 10:34:06 - INFO - [epoch 35/50] train_loss=0.4918 | val_loss=0.7786 | val_acc=0.7462 | best_val=0.6435@32 | bad=3/10 | lr=1.00e-03 | dt=18.3s
+2025-10-03 10:34:25 - INFO - [epoch 36/50] train_loss=0.4921 | val_loss=0.8664 | val_acc=0.7372 | best_val=0.6435@32 | bad=4/10 | lr=1.00e-03 | dt=18.6s
+2025-10-03 10:34:43 - INFO - [epoch 37/50] train_loss=0.4838 | val_loss=0.6495 | val_acc=0.7834 | best_val=0.6435@32 | bad=5/10 | lr=1.00e-03 | dt=18.5s
+2025-10-03 10:35:01 - INFO - [epoch 38/50] train_loss=0.4855 | val_loss=0.6565 | val_acc=0.7848 | best_val=0.6435@32 | bad=6/10 | lr=1.00e-03 | dt=18.3s
+2025-10-03 10:35:20 - INFO - [epoch 39/50] train_loss=0.4768 | val_loss=0.6231 | val_acc=0.7894 | best_val=0.6231@39 | bad=0/10 | lr=1.00e-03 | dt=18.7s
+2025-10-03 10:35:38 - INFO - [epoch 40/50] train_loss=0.4655 | val_loss=0.6280 | val_acc=0.7934 | best_val=0.6231@39 | bad=1/10 | lr=1.00e-03 | dt=18.3s
+2025-10-03 10:35:57 - INFO - [epoch 41/50] train_loss=0.4671 | val_loss=0.5932 | val_acc=0.7972 | best_val=0.5932@41 | bad=0/10 | lr=1.00e-03 | dt=18.3s
+2025-10-03 10:36:15 - INFO - [epoch 42/50] train_loss=0.4608 | val_loss=0.6691 | val_acc=0.7750 | best_val=0.5932@41 | bad=1/10 | lr=1.00e-03 | dt=18.4s
+2025-10-03 10:36:35 - INFO - [epoch 43/50] train_loss=0.4579 | val_loss=0.5826 | val_acc=0.8004 | best_val=0.5826@43 | bad=0/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 10:36:53 - INFO - [epoch 44/50] train_loss=0.4573 | val_loss=0.6301 | val_acc=0.7970 | best_val=0.5826@43 | bad=1/10 | lr=1.00e-03 | dt=18.5s
+2025-10-03 10:37:12 - INFO - [epoch 45/50] train_loss=0.4555 | val_loss=0.6296 | val_acc=0.7846 | best_val=0.5826@43 | bad=2/10 | lr=1.00e-03 | dt=18.6s
+2025-10-03 10:37:31 - INFO - [epoch 46/50] train_loss=0.4469 | val_loss=0.6880 | val_acc=0.7724 | best_val=0.5826@43 | bad=3/10 | lr=1.00e-03 | dt=18.8s
+2025-10-03 10:37:49 - INFO - [epoch 47/50] train_loss=0.4468 | val_loss=0.6495 | val_acc=0.7854 | best_val=0.5826@43 | bad=4/10 | lr=1.00e-03 | dt=18.7s
+2025-10-03 10:38:08 - INFO - [epoch 48/50] train_loss=0.4417 | val_loss=0.8258 | val_acc=0.7520 | best_val=0.5826@43 | bad=5/10 | lr=1.00e-03 | dt=18.5s
+2025-10-03 10:38:27 - INFO - [epoch 49/50] train_loss=0.4375 | val_loss=0.5771 | val_acc=0.8046 | best_val=0.5771@49 | bad=0/10 | lr=1.00e-03 | dt=18.6s
+2025-10-03 10:38:45 - INFO - [epoch 50/50] train_loss=0.4300 | val_loss=0.6529 | val_acc=0.7886 | best_val=0.5771@49 | bad=1/10 | lr=1.00e-03 | dt=19.0s
+2025-10-03 10:38:46 - INFO - Run finished in 920.4s | best_val_loss=0.5771 @epoch 49 | best_val_acc=0.8046
+2025-10-03 10:38:48 - INFO - Test: loss=0.6524 acc=0.7838
+2025-10-03 10:38:48 - INFO - ======== [End Run 13/200] width=130 depth=3 | best_val=0.5771 | test_acc=0.7838 ========
+
+2025-10-03 10:38:49 - INFO - ======== [Run 14/200] width=140 depth=3 ========
+2025-10-03 10:38:49 - INFO - Device=cuda | dataset=cifar10 | batch=64 | max_epochs=50 | patience=10 | lr=1.00e-03 | wd=1.0e-04
+2025-10-03 10:38:49 - INFO - Model params=358830 | neurons=560 | pooling=[1, 3]
+2025-10-03 10:39:07 - INFO - [epoch 1/50] train_loss=1.5533 | val_loss=1.5818 | val_acc=0.4626 | best_val=1.5818@1 | bad=0/10 | lr=1.00e-03 | dt=18.1s
+2025-10-03 10:39:24 - INFO - [epoch 2/50] train_loss=1.2455 | val_loss=1.2344 | val_acc=0.5546 | best_val=1.2344@2 | bad=0/10 | lr=1.00e-03 | dt=17.6s
+2025-10-03 10:39:42 - INFO - [epoch 3/50] train_loss=1.1268 | val_loss=1.1504 | val_acc=0.5980 | best_val=1.1504@3 | bad=0/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:39:59 - INFO - [epoch 4/50] train_loss=1.0441 | val_loss=1.0342 | val_acc=0.6280 | best_val=1.0342@4 | bad=0/10 | lr=1.00e-03 | dt=17.6s
+2025-10-03 10:40:17 - INFO - [epoch 5/50] train_loss=0.9821 | val_loss=0.9739 | val_acc=0.6508 | best_val=0.9739@5 | bad=0/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:40:34 - INFO - [epoch 6/50] train_loss=0.9284 | val_loss=1.1271 | val_acc=0.6186 | best_val=0.9739@5 | bad=1/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:40:52 - INFO - [epoch 7/50] train_loss=0.8803 | val_loss=1.0864 | val_acc=0.6252 | best_val=0.9739@5 | bad=2/10 | lr=1.00e-03 | dt=17.6s
+2025-10-03 10:41:10 - INFO - [epoch 8/50] train_loss=0.8455 | val_loss=1.0345 | val_acc=0.6552 | best_val=0.9739@5 | bad=3/10 | lr=1.00e-03 | dt=17.7s
+2025-10-03 10:41:27 - INFO - [epoch 9/50] train_loss=0.8050 | val_loss=0.9976 | val_acc=0.6760 | best_val=0.9739@5 | bad=4/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:41:44 - INFO - [epoch 10/50] train_loss=0.7835 | val_loss=1.0279 | val_acc=0.6534 | best_val=0.9739@5 | bad=5/10 | lr=1.00e-03 | dt=17.3s
+2025-10-03 10:42:02 - INFO - [epoch 11/50] train_loss=0.7506 | val_loss=0.9415 | val_acc=0.6880 | best_val=0.9415@11 | bad=0/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:42:19 - INFO - [epoch 12/50] train_loss=0.7310 | val_loss=1.2064 | val_acc=0.6180 | best_val=0.9415@11 | bad=1/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:42:37 - INFO - [epoch 13/50] train_loss=0.7081 | val_loss=0.9064 | val_acc=0.7034 | best_val=0.9064@13 | bad=0/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:42:54 - INFO - [epoch 14/50] train_loss=0.6896 | val_loss=0.9010 | val_acc=0.7062 | best_val=0.9010@14 | bad=0/10 | lr=1.00e-03 | dt=17.7s
+2025-10-03 10:43:12 - INFO - [epoch 15/50] train_loss=0.6784 | val_loss=0.7540 | val_acc=0.7386 | best_val=0.7540@15 | bad=0/10 | lr=1.00e-03 | dt=17.6s
+2025-10-03 10:43:30 - INFO - [epoch 16/50] train_loss=0.6558 | val_loss=0.9295 | val_acc=0.6800 | best_val=0.7540@15 | bad=1/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:43:47 - INFO - [epoch 17/50] train_loss=0.6440 | val_loss=0.9923 | val_acc=0.6908 | best_val=0.7540@15 | bad=2/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:44:05 - INFO - [epoch 18/50] train_loss=0.6336 | val_loss=0.7388 | val_acc=0.7494 | best_val=0.7388@18 | bad=0/10 | lr=1.00e-03 | dt=17.7s
+2025-10-03 10:44:22 - INFO - [epoch 19/50] train_loss=0.6177 | val_loss=0.9154 | val_acc=0.6928 | best_val=0.7388@18 | bad=1/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:44:40 - INFO - [epoch 20/50] train_loss=0.6075 | val_loss=0.9526 | val_acc=0.6766 | best_val=0.7388@18 | bad=2/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:44:57 - INFO - [epoch 21/50] train_loss=0.5972 | val_loss=0.8495 | val_acc=0.7190 | best_val=0.7388@18 | bad=3/10 | lr=1.00e-03 | dt=17.7s
+2025-10-03 10:45:15 - INFO - [epoch 22/50] train_loss=0.5883 | val_loss=0.7819 | val_acc=0.7426 | best_val=0.7388@18 | bad=4/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:45:32 - INFO - [epoch 23/50] train_loss=0.5784 | val_loss=0.7056 | val_acc=0.7646 | best_val=0.7056@23 | bad=0/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:45:50 - INFO - [epoch 24/50] train_loss=0.5624 | val_loss=0.7632 | val_acc=0.7408 | best_val=0.7056@23 | bad=1/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:46:07 - INFO - [epoch 25/50] train_loss=0.5599 | val_loss=0.6614 | val_acc=0.7786 | best_val=0.6614@25 | bad=0/10 | lr=1.00e-03 | dt=17.7s
+2025-10-03 10:46:25 - INFO - [epoch 26/50] train_loss=0.5579 | val_loss=0.7560 | val_acc=0.7396 | best_val=0.6614@25 | bad=1/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:46:42 - INFO - [epoch 27/50] train_loss=0.5471 | val_loss=0.6574 | val_acc=0.7658 | best_val=0.6574@27 | bad=0/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:47:00 - INFO - [epoch 28/50] train_loss=0.5400 | val_loss=0.8042 | val_acc=0.7436 | best_val=0.6574@27 | bad=1/10 | lr=1.00e-03 | dt=17.6s
+2025-10-03 10:47:17 - INFO - [epoch 29/50] train_loss=0.5327 | val_loss=0.7053 | val_acc=0.7676 | best_val=0.6574@27 | bad=2/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:47:35 - INFO - [epoch 30/50] train_loss=0.5226 | val_loss=0.7674 | val_acc=0.7444 | best_val=0.6574@27 | bad=3/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:47:52 - INFO - [epoch 31/50] train_loss=0.5207 | val_loss=0.7304 | val_acc=0.7476 | best_val=0.6574@27 | bad=4/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:48:10 - INFO - [epoch 32/50] train_loss=0.5140 | val_loss=0.7529 | val_acc=0.7624 | best_val=0.6574@27 | bad=5/10 | lr=1.00e-03 | dt=17.6s
+2025-10-03 10:48:27 - INFO - [epoch 33/50] train_loss=0.5044 | val_loss=0.6618 | val_acc=0.7830 | best_val=0.6574@27 | bad=6/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:48:44 - INFO - [epoch 34/50] train_loss=0.4967 | val_loss=0.7412 | val_acc=0.7552 | best_val=0.6574@27 | bad=7/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:49:02 - INFO - [epoch 35/50] train_loss=0.4958 | val_loss=0.7557 | val_acc=0.7456 | best_val=0.6574@27 | bad=8/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:49:20 - INFO - [epoch 36/50] train_loss=0.4875 | val_loss=0.6441 | val_acc=0.7802 | best_val=0.6441@36 | bad=0/10 | lr=1.00e-03 | dt=17.6s
+2025-10-03 10:49:37 - INFO - [epoch 37/50] train_loss=0.4879 | val_loss=0.5649 | val_acc=0.8076 | best_val=0.5649@37 | bad=0/10 | lr=1.00e-03 | dt=17.3s
+2025-10-03 10:49:54 - INFO - [epoch 38/50] train_loss=0.4855 | val_loss=0.6234 | val_acc=0.7928 | best_val=0.5649@37 | bad=1/10 | lr=1.00e-03 | dt=17.3s
+2025-10-03 10:50:12 - INFO - [epoch 39/50] train_loss=0.4771 | val_loss=0.6720 | val_acc=0.7774 | best_val=0.5649@37 | bad=2/10 | lr=1.00e-03 | dt=17.7s
+2025-10-03 10:50:29 - INFO - [epoch 40/50] train_loss=0.4702 | val_loss=0.7540 | val_acc=0.7622 | best_val=0.5649@37 | bad=3/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:50:47 - INFO - [epoch 41/50] train_loss=0.4714 | val_loss=0.5925 | val_acc=0.7982 | best_val=0.5649@37 | bad=4/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:51:05 - INFO - [epoch 42/50] train_loss=0.4598 | val_loss=0.5578 | val_acc=0.8108 | best_val=0.5578@42 | bad=0/10 | lr=1.00e-03 | dt=17.8s
+2025-10-03 10:51:22 - INFO - [epoch 43/50] train_loss=0.4593 | val_loss=0.6900 | val_acc=0.7854 | best_val=0.5578@42 | bad=1/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:51:40 - INFO - [epoch 44/50] train_loss=0.4556 | val_loss=0.6885 | val_acc=0.7760 | best_val=0.5578@42 | bad=2/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:51:57 - INFO - [epoch 45/50] train_loss=0.4534 | val_loss=0.5552 | val_acc=0.8124 | best_val=0.5552@45 | bad=0/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:52:15 - INFO - [epoch 46/50] train_loss=0.4519 | val_loss=0.6333 | val_acc=0.7912 | best_val=0.5552@45 | bad=1/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:52:32 - INFO - [epoch 47/50] train_loss=0.4419 | val_loss=1.0412 | val_acc=0.7264 | best_val=0.5552@45 | bad=2/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:52:49 - INFO - [epoch 48/50] train_loss=0.4465 | val_loss=0.7104 | val_acc=0.7740 | best_val=0.5552@45 | bad=3/10 | lr=1.00e-03 | dt=17.4s
+2025-10-03 10:53:07 - INFO - [epoch 49/50] train_loss=0.4391 | val_loss=0.5859 | val_acc=0.8018 | best_val=0.5552@45 | bad=4/10 | lr=1.00e-03 | dt=17.7s
+2025-10-03 10:53:25 - INFO - [epoch 50/50] train_loss=0.4332 | val_loss=0.6526 | val_acc=0.7734 | best_val=0.5552@45 | bad=5/10 | lr=1.00e-03 | dt=17.5s
+2025-10-03 10:53:25 - INFO - Run finished in 876.2s | best_val_loss=0.5552 @epoch 45 | best_val_acc=0.8124
+2025-10-03 10:53:27 - INFO - Test: loss=0.6564 acc=0.7800
+2025-10-03 10:53:27 - INFO - ======== [End Run 14/200] width=140 depth=3 | best_val=0.5552 | test_acc=0.7800 ========
+
+2025-10-03 10:53:27 - INFO - ======== [Run 15/200] width=150 depth=3 ========
+2025-10-03 10:53:27 - INFO - Device=cuda | dataset=cifar10 | batch=64 | max_epochs=50 | patience=10 | lr=1.00e-03 | wd=1.0e-04
+2025-10-03 10:53:27 - INFO - Model params=411460 | neurons=600 | pooling=[1, 3]
+2025-10-03 10:53:47 - INFO - [epoch 1/50] train_loss=1.5565 | val_loss=1.4500 | val_acc=0.4772 | best_val=1.4500@1 | bad=0/10 | lr=1.00e-03 | dt=20.0s
+2025-10-03 10:54:07 - INFO - [epoch 2/50] train_loss=1.2437 | val_loss=1.2737 | val_acc=0.5468 | best_val=1.2737@2 | bad=0/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 10:54:26 - INFO - [epoch 3/50] train_loss=1.1199 | val_loss=1.1435 | val_acc=0.6040 | best_val=1.1435@3 | bad=0/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 10:54:46 - INFO - [epoch 4/50] train_loss=1.0422 | val_loss=1.1240 | val_acc=0.6166 | best_val=1.1240@4 | bad=0/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 10:55:05 - INFO - [epoch 5/50] train_loss=0.9849 | val_loss=1.0431 | val_acc=0.6252 | best_val=1.0431@5 | bad=0/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 10:55:25 - INFO - [epoch 6/50] train_loss=0.9296 | val_loss=1.0918 | val_acc=0.6346 | best_val=1.0431@5 | bad=1/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 10:55:45 - INFO - [epoch 7/50] train_loss=0.8842 | val_loss=1.0361 | val_acc=0.6432 | best_val=1.0361@7 | bad=0/10 | lr=1.00e-03 | dt=19.8s
+2025-10-03 10:56:04 - INFO - [epoch 8/50] train_loss=0.8388 | val_loss=1.2474 | val_acc=0.5960 | best_val=1.0361@7 | bad=1/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 10:56:24 - INFO - [epoch 9/50] train_loss=0.8079 | val_loss=0.9663 | val_acc=0.6554 | best_val=0.9663@9 | bad=0/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 10:56:44 - INFO - [epoch 10/50] train_loss=0.7750 | val_loss=0.8532 | val_acc=0.7046 | best_val=0.8532@10 | bad=0/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 10:57:04 - INFO - [epoch 11/50] train_loss=0.7443 | val_loss=0.9433 | val_acc=0.6896 | best_val=0.8532@10 | bad=1/10 | lr=1.00e-03 | dt=19.8s
+2025-10-03 10:57:23 - INFO - [epoch 12/50] train_loss=0.7230 | val_loss=1.0848 | val_acc=0.6682 | best_val=0.8532@10 | bad=2/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 10:57:43 - INFO - [epoch 13/50] train_loss=0.7015 | val_loss=1.1712 | val_acc=0.6426 | best_val=0.8532@10 | bad=3/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 10:58:03 - INFO - [epoch 14/50] train_loss=0.6826 | val_loss=0.9570 | val_acc=0.7032 | best_val=0.8532@10 | bad=4/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 10:58:22 - INFO - [epoch 15/50] train_loss=0.6619 | val_loss=0.9045 | val_acc=0.6992 | best_val=0.8532@10 | bad=5/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 10:58:42 - INFO - [epoch 16/50] train_loss=0.6462 | val_loss=0.8188 | val_acc=0.7274 | best_val=0.8188@16 | bad=0/10 | lr=1.00e-03 | dt=19.8s
+2025-10-03 10:59:02 - INFO - [epoch 17/50] train_loss=0.6363 | val_loss=0.8571 | val_acc=0.7076 | best_val=0.8188@16 | bad=1/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 10:59:21 - INFO - [epoch 18/50] train_loss=0.6211 | val_loss=0.6959 | val_acc=0.7612 | best_val=0.6959@18 | bad=0/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 10:59:41 - INFO - [epoch 19/50] train_loss=0.6112 | val_loss=0.7433 | val_acc=0.7536 | best_val=0.6959@18 | bad=1/10 | lr=1.00e-03 | dt=19.8s
+2025-10-03 11:00:01 - INFO - [epoch 20/50] train_loss=0.5926 | val_loss=1.0401 | val_acc=0.6732 | best_val=0.6959@18 | bad=2/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:00:20 - INFO - [epoch 21/50] train_loss=0.5849 | val_loss=0.7568 | val_acc=0.7454 | best_val=0.6959@18 | bad=3/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:00:40 - INFO - [epoch 22/50] train_loss=0.5743 | val_loss=0.8104 | val_acc=0.7312 | best_val=0.6959@18 | bad=4/10 | lr=1.00e-03 | dt=19.9s
+2025-10-03 11:01:00 - INFO - [epoch 23/50] train_loss=0.5675 | val_loss=0.8160 | val_acc=0.7426 | best_val=0.6959@18 | bad=5/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:01:19 - INFO - [epoch 24/50] train_loss=0.5623 | val_loss=0.9041 | val_acc=0.7214 | best_val=0.6959@18 | bad=6/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:01:39 - INFO - [epoch 25/50] train_loss=0.5483 | val_loss=0.7587 | val_acc=0.7526 | best_val=0.6959@18 | bad=7/10 | lr=1.00e-03 | dt=19.8s
+2025-10-03 11:01:59 - INFO - [epoch 26/50] train_loss=0.5408 | val_loss=0.7997 | val_acc=0.7426 | best_val=0.6959@18 | bad=8/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:02:18 - INFO - [epoch 27/50] train_loss=0.5304 | val_loss=0.6162 | val_acc=0.7952 | best_val=0.6162@27 | bad=0/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:02:38 - INFO - [epoch 28/50] train_loss=0.5235 | val_loss=0.7445 | val_acc=0.7596 | best_val=0.6162@27 | bad=1/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:02:58 - INFO - [epoch 29/50] train_loss=0.5185 | val_loss=0.7111 | val_acc=0.7600 | best_val=0.6162@27 | bad=2/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:03:17 - INFO - [epoch 30/50] train_loss=0.5147 | val_loss=0.6900 | val_acc=0.7680 | best_val=0.6162@27 | bad=3/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:03:37 - INFO - [epoch 31/50] train_loss=0.5116 | val_loss=0.7161 | val_acc=0.7578 | best_val=0.6162@27 | bad=4/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:03:57 - INFO - [epoch 32/50] train_loss=0.4989 | val_loss=0.7501 | val_acc=0.7520 | best_val=0.6162@27 | bad=5/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:04:16 - INFO - [epoch 33/50] train_loss=0.4976 | val_loss=0.5881 | val_acc=0.8010 | best_val=0.5881@33 | bad=0/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:04:36 - INFO - [epoch 34/50] train_loss=0.4872 | val_loss=0.6059 | val_acc=0.7942 | best_val=0.5881@33 | bad=1/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:04:56 - INFO - [epoch 35/50] train_loss=0.4800 | val_loss=0.5753 | val_acc=0.8030 | best_val=0.5753@35 | bad=0/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:05:15 - INFO - [epoch 36/50] train_loss=0.4788 | val_loss=0.6603 | val_acc=0.7864 | best_val=0.5753@35 | bad=1/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:05:35 - INFO - [epoch 37/50] train_loss=0.4742 | val_loss=0.7316 | val_acc=0.7674 | best_val=0.5753@35 | bad=2/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:05:54 - INFO - [epoch 38/50] train_loss=0.4692 | val_loss=0.6325 | val_acc=0.7876 | best_val=0.5753@35 | bad=3/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:06:14 - INFO - [epoch 39/50] train_loss=0.4676 | val_loss=0.6293 | val_acc=0.7928 | best_val=0.5753@35 | bad=4/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:06:33 - INFO - [epoch 40/50] train_loss=0.4636 | val_loss=0.6510 | val_acc=0.7794 | best_val=0.5753@35 | bad=5/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:06:53 - INFO - [epoch 41/50] train_loss=0.4582 | val_loss=0.7527 | val_acc=0.7494 | best_val=0.5753@35 | bad=6/10 | lr=1.00e-03 | dt=19.9s
+2025-10-03 11:07:13 - INFO - [epoch 42/50] train_loss=0.4561 | val_loss=0.8494 | val_acc=0.7368 | best_val=0.5753@35 | bad=7/10 | lr=1.00e-03 | dt=19.8s
+2025-10-03 11:07:33 - INFO - [epoch 43/50] train_loss=0.4430 | val_loss=0.8939 | val_acc=0.7362 | best_val=0.5753@35 | bad=8/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:07:53 - INFO - [epoch 44/50] train_loss=0.4423 | val_loss=0.5616 | val_acc=0.8096 | best_val=0.5616@44 | bad=0/10 | lr=1.00e-03 | dt=19.8s
+2025-10-03 11:08:12 - INFO - [epoch 45/50] train_loss=0.4378 | val_loss=0.5841 | val_acc=0.8070 | best_val=0.5616@44 | bad=1/10 | lr=1.00e-03 | dt=19.8s
+2025-10-03 11:08:32 - INFO - [epoch 46/50] train_loss=0.4367 | val_loss=0.6983 | val_acc=0.7798 | best_val=0.5616@44 | bad=2/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:08:52 - INFO - [epoch 47/50] train_loss=0.4341 | val_loss=0.7613 | val_acc=0.7492 | best_val=0.5616@44 | bad=3/10 | lr=1.00e-03 | dt=20.0s
+2025-10-03 11:09:12 - INFO - [epoch 48/50] train_loss=0.4318 | val_loss=0.6103 | val_acc=0.7888 | best_val=0.5616@44 | bad=4/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:09:31 - INFO - [epoch 49/50] train_loss=0.4255 | val_loss=0.7047 | val_acc=0.7782 | best_val=0.5616@44 | bad=5/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:09:51 - INFO - [epoch 50/50] train_loss=0.4240 | val_loss=0.7625 | val_acc=0.7686 | best_val=0.5616@44 | bad=6/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:09:51 - INFO - Run finished in 984.3s | best_val_loss=0.5616 @epoch 44 | best_val_acc=0.8096
+2025-10-03 11:09:53 - INFO - Test: loss=0.7679 acc=0.7631
+2025-10-03 11:09:53 - INFO - ======== [End Run 15/200] width=150 depth=3 | best_val=0.5616 | test_acc=0.7631 ========
+
+2025-10-03 11:09:54 - INFO - ======== [Run 16/200] width=160 depth=3 ========
+2025-10-03 11:09:54 - INFO - Device=cuda | dataset=cifar10 | batch=64 | max_epochs=50 | patience=10 | lr=1.00e-03 | wd=1.0e-04
+2025-10-03 11:09:54 - INFO - Model params=467690 | neurons=640 | pooling=[1, 3]
+2025-10-03 11:10:14 - INFO - [epoch 1/50] train_loss=1.5488 | val_loss=1.4970 | val_acc=0.4660 | best_val=1.4970@1 | bad=0/10 | lr=1.00e-03 | dt=20.0s
+2025-10-03 11:10:33 - INFO - [epoch 2/50] train_loss=1.2333 | val_loss=1.4117 | val_acc=0.5120 | best_val=1.4117@2 | bad=0/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:10:53 - INFO - [epoch 3/50] train_loss=1.1123 | val_loss=1.2490 | val_acc=0.5588 | best_val=1.2490@3 | bad=0/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:11:13 - INFO - [epoch 4/50] train_loss=1.0393 | val_loss=1.0897 | val_acc=0.6142 | best_val=1.0897@4 | bad=0/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:11:32 - INFO - [epoch 5/50] train_loss=0.9698 | val_loss=1.0048 | val_acc=0.6404 | best_val=1.0048@5 | bad=0/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:11:52 - INFO - [epoch 6/50] train_loss=0.9185 | val_loss=1.6075 | val_acc=0.5276 | best_val=1.0048@5 | bad=1/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:12:11 - INFO - [epoch 7/50] train_loss=0.8700 | val_loss=0.9156 | val_acc=0.6734 | best_val=0.9156@7 | bad=0/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:12:31 - INFO - [epoch 8/50] train_loss=0.8313 | val_loss=0.8649 | val_acc=0.6994 | best_val=0.8649@8 | bad=0/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:12:51 - INFO - [epoch 9/50] train_loss=0.7957 | val_loss=1.2770 | val_acc=0.5904 | best_val=0.8649@8 | bad=1/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:13:10 - INFO - [epoch 10/50] train_loss=0.7626 | val_loss=0.9154 | val_acc=0.6938 | best_val=0.8649@8 | bad=2/10 | lr=1.00e-03 | dt=19.8s
+2025-10-03 11:13:30 - INFO - [epoch 11/50] train_loss=0.7334 | val_loss=0.7812 | val_acc=0.7280 | best_val=0.7812@11 | bad=0/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:13:49 - INFO - [epoch 12/50] train_loss=0.7092 | val_loss=0.8576 | val_acc=0.7228 | best_val=0.7812@11 | bad=1/10 | lr=1.00e-03 | dt=19.4s
+2025-10-03 11:14:09 - INFO - [epoch 13/50] train_loss=0.6905 | val_loss=0.7836 | val_acc=0.7270 | best_val=0.7812@11 | bad=2/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:14:28 - INFO - [epoch 14/50] train_loss=0.6664 | val_loss=0.7736 | val_acc=0.7354 | best_val=0.7736@14 | bad=0/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:14:48 - INFO - [epoch 15/50] train_loss=0.6495 | val_loss=0.8325 | val_acc=0.7208 | best_val=0.7736@14 | bad=1/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:15:08 - INFO - [epoch 16/50] train_loss=0.6361 | val_loss=0.9149 | val_acc=0.6988 | best_val=0.7736@14 | bad=2/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:15:27 - INFO - [epoch 17/50] train_loss=0.6213 | val_loss=0.8208 | val_acc=0.7240 | best_val=0.7736@14 | bad=3/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:15:47 - INFO - [epoch 18/50] train_loss=0.6062 | val_loss=0.7766 | val_acc=0.7402 | best_val=0.7736@14 | bad=4/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:16:06 - INFO - [epoch 19/50] train_loss=0.6002 | val_loss=0.8274 | val_acc=0.7260 | best_val=0.7736@14 | bad=5/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:16:26 - INFO - [epoch 20/50] train_loss=0.5884 | val_loss=0.7179 | val_acc=0.7614 | best_val=0.7179@20 | bad=0/10 | lr=1.00e-03 | dt=19.4s
+2025-10-03 11:16:45 - INFO - [epoch 21/50] train_loss=0.5737 | val_loss=0.6284 | val_acc=0.7804 | best_val=0.6284@21 | bad=0/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:17:05 - INFO - [epoch 22/50] train_loss=0.5594 | val_loss=0.6902 | val_acc=0.7692 | best_val=0.6284@21 | bad=1/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:17:25 - INFO - [epoch 23/50] train_loss=0.5582 | val_loss=0.6419 | val_acc=0.7788 | best_val=0.6284@21 | bad=2/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:17:44 - INFO - [epoch 24/50] train_loss=0.5411 | val_loss=0.6654 | val_acc=0.7742 | best_val=0.6284@21 | bad=3/10 | lr=1.00e-03 | dt=19.4s
+2025-10-03 11:18:04 - INFO - [epoch 25/50] train_loss=0.5372 | val_loss=0.7376 | val_acc=0.7482 | best_val=0.6284@21 | bad=4/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:18:23 - INFO - [epoch 26/50] train_loss=0.5289 | val_loss=0.7072 | val_acc=0.7698 | best_val=0.6284@21 | bad=5/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:18:43 - INFO - [epoch 27/50] train_loss=0.5213 | val_loss=0.7452 | val_acc=0.7524 | best_val=0.6284@21 | bad=6/10 | lr=1.00e-03 | dt=19.4s
+2025-10-03 11:19:02 - INFO - [epoch 28/50] train_loss=0.5155 | val_loss=0.8192 | val_acc=0.7340 | best_val=0.6284@21 | bad=7/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:19:22 - INFO - [epoch 29/50] train_loss=0.5109 | val_loss=0.7965 | val_acc=0.7420 | best_val=0.6284@21 | bad=8/10 | lr=1.00e-03 | dt=19.4s
+2025-10-03 11:19:41 - INFO - [epoch 30/50] train_loss=0.5026 | val_loss=0.6080 | val_acc=0.7968 | best_val=0.6080@30 | bad=0/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:20:01 - INFO - [epoch 31/50] train_loss=0.4948 | val_loss=0.8120 | val_acc=0.7496 | best_val=0.6080@30 | bad=1/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:20:20 - INFO - [epoch 32/50] train_loss=0.4882 | val_loss=0.7085 | val_acc=0.7660 | best_val=0.6080@30 | bad=2/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:20:40 - INFO - [epoch 33/50] train_loss=0.4810 | val_loss=0.6822 | val_acc=0.7824 | best_val=0.6080@30 | bad=3/10 | lr=1.00e-03 | dt=19.4s
+2025-10-03 11:20:59 - INFO - [epoch 34/50] train_loss=0.4834 | val_loss=0.6055 | val_acc=0.8010 | best_val=0.6055@34 | bad=0/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:21:19 - INFO - [epoch 35/50] train_loss=0.4748 | val_loss=0.7329 | val_acc=0.7622 | best_val=0.6055@34 | bad=1/10 | lr=1.00e-03 | dt=19.7s
+2025-10-03 11:21:38 - INFO - [epoch 36/50] train_loss=0.4723 | val_loss=0.5551 | val_acc=0.8100 | best_val=0.5551@36 | bad=0/10 | lr=1.00e-03 | dt=19.3s
+2025-10-03 11:21:58 - INFO - [epoch 37/50] train_loss=0.4683 | val_loss=0.6191 | val_acc=0.7970 | best_val=0.5551@36 | bad=1/10 | lr=1.00e-03 | dt=19.4s
+2025-10-03 11:22:17 - INFO - [epoch 38/50] train_loss=0.4654 | val_loss=0.6116 | val_acc=0.7912 | best_val=0.5551@36 | bad=2/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:22:37 - INFO - [epoch 39/50] train_loss=0.4556 | val_loss=0.6156 | val_acc=0.7920 | best_val=0.5551@36 | bad=3/10 | lr=1.00e-03 | dt=19.4s
+2025-10-03 11:22:56 - INFO - [epoch 40/50] train_loss=0.4546 | val_loss=0.7229 | val_acc=0.7626 | best_val=0.5551@36 | bad=4/10 | lr=1.00e-03 | dt=19.4s
+2025-10-03 11:23:16 - INFO - [epoch 41/50] train_loss=0.4494 | val_loss=0.6220 | val_acc=0.7910 | best_val=0.5551@36 | bad=5/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:23:35 - INFO - [epoch 42/50] train_loss=0.4425 | val_loss=0.6345 | val_acc=0.7960 | best_val=0.5551@36 | bad=6/10 | lr=1.00e-03 | dt=19.4s
+2025-10-03 11:23:55 - INFO - [epoch 43/50] train_loss=0.4361 | val_loss=0.5901 | val_acc=0.8038 | best_val=0.5551@36 | bad=7/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:24:14 - INFO - [epoch 44/50] train_loss=0.4430 | val_loss=0.7270 | val_acc=0.7636 | best_val=0.5551@36 | bad=8/10 | lr=1.00e-03 | dt=19.6s
+2025-10-03 11:24:34 - INFO - [epoch 45/50] train_loss=0.4341 | val_loss=0.6187 | val_acc=0.8002 | best_val=0.5551@36 | bad=9/10 | lr=1.00e-03 | dt=19.5s
+2025-10-03 11:24:53 - INFO - [epoch 46/50] train_loss=0.4309 | val_loss=0.5814 | val_acc=0.8056 | best_val=0.5551@36 | bad=10/10 | lr=1.00e-03 | dt=19.4s
+2025-10-03 11:24:53 - INFO - Early stopping: no improvement for 10 epochs (best=0.5551 @ epoch 36)
+2025-10-03 11:24:53 - INFO - Run finished in 899.7s | best_val_loss=0.5551 @epoch 36 | best_val_acc=0.8100
+2025-10-03 11:24:55 - INFO - Test: loss=0.5971 acc=0.8001
+2025-10-03 11:24:55 - INFO - ======== [End Run 16/200] width=160 depth=3 | best_val=0.5551 | test_acc=0.8001 ========
+
+2025-10-03 11:24:56 - INFO - ======== [Run 17/200] width=170 depth=3 ========
+2025-10-03 11:24:56 - INFO - Device=cuda | dataset=cifar10 | batch=64 | max_epochs=50 | patience=10 | lr=1.00e-03 | wd=1.0e-04
+2025-10-03 11:24:56 - INFO - Model params=527520 | neurons=680 | pooling=[1, 3]
+2025-10-03 11:25:17 - INFO - [epoch 1/50] train_loss=1.5384 | val_loss=1.4771 | val_acc=0.4710 | best_val=1.4771@1 | bad=0/10 | lr=1.00e-03 | dt=21.6s
+2025-10-03 11:25:38 - INFO - [epoch 2/50] train_loss=1.2318 | val_loss=1.1814 | val_acc=0.5772 | best_val=1.1814@2 | bad=0/10 | lr=1.00e-03 | dt=21.0s
+2025-10-03 11:26:00 - INFO - [epoch 3/50] train_loss=1.1115 | val_loss=1.2282 | val_acc=0.5756 | best_val=1.1814@2 | bad=1/10 | lr=1.00e-03 | dt=21.5s
+2025-10-03 11:26:21 - INFO - [epoch 4/50] train_loss=1.0357 | val_loss=1.1685 | val_acc=0.5890 | best_val=1.1685@4 | bad=0/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:26:42 - INFO - [epoch 5/50] train_loss=0.9687 | val_loss=1.1095 | val_acc=0.6154 | best_val=1.1095@5 | bad=0/10 | lr=1.00e-03 | dt=21.0s
+2025-10-03 11:27:04 - INFO - [epoch 6/50] train_loss=0.9172 | val_loss=1.1524 | val_acc=0.6100 | best_val=1.1095@5 | bad=1/10 | lr=1.00e-03 | dt=21.5s
+2025-10-03 11:27:25 - INFO - [epoch 7/50] train_loss=0.8669 | val_loss=0.8659 | val_acc=0.6904 | best_val=0.8659@7 | bad=0/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:27:46 - INFO - [epoch 8/50] train_loss=0.8288 | val_loss=0.9898 | val_acc=0.6498 | best_val=0.8659@7 | bad=1/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:28:07 - INFO - [epoch 9/50] train_loss=0.7855 | val_loss=0.9003 | val_acc=0.6842 | best_val=0.8659@7 | bad=2/10 | lr=1.00e-03 | dt=21.5s
+2025-10-03 11:28:29 - INFO - [epoch 10/50] train_loss=0.7594 | val_loss=1.2456 | val_acc=0.5944 | best_val=0.8659@7 | bad=3/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:28:50 - INFO - [epoch 11/50] train_loss=0.7342 | val_loss=0.7567 | val_acc=0.7372 | best_val=0.7567@11 | bad=0/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:29:11 - INFO - [epoch 12/50] train_loss=0.7093 | val_loss=0.7784 | val_acc=0.7268 | best_val=0.7567@11 | bad=1/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:29:32 - INFO - [epoch 13/50] train_loss=0.6883 | val_loss=0.8749 | val_acc=0.7006 | best_val=0.7567@11 | bad=2/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:29:53 - INFO - [epoch 14/50] train_loss=0.6698 | val_loss=0.9129 | val_acc=0.6982 | best_val=0.7567@11 | bad=3/10 | lr=1.00e-03 | dt=21.1s
+2025-10-03 11:30:15 - INFO - [epoch 15/50] train_loss=0.6475 | val_loss=0.6982 | val_acc=0.7626 | best_val=0.6982@15 | bad=0/10 | lr=1.00e-03 | dt=21.5s
+2025-10-03 11:30:36 - INFO - [epoch 16/50] train_loss=0.6327 | val_loss=0.7945 | val_acc=0.7266 | best_val=0.6982@15 | bad=1/10 | lr=1.00e-03 | dt=21.1s
+2025-10-03 11:30:57 - INFO - [epoch 17/50] train_loss=0.6238 | val_loss=0.8781 | val_acc=0.7062 | best_val=0.6982@15 | bad=2/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:31:19 - INFO - [epoch 18/50] train_loss=0.6118 | val_loss=0.9158 | val_acc=0.6996 | best_val=0.6982@15 | bad=3/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:31:40 - INFO - [epoch 19/50] train_loss=0.5971 | val_loss=0.8210 | val_acc=0.7310 | best_val=0.6982@15 | bad=4/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:32:01 - INFO - [epoch 20/50] train_loss=0.5868 | val_loss=0.6631 | val_acc=0.7698 | best_val=0.6631@20 | bad=0/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:32:22 - INFO - [epoch 21/50] train_loss=0.5764 | val_loss=0.6948 | val_acc=0.7620 | best_val=0.6631@20 | bad=1/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:32:43 - INFO - [epoch 22/50] train_loss=0.5593 | val_loss=0.6769 | val_acc=0.7688 | best_val=0.6631@20 | bad=2/10 | lr=1.00e-03 | dt=21.0s
+2025-10-03 11:33:05 - INFO - [epoch 23/50] train_loss=0.5564 | val_loss=0.8546 | val_acc=0.7226 | best_val=0.6631@20 | bad=3/10 | lr=1.00e-03 | dt=21.4s
+2025-10-03 11:33:26 - INFO - [epoch 24/50] train_loss=0.5460 | val_loss=0.6632 | val_acc=0.7696 | best_val=0.6631@20 | bad=4/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:33:47 - INFO - [epoch 25/50] train_loss=0.5356 | val_loss=0.6973 | val_acc=0.7588 | best_val=0.6631@20 | bad=5/10 | lr=1.00e-03 | dt=21.1s
+2025-10-03 11:34:08 - INFO - [epoch 26/50] train_loss=0.5322 | val_loss=0.7189 | val_acc=0.7612 | best_val=0.6631@20 | bad=6/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:34:30 - INFO - [epoch 27/50] train_loss=0.5206 | val_loss=0.6630 | val_acc=0.7764 | best_val=0.6630@27 | bad=0/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:34:51 - INFO - [epoch 28/50] train_loss=0.5118 | val_loss=0.7137 | val_acc=0.7728 | best_val=0.6630@27 | bad=1/10 | lr=1.00e-03 | dt=21.7s
+2025-10-03 11:35:13 - INFO - [epoch 29/50] train_loss=0.5076 | val_loss=0.9213 | val_acc=0.7100 | best_val=0.6630@27 | bad=2/10 | lr=1.00e-03 | dt=21.6s
+2025-10-03 11:35:34 - INFO - [epoch 30/50] train_loss=0.4999 | val_loss=0.7602 | val_acc=0.7564 | best_val=0.6630@27 | bad=3/10 | lr=1.00e-03 | dt=21.1s
+2025-10-03 11:35:55 - INFO - [epoch 31/50] train_loss=0.4973 | val_loss=0.8884 | val_acc=0.7188 | best_val=0.6630@27 | bad=4/10 | lr=1.00e-03 | dt=21.1s
+2025-10-03 11:36:16 - INFO - [epoch 32/50] train_loss=0.4870 | val_loss=0.7608 | val_acc=0.7508 | best_val=0.6630@27 | bad=5/10 | lr=1.00e-03 | dt=21.4s
+2025-10-03 11:36:37 - INFO - [epoch 33/50] train_loss=0.4825 | val_loss=0.6989 | val_acc=0.7702 | best_val=0.6630@27 | bad=6/10 | lr=1.00e-03 | dt=21.1s
+2025-10-03 11:36:59 - INFO - [epoch 34/50] train_loss=0.4793 | val_loss=0.5868 | val_acc=0.7986 | best_val=0.5868@34 | bad=0/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:37:20 - INFO - [epoch 35/50] train_loss=0.4698 | val_loss=0.6622 | val_acc=0.7832 | best_val=0.5868@34 | bad=1/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:37:41 - INFO - [epoch 36/50] train_loss=0.4681 | val_loss=0.6573 | val_acc=0.7794 | best_val=0.5868@34 | bad=2/10 | lr=1.00e-03 | dt=21.1s
+2025-10-03 11:38:02 - INFO - [epoch 37/50] train_loss=0.4657 | val_loss=0.7918 | val_acc=0.7476 | best_val=0.5868@34 | bad=3/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:38:23 - INFO - [epoch 38/50] train_loss=0.4590 | val_loss=0.6844 | val_acc=0.7670 | best_val=0.5868@34 | bad=4/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:38:45 - INFO - [epoch 39/50] train_loss=0.4557 | val_loss=0.5887 | val_acc=0.7932 | best_val=0.5868@34 | bad=5/10 | lr=1.00e-03 | dt=21.1s
+2025-10-03 11:39:06 - INFO - [epoch 40/50] train_loss=0.4502 | val_loss=0.6214 | val_acc=0.7942 | best_val=0.5868@34 | bad=6/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:39:27 - INFO - [epoch 41/50] train_loss=0.4485 | val_loss=0.6142 | val_acc=0.7928 | best_val=0.5868@34 | bad=7/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:39:48 - INFO - [epoch 42/50] train_loss=0.4360 | val_loss=0.5921 | val_acc=0.8016 | best_val=0.5868@34 | bad=8/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:40:10 - INFO - [epoch 43/50] train_loss=0.4347 | val_loss=0.8061 | val_acc=0.7452 | best_val=0.5868@34 | bad=9/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:40:31 - INFO - [epoch 44/50] train_loss=0.4329 | val_loss=0.7042 | val_acc=0.7624 | best_val=0.5868@34 | bad=10/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:40:31 - INFO - Early stopping: no improvement for 10 epochs (best=0.5868 @ epoch 34)
+2025-10-03 11:40:31 - INFO - Run finished in 935.4s | best_val_loss=0.5868 @epoch 34 | best_val_acc=0.7986
+2025-10-03 11:40:33 - INFO - Test: loss=0.7153 acc=0.7696
+2025-10-03 11:40:33 - INFO - ======== [End Run 17/200] width=170 depth=3 | best_val=0.5868 | test_acc=0.7696 ========
+
+2025-10-03 11:40:34 - INFO - ======== [Run 18/200] width=180 depth=3 ========
+2025-10-03 11:40:34 - INFO - Device=cuda | dataset=cifar10 | batch=64 | max_epochs=50 | patience=10 | lr=1.00e-03 | wd=1.0e-04
+2025-10-03 11:40:34 - INFO - Model params=590950 | neurons=720 | pooling=[1, 3]
+2025-10-03 11:40:55 - INFO - [epoch 1/50] train_loss=1.5385 | val_loss=1.4862 | val_acc=0.4754 | best_val=1.4862@1 | bad=0/10 | lr=1.00e-03 | dt=21.8s
+2025-10-03 11:41:17 - INFO - [epoch 2/50] train_loss=1.2350 | val_loss=1.3195 | val_acc=0.5544 | best_val=1.3195@2 | bad=0/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:41:38 - INFO - [epoch 3/50] train_loss=1.1067 | val_loss=1.1622 | val_acc=0.6018 | best_val=1.1622@3 | bad=0/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:41:59 - INFO - [epoch 4/50] train_loss=1.0226 | val_loss=1.1020 | val_acc=0.6090 | best_val=1.1020@4 | bad=0/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:42:21 - INFO - [epoch 5/50] train_loss=0.9508 | val_loss=1.1599 | val_acc=0.5966 | best_val=1.1020@4 | bad=1/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:42:42 - INFO - [epoch 6/50] train_loss=0.8999 | val_loss=1.0521 | val_acc=0.6362 | best_val=1.0521@6 | bad=0/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:43:03 - INFO - [epoch 7/50] train_loss=0.8517 | val_loss=0.9380 | val_acc=0.6652 | best_val=0.9380@7 | bad=0/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:43:24 - INFO - [epoch 8/50] train_loss=0.8112 | val_loss=1.0639 | val_acc=0.6374 | best_val=0.9380@7 | bad=1/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:43:46 - INFO - [epoch 9/50] train_loss=0.7828 | val_loss=0.9020 | val_acc=0.6778 | best_val=0.9020@9 | bad=0/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:44:07 - INFO - [epoch 10/50] train_loss=0.7490 | val_loss=0.8135 | val_acc=0.7124 | best_val=0.8135@10 | bad=0/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:44:28 - INFO - [epoch 11/50] train_loss=0.7210 | val_loss=0.7971 | val_acc=0.7234 | best_val=0.7971@11 | bad=0/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:44:50 - INFO - [epoch 12/50] train_loss=0.7011 | val_loss=0.9051 | val_acc=0.7098 | best_val=0.7971@11 | bad=1/10 | lr=1.00e-03 | dt=21.4s
+2025-10-03 11:45:11 - INFO - [epoch 13/50] train_loss=0.6783 | val_loss=0.8446 | val_acc=0.7082 | best_val=0.7971@11 | bad=2/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:45:32 - INFO - [epoch 14/50] train_loss=0.6589 | val_loss=0.9357 | val_acc=0.6922 | best_val=0.7971@11 | bad=3/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:45:54 - INFO - [epoch 15/50] train_loss=0.6421 | val_loss=1.0239 | val_acc=0.6734 | best_val=0.7971@11 | bad=4/10 | lr=1.00e-03 | dt=21.4s
+2025-10-03 11:46:15 - INFO - [epoch 16/50] train_loss=0.6308 | val_loss=0.9067 | val_acc=0.7066 | best_val=0.7971@11 | bad=5/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:46:36 - INFO - [epoch 17/50] train_loss=0.6176 | val_loss=0.6709 | val_acc=0.7674 | best_val=0.6709@17 | bad=0/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:46:58 - INFO - [epoch 18/50] train_loss=0.6010 | val_loss=0.8193 | val_acc=0.7406 | best_val=0.6709@17 | bad=1/10 | lr=1.00e-03 | dt=21.4s
+2025-10-03 11:47:19 - INFO - [epoch 19/50] train_loss=0.5939 | val_loss=0.7402 | val_acc=0.7500 | best_val=0.6709@17 | bad=2/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:47:40 - INFO - [epoch 20/50] train_loss=0.5773 | val_loss=0.7240 | val_acc=0.7520 | best_val=0.6709@17 | bad=3/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:48:02 - INFO - [epoch 21/50] train_loss=0.5681 | val_loss=0.8995 | val_acc=0.7104 | best_val=0.6709@17 | bad=4/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:48:23 - INFO - [epoch 22/50] train_loss=0.5615 | val_loss=0.6923 | val_acc=0.7660 | best_val=0.6709@17 | bad=5/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:48:44 - INFO - [epoch 23/50] train_loss=0.5488 | val_loss=0.7210 | val_acc=0.7508 | best_val=0.6709@17 | bad=6/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:49:05 - INFO - [epoch 24/50] train_loss=0.5402 | val_loss=0.6774 | val_acc=0.7678 | best_val=0.6709@17 | bad=7/10 | lr=1.00e-03 | dt=21.4s
+2025-10-03 11:49:27 - INFO - [epoch 25/50] train_loss=0.5277 | val_loss=0.7082 | val_acc=0.7578 | best_val=0.6709@17 | bad=8/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:49:48 - INFO - [epoch 26/50] train_loss=0.5277 | val_loss=0.7788 | val_acc=0.7552 | best_val=0.6709@17 | bad=9/10 | lr=1.00e-03 | dt=21.4s
+2025-10-03 11:50:09 - INFO - [epoch 27/50] train_loss=0.5112 | val_loss=0.6563 | val_acc=0.7874 | best_val=0.6563@27 | bad=0/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:50:31 - INFO - [epoch 28/50] train_loss=0.5089 | val_loss=0.7488 | val_acc=0.7580 | best_val=0.6563@27 | bad=1/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:50:52 - INFO - [epoch 29/50] train_loss=0.5008 | val_loss=0.7865 | val_acc=0.7430 | best_val=0.6563@27 | bad=2/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:51:13 - INFO - [epoch 30/50] train_loss=0.4911 | val_loss=0.7590 | val_acc=0.7476 | best_val=0.6563@27 | bad=3/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:51:34 - INFO - [epoch 31/50] train_loss=0.4904 | val_loss=0.6441 | val_acc=0.7828 | best_val=0.6441@31 | bad=0/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:51:56 - INFO - [epoch 32/50] train_loss=0.4867 | val_loss=0.6622 | val_acc=0.7830 | best_val=0.6441@31 | bad=1/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:52:17 - INFO - [epoch 33/50] train_loss=0.4769 | val_loss=0.6442 | val_acc=0.7862 | best_val=0.6441@31 | bad=2/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:52:38 - INFO - [epoch 34/50] train_loss=0.4691 | val_loss=0.6420 | val_acc=0.7906 | best_val=0.6420@34 | bad=0/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:52:59 - INFO - [epoch 35/50] train_loss=0.4675 | val_loss=0.5919 | val_acc=0.7960 | best_val=0.5919@35 | bad=0/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:53:21 - INFO - [epoch 36/50] train_loss=0.4625 | val_loss=0.6261 | val_acc=0.7914 | best_val=0.5919@35 | bad=1/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:53:42 - INFO - [epoch 37/50] train_loss=0.4561 | val_loss=0.6343 | val_acc=0.7922 | best_val=0.5919@35 | bad=2/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:54:03 - INFO - [epoch 38/50] train_loss=0.4515 | val_loss=0.7202 | val_acc=0.7692 | best_val=0.5919@35 | bad=3/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:54:24 - INFO - [epoch 39/50] train_loss=0.4492 | val_loss=0.5424 | val_acc=0.8188 | best_val=0.5424@39 | bad=0/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:54:46 - INFO - [epoch 40/50] train_loss=0.4434 | val_loss=0.6243 | val_acc=0.7914 | best_val=0.5424@39 | bad=1/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:55:07 - INFO - [epoch 41/50] train_loss=0.4426 | val_loss=0.8742 | val_acc=0.7384 | best_val=0.5424@39 | bad=2/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:55:28 - INFO - [epoch 42/50] train_loss=0.4305 | val_loss=0.9324 | val_acc=0.7128 | best_val=0.5424@39 | bad=3/10 | lr=1.00e-03 | dt=21.1s
+2025-10-03 11:55:49 - INFO - [epoch 43/50] train_loss=0.4311 | val_loss=0.7035 | val_acc=0.7662 | best_val=0.5424@39 | bad=4/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:56:11 - INFO - [epoch 44/50] train_loss=0.4264 | val_loss=0.6739 | val_acc=0.7844 | best_val=0.5424@39 | bad=5/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:56:32 - INFO - [epoch 45/50] train_loss=0.4221 | val_loss=0.5794 | val_acc=0.8060 | best_val=0.5424@39 | bad=6/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:56:53 - INFO - [epoch 46/50] train_loss=0.4196 | val_loss=0.7815 | val_acc=0.7538 | best_val=0.5424@39 | bad=7/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:57:14 - INFO - [epoch 47/50] train_loss=0.4147 | val_loss=0.6345 | val_acc=0.7882 | best_val=0.5424@39 | bad=8/10 | lr=1.00e-03 | dt=21.3s
+2025-10-03 11:57:36 - INFO - [epoch 48/50] train_loss=0.4140 | val_loss=0.6551 | val_acc=0.7918 | best_val=0.5424@39 | bad=9/10 | lr=1.00e-03 | dt=21.2s
+2025-10-03 11:57:57 - INFO - [epoch 49/50] train_loss=0.4141 | val_loss=0.6872 | val_acc=0.7734 | best_val=0.5424@39 | bad=10/10 | lr=1.00e-03 | dt=21.4s
+2025-10-03 11:57:57 - INFO - Early stopping: no improvement for 10 epochs (best=0.5424 @ epoch 39)
+2025-10-03 11:57:57 - INFO - Run finished in 1043.8s | best_val_loss=0.5424 @epoch 39 | best_val_acc=0.8188
+2025-10-03 11:57:59 - INFO - Test: loss=0.7024 acc=0.7762
+2025-10-03 11:57:59 - INFO - ======== [End Run 18/200] width=180 depth=3 | best_val=0.5424 | test_acc=0.7762 ========
+
+2025-10-03 11:58:00 - INFO - ======== [Run 19/200] width=190 depth=3 ========
+2025-10-03 11:58:00 - INFO - Device=cuda | dataset=cifar10 | batch=64 | max_epochs=50 | patience=10 | lr=1.00e-03 | wd=1.0e-04
+2025-10-03 11:58:00 - INFO - Model params=657980 | neurons=760 | pooling=[1, 3]
+2025-10-03 11:58:23 - INFO - [epoch 1/50] train_loss=1.5367 | val_loss=1.3904 | val_acc=0.4756 | best_val=1.3904@1 | bad=0/10 | lr=1.00e-03 | dt=23.2s
+2025-10-03 11:58:46 - INFO - [epoch 2/50] train_loss=1.2283 | val_loss=1.3051 | val_acc=0.5446 | best_val=1.3051@2 | bad=0/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 11:59:08 - INFO - [epoch 3/50] train_loss=1.0995 | val_loss=1.2501 | val_acc=0.5704 | best_val=1.2501@3 | bad=0/10 | lr=1.00e-03 | dt=22.8s
+2025-10-03 11:59:31 - INFO - [epoch 4/50] train_loss=1.0296 | val_loss=1.1958 | val_acc=0.5962 | best_val=1.1958@4 | bad=0/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 11:59:54 - INFO - [epoch 5/50] train_loss=0.9559 | val_loss=1.1250 | val_acc=0.6186 | best_val=1.1250@5 | bad=0/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:00:17 - INFO - [epoch 6/50] train_loss=0.9036 | val_loss=1.0284 | val_acc=0.6388 | best_val=1.0284@6 | bad=0/10 | lr=1.00e-03 | dt=23.3s
+2025-10-03 12:00:41 - INFO - [epoch 7/50] train_loss=0.8557 | val_loss=0.9821 | val_acc=0.6692 | best_val=0.9821@7 | bad=0/10 | lr=1.00e-03 | dt=23.6s
+2025-10-03 12:01:04 - INFO - [epoch 8/50] train_loss=0.8147 | val_loss=1.2251 | val_acc=0.6154 | best_val=0.9821@7 | bad=1/10 | lr=1.00e-03 | dt=23.5s
+2025-10-03 12:01:28 - INFO - [epoch 9/50] train_loss=0.7793 | val_loss=0.9294 | val_acc=0.6702 | best_val=0.9294@9 | bad=0/10 | lr=1.00e-03 | dt=23.5s
+2025-10-03 12:01:50 - INFO - [epoch 10/50] train_loss=0.7524 | val_loss=1.1080 | val_acc=0.6412 | best_val=0.9294@9 | bad=1/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:02:13 - INFO - [epoch 11/50] train_loss=0.7228 | val_loss=1.1247 | val_acc=0.6440 | best_val=0.9294@9 | bad=2/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:02:36 - INFO - [epoch 12/50] train_loss=0.6992 | val_loss=0.9235 | val_acc=0.6874 | best_val=0.9235@12 | bad=0/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:02:59 - INFO - [epoch 13/50] train_loss=0.6822 | val_loss=0.9039 | val_acc=0.7028 | best_val=0.9039@13 | bad=0/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:03:21 - INFO - [epoch 14/50] train_loss=0.6551 | val_loss=0.9045 | val_acc=0.7018 | best_val=0.9039@13 | bad=1/10 | lr=1.00e-03 | dt=22.8s
+2025-10-03 12:03:44 - INFO - [epoch 15/50] train_loss=0.6423 | val_loss=0.9059 | val_acc=0.6968 | best_val=0.9039@13 | bad=2/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:04:07 - INFO - [epoch 16/50] train_loss=0.6257 | val_loss=0.7664 | val_acc=0.7376 | best_val=0.7664@16 | bad=0/10 | lr=1.00e-03 | dt=23.0s
+2025-10-03 12:04:30 - INFO - [epoch 17/50] train_loss=0.6107 | val_loss=0.9850 | val_acc=0.6960 | best_val=0.7664@16 | bad=1/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:04:53 - INFO - [epoch 18/50] train_loss=0.5937 | val_loss=0.7259 | val_acc=0.7488 | best_val=0.7259@18 | bad=0/10 | lr=1.00e-03 | dt=22.8s
+2025-10-03 12:05:16 - INFO - [epoch 19/50] train_loss=0.5844 | val_loss=0.8225 | val_acc=0.7324 | best_val=0.7259@18 | bad=1/10 | lr=1.00e-03 | dt=22.9s
+2025-10-03 12:05:38 - INFO - [epoch 20/50] train_loss=0.5784 | val_loss=0.7624 | val_acc=0.7482 | best_val=0.7259@18 | bad=2/10 | lr=1.00e-03 | dt=22.5s
+2025-10-03 12:06:01 - INFO - [epoch 21/50] train_loss=0.5613 | val_loss=0.7239 | val_acc=0.7606 | best_val=0.7239@21 | bad=0/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 12:06:23 - INFO - [epoch 22/50] train_loss=0.5529 | val_loss=0.7402 | val_acc=0.7438 | best_val=0.7239@21 | bad=1/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:06:46 - INFO - [epoch 23/50] train_loss=0.5457 | val_loss=0.7270 | val_acc=0.7578 | best_val=0.7239@21 | bad=2/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 12:07:09 - INFO - [epoch 24/50] train_loss=0.5375 | val_loss=1.0091 | val_acc=0.6832 | best_val=0.7239@21 | bad=3/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:07:31 - INFO - [epoch 25/50] train_loss=0.5359 | val_loss=0.6143 | val_acc=0.7920 | best_val=0.6143@25 | bad=0/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 12:07:54 - INFO - [epoch 26/50] train_loss=0.5267 | val_loss=0.8204 | val_acc=0.7456 | best_val=0.6143@25 | bad=1/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:08:17 - INFO - [epoch 27/50] train_loss=0.5174 | val_loss=0.6315 | val_acc=0.7902 | best_val=0.6143@25 | bad=2/10 | lr=1.00e-03 | dt=22.9s
+2025-10-03 12:08:40 - INFO - [epoch 28/50] train_loss=0.5086 | val_loss=0.5902 | val_acc=0.8026 | best_val=0.5902@28 | bad=0/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 12:09:02 - INFO - [epoch 29/50] train_loss=0.5055 | val_loss=0.6579 | val_acc=0.7830 | best_val=0.5902@28 | bad=1/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 12:09:25 - INFO - [epoch 30/50] train_loss=0.4943 | val_loss=0.6509 | val_acc=0.7888 | best_val=0.5902@28 | bad=2/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:09:47 - INFO - [epoch 31/50] train_loss=0.4934 | val_loss=0.5886 | val_acc=0.8032 | best_val=0.5886@31 | bad=0/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 12:10:10 - INFO - [epoch 32/50] train_loss=0.4840 | val_loss=0.5859 | val_acc=0.7918 | best_val=0.5859@32 | bad=0/10 | lr=1.00e-03 | dt=22.8s
+2025-10-03 12:10:33 - INFO - [epoch 33/50] train_loss=0.4781 | val_loss=0.5973 | val_acc=0.7968 | best_val=0.5859@32 | bad=1/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 12:10:56 - INFO - [epoch 34/50] train_loss=0.4696 | val_loss=0.7368 | val_acc=0.7732 | best_val=0.5859@32 | bad=2/10 | lr=1.00e-03 | dt=22.8s
+2025-10-03 12:11:19 - INFO - [epoch 35/50] train_loss=0.4711 | val_loss=0.7758 | val_acc=0.7630 | best_val=0.5859@32 | bad=3/10 | lr=1.00e-03 | dt=22.8s
+2025-10-03 12:11:41 - INFO - [epoch 36/50] train_loss=0.4640 | val_loss=0.5517 | val_acc=0.8144 | best_val=0.5517@36 | bad=0/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 12:12:04 - INFO - [epoch 37/50] train_loss=0.4529 | val_loss=0.5991 | val_acc=0.7966 | best_val=0.5517@36 | bad=1/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:12:27 - INFO - [epoch 38/50] train_loss=0.4568 | val_loss=0.5415 | val_acc=0.8224 | best_val=0.5415@38 | bad=0/10 | lr=1.00e-03 | dt=22.8s
+2025-10-03 12:12:49 - INFO - [epoch 39/50] train_loss=0.4463 | val_loss=0.6359 | val_acc=0.7866 | best_val=0.5415@38 | bad=1/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:13:12 - INFO - [epoch 40/50] train_loss=0.4436 | val_loss=0.7500 | val_acc=0.7684 | best_val=0.5415@38 | bad=2/10 | lr=1.00e-03 | dt=23.1s
+2025-10-03 12:13:35 - INFO - [epoch 41/50] train_loss=0.4404 | val_loss=0.5943 | val_acc=0.8044 | best_val=0.5415@38 | bad=3/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:13:58 - INFO - [epoch 42/50] train_loss=0.4378 | val_loss=0.6673 | val_acc=0.7796 | best_val=0.5415@38 | bad=4/10 | lr=1.00e-03 | dt=22.7s
+2025-10-03 12:14:21 - INFO - [epoch 43/50] train_loss=0.4319 | val_loss=0.5779 | val_acc=0.8026 | best_val=0.5415@38 | bad=5/10 | lr=1.00e-03 | dt=22.8s
+2025-10-03 12:14:43 - INFO - [epoch 44/50] train_loss=0.4215 | val_loss=0.5911 | val_acc=0.8014 | best_val=0.5415@38 | bad=6/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 12:15:06 - INFO - [epoch 45/50] train_loss=0.4278 | val_loss=0.5738 | val_acc=0.8148 | best_val=0.5415@38 | bad=7/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 12:15:29 - INFO - [epoch 46/50] train_loss=0.4215 | val_loss=0.6497 | val_acc=0.7914 | best_val=0.5415@38 | bad=8/10 | lr=1.00e-03 | dt=22.9s
+2025-10-03 12:15:51 - INFO - [epoch 47/50] train_loss=0.4176 | val_loss=0.7789 | val_acc=0.7594 | best_val=0.5415@38 | bad=9/10 | lr=1.00e-03 | dt=22.6s
+2025-10-03 12:16:14 - INFO - [epoch 48/50] train_loss=0.4182 | val_loss=0.5974 | val_acc=0.7960 | best_val=0.5415@38 | bad=10/10 | lr=1.00e-03 | dt=22.8s
+2025-10-03 12:16:14 - INFO - Early stopping: no improvement for 10 epochs (best=0.5415 @ epoch 38)
+2025-10-03 12:16:14 - INFO - Run finished in 1094.5s | best_val_loss=0.5415 @epoch 38 | best_val_acc=0.8224
+2025-10-03 12:16:17 - INFO - Test: loss=0.6265 acc=0.7889
+2025-10-03 12:16:17 - INFO - ======== [End Run 19/200] width=190 depth=3 | best_val=0.5415 | test_acc=0.7889 ========
+
+2025-10-03 12:16:17 - INFO - ======== [Run 20/200] width=200 depth=3 ========
+2025-10-03 12:16:17 - INFO - Device=cuda | dataset=cifar10 | batch=64 | max_epochs=50 | patience=10 | lr=1.00e-03 | wd=1.0e-04
+2025-10-03 12:16:17 - INFO - Model params=728610 | neurons=800 | pooling=[1, 3]
+2025-10-03 12:16:42 - INFO - [epoch 1/50] train_loss=1.5309 | val_loss=1.3873 | val_acc=0.4910 | best_val=1.3873@1 | bad=0/10 | lr=1.00e-03 | dt=24.6s
+2025-10-03 12:17:06 - INFO - [epoch 2/50] train_loss=1.2255 | val_loss=1.2822 | val_acc=0.5504 | best_val=1.2822@2 | bad=0/10 | lr=1.00e-03 | dt=24.1s
+2025-10-03 12:17:30 - INFO - [epoch 3/50] train_loss=1.0987 | val_loss=1.2793 | val_acc=0.5576 | best_val=1.2793@3 | bad=0/10 | lr=1.00e-03 | dt=24.2s
+2025-10-03 12:17:54 - INFO - [epoch 4/50] train_loss=1.0149 | val_loss=1.3343 | val_acc=0.5832 | best_val=1.2793@3 | bad=1/10 | lr=1.00e-03 | dt=24.0s
+2025-10-03 12:18:35 - INFO - [epoch 5/50] train_loss=0.9529 | val_loss=1.0276 | val_acc=0.6320 | best_val=1.0276@5 | bad=0/10 | lr=1.00e-03 | dt=41.1s
+2025-10-03 12:19:15 - INFO - [epoch 6/50] train_loss=0.8961 | val_loss=1.2336 | val_acc=0.5902 | best_val=1.0276@5 | bad=1/10 | lr=1.00e-03 | dt=40.3s
+2025-10-03 12:19:39 - INFO - [epoch 7/50] train_loss=0.8491 | val_loss=1.0614 | val_acc=0.6524 | best_val=1.0276@5 | bad=2/10 | lr=1.00e-03 | dt=24.1s
+2025-10-03 12:20:04 - INFO - [epoch 8/50] train_loss=0.8117 | val_loss=0.8797 | val_acc=0.6984 | best_val=0.8797@8 | bad=0/10 | lr=1.00e-03 | dt=24.1s
+2025-10-03 12:20:28 - INFO - [epoch 9/50] train_loss=0.7711 | val_loss=1.0304 | val_acc=0.6514 | best_val=0.8797@8 | bad=1/10 | lr=1.00e-03 | dt=24.2s
+2025-10-03 12:20:52 - INFO - [epoch 10/50] train_loss=0.7423 | val_loss=0.9313 | val_acc=0.6772 | best_val=0.8797@8 | bad=2/10 | lr=1.00e-03 | dt=24.1s
+2025-10-03 12:21:16 - INFO - [epoch 11/50] train_loss=0.7190 | val_loss=0.8042 | val_acc=0.7202 | best_val=0.8042@11 | bad=0/10 | lr=1.00e-03 | dt=24.2s
+2025-10-03 12:21:41 - INFO - [epoch 12/50] train_loss=0.6928 | val_loss=0.9337 | val_acc=0.6796 | best_val=0.8042@11 | bad=1/10 | lr=1.00e-03 | dt=24.7s
+2025-10-03 12:22:13 - INFO - [epoch 13/50] train_loss=0.6725 | val_loss=0.9316 | val_acc=0.6846 | best_val=0.8042@11 | bad=2/10 | lr=1.00e-03 | dt=32.1s
+2025-10-03 12:22:44 - INFO - [epoch 14/50] train_loss=0.6543 | val_loss=0.7808 | val_acc=0.7346 | best_val=0.7808@14 | bad=0/10 | lr=1.00e-03 | dt=31.4s
+2025-10-03 12:23:16 - INFO - [epoch 15/50] train_loss=0.6371 | val_loss=0.8876 | val_acc=0.7090 | best_val=0.7808@14 | bad=1/10 | lr=1.00e-03 | dt=31.3s
+2025-10-03 12:23:40 - INFO - [epoch 16/50] train_loss=0.6212 | val_loss=0.9275 | val_acc=0.7040 | best_val=0.7808@14 | bad=2/10 | lr=1.00e-03 | dt=24.8s
+2025-10-03 12:24:10 - INFO - [epoch 17/50] train_loss=0.6086 | val_loss=0.7179 | val_acc=0.7480 | best_val=0.7179@17 | bad=0/10 | lr=1.00e-03 | dt=29.4s
+2025-10-03 12:24:36 - INFO - [epoch 18/50] train_loss=0.5997 | val_loss=0.9289 | val_acc=0.6956 | best_val=0.7179@17 | bad=1/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 12:25:07 - INFO - [epoch 19/50] train_loss=0.5826 | val_loss=0.7957 | val_acc=0.7316 | best_val=0.7179@17 | bad=2/10 | lr=1.00e-03 | dt=31.4s
+2025-10-03 12:25:31 - INFO - [epoch 20/50] train_loss=0.5694 | val_loss=0.8607 | val_acc=0.7180 | best_val=0.7179@17 | bad=3/10 | lr=1.00e-03 | dt=24.5s
+2025-10-03 12:25:56 - INFO - [epoch 21/50] train_loss=0.5556 | val_loss=0.7453 | val_acc=0.7516 | best_val=0.7179@17 | bad=4/10 | lr=1.00e-03 | dt=24.6s
+2025-10-03 12:26:20 - INFO - [epoch 22/50] train_loss=0.5453 | val_loss=1.0301 | val_acc=0.6862 | best_val=0.7179@17 | bad=5/10 | lr=1.00e-03 | dt=24.3s
+2025-10-03 12:26:44 - INFO - [epoch 23/50] train_loss=0.5432 | val_loss=0.8117 | val_acc=0.7414 | best_val=0.7179@17 | bad=6/10 | lr=1.00e-03 | dt=24.1s
+2025-10-03 12:27:08 - INFO - [epoch 24/50] train_loss=0.5254 | val_loss=0.7692 | val_acc=0.7540 | best_val=0.7179@17 | bad=7/10 | lr=1.00e-03 | dt=24.1s
+2025-10-03 12:27:33 - INFO - [epoch 25/50] train_loss=0.5245 | val_loss=0.8164 | val_acc=0.7410 | best_val=0.7179@17 | bad=8/10 | lr=1.00e-03 | dt=24.2s
+2025-10-03 12:27:57 - INFO - [epoch 26/50] train_loss=0.5156 | val_loss=0.6906 | val_acc=0.7686 | best_val=0.6906@26 | bad=0/10 | lr=1.00e-03 | dt=24.3s
+2025-10-03 12:28:21 - INFO - [epoch 27/50] train_loss=0.5034 | val_loss=0.7402 | val_acc=0.7536 | best_val=0.6906@26 | bad=1/10 | lr=1.00e-03 | dt=24.3s
+2025-10-03 12:28:45 - INFO - [epoch 28/50] train_loss=0.5059 | val_loss=0.6187 | val_acc=0.7854 | best_val=0.6187@28 | bad=0/10 | lr=1.00e-03 | dt=24.0s
+2025-10-03 12:29:09 - INFO - [epoch 29/50] train_loss=0.4913 | val_loss=0.5779 | val_acc=0.8000 | best_val=0.5779@29 | bad=0/10 | lr=1.00e-03 | dt=23.9s
+2025-10-03 12:29:33 - INFO - [epoch 30/50] train_loss=0.4847 | val_loss=0.9554 | val_acc=0.7230 | best_val=0.5779@29 | bad=1/10 | lr=1.00e-03 | dt=24.0s
+2025-10-03 12:29:57 - INFO - [epoch 31/50] train_loss=0.4782 | val_loss=0.6146 | val_acc=0.7984 | best_val=0.5779@29 | bad=2/10 | lr=1.00e-03 | dt=24.0s
+2025-10-03 12:30:21 - INFO - [epoch 32/50] train_loss=0.4811 | val_loss=0.6984 | val_acc=0.7678 | best_val=0.5779@29 | bad=3/10 | lr=1.00e-03 | dt=24.2s
+2025-10-03 12:30:46 - INFO - [epoch 33/50] train_loss=0.4779 | val_loss=0.6009 | val_acc=0.8058 | best_val=0.5779@29 | bad=4/10 | lr=1.00e-03 | dt=24.2s
+2025-10-03 12:32:10 - INFO - [epoch 34/50] train_loss=0.4662 | val_loss=0.5467 | val_acc=0.8142 | best_val=0.5467@34 | bad=0/10 | lr=1.00e-03 | dt=84.1s
+2025-10-03 12:32:37 - INFO - [epoch 35/50] train_loss=0.4589 | val_loss=0.6533 | val_acc=0.7850 | best_val=0.5467@34 | bad=1/10 | lr=1.00e-03 | dt=27.7s
+2025-10-03 12:34:19 - INFO - [epoch 36/50] train_loss=0.4595 | val_loss=0.5742 | val_acc=0.8040 | best_val=0.5467@34 | bad=2/10 | lr=1.00e-03 | dt=102.0s
+2025-10-03 12:36:14 - INFO - [epoch 37/50] train_loss=0.4519 | val_loss=0.5772 | val_acc=0.8056 | best_val=0.5467@34 | bad=3/10 | lr=1.00e-03 | dt=114.1s
+2025-10-03 12:38:07 - INFO - [epoch 38/50] train_loss=0.4436 | val_loss=0.6214 | val_acc=0.7928 | best_val=0.5467@34 | bad=4/10 | lr=1.00e-03 | dt=114.0s
+2025-10-03 12:39:59 - INFO - [epoch 39/50] train_loss=0.4480 | val_loss=0.7137 | val_acc=0.7672 | best_val=0.5467@34 | bad=5/10 | lr=1.00e-03 | dt=111.2s
+2025-10-03 12:41:54 - INFO - [epoch 40/50] train_loss=0.4426 | val_loss=0.6222 | val_acc=0.7952 | best_val=0.5467@34 | bad=6/10 | lr=1.00e-03 | dt=115.3s
+2025-10-03 12:43:47 - INFO - [epoch 41/50] train_loss=0.4320 | val_loss=0.6530 | val_acc=0.7852 | best_val=0.5467@34 | bad=7/10 | lr=1.00e-03 | dt=113.3s
+2025-10-03 12:45:40 - INFO - [epoch 42/50] train_loss=0.4297 | val_loss=0.6264 | val_acc=0.7894 | best_val=0.5467@34 | bad=8/10 | lr=1.00e-03 | dt=112.6s
+2025-10-03 12:47:33 - INFO - [epoch 43/50] train_loss=0.4295 | val_loss=0.7063 | val_acc=0.7720 | best_val=0.5467@34 | bad=9/10 | lr=1.00e-03 | dt=113.6s
+2025-10-03 12:49:29 - INFO - [epoch 44/50] train_loss=0.4173 | val_loss=0.6549 | val_acc=0.7862 | best_val=0.5467@34 | bad=10/10 | lr=1.00e-03 | dt=116.1s
+2025-10-03 12:49:29 - INFO - Early stopping: no improvement for 10 epochs (best=0.5467 @ epoch 34)
+2025-10-03 12:49:30 - INFO - Run finished in 1992.8s | best_val_loss=0.5467 @epoch 34 | best_val_acc=0.8142
+2025-10-03 12:49:39 - INFO - Test: loss=0.6948 acc=0.7859
+2025-10-03 12:49:39 - INFO - ======== [End Run 20/200] width=200 depth=3 | best_val=0.5467 | test_acc=0.7859 ========
+
+2025-10-03 12:49:39 - INFO - ======== [Run 21/200] width=210 depth=3 ========
+2025-10-03 12:49:39 - INFO - Device=cuda | dataset=cifar10 | batch=64 | max_epochs=50 | patience=10 | lr=1.00e-03 | wd=1.0e-04
+2025-10-03 12:49:39 - INFO - Model params=802840 | neurons=840 | pooling=[1, 3]
+2025-10-03 12:51:44 - INFO - [epoch 1/50] train_loss=1.5148 | val_loss=1.3823 | val_acc=0.4990 | best_val=1.3823@1 | bad=0/10 | lr=1.00e-03 | dt=124.7s
+2025-10-03 12:53:09 - INFO - [epoch 2/50] train_loss=1.2227 | val_loss=1.3450 | val_acc=0.5290 | best_val=1.3450@2 | bad=0/10 | lr=1.00e-03 | dt=84.9s
+2025-10-03 12:53:34 - INFO - [epoch 3/50] train_loss=1.1100 | val_loss=1.2752 | val_acc=0.5496 | best_val=1.2752@3 | bad=0/10 | lr=1.00e-03 | dt=25.5s
+2025-10-03 12:54:00 - INFO - [epoch 4/50] train_loss=1.0287 | val_loss=1.1642 | val_acc=0.6068 | best_val=1.1642@4 | bad=0/10 | lr=1.00e-03 | dt=25.5s
+2025-10-03 12:54:26 - INFO - [epoch 5/50] train_loss=0.9560 | val_loss=1.0812 | val_acc=0.6298 | best_val=1.0812@5 | bad=0/10 | lr=1.00e-03 | dt=25.5s
+2025-10-03 12:54:51 - INFO - [epoch 6/50] train_loss=0.8994 | val_loss=1.1378 | val_acc=0.5956 | best_val=1.0812@5 | bad=1/10 | lr=1.00e-03 | dt=25.6s
+2025-10-03 12:55:17 - INFO - [epoch 7/50] train_loss=0.8472 | val_loss=1.0490 | val_acc=0.6480 | best_val=1.0490@7 | bad=0/10 | lr=1.00e-03 | dt=26.1s
+2025-10-03 12:55:43 - INFO - [epoch 8/50] train_loss=0.8081 | val_loss=1.1736 | val_acc=0.6016 | best_val=1.0490@7 | bad=1/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 12:56:09 - INFO - [epoch 9/50] train_loss=0.7711 | val_loss=0.7960 | val_acc=0.7170 | best_val=0.7960@9 | bad=0/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 12:56:34 - INFO - [epoch 10/50] train_loss=0.7387 | val_loss=0.8967 | val_acc=0.6838 | best_val=0.7960@9 | bad=1/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 12:57:00 - INFO - [epoch 11/50] train_loss=0.7074 | val_loss=0.7928 | val_acc=0.7330 | best_val=0.7928@11 | bad=0/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 12:57:26 - INFO - [epoch 12/50] train_loss=0.6959 | val_loss=1.2100 | val_acc=0.6254 | best_val=0.7928@11 | bad=1/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 12:57:51 - INFO - [epoch 13/50] train_loss=0.6614 | val_loss=0.8187 | val_acc=0.7134 | best_val=0.7928@11 | bad=2/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 12:58:17 - INFO - [epoch 14/50] train_loss=0.6497 | val_loss=0.7322 | val_acc=0.7492 | best_val=0.7322@14 | bad=0/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 12:58:43 - INFO - [epoch 15/50] train_loss=0.6328 | val_loss=0.8074 | val_acc=0.7212 | best_val=0.7322@14 | bad=1/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 12:59:09 - INFO - [epoch 16/50] train_loss=0.6204 | val_loss=0.8355 | val_acc=0.7162 | best_val=0.7322@14 | bad=2/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 12:59:35 - INFO - [epoch 17/50] train_loss=0.6072 | val_loss=0.9167 | val_acc=0.7192 | best_val=0.7322@14 | bad=3/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:00:01 - INFO - [epoch 18/50] train_loss=0.5923 | val_loss=0.6524 | val_acc=0.7736 | best_val=0.6524@18 | bad=0/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:00:27 - INFO - [epoch 19/50] train_loss=0.5757 | val_loss=0.8250 | val_acc=0.7256 | best_val=0.6524@18 | bad=1/10 | lr=1.00e-03 | dt=26.1s
+2025-10-03 13:00:53 - INFO - [epoch 20/50] train_loss=0.5716 | val_loss=0.8015 | val_acc=0.7386 | best_val=0.6524@18 | bad=2/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:01:19 - INFO - [epoch 21/50] train_loss=0.5544 | val_loss=0.8019 | val_acc=0.7360 | best_val=0.6524@18 | bad=3/10 | lr=1.00e-03 | dt=26.1s
+2025-10-03 13:01:45 - INFO - [epoch 22/50] train_loss=0.5427 | val_loss=0.6102 | val_acc=0.7946 | best_val=0.6102@22 | bad=0/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:02:10 - INFO - [epoch 23/50] train_loss=0.5340 | val_loss=0.7670 | val_acc=0.7586 | best_val=0.6102@22 | bad=1/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:02:36 - INFO - [epoch 24/50] train_loss=0.5358 | val_loss=0.6560 | val_acc=0.7756 | best_val=0.6102@22 | bad=2/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:03:02 - INFO - [epoch 25/50] train_loss=0.5212 | val_loss=0.6501 | val_acc=0.7772 | best_val=0.6102@22 | bad=3/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:03:28 - INFO - [epoch 26/50] train_loss=0.5067 | val_loss=0.6849 | val_acc=0.7766 | best_val=0.6102@22 | bad=4/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:03:54 - INFO - [epoch 27/50] train_loss=0.5085 | val_loss=0.6561 | val_acc=0.7846 | best_val=0.6102@22 | bad=5/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:04:20 - INFO - [epoch 28/50] train_loss=0.4995 | val_loss=0.7314 | val_acc=0.7502 | best_val=0.6102@22 | bad=6/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:04:46 - INFO - [epoch 29/50] train_loss=0.4908 | val_loss=0.6358 | val_acc=0.7890 | best_val=0.6102@22 | bad=7/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:05:13 - INFO - [epoch 30/50] train_loss=0.4834 | val_loss=0.6369 | val_acc=0.7898 | best_val=0.6102@22 | bad=8/10 | lr=1.00e-03 | dt=26.3s
+2025-10-03 13:05:39 - INFO - [epoch 31/50] train_loss=0.4773 | val_loss=0.7130 | val_acc=0.7724 | best_val=0.6102@22 | bad=9/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:06:05 - INFO - [epoch 32/50] train_loss=0.4778 | val_loss=0.6183 | val_acc=0.7934 | best_val=0.6102@22 | bad=10/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:06:05 - INFO - Early stopping: no improvement for 10 epochs (best=0.6102 @ epoch 22)
+2025-10-03 13:06:05 - INFO - Run finished in 985.6s | best_val_loss=0.6102 @epoch 22 | best_val_acc=0.7946
+2025-10-03 13:06:07 - INFO - Test: loss=0.6412 acc=0.7908
+2025-10-03 13:06:08 - INFO - ======== [End Run 21/200] width=210 depth=3 | best_val=0.6102 | test_acc=0.7908 ========
+
+2025-10-03 13:06:08 - INFO - ======== [Run 22/200] width=220 depth=3 ========
+2025-10-03 13:06:08 - INFO - Device=cuda | dataset=cifar10 | batch=64 | max_epochs=50 | patience=10 | lr=1.00e-03 | wd=1.0e-04
+2025-10-03 13:06:08 - INFO - Model params=880670 | neurons=880 | pooling=[1, 3]
+2025-10-03 13:06:34 - INFO - [epoch 1/50] train_loss=1.5400 | val_loss=1.6468 | val_acc=0.4606 | best_val=1.6468@1 | bad=0/10 | lr=1.00e-03 | dt=26.3s
+2025-10-03 13:07:00 - INFO - [epoch 2/50] train_loss=1.2332 | val_loss=1.2176 | val_acc=0.5742 | best_val=1.2176@2 | bad=0/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:07:26 - INFO - [epoch 3/50] train_loss=1.1107 | val_loss=1.1853 | val_acc=0.5858 | best_val=1.1853@3 | bad=0/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:07:52 - INFO - [epoch 4/50] train_loss=1.0296 | val_loss=1.3404 | val_acc=0.5720 | best_val=1.1853@3 | bad=1/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:08:18 - INFO - [epoch 5/50] train_loss=0.9579 | val_loss=1.0352 | val_acc=0.6390 | best_val=1.0352@5 | bad=0/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:08:43 - INFO - [epoch 6/50] train_loss=0.9001 | val_loss=1.0374 | val_acc=0.6476 | best_val=1.0352@5 | bad=1/10 | lr=1.00e-03 | dt=25.6s
+2025-10-03 13:09:09 - INFO - [epoch 7/50] train_loss=0.8448 | val_loss=1.3521 | val_acc=0.5926 | best_val=1.0352@5 | bad=2/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:09:35 - INFO - [epoch 8/50] train_loss=0.8060 | val_loss=1.8529 | val_acc=0.5110 | best_val=1.0352@5 | bad=3/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 13:10:01 - INFO - [epoch 9/50] train_loss=0.7655 | val_loss=0.9407 | val_acc=0.6790 | best_val=0.9407@9 | bad=0/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 13:10:26 - INFO - [epoch 10/50] train_loss=0.7398 | val_loss=1.0559 | val_acc=0.6464 | best_val=0.9407@9 | bad=1/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:10:52 - INFO - [epoch 11/50] train_loss=0.7116 | val_loss=0.8168 | val_acc=0.7188 | best_val=0.8168@11 | bad=0/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 13:11:18 - INFO - [epoch 12/50] train_loss=0.6900 | val_loss=1.0640 | val_acc=0.6492 | best_val=0.8168@11 | bad=1/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:11:44 - INFO - [epoch 13/50] train_loss=0.6680 | val_loss=0.9150 | val_acc=0.6882 | best_val=0.8168@11 | bad=2/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:12:10 - INFO - [epoch 14/50] train_loss=0.6481 | val_loss=0.8294 | val_acc=0.7142 | best_val=0.8168@11 | bad=3/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:12:36 - INFO - [epoch 15/50] train_loss=0.6319 | val_loss=0.8194 | val_acc=0.7256 | best_val=0.8168@11 | bad=4/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:13:02 - INFO - [epoch 16/50] train_loss=0.6178 | val_loss=0.8019 | val_acc=0.7326 | best_val=0.8019@16 | bad=0/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:13:27 - INFO - [epoch 17/50] train_loss=0.6027 | val_loss=0.7695 | val_acc=0.7396 | best_val=0.7695@17 | bad=0/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:13:53 - INFO - [epoch 18/50] train_loss=0.5934 | val_loss=0.8420 | val_acc=0.7274 | best_val=0.7695@17 | bad=1/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 13:14:19 - INFO - [epoch 19/50] train_loss=0.5775 | val_loss=0.7137 | val_acc=0.7668 | best_val=0.7137@19 | bad=0/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:14:45 - INFO - [epoch 20/50] train_loss=0.5686 | val_loss=0.6287 | val_acc=0.7816 | best_val=0.6287@20 | bad=0/10 | lr=1.00e-03 | dt=25.6s
+2025-10-03 13:15:10 - INFO - [epoch 21/50] train_loss=0.5567 | val_loss=0.7600 | val_acc=0.7436 | best_val=0.6287@20 | bad=1/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:15:36 - INFO - [epoch 22/50] train_loss=0.5425 | val_loss=0.6381 | val_acc=0.7808 | best_val=0.6287@20 | bad=2/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:16:02 - INFO - [epoch 23/50] train_loss=0.5400 | val_loss=0.6849 | val_acc=0.7664 | best_val=0.6287@20 | bad=3/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 13:16:28 - INFO - [epoch 24/50] train_loss=0.5341 | val_loss=0.6259 | val_acc=0.7842 | best_val=0.6259@24 | bad=0/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:16:54 - INFO - [epoch 25/50] train_loss=0.5233 | val_loss=0.6882 | val_acc=0.7646 | best_val=0.6259@24 | bad=1/10 | lr=1.00e-03 | dt=25.6s
+2025-10-03 13:17:19 - INFO - [epoch 26/50] train_loss=0.5108 | val_loss=0.7135 | val_acc=0.7766 | best_val=0.6259@24 | bad=2/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:17:45 - INFO - [epoch 27/50] train_loss=0.5047 | val_loss=0.6792 | val_acc=0.7750 | best_val=0.6259@24 | bad=3/10 | lr=1.00e-03 | dt=25.6s
+2025-10-03 13:18:11 - INFO - [epoch 28/50] train_loss=0.5003 | val_loss=0.7978 | val_acc=0.7384 | best_val=0.6259@24 | bad=4/10 | lr=1.00e-03 | dt=25.6s
+2025-10-03 13:18:37 - INFO - [epoch 29/50] train_loss=0.4966 | val_loss=0.5374 | val_acc=0.8116 | best_val=0.5374@29 | bad=0/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:19:02 - INFO - [epoch 30/50] train_loss=0.4869 | val_loss=0.7430 | val_acc=0.7610 | best_val=0.5374@29 | bad=1/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:19:28 - INFO - [epoch 31/50] train_loss=0.4806 | val_loss=0.5846 | val_acc=0.7994 | best_val=0.5374@29 | bad=2/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:19:54 - INFO - [epoch 32/50] train_loss=0.4773 | val_loss=0.7848 | val_acc=0.7464 | best_val=0.5374@29 | bad=3/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 13:20:20 - INFO - [epoch 33/50] train_loss=0.4682 | val_loss=0.5608 | val_acc=0.8030 | best_val=0.5374@29 | bad=4/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:20:46 - INFO - [epoch 34/50] train_loss=0.4641 | val_loss=0.7097 | val_acc=0.7642 | best_val=0.5374@29 | bad=5/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 13:21:12 - INFO - [epoch 35/50] train_loss=0.4576 | val_loss=0.6187 | val_acc=0.7970 | best_val=0.5374@29 | bad=6/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:21:38 - INFO - [epoch 36/50] train_loss=0.4533 | val_loss=0.5341 | val_acc=0.8154 | best_val=0.5341@36 | bad=0/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:22:03 - INFO - [epoch 37/50] train_loss=0.4495 | val_loss=0.5662 | val_acc=0.8124 | best_val=0.5341@36 | bad=1/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 13:22:29 - INFO - [epoch 38/50] train_loss=0.4425 | val_loss=0.6567 | val_acc=0.7864 | best_val=0.5341@36 | bad=2/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:22:55 - INFO - [epoch 39/50] train_loss=0.4424 | val_loss=0.5491 | val_acc=0.8158 | best_val=0.5341@36 | bad=3/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 13:23:21 - INFO - [epoch 40/50] train_loss=0.4387 | val_loss=0.6321 | val_acc=0.7934 | best_val=0.5341@36 | bad=4/10 | lr=1.00e-03 | dt=26.0s
+2025-10-03 13:23:47 - INFO - [epoch 41/50] train_loss=0.4309 | val_loss=0.8485 | val_acc=0.7276 | best_val=0.5341@36 | bad=5/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:24:13 - INFO - [epoch 42/50] train_loss=0.4247 | val_loss=0.7226 | val_acc=0.7754 | best_val=0.5341@36 | bad=6/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:24:38 - INFO - [epoch 43/50] train_loss=0.4200 | val_loss=0.5589 | val_acc=0.8170 | best_val=0.5341@36 | bad=7/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:25:04 - INFO - [epoch 44/50] train_loss=0.4211 | val_loss=0.6730 | val_acc=0.7908 | best_val=0.5341@36 | bad=8/10 | lr=1.00e-03 | dt=25.8s
+2025-10-03 13:25:30 - INFO - [epoch 45/50] train_loss=0.4164 | val_loss=0.6315 | val_acc=0.7894 | best_val=0.5341@36 | bad=9/10 | lr=1.00e-03 | dt=25.9s
+2025-10-03 13:25:56 - INFO - [epoch 46/50] train_loss=0.4101 | val_loss=0.6563 | val_acc=0.7856 | best_val=0.5341@36 | bad=10/10 | lr=1.00e-03 | dt=25.7s
+2025-10-03 13:25:56 - INFO - Early stopping: no improvement for 10 epochs (best=0.5341 @ epoch 36)
+2025-10-03 13:25:56 - INFO - Run finished in 1188.1s | best_val_loss=0.5341 @epoch 36 | best_val_acc=0.8154
+2025-10-03 13:25:58 - INFO - Test: loss=0.6714 acc=0.7863
+2025-10-03 13:25:58 - INFO - ======== [End Run 22/200] width=220 depth=3 | best_val=0.5341 | test_acc=0.7863 ========
+
+2025-10-03 13:25:59 - INFO - ======== [Run 23/200] width=230 depth=3 ========
+2025-10-03 13:25:59 - INFO - Device=cuda | dataset=cifar10 | batch=64 | max_epochs=50 | patience=10 | lr=1.00e-03 | wd=1.0e-04
+2025-10-03 13:25:59 - INFO - Model params=962100 | neurons=920 | pooling=[1, 3]
+2025-10-03 13:26:28 - INFO - [epoch 1/50] train_loss=1.5194 | val_loss=1.3983 | val_acc=0.4910 | best_val=1.3983@1 | bad=0/10 | lr=1.00e-03 | dt=28.7s
+2025-10-03 13:26:55 - INFO - [epoch 2/50] train_loss=1.2190 | val_loss=1.2010 | val_acc=0.5660 | best_val=1.2010@2 | bad=0/10 | lr=1.00e-03 | dt=27.8s
+2025-10-03 13:27:23 - INFO - [epoch 3/50] train_loss=1.0976 | val_loss=1.5462 | val_acc=0.4712 | best_val=1.2010@2 | bad=1/10 | lr=1.00e-03 | dt=27.9s
+2025-10-03 13:27:51 - INFO - [epoch 4/50] train_loss=1.0237 | val_loss=1.1845 | val_acc=0.5940 | best_val=1.1845@4 | bad=0/10 | lr=1.00e-03 | dt=27.9s
+2025-10-03 13:28:19 - INFO - [epoch 5/50] train_loss=0.9553 | val_loss=1.2566 | val_acc=0.5628 | best_val=1.1845@4 | bad=1/10 | lr=1.00e-03 | dt=27.9s
+2025-10-03 13:28:47 - INFO - [epoch 6/50] train_loss=0.8963 | val_loss=0.9126 | val_acc=0.6746 | best_val=0.9126@6 | bad=0/10 | lr=1.00e-03 | dt=27.9s
+2025-10-03 13:29:15 - INFO - [epoch 7/50] train_loss=0.8459 | val_loss=1.1845 | val_acc=0.6288 | best_val=0.9126@6 | bad=1/10 | lr=1.00e-03 | dt=27.9s
+2025-10-03 13:29:43 - INFO - [epoch 8/50] train_loss=0.7995 | val_loss=1.2406 | val_acc=0.5866 | best_val=0.9126@6 | bad=2/10 | lr=1.00e-03 | dt=27.8s
+2025-10-03 13:30:10 - INFO - [epoch 9/50] train_loss=0.7706 | val_loss=0.9148 | val_acc=0.6946 | best_val=0.9126@6 | bad=3/10 | lr=1.00e-03 | dt=27.8s
+2025-10-03 13:30:38 - INFO - [epoch 10/50] train_loss=0.7402 | val_loss=0.9103 | val_acc=0.6914 | best_val=0.9103@10 | bad=0/10 | lr=1.00e-03 | dt=27.9s
+2025-10-03 13:31:06 - INFO - [epoch 11/50] train_loss=0.7116 | val_loss=0.8262 | val_acc=0.7234 | best_val=0.8262@11 | bad=0/10 | lr=1.00e-03 | dt=28.1s
+2025-10-03 13:31:35 - INFO - [epoch 12/50] train_loss=0.6842 | val_loss=0.9990 | val_acc=0.6688 | best_val=0.8262@11 | bad=1/10 | lr=1.00e-03 | dt=28.8s
+2025-10-03 13:32:04 - INFO - [epoch 13/50] train_loss=0.6639 | val_loss=0.8515 | val_acc=0.7152 | best_val=0.8262@11 | bad=2/10 | lr=1.00e-03 | dt=28.3s
+2025-10-03 13:32:32 - INFO - [epoch 14/50] train_loss=0.6439 | val_loss=0.8568 | val_acc=0.7128 | best_val=0.8262@11 | bad=3/10 | lr=1.00e-03 | dt=28.1s
+2025-10-03 13:33:00 - INFO - [epoch 15/50] train_loss=0.6293 | val_loss=0.8349 | val_acc=0.7182 | best_val=0.8262@11 | bad=4/10 | lr=1.00e-03 | dt=28.1s
+2025-10-03 13:33:28 - INFO - [epoch 16/50] train_loss=0.6124 | val_loss=0.7165 | val_acc=0.7462 | best_val=0.7165@16 | bad=0/10 | lr=1.00e-03 | dt=28.2s
+2025-10-03 13:33:56 - INFO - [epoch 17/50] train_loss=0.5983 | val_loss=0.8302 | val_acc=0.7164 | best_val=0.7165@16 | bad=1/10 | lr=1.00e-03 | dt=27.9s
+2025-10-03 13:34:24 - INFO - [epoch 18/50] train_loss=0.5872 | val_loss=0.7293 | val_acc=0.7556 | best_val=0.7165@16 | bad=2/10 | lr=1.00e-03 | dt=28.2s
+2025-10-03 13:34:52 - INFO - [epoch 19/50] train_loss=0.5681 | val_loss=0.9983 | val_acc=0.6724 | best_val=0.7165@16 | bad=3/10 | lr=1.00e-03 | dt=28.0s
+2025-10-03 13:35:20 - INFO - [epoch 20/50] train_loss=0.5610 | val_loss=1.0800 | val_acc=0.6992 | best_val=0.7165@16 | bad=4/10 | lr=1.00e-03 | dt=28.1s
+2025-10-03 13:36:04 - INFO - [epoch 21/50] train_loss=0.5559 | val_loss=0.9813 | val_acc=0.6974 | best_val=0.7165@16 | bad=5/10 | lr=1.00e-03 | dt=43.7s
+2025-10-03 13:36:50 - INFO - [epoch 22/50] train_loss=0.5434 | val_loss=0.9318 | val_acc=0.7148 | best_val=0.7165@16 | bad=6/10 | lr=1.00e-03 | dt=46.3s
+2025-10-03 13:37:21 - INFO - [epoch 23/50] train_loss=0.5336 | val_loss=0.6883 | val_acc=0.7776 | best_val=0.6883@23 | bad=0/10 | lr=1.00e-03 | dt=30.8s
+2025-10-03 13:38:32 - INFO - [epoch 24/50] train_loss=0.5210 | val_loss=0.8446 | val_acc=0.7252 | best_val=0.6883@23 | bad=1/10 | lr=1.00e-03 | dt=71.0s
+2025-10-03 13:40:03 - INFO - [epoch 25/50] train_loss=0.5143 | val_loss=0.6981 | val_acc=0.7656 | best_val=0.6883@23 | bad=2/10 | lr=1.00e-03 | dt=91.1s
+2025-10-03 13:40:33 - INFO - [epoch 26/50] train_loss=0.5079 | val_loss=0.6392 | val_acc=0.7820 | best_val=0.6392@26 | bad=0/10 | lr=1.00e-03 | dt=30.2s
+2025-10-03 13:41:05 - INFO - [epoch 27/50] train_loss=0.4999 | val_loss=0.7328 | val_acc=0.7632 | best_val=0.6392@26 | bad=1/10 | lr=1.00e-03 | dt=32.1s
+2025-10-03 13:41:35 - INFO - [epoch 28/50] train_loss=0.4924 | val_loss=0.6372 | val_acc=0.7894 | best_val=0.6372@28 | bad=0/10 | lr=1.00e-03 | dt=29.4s
+2025-10-03 13:42:02 - INFO - [epoch 29/50] train_loss=0.4862 | val_loss=0.6682 | val_acc=0.7786 | best_val=0.6372@28 | bad=1/10 | lr=1.00e-03 | dt=27.4s
+2025-10-03 13:42:33 - INFO - [epoch 30/50] train_loss=0.4852 | val_loss=0.6672 | val_acc=0.7850 | best_val=0.6372@28 | bad=2/10 | lr=1.00e-03 | dt=31.3s
+2025-10-03 13:43:01 - INFO - [epoch 31/50] train_loss=0.4779 | val_loss=0.6842 | val_acc=0.7718 | best_val=0.6372@28 | bad=3/10 | lr=1.00e-03 | dt=27.7s
+2025-10-03 13:43:29 - INFO - [epoch 32/50] train_loss=0.4671 | val_loss=0.5791 | val_acc=0.8054 | best_val=0.5791@32 | bad=0/10 | lr=1.00e-03 | dt=27.8s
+2025-10-03 13:43:57 - INFO - [epoch 33/50] train_loss=0.4651 | val_loss=0.5977 | val_acc=0.7974 | best_val=0.5791@32 | bad=1/10 | lr=1.00e-03 | dt=27.8s
+2025-10-03 13:44:24 - INFO - [epoch 34/50] train_loss=0.4642 | val_loss=0.6566 | val_acc=0.7838 | best_val=0.5791@32 | bad=2/10 | lr=1.00e-03 | dt=27.6s
+2025-10-03 13:45:14 - INFO - [epoch 35/50] train_loss=0.4517 | val_loss=0.8816 | val_acc=0.7336 | best_val=0.5791@32 | bad=3/10 | lr=1.00e-03 | dt=49.8s
