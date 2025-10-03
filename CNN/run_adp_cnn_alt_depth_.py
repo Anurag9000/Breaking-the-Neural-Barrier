@@ -11,7 +11,6 @@ from adp_cnn_alt_depth import (
     alternating_adp_search_depth_first,
 )
 
-
 def make_loaders(data_root: str, batch_size: int, num_workers: int, seed: int):
     normalize = T.Normalize(mean=(0.4914, 0.4822, 0.4465), std=(0.247, 0.243, 0.261))
     train_tf = T.Compose([
