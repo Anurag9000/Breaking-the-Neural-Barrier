@@ -272,7 +272,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--download", action="store_true")
 
     # Training
-    p.add_argument("--epochs", type=int, default=50)
+    p.add_argument("--epochs", type=int, default=50000)
     p.add_argument("--lr", type=float, default=1e-3)
     p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--patience", type=int, default=10)
