@@ -132,16 +132,16 @@ class TrainConfig:
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
     lr: float = 3e-4
     weight_decay: float = 5e-4
-    max_epochs_inner: int = 200          # per proposal cap (early-stopping usually ends earlier)
-    es_patience: int = 10
+    max_epochs_inner: int = 1000000          # per proposal cap (early-stopping usually ends earlier)
+    es_patience: int = 100
     grad_clip: float = 1.0
 
 @dataclass
 class SearchConfig:
-    delta: float = 1e-3                  # min val-loss improvement to accept
-    patience_width: int = 3              # plateau detector for width (+1 each try)
-    patience_depth: int = 3              # plateau detector for depth (+1 each try)
-    max_total_epochs: int = 5000         # global budget across all proposals
+    delta: float = 0.0                  # min val-loss improvement to accept
+    patience_width: int = 100              # plateau detector for width (+1 each try)
+    patience_depth: int = 100             # plateau detector for depth (+1 each try)
+    max_total_epochs: int = 5000000         # global budget across all proposals
     pooling_indices: Tuple[int, ...] = (0,)  # default pool schedule
 
 def _run_inner_train(model: AdaptiveCNN,

@@ -61,22 +61,22 @@ def eval_top1(model, loader, device):
 def main():
     p = argparse.ArgumentParser("Alternating ADP CNN (Width<->Depth) for CIFAR-10")
     p.add_argument("--data", type=str, default="./data")
-    p.add_argument("--batch-size", type=int, default=128)
-    p.add_argument("--num-workers", type=int, default=4)
+    p.add_argument("--batch-size", type=int, default=1024)
+    p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--download", action="store_true")
 
     # Train config
     p.add_argument("--lr", type=float, default=3e-4)
     p.add_argument("--weight-decay", type=float, default=5e-4)
-    p.add_argument("--es-patience", type=int, default=10)
-    p.add_argument("--max-epochs-inner", type=int, default=200)
+    p.add_argument("--es-patience", type=int, default=100)
+    p.add_argument("--max-epochs-inner", type=int, default=1000000)
     p.add_argument("--grad-clip", type=float, default=1.0)
 
     # Search config
-    p.add_argument("--delta", type=float, default=1e-3)
-    p.add_argument("--patience-width", type=int, default=3)
-    p.add_argument("--patience-depth", type=int, default=3)
-    p.add_argument("--max-total-epochs", type=int, default=5000)
+    p.add_argument("--delta", type=float, default=0)
+    p.add_argument("--patience-width", type=int, default=100)
+    p.add_argument("--patience-depth", type=int, default=100)
+    p.add_argument("--max-total-epochs", type=int, default=1000000)
     p.add_argument("--pool-idx", type=int, nargs="*", default=[0])
 
     # Seeds

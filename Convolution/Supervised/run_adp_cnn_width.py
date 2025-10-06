@@ -87,18 +87,18 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--smoke", action="store_true", help="Tiny budget sanity run")
     ap.add_argument("--data-root", type=str, default="data", help="Where CIFAR-10 is stored")
-    ap.add_argument("--batch-size", type=int, default=128)
-    ap.add_argument("--num-workers", type=int, default=4)
+    ap.add_argument("--batch-size", type=int, default=1024)
+    ap.add_argument("--num-workers", type=int, default=0)
     ap.add_argument("--val-split", type=int, default=5000)
     ap.add_argument("--download", action="store_true", help="Download CIFAR-10 if missing")
     args = ap.parse_args()
 
     params = dict(
         delta=0.0,
-        trials_width=10,
-        trials_depth=10,     # kept at 10 if your width-search variant also iterates depth
-        patience=10,
-        max_epochs=100000,
+        trials_width=100,
+        trials_depth=100,     # kept at 10 if your width-search variant also iterates depth
+        patience=100,
+        max_epochs=1000000,
         init_widths=[1],    # <<< init width = 10
         num_classes=10,      # full CIFAR-10
         pooling_indices=[0],

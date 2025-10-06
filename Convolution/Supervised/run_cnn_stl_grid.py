@@ -108,7 +108,7 @@ def train_verbose(
     epochs: int = 50,
     lr: float = 1e-3,
     weight_decay: float = 1e-4,
-    patience: int = 10,
+    patience: int = 100,
     log_every: int = 1,
     plot_dir: str = None,
     plot_prefix: str = "run",
@@ -170,7 +170,7 @@ def train_verbose(
         val_losses.append(val_loss)
         val_accs.append(val_acc)
 
-        improved = val_loss < best_val_loss - 1e-12
+        improved = val_loss < best_val_loss - 0
         if improved:
             best_val_loss = val_loss
             best_val_acc = max(best_val_acc, val_acc)
@@ -266,16 +266,16 @@ def parse_args() -> argparse.Namespace:
     # Data
     p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100"])  # default to cifar10 per your request
     p.add_argument("--data-root", type=str, default="data")
-    p.add_argument("--batch-size", type=int, default=128)
+    p.add_argument("--batch-size", type=int, default=1024)
     p.add_argument("--num-workers", type=int, default=0)  # Windows safe
     p.add_argument("--val-split", type=int, default=5000)
     p.add_argument("--download", action="store_true")
 
     # Training
-    p.add_argument("--epochs", type=int, default=50000)
+    p.add_argument("--epochs", type=int, default=1000000)
     p.add_argument("--lr", type=float, default=1e-3)
     p.add_argument("--weight-decay", type=float, default=1e-4)
-    p.add_argument("--patience", type=int, default=10)
+    p.add_argument("--patience", type=int, default=100)
     p.add_argument("--log-every", type=int, default=1)
 
     # Device / misc
@@ -372,7 +372,7 @@ def _save_combined_scatter(rows, results_dir: Path, acc_name: str, loss_name: st
         grp = by_depth[d]
         xs = [g["neurons"] for g in grp]
         # guard against exact 0
-        ys = [max(g["best_val_loss"], 1e-12) for g in grp]
+        ys = [max(g["best_val_loss"], 0) for g in grp]
         labs = [f"({g['width']},{g['depth']})" for g in grp]
 
         # use semilog-y per your original plot

@@ -138,16 +138,16 @@ def eval_loss(model: nn.Module, loader: DataLoader, device: torch.device) -> flo
 class InnerCfg:
     lr: float = 3e-4
     weight_decay: float = 5e-4
-    max_epochs_inner: int = 200
-    es_patience: int = 10
+    max_epochs_inner: int = 1000000
+    es_patience: int = 100
     grad_clip: Optional[float] = 1.0
 
 @dataclass
 class SearchCfg:
-    delta: float = 1e-3
-    patience_width: int = 3
-    patience_depth: int = 3
-    max_total_epochs: int = 5000
+    delta: float = 0
+    patience_width: int = 100
+    patience_depth: int = 100
+    max_total_epochs: int = 5000000
 
 class InnerTrainer:
     def __init__(self, model: nn.Module, train_loader: DataLoader, val_loader: DataLoader, device: torch.device, cfg: InnerCfg):

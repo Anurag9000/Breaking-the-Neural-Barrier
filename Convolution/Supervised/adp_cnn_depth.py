@@ -336,17 +336,17 @@ def train_with_early_stop(
 @dataclass
 class Config:
     delta: float = 0.0
-    trials_depth: int = 2
-    trials_width: int = 2
-    patience: int = 15
-    max_epochs: int = 140
+    trials_depth: int = 100
+    trials_width: int = 100
+    patience: int = 100
+    max_epochs: int = 9000000
     init_widths: List[int] = None
     num_classes: int = 100
     pooling_indices: Optional[List[int]] = None
     lr: float = 1e-3
     weight_decay: float = 1e-4
     ex_k: int = 16
-    max_neurons: int = 1_000_000
+    max_neurons: int = 100_000_000
     max_depth: int = 128
     max_width: int = 10_000
 

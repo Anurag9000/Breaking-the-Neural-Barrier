@@ -350,9 +350,9 @@ def _save_plot(path: str, hist: List[Tuple[int, float]]):
 @dataclass
 class Config:
     delta: float = 0.0
-    trials_depth: int = 5
-    patience: int = 20
-    max_epochs: int = 200
+    trials_depth: int = 100
+    patience: int = 100
+    max_epochs: int = 1000000
     init_widths: List[int] = None
     num_classes: int = 100
     pooling_indices: Optional[List[int]] = None

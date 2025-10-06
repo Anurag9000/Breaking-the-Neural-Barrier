@@ -158,7 +158,7 @@ def train(
     epochs: int = 50,
     lr: float = 1e-3,
     weight_decay: float = 1e-4,
-    patience: int = 10,
+    patience: int = 100,
     log_every: int = 1,
     plot_dir: str = "results_stl",
     plot_prefix: str = "ConvNetSTL",
@@ -223,7 +223,7 @@ def train(
             print(f"[epoch {epoch}/{epochs}] "
                   f"train_loss={train_loss:.4f} | val_loss={val_loss:.4f} | val_acc={val_acc:.4f}")
 
-        improved = val_loss < best_val - 1e-6  # tiny margin
+        improved = val_loss < best_val - 0  # tiny margin
         if improved:
             best_val = val_loss
             best_acc = val_acc
@@ -444,10 +444,10 @@ def main():
                         help="comma-separated block indices after which to apply 2x2 MaxPool, e.g. '1,3'")
 
     # Optimization
-    parser.add_argument("--epochs", type=int, default=50000)
+    parser.add_argument("--epochs", type=int, default=5000000)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--weight-decay", type=float, default=1e-4)
-    parser.add_argument("--patience", type=int, default=10)
+    parser.add_argument("--patience", type=int, default=100)
 
     # Plots (ADP-style auto-save)
     parser.add_argument("--plot-dir", type=str, default="results_stl")

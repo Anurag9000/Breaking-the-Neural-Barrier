@@ -88,8 +88,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--smoke", action="store_true", help="Tiny budget sanity run")
     ap.add_argument("--data-root", type=str, default="data", help="Where CIFAR-10 is stored")
-    ap.add_argument("--batch-size", type=int, default=128)
-    ap.add_argument("--num-workers", type=int, default=4)
+    ap.add_argument("--batch-size", type=int, default=1024)
+    ap.add_argument("--num-workers", type=int, default=0)
     ap.add_argument("--val-split", type=int, default=5000)
     ap.add_argument("--download", action="store_true", help="Download CIFAR-10 if missing")
     args = ap.parse_args()
@@ -100,9 +100,9 @@ def main():
     # - ex_k = 10 per expansion loop (if used)
     params = dict(
         delta=0.0,
-        trials_width=10,
+        trials_width=100,
         patience=100,
-        max_epochs=100000,
+        max_epochs=1000000,
         init_widths=[10],       # <<< init width = 10
         num_classes=10,         # full CIFAR-10
         pooling_indices=[0],

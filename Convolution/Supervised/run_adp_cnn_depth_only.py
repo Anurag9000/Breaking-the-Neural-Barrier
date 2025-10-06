@@ -86,8 +86,8 @@ def main():
     #   - expansion factor ex_k = 10 (if used by your model loop)
     params = dict(
         delta=0.0,
-        trials_depth=10,
-        trials_width=10,          # if supported by your Config/Model
+        trials_depth=100,
+        trials_width=100,          # if supported by your Config/Model
         patience=100,
         max_epochs=100000,
         init_widths=[10],         # <<< init width = 10

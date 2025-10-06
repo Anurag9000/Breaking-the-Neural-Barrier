@@ -101,10 +101,10 @@ def main():
     # - expansion factor ex_k = 10 per loop (if used)
     params = dict(
         delta=0.0,
-        trials_depth=10,
-        trials_width=10,
-        patience=10,
-        max_epochs=100000,
+        trials_depth=100,
+        trials_width=100,
+        patience=100,
+        max_epochs=1000000,
         init_widths=[5],       # <<< init width = 10
         num_classes=10,         # full CIFAR-10
         pooling_indices=[0],
