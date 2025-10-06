@@ -1,0 +1,602 @@
+Architecture,Paradigm,Domain,Dataset / Benchmark,Task,Size,Typical N,When to use / Notes
+Feedforward,Supervised,Vision,MNIST / Fashion-MNIST / KMNIST,Image classification,TINY,60k–70k,Sanity checks; quick baselines; low compute.
+Feedforward,Supervised,Vision,SVHN,Digit classification (street numbers),SMALL,73k train,Real-world digits; mild domain shift vs MNIST.
+Feedforward,Supervised,Vision,CIFAR-10 / CIFAR-100,Image classification (10/100 classes),SMALL,50k train,Canonical small-scale vision benchmarks; ablations & rapid iteration.
+Feedforward,Supervised,Vision,STL-10,Image classification,SMALL,5k labeled + 100k unlabeled,Good for semi/SSL variants; higher-res than CIFAR.
+Feedforward,Supervised,Vision,Tiny-ImageNet,Image classification (200 classes),SMALL,100k,Mid-way step to ImageNet; checks scalable tricks.
+Feedforward,Supervised,Vision,ImageNet-1k,Image classification,LARGE,1.28M,Gold standard for large-scale supervised vision.
+Feedforward,Supervised,Vision,iNaturalist (2017/2018/2021),Long-tail classification,LARGE,~0.8M,Severe class imbalance/long-tail; realism stress-test.
+Feedforward,Supervised,Vision,COCO (cls/det/seg),Detection / Segmentation / Captions,MEDIUM,118k imgs,General-purpose detection/segmentation; widely benchmarked.
+Feedforward,Supervised,Vision,Pascal VOC 2007/12,Detection / Segmentation,SMALL,10k–17k,Classical detection/seg baseline; light compute.
+Feedforward,Supervised,Vision,ADE20K,Semantic segmentation,SMALL,20k,Scene parsing; segmentation benchmarking.
+Feedforward,Supervised,Vision,Cityscapes,Semantic segmentation (autonomous driving),SMALL,5k finely ann.,Urban scenes; high-quality pixel labels.
+Feedforward,Supervised,Vision,KITTI,Detection / Depth / Stereo,SMALL,7k–15k,Autonomous driving; multi-task evaluation.
+Feedforward,Supervised,Vision,Places365 / SUN397,Scene classification,MEDIUM,~1.8M / 108k,Scene-centric; useful for robustness & transfer.
+Feedforward,Supervised,Vision,Medical: CheXpert / MIMIC-CXR / BraTS / ISIC,Medical imaging (cls/seg),MEDIUM,10k–300k,"Domain-specific supervised baselines (radiology, brain tumor, dermatology)."
+Convolution,Supervised,Vision,MNIST / Fashion-MNIST / KMNIST,Image classification,TINY,60k–70k,Sanity checks; quick baselines; low compute.
+Convolution,Supervised,Vision,SVHN,Digit classification (street numbers),SMALL,73k train,Real-world digits; mild domain shift vs MNIST.
+Convolution,Supervised,Vision,CIFAR-10 / CIFAR-100,Image classification (10/100 classes),SMALL,50k train,Canonical small-scale vision benchmarks; ablations & rapid iteration.
+Convolution,Supervised,Vision,STL-10,Image classification,SMALL,5k labeled + 100k unlabeled,Good for semi/SSL variants; higher-res than CIFAR.
+Convolution,Supervised,Vision,Tiny-ImageNet,Image classification (200 classes),SMALL,100k,Mid-way step to ImageNet; checks scalable tricks.
+Convolution,Supervised,Vision,ImageNet-1k,Image classification,LARGE,1.28M,Gold standard for large-scale supervised vision.
+Convolution,Supervised,Vision,iNaturalist (2017/2018/2021),Long-tail classification,LARGE,~0.8M,Severe class imbalance/long-tail; realism stress-test.
+Convolution,Supervised,Vision,COCO (cls/det/seg),Detection / Segmentation / Captions,MEDIUM,118k imgs,General-purpose detection/segmentation; widely benchmarked.
+Convolution,Supervised,Vision,Pascal VOC 2007/12,Detection / Segmentation,SMALL,10k–17k,Classical detection/seg baseline; light compute.
+Convolution,Supervised,Vision,ADE20K,Semantic segmentation,SMALL,20k,Scene parsing; segmentation benchmarking.
+Convolution,Supervised,Vision,Cityscapes,Semantic segmentation (autonomous driving),SMALL,5k finely ann.,Urban scenes; high-quality pixel labels.
+Convolution,Supervised,Vision,KITTI,Detection / Depth / Stereo,SMALL,7k–15k,Autonomous driving; multi-task evaluation.
+Convolution,Supervised,Vision,Places365 / SUN397,Scene classification,MEDIUM,~1.8M / 108k,Scene-centric; useful for robustness & transfer.
+Convolution,Supervised,Vision,Medical: CheXpert / MIMIC-CXR / BraTS / ISIC,Medical imaging (cls/seg),MEDIUM,10k–300k,"Domain-specific supervised baselines (radiology, brain tumor, dermatology)."
+Transformer,Supervised,Vision,MNIST / Fashion-MNIST / KMNIST,Image classification,TINY,60k–70k,Sanity checks; quick baselines; low compute.
+Transformer,Supervised,Vision,SVHN,Digit classification (street numbers),SMALL,73k train,Real-world digits; mild domain shift vs MNIST.
+Transformer,Supervised,Vision,CIFAR-10 / CIFAR-100,Image classification (10/100 classes),SMALL,50k train,Canonical small-scale vision benchmarks; ablations & rapid iteration.
+Transformer,Supervised,Vision,STL-10,Image classification,SMALL,5k labeled + 100k unlabeled,Good for semi/SSL variants; higher-res than CIFAR.
+Transformer,Supervised,Vision,Tiny-ImageNet,Image classification (200 classes),SMALL,100k,Mid-way step to ImageNet; checks scalable tricks.
+Transformer,Supervised,Vision,ImageNet-1k,Image classification,LARGE,1.28M,Gold standard for large-scale supervised vision.
+Transformer,Supervised,Vision,iNaturalist (2017/2018/2021),Long-tail classification,LARGE,~0.8M,Severe class imbalance/long-tail; realism stress-test.
+Transformer,Supervised,Vision,COCO (cls/det/seg),Detection / Segmentation / Captions,MEDIUM,118k imgs,General-purpose detection/segmentation; widely benchmarked.
+Transformer,Supervised,Vision,Pascal VOC 2007/12,Detection / Segmentation,SMALL,10k–17k,Classical detection/seg baseline; light compute.
+Transformer,Supervised,Vision,ADE20K,Semantic segmentation,SMALL,20k,Scene parsing; segmentation benchmarking.
+Transformer,Supervised,Vision,Cityscapes,Semantic segmentation (autonomous driving),SMALL,5k finely ann.,Urban scenes; high-quality pixel labels.
+Transformer,Supervised,Vision,KITTI,Detection / Depth / Stereo,SMALL,7k–15k,Autonomous driving; multi-task evaluation.
+Transformer,Supervised,Vision,Places365 / SUN397,Scene classification,MEDIUM,~1.8M / 108k,Scene-centric; useful for robustness & transfer.
+Transformer,Supervised,Vision,Medical: CheXpert / MIMIC-CXR / BraTS / ISIC,Medical imaging (cls/seg),MEDIUM,10k–300k,"Domain-specific supervised baselines (radiology, brain tumor, dermatology)."
+Generative,Supervised,Vision,MNIST / Fashion-MNIST / KMNIST,Image classification,TINY,60k–70k,Sanity checks; quick baselines; low compute.
+Generative,Supervised,Vision,SVHN,Digit classification (street numbers),SMALL,73k train,Real-world digits; mild domain shift vs MNIST.
+Generative,Supervised,Vision,CIFAR-10 / CIFAR-100,Image classification (10/100 classes),SMALL,50k train,Canonical small-scale vision benchmarks; ablations & rapid iteration.
+Generative,Supervised,Vision,STL-10,Image classification,SMALL,5k labeled + 100k unlabeled,Good for semi/SSL variants; higher-res than CIFAR.
+Generative,Supervised,Vision,Tiny-ImageNet,Image classification (200 classes),SMALL,100k,Mid-way step to ImageNet; checks scalable tricks.
+Generative,Supervised,Vision,ImageNet-1k,Image classification,LARGE,1.28M,Gold standard for large-scale supervised vision.
+Generative,Supervised,Vision,iNaturalist (2017/2018/2021),Long-tail classification,LARGE,~0.8M,Severe class imbalance/long-tail; realism stress-test.
+Generative,Supervised,Vision,COCO (cls/det/seg),Detection / Segmentation / Captions,MEDIUM,118k imgs,General-purpose detection/segmentation; widely benchmarked.
+Generative,Supervised,Vision,Pascal VOC 2007/12,Detection / Segmentation,SMALL,10k–17k,Classical detection/seg baseline; light compute.
+Generative,Supervised,Vision,ADE20K,Semantic segmentation,SMALL,20k,Scene parsing; segmentation benchmarking.
+Generative,Supervised,Vision,Cityscapes,Semantic segmentation (autonomous driving),SMALL,5k finely ann.,Urban scenes; high-quality pixel labels.
+Generative,Supervised,Vision,KITTI,Detection / Depth / Stereo,SMALL,7k–15k,Autonomous driving; multi-task evaluation.
+Generative,Supervised,Vision,Places365 / SUN397,Scene classification,MEDIUM,~1.8M / 108k,Scene-centric; useful for robustness & transfer.
+Generative,Supervised,Vision,Medical: CheXpert / MIMIC-CXR / BraTS / ISIC,Medical imaging (cls/seg),MEDIUM,10k–300k,"Domain-specific supervised baselines (radiology, brain tumor, dermatology)."
+Specialized,Supervised,Vision,MNIST / Fashion-MNIST / KMNIST,Image classification,TINY,60k–70k,Sanity checks; quick baselines; low compute.
+Specialized,Supervised,Vision,SVHN,Digit classification (street numbers),SMALL,73k train,Real-world digits; mild domain shift vs MNIST.
+Specialized,Supervised,Vision,CIFAR-10 / CIFAR-100,Image classification (10/100 classes),SMALL,50k train,Canonical small-scale vision benchmarks; ablations & rapid iteration.
+Specialized,Supervised,Vision,STL-10,Image classification,SMALL,5k labeled + 100k unlabeled,Good for semi/SSL variants; higher-res than CIFAR.
+Specialized,Supervised,Vision,Tiny-ImageNet,Image classification (200 classes),SMALL,100k,Mid-way step to ImageNet; checks scalable tricks.
+Specialized,Supervised,Vision,ImageNet-1k,Image classification,LARGE,1.28M,Gold standard for large-scale supervised vision.
+Specialized,Supervised,Vision,iNaturalist (2017/2018/2021),Long-tail classification,LARGE,~0.8M,Severe class imbalance/long-tail; realism stress-test.
+Specialized,Supervised,Vision,COCO (cls/det/seg),Detection / Segmentation / Captions,MEDIUM,118k imgs,General-purpose detection/segmentation; widely benchmarked.
+Specialized,Supervised,Vision,Pascal VOC 2007/12,Detection / Segmentation,SMALL,10k–17k,Classical detection/seg baseline; light compute.
+Specialized,Supervised,Vision,ADE20K,Semantic segmentation,SMALL,20k,Scene parsing; segmentation benchmarking.
+Specialized,Supervised,Vision,Cityscapes,Semantic segmentation (autonomous driving),SMALL,5k finely ann.,Urban scenes; high-quality pixel labels.
+Specialized,Supervised,Vision,KITTI,Detection / Depth / Stereo,SMALL,7k–15k,Autonomous driving; multi-task evaluation.
+Specialized,Supervised,Vision,Places365 / SUN397,Scene classification,MEDIUM,~1.8M / 108k,Scene-centric; useful for robustness & transfer.
+Specialized,Supervised,Vision,Medical: CheXpert / MIMIC-CXR / BraTS / ISIC,Medical imaging (cls/seg),MEDIUM,10k–300k,"Domain-specific supervised baselines (radiology, brain tumor, dermatology)."
+Feedforward,Supervised,NLP,GLUE / SuperGLUE,Natural language understanding (multi-task),SMALL,0.5M tokens–few 100k ex.,Standard NLU benchmarking; low to mid compute.
+Feedforward,Supervised,NLP,SQuAD 1.1 / 2.0,Extractive QA,SMALL,100k / 150k QAs,QA baseline; 2.0 includes unanswerable questions.
+Feedforward,Supervised,NLP,SNLI / MultiNLI / XNLI,Natural language inference,SMALL,0.5M–0.9M,Core entailment tasks; cross-lingual with XNLI.
+Feedforward,Supervised,NLP,IMDb / Yelp / AG News / DBPedia,Sentiment / Topic classification,SMALL,25k–120k,Text classification baselines; quick iteration.
+Feedforward,Supervised,NLP,CoNLL-2003 / OntoNotes,NER / SRL / Parsing,SMALL,10k–1M tokens,Sequence labeling; solid supervised NER baseline.
+Feedforward,Supervised,NLP,WMT14 En–De / En–Fr (+ IWSLT low-resource),Machine translation,MEDIUM–LARGE,4M–40M pairs,MT benchmarking across data regimes; IWSLT for small-scale.
+Feedforward,Supervised,NLP,WikiSQL / Spider,Text-to-SQL,SMALL,80k / 10k,Structured semantic parsing; compositional generalization.
+Feedforward,Supervised,NLP,MNLI diagnostic / HANS,NLI stress-tests,TINY,few k,Adversarial probing; compositionality checks.
+Recurrent,Supervised,NLP,GLUE / SuperGLUE,Natural language understanding (multi-task),SMALL,0.5M tokens–few 100k ex.,Standard NLU benchmarking; low to mid compute.
+Recurrent,Supervised,NLP,SQuAD 1.1 / 2.0,Extractive QA,SMALL,100k / 150k QAs,QA baseline; 2.0 includes unanswerable questions.
+Recurrent,Supervised,NLP,SNLI / MultiNLI / XNLI,Natural language inference,SMALL,0.5M–0.9M,Core entailment tasks; cross-lingual with XNLI.
+Recurrent,Supervised,NLP,IMDb / Yelp / AG News / DBPedia,Sentiment / Topic classification,SMALL,25k–120k,Text classification baselines; quick iteration.
+Recurrent,Supervised,NLP,CoNLL-2003 / OntoNotes,NER / SRL / Parsing,SMALL,10k–1M tokens,Sequence labeling; solid supervised NER baseline.
+Recurrent,Supervised,NLP,WMT14 En–De / En–Fr (+ IWSLT low-resource),Machine translation,MEDIUM–LARGE,4M–40M pairs,MT benchmarking across data regimes; IWSLT for small-scale.
+Recurrent,Supervised,NLP,WikiSQL / Spider,Text-to-SQL,SMALL,80k / 10k,Structured semantic parsing; compositional generalization.
+Recurrent,Supervised,NLP,MNLI diagnostic / HANS,NLI stress-tests,TINY,few k,Adversarial probing; compositionality checks.
+Transformer,Supervised,NLP,GLUE / SuperGLUE,Natural language understanding (multi-task),SMALL,0.5M tokens–few 100k ex.,Standard NLU benchmarking; low to mid compute.
+Transformer,Supervised,NLP,SQuAD 1.1 / 2.0,Extractive QA,SMALL,100k / 150k QAs,QA baseline; 2.0 includes unanswerable questions.
+Transformer,Supervised,NLP,SNLI / MultiNLI / XNLI,Natural language inference,SMALL,0.5M–0.9M,Core entailment tasks; cross-lingual with XNLI.
+Transformer,Supervised,NLP,IMDb / Yelp / AG News / DBPedia,Sentiment / Topic classification,SMALL,25k–120k,Text classification baselines; quick iteration.
+Transformer,Supervised,NLP,CoNLL-2003 / OntoNotes,NER / SRL / Parsing,SMALL,10k–1M tokens,Sequence labeling; solid supervised NER baseline.
+Transformer,Supervised,NLP,WMT14 En–De / En–Fr (+ IWSLT low-resource),Machine translation,MEDIUM–LARGE,4M–40M pairs,MT benchmarking across data regimes; IWSLT for small-scale.
+Transformer,Supervised,NLP,WikiSQL / Spider,Text-to-SQL,SMALL,80k / 10k,Structured semantic parsing; compositional generalization.
+Transformer,Supervised,NLP,MNLI diagnostic / HANS,NLI stress-tests,TINY,few k,Adversarial probing; compositionality checks.
+Generative,Supervised,NLP,GLUE / SuperGLUE,Natural language understanding (multi-task),SMALL,0.5M tokens–few 100k ex.,Standard NLU benchmarking; low to mid compute.
+Generative,Supervised,NLP,SQuAD 1.1 / 2.0,Extractive QA,SMALL,100k / 150k QAs,QA baseline; 2.0 includes unanswerable questions.
+Generative,Supervised,NLP,SNLI / MultiNLI / XNLI,Natural language inference,SMALL,0.5M–0.9M,Core entailment tasks; cross-lingual with XNLI.
+Generative,Supervised,NLP,IMDb / Yelp / AG News / DBPedia,Sentiment / Topic classification,SMALL,25k–120k,Text classification baselines; quick iteration.
+Generative,Supervised,NLP,CoNLL-2003 / OntoNotes,NER / SRL / Parsing,SMALL,10k–1M tokens,Sequence labeling; solid supervised NER baseline.
+Generative,Supervised,NLP,WMT14 En–De / En–Fr (+ IWSLT low-resource),Machine translation,MEDIUM–LARGE,4M–40M pairs,MT benchmarking across data regimes; IWSLT for small-scale.
+Generative,Supervised,NLP,WikiSQL / Spider,Text-to-SQL,SMALL,80k / 10k,Structured semantic parsing; compositional generalization.
+Generative,Supervised,NLP,MNLI diagnostic / HANS,NLI stress-tests,TINY,few k,Adversarial probing; compositionality checks.
+Specialized,Supervised,NLP,GLUE / SuperGLUE,Natural language understanding (multi-task),SMALL,0.5M tokens–few 100k ex.,Standard NLU benchmarking; low to mid compute.
+Specialized,Supervised,NLP,SQuAD 1.1 / 2.0,Extractive QA,SMALL,100k / 150k QAs,QA baseline; 2.0 includes unanswerable questions.
+Specialized,Supervised,NLP,SNLI / MultiNLI / XNLI,Natural language inference,SMALL,0.5M–0.9M,Core entailment tasks; cross-lingual with XNLI.
+Specialized,Supervised,NLP,IMDb / Yelp / AG News / DBPedia,Sentiment / Topic classification,SMALL,25k–120k,Text classification baselines; quick iteration.
+Specialized,Supervised,NLP,CoNLL-2003 / OntoNotes,NER / SRL / Parsing,SMALL,10k–1M tokens,Sequence labeling; solid supervised NER baseline.
+Specialized,Supervised,NLP,WMT14 En–De / En–Fr (+ IWSLT low-resource),Machine translation,MEDIUM–LARGE,4M–40M pairs,MT benchmarking across data regimes; IWSLT for small-scale.
+Specialized,Supervised,NLP,WikiSQL / Spider,Text-to-SQL,SMALL,80k / 10k,Structured semantic parsing; compositional generalization.
+Specialized,Supervised,NLP,MNLI diagnostic / HANS,NLI stress-tests,TINY,few k,Adversarial probing; compositionality checks.
+Feedforward,Supervised,Speech/Audio,LibriSpeech (100h/360h/960h),ASR,SMALL–MEDIUM,100h–960h,Canonical ASR supervised benchmark; scalable by subset size.
+Feedforward,Supervised,Speech/Audio,Common Voice,ASR (multilingual),MEDIUM,1k–10k h/lang,Crowdsourced diverse accents; label noise to consider.
+Feedforward,Supervised,Speech/Audio,TED-LIUM 3 / WSJ,ASR,SMALL,118h / 80h,Clean speech baselines; lecture/news domain.
+Feedforward,Supervised,Speech/Audio,VoxCeleb1/2,Speaker verification/ID,SMALL–MEDIUM,300k+ utt.,Speaker tasks; cross-talk robustness.
+Feedforward,Supervised,Speech/Audio,AudioSet (labeled subset) / ESC-50 / UrbanSound8K,Audio event classification,SMALL–LARGE,2k–2M clips,General audio classification; noisy YouTube labels in AudioSet.
+Recurrent,Supervised,Speech/Audio,LibriSpeech (100h/360h/960h),ASR,SMALL–MEDIUM,100h–960h,Canonical ASR supervised benchmark; scalable by subset size.
+Recurrent,Supervised,Speech/Audio,Common Voice,ASR (multilingual),MEDIUM,1k–10k h/lang,Crowdsourced diverse accents; label noise to consider.
+Recurrent,Supervised,Speech/Audio,TED-LIUM 3 / WSJ,ASR,SMALL,118h / 80h,Clean speech baselines; lecture/news domain.
+Recurrent,Supervised,Speech/Audio,VoxCeleb1/2,Speaker verification/ID,SMALL–MEDIUM,300k+ utt.,Speaker tasks; cross-talk robustness.
+Recurrent,Supervised,Speech/Audio,AudioSet (labeled subset) / ESC-50 / UrbanSound8K,Audio event classification,SMALL–LARGE,2k–2M clips,General audio classification; noisy YouTube labels in AudioSet.
+Transformer,Supervised,Speech/Audio,LibriSpeech (100h/360h/960h),ASR,SMALL–MEDIUM,100h–960h,Canonical ASR supervised benchmark; scalable by subset size.
+Transformer,Supervised,Speech/Audio,Common Voice,ASR (multilingual),MEDIUM,1k–10k h/lang,Crowdsourced diverse accents; label noise to consider.
+Transformer,Supervised,Speech/Audio,TED-LIUM 3 / WSJ,ASR,SMALL,118h / 80h,Clean speech baselines; lecture/news domain.
+Transformer,Supervised,Speech/Audio,VoxCeleb1/2,Speaker verification/ID,SMALL–MEDIUM,300k+ utt.,Speaker tasks; cross-talk robustness.
+Transformer,Supervised,Speech/Audio,AudioSet (labeled subset) / ESC-50 / UrbanSound8K,Audio event classification,SMALL–LARGE,2k–2M clips,General audio classification; noisy YouTube labels in AudioSet.
+Generative,Supervised,Speech/Audio,LibriSpeech (100h/360h/960h),ASR,SMALL–MEDIUM,100h–960h,Canonical ASR supervised benchmark; scalable by subset size.
+Generative,Supervised,Speech/Audio,Common Voice,ASR (multilingual),MEDIUM,1k–10k h/lang,Crowdsourced diverse accents; label noise to consider.
+Generative,Supervised,Speech/Audio,TED-LIUM 3 / WSJ,ASR,SMALL,118h / 80h,Clean speech baselines; lecture/news domain.
+Generative,Supervised,Speech/Audio,VoxCeleb1/2,Speaker verification/ID,SMALL–MEDIUM,300k+ utt.,Speaker tasks; cross-talk robustness.
+Generative,Supervised,Speech/Audio,AudioSet (labeled subset) / ESC-50 / UrbanSound8K,Audio event classification,SMALL–LARGE,2k–2M clips,General audio classification; noisy YouTube labels in AudioSet.
+Specialized,Supervised,Speech/Audio,LibriSpeech (100h/360h/960h),ASR,SMALL–MEDIUM,100h–960h,Canonical ASR supervised benchmark; scalable by subset size.
+Specialized,Supervised,Speech/Audio,Common Voice,ASR (multilingual),MEDIUM,1k–10k h/lang,Crowdsourced diverse accents; label noise to consider.
+Specialized,Supervised,Speech/Audio,TED-LIUM 3 / WSJ,ASR,SMALL,118h / 80h,Clean speech baselines; lecture/news domain.
+Specialized,Supervised,Speech/Audio,VoxCeleb1/2,Speaker verification/ID,SMALL–MEDIUM,300k+ utt.,Speaker tasks; cross-talk robustness.
+Specialized,Supervised,Speech/Audio,AudioSet (labeled subset) / ESC-50 / UrbanSound8K,Audio event classification,SMALL–LARGE,2k–2M clips,General audio classification; noisy YouTube labels in AudioSet.
+Feedforward,Supervised,Time-Series,UCR/UEA TSC Archive,Time-series classification,SMALL,128 datasets (hundreds–tens of k),Breadth across many domains; fast prototyping.
+Feedforward,Supervised,Time-Series,"ETT (ETTh1/2, ETTm1/2)",Long-horizon forecasting,SMALL,1–2 years @ 15m/1h,Transformer/RNN baselines for LTSF.
+Feedforward,Supervised,Time-Series,Electricity / Traffic / Exchange / Weather / ILI,Forecasting,SMALL–MEDIUM,several k–hundreds k,Standard LTSF suite for comparability.
+Feedforward,Supervised,Time-Series,"PhysioNet (MIT-BIH, MIMIC-III)","Clinical TS (ECG, vitals)",SMALL–MEDIUM,10k–millions of events,Healthcare domain; irregular sampling.
+Feedforward,Supervised,Time-Series,M4 / M5,Forecasting competitions,MEDIUM,100k+ series,Classical forecasting baselines/competitions.
+Recurrent,Supervised,Time-Series,UCR/UEA TSC Archive,Time-series classification,SMALL,128 datasets (hundreds–tens of k),Breadth across many domains; fast prototyping.
+Recurrent,Supervised,Time-Series,"ETT (ETTh1/2, ETTm1/2)",Long-horizon forecasting,SMALL,1–2 years @ 15m/1h,Transformer/RNN baselines for LTSF.
+Recurrent,Supervised,Time-Series,Electricity / Traffic / Exchange / Weather / ILI,Forecasting,SMALL–MEDIUM,several k–hundreds k,Standard LTSF suite for comparability.
+Recurrent,Supervised,Time-Series,"PhysioNet (MIT-BIH, MIMIC-III)","Clinical TS (ECG, vitals)",SMALL–MEDIUM,10k–millions of events,Healthcare domain; irregular sampling.
+Recurrent,Supervised,Time-Series,M4 / M5,Forecasting competitions,MEDIUM,100k+ series,Classical forecasting baselines/competitions.
+Transformer,Supervised,Time-Series,UCR/UEA TSC Archive,Time-series classification,SMALL,128 datasets (hundreds–tens of k),Breadth across many domains; fast prototyping.
+Transformer,Supervised,Time-Series,"ETT (ETTh1/2, ETTm1/2)",Long-horizon forecasting,SMALL,1–2 years @ 15m/1h,Transformer/RNN baselines for LTSF.
+Transformer,Supervised,Time-Series,Electricity / Traffic / Exchange / Weather / ILI,Forecasting,SMALL–MEDIUM,several k–hundreds k,Standard LTSF suite for comparability.
+Transformer,Supervised,Time-Series,"PhysioNet (MIT-BIH, MIMIC-III)","Clinical TS (ECG, vitals)",SMALL–MEDIUM,10k–millions of events,Healthcare domain; irregular sampling.
+Transformer,Supervised,Time-Series,M4 / M5,Forecasting competitions,MEDIUM,100k+ series,Classical forecasting baselines/competitions.
+Specialized,Supervised,Time-Series,UCR/UEA TSC Archive,Time-series classification,SMALL,128 datasets (hundreds–tens of k),Breadth across many domains; fast prototyping.
+Specialized,Supervised,Time-Series,"ETT (ETTh1/2, ETTm1/2)",Long-horizon forecasting,SMALL,1–2 years @ 15m/1h,Transformer/RNN baselines for LTSF.
+Specialized,Supervised,Time-Series,Electricity / Traffic / Exchange / Weather / ILI,Forecasting,SMALL–MEDIUM,several k–hundreds k,Standard LTSF suite for comparability.
+Specialized,Supervised,Time-Series,"PhysioNet (MIT-BIH, MIMIC-III)","Clinical TS (ECG, vitals)",SMALL–MEDIUM,10k–millions of events,Healthcare domain; irregular sampling.
+Specialized,Supervised,Time-Series,M4 / M5,Forecasting competitions,MEDIUM,100k+ series,Classical forecasting baselines/competitions.
+Feedforward,Supervised,Tabular/RecSys,UCI Adult / Census-Income,Binary classification,SMALL,32k / 48k,Classic tabular baselines; feature-engineering friendly.
+Feedforward,Supervised,Tabular/RecSys,HIGGS (UCI),Binary classification,LARGE,11M,Stress-test for large tabular with simple features.
+Feedforward,Supervised,Tabular/RecSys,Santander / Home Credit Default Risk,Credit risk,MEDIUM,200k–1M,Imbalanced classification; interpretability important.
+Feedforward,Supervised,Tabular/RecSys,Criteo 1TB / Avazu,CTR prediction,XL,45M–4B+,Industrial-scale CTR; suits Transformers/FFNs with embeddings.
+Feedforward,Supervised,Tabular/RecSys,Rossmann / Walmart M5,Demand forecasting,SMALL–MEDIUM,tens k–hundreds k,Retail time-series with covariates; exogenous features matter.
+Feedforward,Supervised,Tabular/RecSys,MovieLens (100k/1M/10M/20M) / Amazon Reviews / Yelp,Recommendation,SMALL–LARGE,100k–100M+,Matrix factorization & sequential rec baselines; long-tail behavior.
+Transformer,Supervised,Tabular/RecSys,UCI Adult / Census-Income,Binary classification,SMALL,32k / 48k,Classic tabular baselines; feature-engineering friendly.
+Transformer,Supervised,Tabular/RecSys,HIGGS (UCI),Binary classification,LARGE,11M,Stress-test for large tabular with simple features.
+Transformer,Supervised,Tabular/RecSys,Santander / Home Credit Default Risk,Credit risk,MEDIUM,200k–1M,Imbalanced classification; interpretability important.
+Transformer,Supervised,Tabular/RecSys,Criteo 1TB / Avazu,CTR prediction,XL,45M–4B+,Industrial-scale CTR; suits Transformers/FFNs with embeddings.
+Transformer,Supervised,Tabular/RecSys,Rossmann / Walmart M5,Demand forecasting,SMALL–MEDIUM,tens k–hundreds k,Retail time-series with covariates; exogenous features matter.
+Transformer,Supervised,Tabular/RecSys,MovieLens (100k/1M/10M/20M) / Amazon Reviews / Yelp,Recommendation,SMALL–LARGE,100k–100M+,Matrix factorization & sequential rec baselines; long-tail behavior.
+Specialized,Supervised,Tabular/RecSys,UCI Adult / Census-Income,Binary classification,SMALL,32k / 48k,Classic tabular baselines; feature-engineering friendly.
+Specialized,Supervised,Tabular/RecSys,HIGGS (UCI),Binary classification,LARGE,11M,Stress-test for large tabular with simple features.
+Specialized,Supervised,Tabular/RecSys,Santander / Home Credit Default Risk,Credit risk,MEDIUM,200k–1M,Imbalanced classification; interpretability important.
+Specialized,Supervised,Tabular/RecSys,Criteo 1TB / Avazu,CTR prediction,XL,45M–4B+,Industrial-scale CTR; suits Transformers/FFNs with embeddings.
+Specialized,Supervised,Tabular/RecSys,Rossmann / Walmart M5,Demand forecasting,SMALL–MEDIUM,tens k–hundreds k,Retail time-series with covariates; exogenous features matter.
+Specialized,Supervised,Tabular/RecSys,MovieLens (100k/1M/10M/20M) / Amazon Reviews / Yelp,Recommendation,SMALL–LARGE,100k–100M+,Matrix factorization & sequential rec baselines; long-tail behavior.
+Graph,Supervised,Graph,Cora / Citeseer / PubMed,Node classification,TINY,2.7k–19k nodes,Classic citation benchmarks; fast sanity checks.
+Graph,Supervised,Graph,OGB: ogbn-arxiv / ogbn-products / ogbn-proteins,Node classification,MEDIUM–LARGE,170k–2.5M nodes,"Modern, standardized splits/evals; scalability tests."
+Graph,Supervised,Graph,Reddit / PPI / Flickr,Node classification,MEDIUM,50k–230k nodes,High-degree graphs; batching challenges.
+Graph,Supervised,Graph,TU: MUTAG / PROTEINS / IMDB-BINARY,Graph classification,TINY–SMALL,hundreds–few k graphs,Graph-level tasks; quick iteration.
+Graph,Supervised,Graph,QM9 / ZINC / OGBG-MOLHIV / MOLPCBA,Molecular property prediction,SMALL–MEDIUM,100k–1M molecules,Chemistry benchmarks; regression/classification.
+Transformer,Supervised,Graph,Cora / Citeseer / PubMed,Node classification,TINY,2.7k–19k nodes,Classic citation benchmarks; fast sanity checks.
+Transformer,Supervised,Graph,OGB: ogbn-arxiv / ogbn-products / ogbn-proteins,Node classification,MEDIUM–LARGE,170k–2.5M nodes,"Modern, standardized splits/evals; scalability tests."
+Transformer,Supervised,Graph,Reddit / PPI / Flickr,Node classification,MEDIUM,50k–230k nodes,High-degree graphs; batching challenges.
+Transformer,Supervised,Graph,TU: MUTAG / PROTEINS / IMDB-BINARY,Graph classification,TINY–SMALL,hundreds–few k graphs,Graph-level tasks; quick iteration.
+Transformer,Supervised,Graph,QM9 / ZINC / OGBG-MOLHIV / MOLPCBA,Molecular property prediction,SMALL–MEDIUM,100k–1M molecules,Chemistry benchmarks; regression/classification.
+Specialized,Supervised,Graph,Cora / Citeseer / PubMed,Node classification,TINY,2.7k–19k nodes,Classic citation benchmarks; fast sanity checks.
+Specialized,Supervised,Graph,OGB: ogbn-arxiv / ogbn-products / ogbn-proteins,Node classification,MEDIUM–LARGE,170k–2.5M nodes,"Modern, standardized splits/evals; scalability tests."
+Specialized,Supervised,Graph,Reddit / PPI / Flickr,Node classification,MEDIUM,50k–230k nodes,High-degree graphs; batching challenges.
+Specialized,Supervised,Graph,TU: MUTAG / PROTEINS / IMDB-BINARY,Graph classification,TINY–SMALL,hundreds–few k graphs,Graph-level tasks; quick iteration.
+Specialized,Supervised,Graph,QM9 / ZINC / OGBG-MOLHIV / MOLPCBA,Molecular property prediction,SMALL–MEDIUM,100k–1M molecules,Chemistry benchmarks; regression/classification.
+Feedforward,Unsupervised,Vision,ImageNet (unlabeled) / CIFAR / STL-10,Representation learning / clustering,LARGE,1.28M / 50k / 100k unlabeled,"Pretrain with autoencoders, MoCo/SimCLR-style without labels; evaluate linearly."
+Feedforward,Unsupervised,Vision,"COCO (unlabeled), OpenImages (subset)",Representation learning,LARGE,100k–millions,Domain-diverse pretraining for transfer.
+Feedforward,Unsupervised,Vision,LAION/YFCC (subset),Web-scale pretraining,XL,100M–B+,CLIP-style image-text or pure image pretraining; noisy web data.
+Convolution,Unsupervised,Vision,ImageNet (unlabeled) / CIFAR / STL-10,Representation learning / clustering,LARGE,1.28M / 50k / 100k unlabeled,"Pretrain with autoencoders, MoCo/SimCLR-style without labels; evaluate linearly."
+Convolution,Unsupervised,Vision,"COCO (unlabeled), OpenImages (subset)",Representation learning,LARGE,100k–millions,Domain-diverse pretraining for transfer.
+Convolution,Unsupervised,Vision,LAION/YFCC (subset),Web-scale pretraining,XL,100M–B+,CLIP-style image-text or pure image pretraining; noisy web data.
+Transformer,Unsupervised,Vision,ImageNet (unlabeled) / CIFAR / STL-10,Representation learning / clustering,LARGE,1.28M / 50k / 100k unlabeled,"Pretrain with autoencoders, MoCo/SimCLR-style without labels; evaluate linearly."
+Transformer,Unsupervised,Vision,"COCO (unlabeled), OpenImages (subset)",Representation learning,LARGE,100k–millions,Domain-diverse pretraining for transfer.
+Transformer,Unsupervised,Vision,LAION/YFCC (subset),Web-scale pretraining,XL,100M–B+,CLIP-style image-text or pure image pretraining; noisy web data.
+Generative,Unsupervised,Vision,ImageNet (unlabeled) / CIFAR / STL-10,Representation learning / clustering,LARGE,1.28M / 50k / 100k unlabeled,"Pretrain with autoencoders, MoCo/SimCLR-style without labels; evaluate linearly."
+Generative,Unsupervised,Vision,"COCO (unlabeled), OpenImages (subset)",Representation learning,LARGE,100k–millions,Domain-diverse pretraining for transfer.
+Generative,Unsupervised,Vision,LAION/YFCC (subset),Web-scale pretraining,XL,100M–B+,CLIP-style image-text or pure image pretraining; noisy web data.
+Specialized,Unsupervised,Vision,ImageNet (unlabeled) / CIFAR / STL-10,Representation learning / clustering,LARGE,1.28M / 50k / 100k unlabeled,"Pretrain with autoencoders, MoCo/SimCLR-style without labels; evaluate linearly."
+Specialized,Unsupervised,Vision,"COCO (unlabeled), OpenImages (subset)",Representation learning,LARGE,100k–millions,Domain-diverse pretraining for transfer.
+Specialized,Unsupervised,Vision,LAION/YFCC (subset),Web-scale pretraining,XL,100M–B+,CLIP-style image-text or pure image pretraining; noisy web data.
+Feedforward,Unsupervised,NLP,Wikipedia / BookCorpus / OpenWebText / C4 / The Pile,Language modeling,XL,10B+ tokens,Next-token/denoising LM pretraining; broad transfer.
+Feedforward,Unsupervised,NLP,Gigaword / CC-News,LM / summarization pretraining,LARGE,1B+ tokens,Pretraining for summarization/abstractive tasks.
+Feedforward,Unsupervised,NLP,Wikitext-103 / Penn Treebank,LM,SMALL,100M / 1M tokens,Lightweight LM baselines; fast ablations.
+Recurrent,Unsupervised,NLP,Wikipedia / BookCorpus / OpenWebText / C4 / The Pile,Language modeling,XL,10B+ tokens,Next-token/denoising LM pretraining; broad transfer.
+Recurrent,Unsupervised,NLP,Gigaword / CC-News,LM / summarization pretraining,LARGE,1B+ tokens,Pretraining for summarization/abstractive tasks.
+Recurrent,Unsupervised,NLP,Wikitext-103 / Penn Treebank,LM,SMALL,100M / 1M tokens,Lightweight LM baselines; fast ablations.
+Transformer,Unsupervised,NLP,Wikipedia / BookCorpus / OpenWebText / C4 / The Pile,Language modeling,XL,10B+ tokens,Next-token/denoising LM pretraining; broad transfer.
+Transformer,Unsupervised,NLP,Gigaword / CC-News,LM / summarization pretraining,LARGE,1B+ tokens,Pretraining for summarization/abstractive tasks.
+Transformer,Unsupervised,NLP,Wikitext-103 / Penn Treebank,LM,SMALL,100M / 1M tokens,Lightweight LM baselines; fast ablations.
+Generative,Unsupervised,NLP,Wikipedia / BookCorpus / OpenWebText / C4 / The Pile,Language modeling,XL,10B+ tokens,Next-token/denoising LM pretraining; broad transfer.
+Generative,Unsupervised,NLP,Gigaword / CC-News,LM / summarization pretraining,LARGE,1B+ tokens,Pretraining for summarization/abstractive tasks.
+Generative,Unsupervised,NLP,Wikitext-103 / Penn Treebank,LM,SMALL,100M / 1M tokens,Lightweight LM baselines; fast ablations.
+Specialized,Unsupervised,NLP,Wikipedia / BookCorpus / OpenWebText / C4 / The Pile,Language modeling,XL,10B+ tokens,Next-token/denoising LM pretraining; broad transfer.
+Specialized,Unsupervised,NLP,Gigaword / CC-News,LM / summarization pretraining,LARGE,1B+ tokens,Pretraining for summarization/abstractive tasks.
+Specialized,Unsupervised,NLP,Wikitext-103 / Penn Treebank,LM,SMALL,100M / 1M tokens,Lightweight LM baselines; fast ablations.
+Feedforward,Unsupervised,Speech/Audio,Libri-Light,Self/unsupervised speech pretraining,LARGE,60k hours,wav2vec/HubERT pretraining; fine-tune on LibriSpeech 10–100h.
+Feedforward,Unsupervised,Speech/Audio,VoxPopuli / GigaSpeech,Self/unsupervised speech pretraining,LARGE–XL,1k–10k+ hours,Multilingual or diverse audio; robust features.
+Feedforward,Unsupervised,Speech/Audio,AudioSet (weakly labeled),Representation learning,XL,2M 10s clips,General audio embeddings; noisy labels acceptable for unsup/SSL.
+Recurrent,Unsupervised,Speech/Audio,Libri-Light,Self/unsupervised speech pretraining,LARGE,60k hours,wav2vec/HubERT pretraining; fine-tune on LibriSpeech 10–100h.
+Recurrent,Unsupervised,Speech/Audio,VoxPopuli / GigaSpeech,Self/unsupervised speech pretraining,LARGE–XL,1k–10k+ hours,Multilingual or diverse audio; robust features.
+Recurrent,Unsupervised,Speech/Audio,AudioSet (weakly labeled),Representation learning,XL,2M 10s clips,General audio embeddings; noisy labels acceptable for unsup/SSL.
+Transformer,Unsupervised,Speech/Audio,Libri-Light,Self/unsupervised speech pretraining,LARGE,60k hours,wav2vec/HubERT pretraining; fine-tune on LibriSpeech 10–100h.
+Transformer,Unsupervised,Speech/Audio,VoxPopuli / GigaSpeech,Self/unsupervised speech pretraining,LARGE–XL,1k–10k+ hours,Multilingual or diverse audio; robust features.
+Transformer,Unsupervised,Speech/Audio,AudioSet (weakly labeled),Representation learning,XL,2M 10s clips,General audio embeddings; noisy labels acceptable for unsup/SSL.
+Generative,Unsupervised,Speech/Audio,Libri-Light,Self/unsupervised speech pretraining,LARGE,60k hours,wav2vec/HubERT pretraining; fine-tune on LibriSpeech 10–100h.
+Generative,Unsupervised,Speech/Audio,VoxPopuli / GigaSpeech,Self/unsupervised speech pretraining,LARGE–XL,1k–10k+ hours,Multilingual or diverse audio; robust features.
+Generative,Unsupervised,Speech/Audio,AudioSet (weakly labeled),Representation learning,XL,2M 10s clips,General audio embeddings; noisy labels acceptable for unsup/SSL.
+Specialized,Unsupervised,Speech/Audio,Libri-Light,Self/unsupervised speech pretraining,LARGE,60k hours,wav2vec/HubERT pretraining; fine-tune on LibriSpeech 10–100h.
+Specialized,Unsupervised,Speech/Audio,VoxPopuli / GigaSpeech,Self/unsupervised speech pretraining,LARGE–XL,1k–10k+ hours,Multilingual or diverse audio; robust features.
+Specialized,Unsupervised,Speech/Audio,AudioSet (weakly labeled),Representation learning,XL,2M 10s clips,General audio embeddings; noisy labels acceptable for unsup/SSL.
+Feedforward,Unsupervised,Time-Series,NAB / Yahoo S5,Anomaly detection,SMALL,100s–1k series,Benchmark for unsupervised anomalies; seasonal + point anomalies.
+Feedforward,Unsupervised,Time-Series,SMAP / MSL (NASA) / SMD,Anomaly detection,SMALL–MEDIUM,thousands–millions points,Spacecraft / server telemetry anomalies; standard in anomaly papers.
+Feedforward,Unsupervised,Time-Series,SWaT / WADI,Industrial control anomalies,SMALL,days–weeks,ICS domain; attacks & faults; strong for practical relevance.
+Recurrent,Unsupervised,Time-Series,NAB / Yahoo S5,Anomaly detection,SMALL,100s–1k series,Benchmark for unsupervised anomalies; seasonal + point anomalies.
+Recurrent,Unsupervised,Time-Series,SMAP / MSL (NASA) / SMD,Anomaly detection,SMALL–MEDIUM,thousands–millions points,Spacecraft / server telemetry anomalies; standard in anomaly papers.
+Recurrent,Unsupervised,Time-Series,SWaT / WADI,Industrial control anomalies,SMALL,days–weeks,ICS domain; attacks & faults; strong for practical relevance.
+Transformer,Unsupervised,Time-Series,NAB / Yahoo S5,Anomaly detection,SMALL,100s–1k series,Benchmark for unsupervised anomalies; seasonal + point anomalies.
+Transformer,Unsupervised,Time-Series,SMAP / MSL (NASA) / SMD,Anomaly detection,SMALL–MEDIUM,thousands–millions points,Spacecraft / server telemetry anomalies; standard in anomaly papers.
+Transformer,Unsupervised,Time-Series,SWaT / WADI,Industrial control anomalies,SMALL,days–weeks,ICS domain; attacks & faults; strong for practical relevance.
+Specialized,Unsupervised,Time-Series,NAB / Yahoo S5,Anomaly detection,SMALL,100s–1k series,Benchmark for unsupervised anomalies; seasonal + point anomalies.
+Specialized,Unsupervised,Time-Series,SMAP / MSL (NASA) / SMD,Anomaly detection,SMALL–MEDIUM,thousands–millions points,Spacecraft / server telemetry anomalies; standard in anomaly papers.
+Specialized,Unsupervised,Time-Series,SWaT / WADI,Industrial control anomalies,SMALL,days–weeks,ICS domain; attacks & faults; strong for practical relevance.
+Feedforward,Unsupervised,Tabular/RecSys,"Credit Card Fraud (Kaggle) / ODDS repo (e.g., Thyroid, Arrhythmia)",Anomaly detection,SMALL,100k–300k,Unsupervised/outlier detection; severe imbalance.
+Feedforward,Unsupervised,Tabular/RecSys,KDD99 / NSL-KDD,Network intrusion (unsup/clustering),MEDIUM,5M / 125k,Classic (dated) intrusion benchmarks; be mindful of artifacts.
+Feedforward,Unsupervised,Tabular/RecSys,MovieLens implicit (unlabeled prefs) / Amazon clicks,Collaborative filtering (implicit),SMALL–LARGE,100k–100M+,Unlabeled interactions for matrix factorization/autoencoders.
+Transformer,Unsupervised,Tabular/RecSys,"Credit Card Fraud (Kaggle) / ODDS repo (e.g., Thyroid, Arrhythmia)",Anomaly detection,SMALL,100k–300k,Unsupervised/outlier detection; severe imbalance.
+Transformer,Unsupervised,Tabular/RecSys,KDD99 / NSL-KDD,Network intrusion (unsup/clustering),MEDIUM,5M / 125k,Classic (dated) intrusion benchmarks; be mindful of artifacts.
+Transformer,Unsupervised,Tabular/RecSys,MovieLens implicit (unlabeled prefs) / Amazon clicks,Collaborative filtering (implicit),SMALL–LARGE,100k–100M+,Unlabeled interactions for matrix factorization/autoencoders.
+Specialized,Unsupervised,Tabular/RecSys,"Credit Card Fraud (Kaggle) / ODDS repo (e.g., Thyroid, Arrhythmia)",Anomaly detection,SMALL,100k–300k,Unsupervised/outlier detection; severe imbalance.
+Specialized,Unsupervised,Tabular/RecSys,KDD99 / NSL-KDD,Network intrusion (unsup/clustering),MEDIUM,5M / 125k,Classic (dated) intrusion benchmarks; be mindful of artifacts.
+Specialized,Unsupervised,Tabular/RecSys,MovieLens implicit (unlabeled prefs) / Amazon clicks,Collaborative filtering (implicit),SMALL–LARGE,100k–100M+,Unlabeled interactions for matrix factorization/autoencoders.
+Graph,Unsupervised,Graph,Cora/Citeseer/PubMed (DeepWalk/Node2Vec),Unsupervised node embeddings,TINY,2.7k–19k nodes,Evaluate with linear probe; link prediction or node classification.
+Graph,Unsupervised,Graph,OGB: ogbl-collab / ogbl-ppa / ogbl-ddi,Link prediction,MEDIUM–LARGE,100k–10M edges,Standard large-scale unsupervised link prediction.
+Graph,Unsupervised,Graph,Reddit / PPI unsupervised,Node embeddings,MEDIUM,50k–230k nodes,Self-supervised/unsupervised graph encoders.
+Transformer,Unsupervised,Graph,Cora/Citeseer/PubMed (DeepWalk/Node2Vec),Unsupervised node embeddings,TINY,2.7k–19k nodes,Evaluate with linear probe; link prediction or node classification.
+Transformer,Unsupervised,Graph,OGB: ogbl-collab / ogbl-ppa / ogbl-ddi,Link prediction,MEDIUM–LARGE,100k–10M edges,Standard large-scale unsupervised link prediction.
+Transformer,Unsupervised,Graph,Reddit / PPI unsupervised,Node embeddings,MEDIUM,50k–230k nodes,Self-supervised/unsupervised graph encoders.
+Specialized,Unsupervised,Graph,Cora/Citeseer/PubMed (DeepWalk/Node2Vec),Unsupervised node embeddings,TINY,2.7k–19k nodes,Evaluate with linear probe; link prediction or node classification.
+Specialized,Unsupervised,Graph,OGB: ogbl-collab / ogbl-ppa / ogbl-ddi,Link prediction,MEDIUM–LARGE,100k–10M edges,Standard large-scale unsupervised link prediction.
+Specialized,Unsupervised,Graph,Reddit / PPI unsupervised,Node embeddings,MEDIUM,50k–230k nodes,Self-supervised/unsupervised graph encoders.
+Feedforward,Self-Supervised,Vision,ImageNet-1k (no labels) / CIFAR / STL-10,Contrastive/Masking pretrain,LARGE,1.28M / 50k / 100k,"MoCo, SimCLR, BYOL, DINO, MAE; linear probe on ImageNet/CIFAR."
+Feedforward,Self-Supervised,Vision,COCO / OpenImages / LAION subset,SSL pretraining,LARGE–XL,100k–100M+,Diverse images; strong for transfer & zero-shot (CLIP-style).
+Convolution,Self-Supervised,Vision,ImageNet-1k (no labels) / CIFAR / STL-10,Contrastive/Masking pretrain,LARGE,1.28M / 50k / 100k,"MoCo, SimCLR, BYOL, DINO, MAE; linear probe on ImageNet/CIFAR."
+Convolution,Self-Supervised,Vision,COCO / OpenImages / LAION subset,SSL pretraining,LARGE–XL,100k–100M+,Diverse images; strong for transfer & zero-shot (CLIP-style).
+Transformer,Self-Supervised,Vision,ImageNet-1k (no labels) / CIFAR / STL-10,Contrastive/Masking pretrain,LARGE,1.28M / 50k / 100k,"MoCo, SimCLR, BYOL, DINO, MAE; linear probe on ImageNet/CIFAR."
+Transformer,Self-Supervised,Vision,COCO / OpenImages / LAION subset,SSL pretraining,LARGE–XL,100k–100M+,Diverse images; strong for transfer & zero-shot (CLIP-style).
+Generative,Self-Supervised,Vision,ImageNet-1k (no labels) / CIFAR / STL-10,Contrastive/Masking pretrain,LARGE,1.28M / 50k / 100k,"MoCo, SimCLR, BYOL, DINO, MAE; linear probe on ImageNet/CIFAR."
+Generative,Self-Supervised,Vision,COCO / OpenImages / LAION subset,SSL pretraining,LARGE–XL,100k–100M+,Diverse images; strong for transfer & zero-shot (CLIP-style).
+Specialized,Self-Supervised,Vision,ImageNet-1k (no labels) / CIFAR / STL-10,Contrastive/Masking pretrain,LARGE,1.28M / 50k / 100k,"MoCo, SimCLR, BYOL, DINO, MAE; linear probe on ImageNet/CIFAR."
+Specialized,Self-Supervised,Vision,COCO / OpenImages / LAION subset,SSL pretraining,LARGE–XL,100k–100M+,Diverse images; strong for transfer & zero-shot (CLIP-style).
+Feedforward,Self-Supervised,NLP,C4 / Wikipedia + BookCorpus / The Pile,Masked LM / Seq2Seq denoising,XL,10B+ tokens,BERT/T5/LLM-style pretraining; fine-tune downstream.
+Feedforward,Self-Supervised,NLP,OpenWebText / CC-News,Causal LM,LARGE–XL,1B–100B tokens,GPT-style pretraining; downstream finetuning/PEFT.
+Recurrent,Self-Supervised,NLP,C4 / Wikipedia + BookCorpus / The Pile,Masked LM / Seq2Seq denoising,XL,10B+ tokens,BERT/T5/LLM-style pretraining; fine-tune downstream.
+Recurrent,Self-Supervised,NLP,OpenWebText / CC-News,Causal LM,LARGE–XL,1B–100B tokens,GPT-style pretraining; downstream finetuning/PEFT.
+Transformer,Self-Supervised,NLP,C4 / Wikipedia + BookCorpus / The Pile,Masked LM / Seq2Seq denoising,XL,10B+ tokens,BERT/T5/LLM-style pretraining; fine-tune downstream.
+Transformer,Self-Supervised,NLP,OpenWebText / CC-News,Causal LM,LARGE–XL,1B–100B tokens,GPT-style pretraining; downstream finetuning/PEFT.
+Generative,Self-Supervised,NLP,C4 / Wikipedia + BookCorpus / The Pile,Masked LM / Seq2Seq denoising,XL,10B+ tokens,BERT/T5/LLM-style pretraining; fine-tune downstream.
+Generative,Self-Supervised,NLP,OpenWebText / CC-News,Causal LM,LARGE–XL,1B–100B tokens,GPT-style pretraining; downstream finetuning/PEFT.
+Specialized,Self-Supervised,NLP,C4 / Wikipedia + BookCorpus / The Pile,Masked LM / Seq2Seq denoising,XL,10B+ tokens,BERT/T5/LLM-style pretraining; fine-tune downstream.
+Specialized,Self-Supervised,NLP,OpenWebText / CC-News,Causal LM,LARGE–XL,1B–100B tokens,GPT-style pretraining; downstream finetuning/PEFT.
+Feedforward,Self-Supervised,Speech/Audio,Libri-Light / VoxPopuli / GigaSpeech,"SSL (wav2vec 2.0, HuBERT)",LARGE–XL,1k–60k+ h,Strong for low-label ASR; fine-tune on 10–100h labeled.
+Feedforward,Self-Supervised,Speech/Audio,AudioSet (for SSL audio),Audio SSL pretraining,XL,2M clips,General audio representations for downstream tasks.
+Recurrent,Self-Supervised,Speech/Audio,Libri-Light / VoxPopuli / GigaSpeech,"SSL (wav2vec 2.0, HuBERT)",LARGE–XL,1k–60k+ h,Strong for low-label ASR; fine-tune on 10–100h labeled.
+Recurrent,Self-Supervised,Speech/Audio,AudioSet (for SSL audio),Audio SSL pretraining,XL,2M clips,General audio representations for downstream tasks.
+Transformer,Self-Supervised,Speech/Audio,Libri-Light / VoxPopuli / GigaSpeech,"SSL (wav2vec 2.0, HuBERT)",LARGE–XL,1k–60k+ h,Strong for low-label ASR; fine-tune on 10–100h labeled.
+Transformer,Self-Supervised,Speech/Audio,AudioSet (for SSL audio),Audio SSL pretraining,XL,2M clips,General audio representations for downstream tasks.
+Generative,Self-Supervised,Speech/Audio,Libri-Light / VoxPopuli / GigaSpeech,"SSL (wav2vec 2.0, HuBERT)",LARGE–XL,1k–60k+ h,Strong for low-label ASR; fine-tune on 10–100h labeled.
+Generative,Self-Supervised,Speech/Audio,AudioSet (for SSL audio),Audio SSL pretraining,XL,2M clips,General audio representations for downstream tasks.
+Specialized,Self-Supervised,Speech/Audio,Libri-Light / VoxPopuli / GigaSpeech,"SSL (wav2vec 2.0, HuBERT)",LARGE–XL,1k–60k+ h,Strong for low-label ASR; fine-tune on 10–100h labeled.
+Specialized,Self-Supervised,Speech/Audio,AudioSet (for SSL audio),Audio SSL pretraining,XL,2M clips,General audio representations for downstream tasks.
+Feedforward,Self-Supervised,Time-Series,ETT/ECL/Traffic/Weather,Temporal masking/contrastive,SMALL–MEDIUM,10k–1M+ points,"TS2Vec, TST, TNC-style SSL; improves with scarce labels."
+Feedforward,Self-Supervised,Time-Series,"PhysioNet (MIMIC-III, ECG)",Temporal SSL,MEDIUM,millions events,Healthcare SSL; irregular sampling & missingness.
+Recurrent,Self-Supervised,Time-Series,ETT/ECL/Traffic/Weather,Temporal masking/contrastive,SMALL–MEDIUM,10k–1M+ points,"TS2Vec, TST, TNC-style SSL; improves with scarce labels."
+Recurrent,Self-Supervised,Time-Series,"PhysioNet (MIMIC-III, ECG)",Temporal SSL,MEDIUM,millions events,Healthcare SSL; irregular sampling & missingness.
+Transformer,Self-Supervised,Time-Series,ETT/ECL/Traffic/Weather,Temporal masking/contrastive,SMALL–MEDIUM,10k–1M+ points,"TS2Vec, TST, TNC-style SSL; improves with scarce labels."
+Transformer,Self-Supervised,Time-Series,"PhysioNet (MIMIC-III, ECG)",Temporal SSL,MEDIUM,millions events,Healthcare SSL; irregular sampling & missingness.
+Specialized,Self-Supervised,Time-Series,ETT/ECL/Traffic/Weather,Temporal masking/contrastive,SMALL–MEDIUM,10k–1M+ points,"TS2Vec, TST, TNC-style SSL; improves with scarce labels."
+Specialized,Self-Supervised,Time-Series,"PhysioNet (MIMIC-III, ECG)",Temporal SSL,MEDIUM,millions events,Healthcare SSL; irregular sampling & missingness.
+Graph,Self-Supervised,Graph,OGB (arxiv/products/proteins) + GraphCL/InfoGraph,Graph SSL,MEDIUM–LARGE,100k–2.5M nodes,Augmentation-based SSL on graphs; good for transfer.
+Graph,Self-Supervised,Graph,"TU Graph datasets (MUTAG,etc.)",Graph SSL (pretrain),TINY–SMALL,hundreds–few k graphs,Pretrain on many small graphs; finetune to target.
+Transformer,Self-Supervised,Graph,OGB (arxiv/products/proteins) + GraphCL/InfoGraph,Graph SSL,MEDIUM–LARGE,100k–2.5M nodes,Augmentation-based SSL on graphs; good for transfer.
+Transformer,Self-Supervised,Graph,"TU Graph datasets (MUTAG,etc.)",Graph SSL (pretrain),TINY–SMALL,hundreds–few k graphs,Pretrain on many small graphs; finetune to target.
+Specialized,Self-Supervised,Graph,OGB (arxiv/products/proteins) + GraphCL/InfoGraph,Graph SSL,MEDIUM–LARGE,100k–2.5M nodes,Augmentation-based SSL on graphs; good for transfer.
+Specialized,Self-Supervised,Graph,"TU Graph datasets (MUTAG,etc.)",Graph SSL (pretrain),TINY–SMALL,hundreds–few k graphs,Pretrain on many small graphs; finetune to target.
+Feedforward,Semi-Supervised,Vision,CIFAR-10/100 (limited labels),FixMatch/MeanTeacher/Pseudo-label,SMALL,4k–10k labeled + 40k–46k unlabeled,Go-to SSL-semi setup; report standard splits.
+Feedforward,Semi-Supervised,Vision,SVHN (limited labels),Semi-supervised classification,SMALL,1k–4k labeled,Classic semi-supervised benchmark; compare to literature.
+Feedforward,Semi-Supervised,Vision,STL-10,Semi-supervised classification,SMALL,5k labeled + 100k unlabeled,Built for semi/SSL; higher-res than CIFAR.
+Feedforward,Semi-Supervised,Vision,ImageNet (10% labels),Semi-supervised classification,LARGE,128k labeled + 1.15M unlabeled,High-compute semi-supervised benchmark.
+Convolution,Semi-Supervised,Vision,CIFAR-10/100 (limited labels),FixMatch/MeanTeacher/Pseudo-label,SMALL,4k–10k labeled + 40k–46k unlabeled,Go-to SSL-semi setup; report standard splits.
+Convolution,Semi-Supervised,Vision,SVHN (limited labels),Semi-supervised classification,SMALL,1k–4k labeled,Classic semi-supervised benchmark; compare to literature.
+Convolution,Semi-Supervised,Vision,STL-10,Semi-supervised classification,SMALL,5k labeled + 100k unlabeled,Built for semi/SSL; higher-res than CIFAR.
+Convolution,Semi-Supervised,Vision,ImageNet (10% labels),Semi-supervised classification,LARGE,128k labeled + 1.15M unlabeled,High-compute semi-supervised benchmark.
+Transformer,Semi-Supervised,Vision,CIFAR-10/100 (limited labels),FixMatch/MeanTeacher/Pseudo-label,SMALL,4k–10k labeled + 40k–46k unlabeled,Go-to SSL-semi setup; report standard splits.
+Transformer,Semi-Supervised,Vision,SVHN (limited labels),Semi-supervised classification,SMALL,1k–4k labeled,Classic semi-supervised benchmark; compare to literature.
+Transformer,Semi-Supervised,Vision,STL-10,Semi-supervised classification,SMALL,5k labeled + 100k unlabeled,Built for semi/SSL; higher-res than CIFAR.
+Transformer,Semi-Supervised,Vision,ImageNet (10% labels),Semi-supervised classification,LARGE,128k labeled + 1.15M unlabeled,High-compute semi-supervised benchmark.
+Generative,Semi-Supervised,Vision,CIFAR-10/100 (limited labels),FixMatch/MeanTeacher/Pseudo-label,SMALL,4k–10k labeled + 40k–46k unlabeled,Go-to SSL-semi setup; report standard splits.
+Generative,Semi-Supervised,Vision,SVHN (limited labels),Semi-supervised classification,SMALL,1k–4k labeled,Classic semi-supervised benchmark; compare to literature.
+Generative,Semi-Supervised,Vision,STL-10,Semi-supervised classification,SMALL,5k labeled + 100k unlabeled,Built for semi/SSL; higher-res than CIFAR.
+Generative,Semi-Supervised,Vision,ImageNet (10% labels),Semi-supervised classification,LARGE,128k labeled + 1.15M unlabeled,High-compute semi-supervised benchmark.
+Specialized,Semi-Supervised,Vision,CIFAR-10/100 (limited labels),FixMatch/MeanTeacher/Pseudo-label,SMALL,4k–10k labeled + 40k–46k unlabeled,Go-to SSL-semi setup; report standard splits.
+Specialized,Semi-Supervised,Vision,SVHN (limited labels),Semi-supervised classification,SMALL,1k–4k labeled,Classic semi-supervised benchmark; compare to literature.
+Specialized,Semi-Supervised,Vision,STL-10,Semi-supervised classification,SMALL,5k labeled + 100k unlabeled,Built for semi/SSL; higher-res than CIFAR.
+Specialized,Semi-Supervised,Vision,ImageNet (10% labels),Semi-supervised classification,LARGE,128k labeled + 1.15M unlabeled,High-compute semi-supervised benchmark.
+Feedforward,Semi-Supervised,NLP,IWSLT14 De–En / TED talks (low-resource),MT semi-supervised,SMALL,100k–200k pairs + monolingual,Back-translation/Noisy-student for low-resource MT.
+Feedforward,Semi-Supervised,NLP,IMDb / Yelp (few labels) + unlabeled reviews,Text classification semi-sup,SMALL–MEDIUM,few k labeled + 100k unlabeled,UDA/Noisy-student-like for text.
+Feedforward,Semi-Supervised,NLP,NER: CoNLL-2003 (few labels) + raw Wikipedia,Sequence labeling semi-sup,SMALL–MEDIUM,few k labeled + millions unlabeled,Self-training/consistency training helps.
+Recurrent,Semi-Supervised,NLP,IWSLT14 De–En / TED talks (low-resource),MT semi-supervised,SMALL,100k–200k pairs + monolingual,Back-translation/Noisy-student for low-resource MT.
+Recurrent,Semi-Supervised,NLP,IMDb / Yelp (few labels) + unlabeled reviews,Text classification semi-sup,SMALL–MEDIUM,few k labeled + 100k unlabeled,UDA/Noisy-student-like for text.
+Recurrent,Semi-Supervised,NLP,NER: CoNLL-2003 (few labels) + raw Wikipedia,Sequence labeling semi-sup,SMALL–MEDIUM,few k labeled + millions unlabeled,Self-training/consistency training helps.
+Transformer,Semi-Supervised,NLP,IWSLT14 De–En / TED talks (low-resource),MT semi-supervised,SMALL,100k–200k pairs + monolingual,Back-translation/Noisy-student for low-resource MT.
+Transformer,Semi-Supervised,NLP,IMDb / Yelp (few labels) + unlabeled reviews,Text classification semi-sup,SMALL–MEDIUM,few k labeled + 100k unlabeled,UDA/Noisy-student-like for text.
+Transformer,Semi-Supervised,NLP,NER: CoNLL-2003 (few labels) + raw Wikipedia,Sequence labeling semi-sup,SMALL–MEDIUM,few k labeled + millions unlabeled,Self-training/consistency training helps.
+Generative,Semi-Supervised,NLP,IWSLT14 De–En / TED talks (low-resource),MT semi-supervised,SMALL,100k–200k pairs + monolingual,Back-translation/Noisy-student for low-resource MT.
+Generative,Semi-Supervised,NLP,IMDb / Yelp (few labels) + unlabeled reviews,Text classification semi-sup,SMALL–MEDIUM,few k labeled + 100k unlabeled,UDA/Noisy-student-like for text.
+Generative,Semi-Supervised,NLP,NER: CoNLL-2003 (few labels) + raw Wikipedia,Sequence labeling semi-sup,SMALL–MEDIUM,few k labeled + millions unlabeled,Self-training/consistency training helps.
+Specialized,Semi-Supervised,NLP,IWSLT14 De–En / TED talks (low-resource),MT semi-supervised,SMALL,100k–200k pairs + monolingual,Back-translation/Noisy-student for low-resource MT.
+Specialized,Semi-Supervised,NLP,IMDb / Yelp (few labels) + unlabeled reviews,Text classification semi-sup,SMALL–MEDIUM,few k labeled + 100k unlabeled,UDA/Noisy-student-like for text.
+Specialized,Semi-Supervised,NLP,NER: CoNLL-2003 (few labels) + raw Wikipedia,Sequence labeling semi-sup,SMALL–MEDIUM,few k labeled + millions unlabeled,Self-training/consistency training helps.
+Feedforward,Semi-Supervised,Speech/Audio,LibriSpeech 10–100h labeled + 860h unlabeled,ASR semi-supervised,MEDIUM,870–960h,Pseudo-labeling + SSL backbones widely used.
+Feedforward,Semi-Supervised,Speech/Audio,Common Voice small labeled + large unlabeled,ASR semi-supervised,MEDIUM–LARGE,hundreds–thousands h,Great for accent diversity with limited labels.
+Recurrent,Semi-Supervised,Speech/Audio,LibriSpeech 10–100h labeled + 860h unlabeled,ASR semi-supervised,MEDIUM,870–960h,Pseudo-labeling + SSL backbones widely used.
+Recurrent,Semi-Supervised,Speech/Audio,Common Voice small labeled + large unlabeled,ASR semi-supervised,MEDIUM–LARGE,hundreds–thousands h,Great for accent diversity with limited labels.
+Transformer,Semi-Supervised,Speech/Audio,LibriSpeech 10–100h labeled + 860h unlabeled,ASR semi-supervised,MEDIUM,870–960h,Pseudo-labeling + SSL backbones widely used.
+Transformer,Semi-Supervised,Speech/Audio,Common Voice small labeled + large unlabeled,ASR semi-supervised,MEDIUM–LARGE,hundreds–thousands h,Great for accent diversity with limited labels.
+Generative,Semi-Supervised,Speech/Audio,LibriSpeech 10–100h labeled + 860h unlabeled,ASR semi-supervised,MEDIUM,870–960h,Pseudo-labeling + SSL backbones widely used.
+Generative,Semi-Supervised,Speech/Audio,Common Voice small labeled + large unlabeled,ASR semi-supervised,MEDIUM–LARGE,hundreds–thousands h,Great for accent diversity with limited labels.
+Specialized,Semi-Supervised,Speech/Audio,LibriSpeech 10–100h labeled + 860h unlabeled,ASR semi-supervised,MEDIUM,870–960h,Pseudo-labeling + SSL backbones widely used.
+Specialized,Semi-Supervised,Speech/Audio,Common Voice small labeled + large unlabeled,ASR semi-supervised,MEDIUM–LARGE,hundreds–thousands h,Great for accent diversity with limited labels.
+Graph,Semi-Supervised,Graph,Cora/Citeseer/PubMed (few labels),Node classification,TINY,20 labels/cls,Canonical semi-supervised node classification (GCN baselines).
+Graph,Semi-Supervised,Graph,OGB (few labels setting),Node classification,MEDIUM–LARGE,varies,Stronger scalability; label-efficiency comparisons.
+Transformer,Semi-Supervised,Graph,Cora/Citeseer/PubMed (few labels),Node classification,TINY,20 labels/cls,Canonical semi-supervised node classification (GCN baselines).
+Transformer,Semi-Supervised,Graph,OGB (few labels setting),Node classification,MEDIUM–LARGE,varies,Stronger scalability; label-efficiency comparisons.
+Specialized,Semi-Supervised,Graph,Cora/Citeseer/PubMed (few labels),Node classification,TINY,20 labels/cls,Canonical semi-supervised node classification (GCN baselines).
+Specialized,Semi-Supervised,Graph,OGB (few labels setting),Node classification,MEDIUM–LARGE,varies,Stronger scalability; label-efficiency comparisons.
+Feedforward,Semi-Supervised,Tabular/RecSys,Credit risk (Home Credit) few labels + unlabeled pool,Semi-supervised tabular,MEDIUM,200k–1M,Self-training or consistency regularization; class imbalance care.
+Feedforward,Semi-Supervised,Tabular/RecSys,Criteo/Avazu with sparse labels,Semi-supervised CTR,XL,10M–1B+,Leverage unlabeled clicks with pseudo-labeling / teacher-student.
+Transformer,Semi-Supervised,Tabular/RecSys,Credit risk (Home Credit) few labels + unlabeled pool,Semi-supervised tabular,MEDIUM,200k–1M,Self-training or consistency regularization; class imbalance care.
+Transformer,Semi-Supervised,Tabular/RecSys,Criteo/Avazu with sparse labels,Semi-supervised CTR,XL,10M–1B+,Leverage unlabeled clicks with pseudo-labeling / teacher-student.
+Specialized,Semi-Supervised,Tabular/RecSys,Credit risk (Home Credit) few labels + unlabeled pool,Semi-supervised tabular,MEDIUM,200k–1M,Self-training or consistency regularization; class imbalance care.
+Specialized,Semi-Supervised,Tabular/RecSys,Criteo/Avazu with sparse labels,Semi-supervised CTR,XL,10M–1B+,Leverage unlabeled clicks with pseudo-labeling / teacher-student.
+Reinforcement,Reinforcement,RL Envs,Atari 2600 (ALE),Visual discrete control,MEDIUM,57 games,Standard deep RL; DQN/IMPALA/IQN; offline via DQN replay.
+Reinforcement,Reinforcement,RL Envs,"DM Control / MuJoCo (Hopper, Walker2d, HalfCheetah)",Continuous control,SMALL–MEDIUM,dozens tasks,Policy-gradient/actor-critic baselines; physics continuous control.
+Reinforcement,Reinforcement,RL Envs,Procgen / DM Lab,Procedural generalization,MEDIUM,16–57 games,Generalization benchmarking under distribution shift.
+Reinforcement,Reinforcement,RL Envs,Meta-World (ML1/10/45),Meta-RL manipulation,SMALL,50 tasks,Multi-task manipulation; meta-RL baselines.
+Reinforcement,Reinforcement,RL Envs,CARLA / Habitat / MineRL,Autonomous driving / Embodied / Minecraft,MEDIUM–LARGE,varied,Long-horizon & sim2real challenges; imitation + RL combos.
+Reinforcement,Reinforcement,RL Envs,D4RL / RL Unplugged,Offline RL datasets,MEDIUM–LARGE,thousands–millions transitions,Behavior cloning / offline RL benchmarking.
+Reinforcement,Reinforcement,RL Envs,PettingZoo / OpenSpiel,Multi-agent RL,SMALL–MEDIUM,dozens envs,"MARL benchmarks: matrix games, MPE, poker/Go variants."
+Transformer,Reinforcement,RL Envs,Atari 2600 (ALE),Visual discrete control,MEDIUM,57 games,Standard deep RL; DQN/IMPALA/IQN; offline via DQN replay.
+Transformer,Reinforcement,RL Envs,"DM Control / MuJoCo (Hopper, Walker2d, HalfCheetah)",Continuous control,SMALL–MEDIUM,dozens tasks,Policy-gradient/actor-critic baselines; physics continuous control.
+Transformer,Reinforcement,RL Envs,Procgen / DM Lab,Procedural generalization,MEDIUM,16–57 games,Generalization benchmarking under distribution shift.
+Transformer,Reinforcement,RL Envs,Meta-World (ML1/10/45),Meta-RL manipulation,SMALL,50 tasks,Multi-task manipulation; meta-RL baselines.
+Transformer,Reinforcement,RL Envs,CARLA / Habitat / MineRL,Autonomous driving / Embodied / Minecraft,MEDIUM–LARGE,varied,Long-horizon & sim2real challenges; imitation + RL combos.
+Transformer,Reinforcement,RL Envs,D4RL / RL Unplugged,Offline RL datasets,MEDIUM–LARGE,thousands–millions transitions,Behavior cloning / offline RL benchmarking.
+Transformer,Reinforcement,RL Envs,PettingZoo / OpenSpiel,Multi-agent RL,SMALL–MEDIUM,dozens envs,"MARL benchmarks: matrix games, MPE, poker/Go variants."
+Feedforward,Reinforcement,RL Envs,Atari 2600 (ALE),Visual discrete control,MEDIUM,57 games,Standard deep RL; DQN/IMPALA/IQN; offline via DQN replay.
+Feedforward,Reinforcement,RL Envs,"DM Control / MuJoCo (Hopper, Walker2d, HalfCheetah)",Continuous control,SMALL–MEDIUM,dozens tasks,Policy-gradient/actor-critic baselines; physics continuous control.
+Feedforward,Reinforcement,RL Envs,Procgen / DM Lab,Procedural generalization,MEDIUM,16–57 games,Generalization benchmarking under distribution shift.
+Feedforward,Reinforcement,RL Envs,Meta-World (ML1/10/45),Meta-RL manipulation,SMALL,50 tasks,Multi-task manipulation; meta-RL baselines.
+Feedforward,Reinforcement,RL Envs,CARLA / Habitat / MineRL,Autonomous driving / Embodied / Minecraft,MEDIUM–LARGE,varied,Long-horizon & sim2real challenges; imitation + RL combos.
+Feedforward,Reinforcement,RL Envs,D4RL / RL Unplugged,Offline RL datasets,MEDIUM–LARGE,thousands–millions transitions,Behavior cloning / offline RL benchmarking.
+Feedforward,Reinforcement,RL Envs,PettingZoo / OpenSpiel,Multi-agent RL,SMALL–MEDIUM,dozens envs,"MARL benchmarks: matrix games, MPE, poker/Go variants."
+Specialized,Reinforcement,RL Envs,Atari 2600 (ALE),Visual discrete control,MEDIUM,57 games,Standard deep RL; DQN/IMPALA/IQN; offline via DQN replay.
+Specialized,Reinforcement,RL Envs,"DM Control / MuJoCo (Hopper, Walker2d, HalfCheetah)",Continuous control,SMALL–MEDIUM,dozens tasks,Policy-gradient/actor-critic baselines; physics continuous control.
+Specialized,Reinforcement,RL Envs,Procgen / DM Lab,Procedural generalization,MEDIUM,16–57 games,Generalization benchmarking under distribution shift.
+Specialized,Reinforcement,RL Envs,Meta-World (ML1/10/45),Meta-RL manipulation,SMALL,50 tasks,Multi-task manipulation; meta-RL baselines.
+Specialized,Reinforcement,RL Envs,CARLA / Habitat / MineRL,Autonomous driving / Embodied / Minecraft,MEDIUM–LARGE,varied,Long-horizon & sim2real challenges; imitation + RL combos.
+Specialized,Reinforcement,RL Envs,D4RL / RL Unplugged,Offline RL datasets,MEDIUM–LARGE,thousands–millions transitions,Behavior cloning / offline RL benchmarking.
+Specialized,Reinforcement,RL Envs,PettingZoo / OpenSpiel,Multi-agent RL,SMALL–MEDIUM,dozens envs,"MARL benchmarks: matrix games, MPE, poker/Go variants."
+Reinforcement,Supervised,RL (Imitation),D4RL (BC tasks) / Atari DQN Replay,Behavior cloning,MEDIUM–LARGE,10^5–10^7 steps,When using supervised losses on expert/demo data.
+Reinforcement,Self-Supervised,RL (Self-Play/Exploration),Atari / Procgen / MuJoCo (unsupervised RL),Intrinsic motivation / Self-play,MEDIUM,task-dependent,Pretraining policies or world models without extrinsic rewards.
+Transformer,Supervised,RL (Imitation),D4RL (BC tasks) / Atari DQN Replay,Behavior cloning,MEDIUM–LARGE,10^5–10^7 steps,When using supervised losses on expert/demo data.
+Transformer,Self-Supervised,RL (Self-Play/Exploration),Atari / Procgen / MuJoCo (unsupervised RL),Intrinsic motivation / Self-play,MEDIUM,task-dependent,Pretraining policies or world models without extrinsic rewards.
+Feedforward,Supervised,RL (Imitation),D4RL (BC tasks) / Atari DQN Replay,Behavior cloning,MEDIUM–LARGE,10^5–10^7 steps,When using supervised losses on expert/demo data.
+Feedforward,Self-Supervised,RL (Self-Play/Exploration),Atari / Procgen / MuJoCo (unsupervised RL),Intrinsic motivation / Self-play,MEDIUM,task-dependent,Pretraining policies or world models without extrinsic rewards.
+Specialized,Supervised,RL (Imitation),D4RL (BC tasks) / Atari DQN Replay,Behavior cloning,MEDIUM–LARGE,10^5–10^7 steps,When using supervised losses on expert/demo data.
+Specialized,Self-Supervised,RL (Self-Play/Exploration),Atari / Procgen / MuJoCo (unsupervised RL),Intrinsic motivation / Self-play,MEDIUM,task-dependent,Pretraining policies or world models without extrinsic rewards.
+Feedforward,Meta,Vision,Omniglot,Few-shot classification,TINY,~28k images,Classic few-shot (N-way-K-shot); fast experiments.
+Feedforward,Meta,Vision,miniImageNet / tieredImageNet / CIFAR-FS / FC100,Few-shot classification,SMALL,60k–800k imgs,Standard few-shot suites; report 1-/5-shot across ways.
+Feedforward,Meta,Vision,Meta-Dataset,Few-shot across many domains,MEDIUM,10 datasets,Robust cross-domain few-shot benchmarking.
+Convolution,Meta,Vision,Omniglot,Few-shot classification,TINY,~28k images,Classic few-shot (N-way-K-shot); fast experiments.
+Convolution,Meta,Vision,miniImageNet / tieredImageNet / CIFAR-FS / FC100,Few-shot classification,SMALL,60k–800k imgs,Standard few-shot suites; report 1-/5-shot across ways.
+Convolution,Meta,Vision,Meta-Dataset,Few-shot across many domains,MEDIUM,10 datasets,Robust cross-domain few-shot benchmarking.
+Transformer,Meta,Vision,Omniglot,Few-shot classification,TINY,~28k images,Classic few-shot (N-way-K-shot); fast experiments.
+Transformer,Meta,Vision,miniImageNet / tieredImageNet / CIFAR-FS / FC100,Few-shot classification,SMALL,60k–800k imgs,Standard few-shot suites; report 1-/5-shot across ways.
+Transformer,Meta,Vision,Meta-Dataset,Few-shot across many domains,MEDIUM,10 datasets,Robust cross-domain few-shot benchmarking.
+Generative,Meta,Vision,Omniglot,Few-shot classification,TINY,~28k images,Classic few-shot (N-way-K-shot); fast experiments.
+Generative,Meta,Vision,miniImageNet / tieredImageNet / CIFAR-FS / FC100,Few-shot classification,SMALL,60k–800k imgs,Standard few-shot suites; report 1-/5-shot across ways.
+Generative,Meta,Vision,Meta-Dataset,Few-shot across many domains,MEDIUM,10 datasets,Robust cross-domain few-shot benchmarking.
+Specialized,Meta,Vision,Omniglot,Few-shot classification,TINY,~28k images,Classic few-shot (N-way-K-shot); fast experiments.
+Specialized,Meta,Vision,miniImageNet / tieredImageNet / CIFAR-FS / FC100,Few-shot classification,SMALL,60k–800k imgs,Standard few-shot suites; report 1-/5-shot across ways.
+Specialized,Meta,Vision,Meta-Dataset,Few-shot across many domains,MEDIUM,10 datasets,Robust cross-domain few-shot benchmarking.
+Feedforward,Meta,NLP,FewRel / FewNERD,Few-shot relation extraction / NER,SMALL,56k / 188k,episodic meta-learning for extraction tasks.
+Feedforward,Meta,NLP,CLINC150 (few-shot intent) / MASSIVE,Few-shot intent classification,SMALL,23k / 1M (across langs),Intent detection under label scarcity.
+Feedforward,Meta,NLP,SuperGLUE few-shot splits,Few-shot NLU,SMALL,task-dependent,Uniform prompt-based or meta-learning comparisons.
+Recurrent,Meta,NLP,FewRel / FewNERD,Few-shot relation extraction / NER,SMALL,56k / 188k,episodic meta-learning for extraction tasks.
+Recurrent,Meta,NLP,CLINC150 (few-shot intent) / MASSIVE,Few-shot intent classification,SMALL,23k / 1M (across langs),Intent detection under label scarcity.
+Recurrent,Meta,NLP,SuperGLUE few-shot splits,Few-shot NLU,SMALL,task-dependent,Uniform prompt-based or meta-learning comparisons.
+Transformer,Meta,NLP,FewRel / FewNERD,Few-shot relation extraction / NER,SMALL,56k / 188k,episodic meta-learning for extraction tasks.
+Transformer,Meta,NLP,CLINC150 (few-shot intent) / MASSIVE,Few-shot intent classification,SMALL,23k / 1M (across langs),Intent detection under label scarcity.
+Transformer,Meta,NLP,SuperGLUE few-shot splits,Few-shot NLU,SMALL,task-dependent,Uniform prompt-based or meta-learning comparisons.
+Generative,Meta,NLP,FewRel / FewNERD,Few-shot relation extraction / NER,SMALL,56k / 188k,episodic meta-learning for extraction tasks.
+Generative,Meta,NLP,CLINC150 (few-shot intent) / MASSIVE,Few-shot intent classification,SMALL,23k / 1M (across langs),Intent detection under label scarcity.
+Generative,Meta,NLP,SuperGLUE few-shot splits,Few-shot NLU,SMALL,task-dependent,Uniform prompt-based or meta-learning comparisons.
+Specialized,Meta,NLP,FewRel / FewNERD,Few-shot relation extraction / NER,SMALL,56k / 188k,episodic meta-learning for extraction tasks.
+Specialized,Meta,NLP,CLINC150 (few-shot intent) / MASSIVE,Few-shot intent classification,SMALL,23k / 1M (across langs),Intent detection under label scarcity.
+Specialized,Meta,NLP,SuperGLUE few-shot splits,Few-shot NLU,SMALL,task-dependent,Uniform prompt-based or meta-learning comparisons.
+Reinforcement,Meta,RL Envs,Meta-World ML1/10/45,Meta-RL,SMALL,50 tasks,Rapid adaptation to novel tasks; standard meta-RL.
+Reinforcement,Meta,RL Envs,"MuJoCo task families (cheetah, ant) w/ task variations",Meta-RL,SMALL–MEDIUM,dozens,Contextual policies; PEARL/MAML baselines.
+Transformer,Meta,RL Envs,Meta-World ML1/10/45,Meta-RL,SMALL,50 tasks,Rapid adaptation to novel tasks; standard meta-RL.
+Transformer,Meta,RL Envs,"MuJoCo task families (cheetah, ant) w/ task variations",Meta-RL,SMALL–MEDIUM,dozens,Contextual policies; PEARL/MAML baselines.
+Feedforward,Meta,RL Envs,Meta-World ML1/10/45,Meta-RL,SMALL,50 tasks,Rapid adaptation to novel tasks; standard meta-RL.
+Feedforward,Meta,RL Envs,"MuJoCo task families (cheetah, ant) w/ task variations",Meta-RL,SMALL–MEDIUM,dozens,Contextual policies; PEARL/MAML baselines.
+Specialized,Meta,RL Envs,Meta-World ML1/10/45,Meta-RL,SMALL,50 tasks,Rapid adaptation to novel tasks; standard meta-RL.
+Specialized,Meta,RL Envs,"MuJoCo task families (cheetah, ant) w/ task variations",Meta-RL,SMALL–MEDIUM,dozens,Contextual policies; PEARL/MAML baselines.
+Graph,Meta,Graph,Few-shot graph classification (TU) / OGB few-label,Meta-graph learning,TINY–SMALL,hundreds–k graphs,Episodic meta-learning on graphs; emerging area.
+Transformer,Meta,Graph,Few-shot graph classification (TU) / OGB few-label,Meta-graph learning,TINY–SMALL,hundreds–k graphs,Episodic meta-learning on graphs; emerging area.
+Specialized,Meta,Graph,Few-shot graph classification (TU) / OGB few-label,Meta-graph learning,TINY–SMALL,hundreds–k graphs,Episodic meta-learning on graphs; emerging area.
+Feedforward,Meta,Tabular/RecSys,OpenML-CC18 / OpenML few-shot splits,Few-shot tabular,SMALL–MEDIUM,varied,Cross-dataset meta-learning / hyper-reuse on tabular.
+Transformer,Meta,Tabular/RecSys,OpenML-CC18 / OpenML few-shot splits,Few-shot tabular,SMALL–MEDIUM,varied,Cross-dataset meta-learning / hyper-reuse on tabular.
+Specialized,Meta,Tabular/RecSys,OpenML-CC18 / OpenML few-shot splits,Few-shot tabular,SMALL–MEDIUM,varied,Cross-dataset meta-learning / hyper-reuse on tabular.
+Feedforward,Federated,Federated,LEAF: FEMNIST / Sent140 / Shakespeare / CelebA / Reddit,Non-IID FL benchmarks,SMALL–LARGE,thousands–millions examples,Canonical FL suites; simulate device heterogeneity & skew.
+Feedforward,Federated,Federated,FedCIFAR-10/100 / FedTiny-ImageNet,FL (vision),SMALL–MEDIUM,50k–100k,Visual FL baselines with IID/non-IID splits.
+Feedforward,Federated,Federated,StackOverflow (next-word),FL language modeling,XL,10M+ posts,Large-scale realistic FL text; heavy tail user distribution.
+Feedforward,Federated,Federated,Google Speech Commands (federated),FL keyword spotting,SMALL,65k utterances,Low-footprint audio FL; on-device relevance.
+Feedforward,Federated,Federated,"FedScale tasks (e.g., FedCifar, FedShakespeare)",FL benchmark suite,MEDIUM–LARGE,varied,Standardized FL evaluation harness.
+Convolution,Federated,Federated,LEAF: FEMNIST / Sent140 / Shakespeare / CelebA / Reddit,Non-IID FL benchmarks,SMALL–LARGE,thousands–millions examples,Canonical FL suites; simulate device heterogeneity & skew.
+Convolution,Federated,Federated,FedCIFAR-10/100 / FedTiny-ImageNet,FL (vision),SMALL–MEDIUM,50k–100k,Visual FL baselines with IID/non-IID splits.
+Convolution,Federated,Federated,StackOverflow (next-word),FL language modeling,XL,10M+ posts,Large-scale realistic FL text; heavy tail user distribution.
+Convolution,Federated,Federated,Google Speech Commands (federated),FL keyword spotting,SMALL,65k utterances,Low-footprint audio FL; on-device relevance.
+Convolution,Federated,Federated,"FedScale tasks (e.g., FedCifar, FedShakespeare)",FL benchmark suite,MEDIUM–LARGE,varied,Standardized FL evaluation harness.
+Recurrent,Federated,Federated,LEAF: FEMNIST / Sent140 / Shakespeare / CelebA / Reddit,Non-IID FL benchmarks,SMALL–LARGE,thousands–millions examples,Canonical FL suites; simulate device heterogeneity & skew.
+Recurrent,Federated,Federated,FedCIFAR-10/100 / FedTiny-ImageNet,FL (vision),SMALL–MEDIUM,50k–100k,Visual FL baselines with IID/non-IID splits.
+Recurrent,Federated,Federated,StackOverflow (next-word),FL language modeling,XL,10M+ posts,Large-scale realistic FL text; heavy tail user distribution.
+Recurrent,Federated,Federated,Google Speech Commands (federated),FL keyword spotting,SMALL,65k utterances,Low-footprint audio FL; on-device relevance.
+Recurrent,Federated,Federated,"FedScale tasks (e.g., FedCifar, FedShakespeare)",FL benchmark suite,MEDIUM–LARGE,varied,Standardized FL evaluation harness.
+Transformer,Federated,Federated,LEAF: FEMNIST / Sent140 / Shakespeare / CelebA / Reddit,Non-IID FL benchmarks,SMALL–LARGE,thousands–millions examples,Canonical FL suites; simulate device heterogeneity & skew.
+Transformer,Federated,Federated,FedCIFAR-10/100 / FedTiny-ImageNet,FL (vision),SMALL–MEDIUM,50k–100k,Visual FL baselines with IID/non-IID splits.
+Transformer,Federated,Federated,StackOverflow (next-word),FL language modeling,XL,10M+ posts,Large-scale realistic FL text; heavy tail user distribution.
+Transformer,Federated,Federated,Google Speech Commands (federated),FL keyword spotting,SMALL,65k utterances,Low-footprint audio FL; on-device relevance.
+Transformer,Federated,Federated,"FedScale tasks (e.g., FedCifar, FedShakespeare)",FL benchmark suite,MEDIUM–LARGE,varied,Standardized FL evaluation harness.
+Graph,Federated,Federated,LEAF: FEMNIST / Sent140 / Shakespeare / CelebA / Reddit,Non-IID FL benchmarks,SMALL–LARGE,thousands–millions examples,Canonical FL suites; simulate device heterogeneity & skew.
+Graph,Federated,Federated,FedCIFAR-10/100 / FedTiny-ImageNet,FL (vision),SMALL–MEDIUM,50k–100k,Visual FL baselines with IID/non-IID splits.
+Graph,Federated,Federated,StackOverflow (next-word),FL language modeling,XL,10M+ posts,Large-scale realistic FL text; heavy tail user distribution.
+Graph,Federated,Federated,Google Speech Commands (federated),FL keyword spotting,SMALL,65k utterances,Low-footprint audio FL; on-device relevance.
+Graph,Federated,Federated,"FedScale tasks (e.g., FedCifar, FedShakespeare)",FL benchmark suite,MEDIUM–LARGE,varied,Standardized FL evaluation harness.
+Generative,Federated,Federated,LEAF: FEMNIST / Sent140 / Shakespeare / CelebA / Reddit,Non-IID FL benchmarks,SMALL–LARGE,thousands–millions examples,Canonical FL suites; simulate device heterogeneity & skew.
+Generative,Federated,Federated,FedCIFAR-10/100 / FedTiny-ImageNet,FL (vision),SMALL–MEDIUM,50k–100k,Visual FL baselines with IID/non-IID splits.
+Generative,Federated,Federated,StackOverflow (next-word),FL language modeling,XL,10M+ posts,Large-scale realistic FL text; heavy tail user distribution.
+Generative,Federated,Federated,Google Speech Commands (federated),FL keyword spotting,SMALL,65k utterances,Low-footprint audio FL; on-device relevance.
+Generative,Federated,Federated,"FedScale tasks (e.g., FedCifar, FedShakespeare)",FL benchmark suite,MEDIUM–LARGE,varied,Standardized FL evaluation harness.
+Reinforcement,Federated,Federated,LEAF: FEMNIST / Sent140 / Shakespeare / CelebA / Reddit,Non-IID FL benchmarks,SMALL–LARGE,thousands–millions examples,Canonical FL suites; simulate device heterogeneity & skew.
+Reinforcement,Federated,Federated,FedCIFAR-10/100 / FedTiny-ImageNet,FL (vision),SMALL–MEDIUM,50k–100k,Visual FL baselines with IID/non-IID splits.
+Reinforcement,Federated,Federated,StackOverflow (next-word),FL language modeling,XL,10M+ posts,Large-scale realistic FL text; heavy tail user distribution.
+Reinforcement,Federated,Federated,Google Speech Commands (federated),FL keyword spotting,SMALL,65k utterances,Low-footprint audio FL; on-device relevance.
+Reinforcement,Federated,Federated,"FedScale tasks (e.g., FedCifar, FedShakespeare)",FL benchmark suite,MEDIUM–LARGE,varied,Standardized FL evaluation harness.
+Specialized,Federated,Federated,LEAF: FEMNIST / Sent140 / Shakespeare / CelebA / Reddit,Non-IID FL benchmarks,SMALL–LARGE,thousands–millions examples,Canonical FL suites; simulate device heterogeneity & skew.
+Specialized,Federated,Federated,FedCIFAR-10/100 / FedTiny-ImageNet,FL (vision),SMALL–MEDIUM,50k–100k,Visual FL baselines with IID/non-IID splits.
+Specialized,Federated,Federated,StackOverflow (next-word),FL language modeling,XL,10M+ posts,Large-scale realistic FL text; heavy tail user distribution.
+Specialized,Federated,Federated,Google Speech Commands (federated),FL keyword spotting,SMALL,65k utterances,Low-footprint audio FL; on-device relevance.
+Specialized,Federated,Federated,"FedScale tasks (e.g., FedCifar, FedShakespeare)",FL benchmark suite,MEDIUM–LARGE,varied,Standardized FL evaluation harness.
+Feedforward,Continual,Vision,Permuted MNIST / Split MNIST,Class-incremental (toy),TINY,60k,Quick catastrophic forgetting diagnostics.
+Feedforward,Continual,Vision,Split CIFAR-10/100 / Tiny-ImageNet splits,Class-incremental,SMALL,50k–100k,Mainstream continual-learning classification.
+Feedforward,Continual,Vision,CORe50,Incremental object / domain,SMALL,160k frames,Streaming/incremental scenarios; realistic benchmarks.
+Feedforward,Continual,Vision,DomainNet / Office-31 / Office-Home / PACS,Domain-incremental / shift,SMALL–MEDIUM,4k–600k,Tests robustness to distribution/domain shift.
+Convolution,Continual,Vision,Permuted MNIST / Split MNIST,Class-incremental (toy),TINY,60k,Quick catastrophic forgetting diagnostics.
+Convolution,Continual,Vision,Split CIFAR-10/100 / Tiny-ImageNet splits,Class-incremental,SMALL,50k–100k,Mainstream continual-learning classification.
+Convolution,Continual,Vision,CORe50,Incremental object / domain,SMALL,160k frames,Streaming/incremental scenarios; realistic benchmarks.
+Convolution,Continual,Vision,DomainNet / Office-31 / Office-Home / PACS,Domain-incremental / shift,SMALL–MEDIUM,4k–600k,Tests robustness to distribution/domain shift.
+Transformer,Continual,Vision,Permuted MNIST / Split MNIST,Class-incremental (toy),TINY,60k,Quick catastrophic forgetting diagnostics.
+Transformer,Continual,Vision,Split CIFAR-10/100 / Tiny-ImageNet splits,Class-incremental,SMALL,50k–100k,Mainstream continual-learning classification.
+Transformer,Continual,Vision,CORe50,Incremental object / domain,SMALL,160k frames,Streaming/incremental scenarios; realistic benchmarks.
+Transformer,Continual,Vision,DomainNet / Office-31 / Office-Home / PACS,Domain-incremental / shift,SMALL–MEDIUM,4k–600k,Tests robustness to distribution/domain shift.
+Generative,Continual,Vision,Permuted MNIST / Split MNIST,Class-incremental (toy),TINY,60k,Quick catastrophic forgetting diagnostics.
+Generative,Continual,Vision,Split CIFAR-10/100 / Tiny-ImageNet splits,Class-incremental,SMALL,50k–100k,Mainstream continual-learning classification.
+Generative,Continual,Vision,CORe50,Incremental object / domain,SMALL,160k frames,Streaming/incremental scenarios; realistic benchmarks.
+Generative,Continual,Vision,DomainNet / Office-31 / Office-Home / PACS,Domain-incremental / shift,SMALL–MEDIUM,4k–600k,Tests robustness to distribution/domain shift.
+Specialized,Continual,Vision,Permuted MNIST / Split MNIST,Class-incremental (toy),TINY,60k,Quick catastrophic forgetting diagnostics.
+Specialized,Continual,Vision,Split CIFAR-10/100 / Tiny-ImageNet splits,Class-incremental,SMALL,50k–100k,Mainstream continual-learning classification.
+Specialized,Continual,Vision,CORe50,Incremental object / domain,SMALL,160k frames,Streaming/incremental scenarios; realistic benchmarks.
+Specialized,Continual,Vision,DomainNet / Office-31 / Office-Home / PACS,Domain-incremental / shift,SMALL–MEDIUM,4k–600k,Tests robustness to distribution/domain shift.
+Feedforward,Continual,NLP,Amazon Reviews (by domains) / Multi-Domain Sentiment,Task/domain-incremental,LARGE,millions,Evolving domains/labels over time; forgetting analysis.
+Feedforward,Continual,NLP,ArXiv/Reddit time-sliced classification,Temporal text classification,MEDIUM–LARGE,100k–1M+,Evaluate forward/backward transfer on temporally evolving corpora.
+Feedforward,Continual,NLP,CLINC150 incremental intents,Intent-incremental,SMALL,23k,Add new intents over time; rehearsal vs regularization.
+Recurrent,Continual,NLP,Amazon Reviews (by domains) / Multi-Domain Sentiment,Task/domain-incremental,LARGE,millions,Evolving domains/labels over time; forgetting analysis.
+Recurrent,Continual,NLP,ArXiv/Reddit time-sliced classification,Temporal text classification,MEDIUM–LARGE,100k–1M+,Evaluate forward/backward transfer on temporally evolving corpora.
+Recurrent,Continual,NLP,CLINC150 incremental intents,Intent-incremental,SMALL,23k,Add new intents over time; rehearsal vs regularization.
+Transformer,Continual,NLP,Amazon Reviews (by domains) / Multi-Domain Sentiment,Task/domain-incremental,LARGE,millions,Evolving domains/labels over time; forgetting analysis.
+Transformer,Continual,NLP,ArXiv/Reddit time-sliced classification,Temporal text classification,MEDIUM–LARGE,100k–1M+,Evaluate forward/backward transfer on temporally evolving corpora.
+Transformer,Continual,NLP,CLINC150 incremental intents,Intent-incremental,SMALL,23k,Add new intents over time; rehearsal vs regularization.
+Generative,Continual,NLP,Amazon Reviews (by domains) / Multi-Domain Sentiment,Task/domain-incremental,LARGE,millions,Evolving domains/labels over time; forgetting analysis.
+Generative,Continual,NLP,ArXiv/Reddit time-sliced classification,Temporal text classification,MEDIUM–LARGE,100k–1M+,Evaluate forward/backward transfer on temporally evolving corpora.
+Generative,Continual,NLP,CLINC150 incremental intents,Intent-incremental,SMALL,23k,Add new intents over time; rehearsal vs regularization.
+Specialized,Continual,NLP,Amazon Reviews (by domains) / Multi-Domain Sentiment,Task/domain-incremental,LARGE,millions,Evolving domains/labels over time; forgetting analysis.
+Specialized,Continual,NLP,ArXiv/Reddit time-sliced classification,Temporal text classification,MEDIUM–LARGE,100k–1M+,Evaluate forward/backward transfer on temporally evolving corpora.
+Specialized,Continual,NLP,CLINC150 incremental intents,Intent-incremental,SMALL,23k,Add new intents over time; rehearsal vs regularization.
+Feedforward,Continual,Speech/Audio,VoxCeleb streaming / speaker-incremental,Continual speaker ID,MEDIUM,1M+ utt.,New speakers accrue over time; adaptation & memory.
+Feedforward,Continual,Speech/Audio,LibriSpeech domain shift (train-clean→other),Domain-incremental ASR,SMALL–MEDIUM,100h–960h,Evaluate stability-plasticity under domain changes.
+Recurrent,Continual,Speech/Audio,VoxCeleb streaming / speaker-incremental,Continual speaker ID,MEDIUM,1M+ utt.,New speakers accrue over time; adaptation & memory.
+Recurrent,Continual,Speech/Audio,LibriSpeech domain shift (train-clean→other),Domain-incremental ASR,SMALL–MEDIUM,100h–960h,Evaluate stability-plasticity under domain changes.
+Transformer,Continual,Speech/Audio,VoxCeleb streaming / speaker-incremental,Continual speaker ID,MEDIUM,1M+ utt.,New speakers accrue over time; adaptation & memory.
+Transformer,Continual,Speech/Audio,LibriSpeech domain shift (train-clean→other),Domain-incremental ASR,SMALL–MEDIUM,100h–960h,Evaluate stability-plasticity under domain changes.
+Generative,Continual,Speech/Audio,VoxCeleb streaming / speaker-incremental,Continual speaker ID,MEDIUM,1M+ utt.,New speakers accrue over time; adaptation & memory.
+Generative,Continual,Speech/Audio,LibriSpeech domain shift (train-clean→other),Domain-incremental ASR,SMALL–MEDIUM,100h–960h,Evaluate stability-plasticity under domain changes.
+Specialized,Continual,Speech/Audio,VoxCeleb streaming / speaker-incremental,Continual speaker ID,MEDIUM,1M+ utt.,New speakers accrue over time; adaptation & memory.
+Specialized,Continual,Speech/Audio,LibriSpeech domain shift (train-clean→other),Domain-incremental ASR,SMALL–MEDIUM,100h–960h,Evaluate stability-plasticity under domain changes.
+Feedforward,Continual,Time-Series,ETT/ECL/Traffic seasonal drift,Non-stationary forecasting,SMALL–MEDIUM,10k–1M+,Concept drift and seasonality changes; online updates.
+Feedforward,Continual,Time-Series,PhysioNet streaming (MIMIC-III),Clinical continual learning,MEDIUM,millions events,Patient distribution shift; safety-critical forgetting control.
+Recurrent,Continual,Time-Series,ETT/ECL/Traffic seasonal drift,Non-stationary forecasting,SMALL–MEDIUM,10k–1M+,Concept drift and seasonality changes; online updates.
+Recurrent,Continual,Time-Series,PhysioNet streaming (MIMIC-III),Clinical continual learning,MEDIUM,millions events,Patient distribution shift; safety-critical forgetting control.
+Transformer,Continual,Time-Series,ETT/ECL/Traffic seasonal drift,Non-stationary forecasting,SMALL–MEDIUM,10k–1M+,Concept drift and seasonality changes; online updates.
+Transformer,Continual,Time-Series,PhysioNet streaming (MIMIC-III),Clinical continual learning,MEDIUM,millions events,Patient distribution shift; safety-critical forgetting control.
+Specialized,Continual,Time-Series,ETT/ECL/Traffic seasonal drift,Non-stationary forecasting,SMALL–MEDIUM,10k–1M+,Concept drift and seasonality changes; online updates.
+Specialized,Continual,Time-Series,PhysioNet streaming (MIMIC-III),Clinical continual learning,MEDIUM,millions events,Patient distribution shift; safety-critical forgetting control.
+Graph,Continual,Graph,Temporal Graphs: Reddit-T / Wikipedia / MOOC / LastFM,Dynamic node/link prediction,MEDIUM,hundreds k events,Evaluate temporal GNNs; JODIE/TGN baselines.
+Graph,Continual,Graph,Temporal KG: ICEWS14/05 / WIKI,Temporal link prediction,SMALL–MEDIUM,tens k–millions triples,Knowledge graph evolution over time.
+Transformer,Continual,Graph,Temporal Graphs: Reddit-T / Wikipedia / MOOC / LastFM,Dynamic node/link prediction,MEDIUM,hundreds k events,Evaluate temporal GNNs; JODIE/TGN baselines.
+Transformer,Continual,Graph,Temporal KG: ICEWS14/05 / WIKI,Temporal link prediction,SMALL–MEDIUM,tens k–millions triples,Knowledge graph evolution over time.
+Specialized,Continual,Graph,Temporal Graphs: Reddit-T / Wikipedia / MOOC / LastFM,Dynamic node/link prediction,MEDIUM,hundreds k events,Evaluate temporal GNNs; JODIE/TGN baselines.
+Specialized,Continual,Graph,Temporal KG: ICEWS14/05 / WIKI,Temporal link prediction,SMALL–MEDIUM,tens k–millions triples,Knowledge graph evolution over time.
+Reinforcement,Continual,RL Envs,Procgen sequence / DM Control task sequences / MiniGrid curricula,Lifelong RL,SMALL–MEDIUM,dozens tasks,Forgetting/transfer under task streams; rehearsal/world-models.
+Transformer,Continual,RL Envs,Procgen sequence / DM Control task sequences / MiniGrid curricula,Lifelong RL,SMALL–MEDIUM,dozens tasks,Forgetting/transfer under task streams; rehearsal/world-models.
+Feedforward,Continual,RL Envs,Procgen sequence / DM Control task sequences / MiniGrid curricula,Lifelong RL,SMALL–MEDIUM,dozens tasks,Forgetting/transfer under task streams; rehearsal/world-models.
+Specialized,Continual,RL Envs,Procgen sequence / DM Control task sequences / MiniGrid curricula,Lifelong RL,SMALL–MEDIUM,dozens tasks,Forgetting/transfer under task streams; rehearsal/world-models.
+Generative,Generative,Vision,MNIST / Fashion-MNIST / CIFAR-10,Image generation (GAN/VAE/DDPM),TINY–SMALL,60k–50k,Quick fidelity/diversity tests (FID/IS).
+Generative,Generative,Vision,CelebA / LSUN (bedroom/church),Image generation,MEDIUM,200k–3M,High-res GAN/DDPM baselines; faces/scenes.
+Generative,Generative,Vision,FFHQ (256–1024) / ImageNet 64x64/256x256,High-quality image generation,LARGE,70k / 1.28M,StyleGAN/DDPM+; strong visual quality benchmarks.
+Generative,Generative,Vision,COCO captions / Conceptual Captions / LAION,Text-to-image,LARGE–XL,330k–100M+,Diffusion T2I; zero-shot via CLIP guidance.
+Generative,Generative,NLP,OpenWebText / C4 / The Pile,Causal/denoising LM,XL,10B+ tokens,LLM pretraining; evaluate via perplexity & downstream.
+Generative,Generative,NLP,WikiText-103 / PTB,Language modeling (small),SMALL,1M–100M tokens,Ablations & fast iteration for generative text.
+Generative,Generative,Speech/Audio,LJ Speech / VCTK,TTS,SMALL,24h / 44h,Single/multi-speaker TTS baselines.
+Generative,Generative,Speech/Audio,MAESTRO / NSynth,Music generation,SMALL–MEDIUM,200h / 300k notes,Piano performance & musical notes; autoregressive/diffusion audio.
+Generative,Generative,Speech/Audio,AudioSet (conditioning) / LibriTTS,Conditional audio generation,LARGE,585h / 585h,Generative audio; conditioning on text/labels.
+Generative,Generative,3D / Geometry,ShapeNet / ModelNet40 / Objaverse (subset),3D shape generation,MEDIUM–XL,50k–1M+,"3D diffusion/auto-decoder (e.g., NeRF priors); eval with FID-3D/coverage."
+Transformer,Generative,Vision,MNIST / Fashion-MNIST / CIFAR-10,Image generation (GAN/VAE/DDPM),TINY–SMALL,60k–50k,Quick fidelity/diversity tests (FID/IS).
+Transformer,Generative,Vision,CelebA / LSUN (bedroom/church),Image generation,MEDIUM,200k–3M,High-res GAN/DDPM baselines; faces/scenes.
+Transformer,Generative,Vision,FFHQ (256–1024) / ImageNet 64x64/256x256,High-quality image generation,LARGE,70k / 1.28M,StyleGAN/DDPM+; strong visual quality benchmarks.
+Transformer,Generative,Vision,COCO captions / Conceptual Captions / LAION,Text-to-image,LARGE–XL,330k–100M+,Diffusion T2I; zero-shot via CLIP guidance.
+Transformer,Generative,NLP,OpenWebText / C4 / The Pile,Causal/denoising LM,XL,10B+ tokens,LLM pretraining; evaluate via perplexity & downstream.
+Transformer,Generative,NLP,WikiText-103 / PTB,Language modeling (small),SMALL,1M–100M tokens,Ablations & fast iteration for generative text.
+Transformer,Generative,Speech/Audio,LJ Speech / VCTK,TTS,SMALL,24h / 44h,Single/multi-speaker TTS baselines.
+Transformer,Generative,Speech/Audio,MAESTRO / NSynth,Music generation,SMALL–MEDIUM,200h / 300k notes,Piano performance & musical notes; autoregressive/diffusion audio.
+Transformer,Generative,Speech/Audio,AudioSet (conditioning) / LibriTTS,Conditional audio generation,LARGE,585h / 585h,Generative audio; conditioning on text/labels.
+Transformer,Generative,3D / Geometry,ShapeNet / ModelNet40 / Objaverse (subset),3D shape generation,MEDIUM–XL,50k–1M+,"3D diffusion/auto-decoder (e.g., NeRF priors); eval with FID-3D/coverage."
+Specialized,Generative,Vision,MNIST / Fashion-MNIST / CIFAR-10,Image generation (GAN/VAE/DDPM),TINY–SMALL,60k–50k,Quick fidelity/diversity tests (FID/IS).
+Specialized,Generative,Vision,CelebA / LSUN (bedroom/church),Image generation,MEDIUM,200k–3M,High-res GAN/DDPM baselines; faces/scenes.
+Specialized,Generative,Vision,FFHQ (256–1024) / ImageNet 64x64/256x256,High-quality image generation,LARGE,70k / 1.28M,StyleGAN/DDPM+; strong visual quality benchmarks.
+Specialized,Generative,Vision,COCO captions / Conceptual Captions / LAION,Text-to-image,LARGE–XL,330k–100M+,Diffusion T2I; zero-shot via CLIP guidance.
+Specialized,Generative,NLP,OpenWebText / C4 / The Pile,Causal/denoising LM,XL,10B+ tokens,LLM pretraining; evaluate via perplexity & downstream.
+Specialized,Generative,NLP,WikiText-103 / PTB,Language modeling (small),SMALL,1M–100M tokens,Ablations & fast iteration for generative text.
+Specialized,Generative,Speech/Audio,LJ Speech / VCTK,TTS,SMALL,24h / 44h,Single/multi-speaker TTS baselines.
+Specialized,Generative,Speech/Audio,MAESTRO / NSynth,Music generation,SMALL–MEDIUM,200h / 300k notes,Piano performance & musical notes; autoregressive/diffusion audio.
+Specialized,Generative,Speech/Audio,AudioSet (conditioning) / LibriTTS,Conditional audio generation,LARGE,585h / 585h,Generative audio; conditioning on text/labels.
+Specialized,Generative,3D / Geometry,ShapeNet / ModelNet40 / Objaverse (subset),3D shape generation,MEDIUM–XL,50k–1M+,"3D diffusion/auto-decoder (e.g., NeRF priors); eval with FID-3D/coverage."
+Feedforward,Generative,Vision,MNIST / Fashion-MNIST / CIFAR-10,Image generation (GAN/VAE/DDPM),TINY–SMALL,60k–50k,Quick fidelity/diversity tests (FID/IS).
+Feedforward,Generative,Vision,CelebA / LSUN (bedroom/church),Image generation,MEDIUM,200k–3M,High-res GAN/DDPM baselines; faces/scenes.
+Feedforward,Generative,Vision,FFHQ (256–1024) / ImageNet 64x64/256x256,High-quality image generation,LARGE,70k / 1.28M,StyleGAN/DDPM+; strong visual quality benchmarks.
+Feedforward,Generative,Vision,COCO captions / Conceptual Captions / LAION,Text-to-image,LARGE–XL,330k–100M+,Diffusion T2I; zero-shot via CLIP guidance.
+Feedforward,Generative,NLP,OpenWebText / C4 / The Pile,Causal/denoising LM,XL,10B+ tokens,LLM pretraining; evaluate via perplexity & downstream.
+Feedforward,Generative,NLP,WikiText-103 / PTB,Language modeling (small),SMALL,1M–100M tokens,Ablations & fast iteration for generative text.
+Feedforward,Generative,Speech/Audio,LJ Speech / VCTK,TTS,SMALL,24h / 44h,Single/multi-speaker TTS baselines.
+Feedforward,Generative,Speech/Audio,MAESTRO / NSynth,Music generation,SMALL–MEDIUM,200h / 300k notes,Piano performance & musical notes; autoregressive/diffusion audio.
+Feedforward,Generative,Speech/Audio,AudioSet (conditioning) / LibriTTS,Conditional audio generation,LARGE,585h / 585h,Generative audio; conditioning on text/labels.
+Feedforward,Generative,3D / Geometry,ShapeNet / ModelNet40 / Objaverse (subset),3D shape generation,MEDIUM–XL,50k–1M+,"3D diffusion/auto-decoder (e.g., NeRF priors); eval with FID-3D/coverage."
+Recurrent,Generative,Vision,MNIST / Fashion-MNIST / CIFAR-10,Image generation (GAN/VAE/DDPM),TINY–SMALL,60k–50k,Quick fidelity/diversity tests (FID/IS).
+Recurrent,Generative,Vision,CelebA / LSUN (bedroom/church),Image generation,MEDIUM,200k–3M,High-res GAN/DDPM baselines; faces/scenes.
+Recurrent,Generative,Vision,FFHQ (256–1024) / ImageNet 64x64/256x256,High-quality image generation,LARGE,70k / 1.28M,StyleGAN/DDPM+; strong visual quality benchmarks.
+Recurrent,Generative,Vision,COCO captions / Conceptual Captions / LAION,Text-to-image,LARGE–XL,330k–100M+,Diffusion T2I; zero-shot via CLIP guidance.
+Recurrent,Generative,NLP,OpenWebText / C4 / The Pile,Causal/denoising LM,XL,10B+ tokens,LLM pretraining; evaluate via perplexity & downstream.
+Recurrent,Generative,NLP,WikiText-103 / PTB,Language modeling (small),SMALL,1M–100M tokens,Ablations & fast iteration for generative text.
+Recurrent,Generative,Speech/Audio,LJ Speech / VCTK,TTS,SMALL,24h / 44h,Single/multi-speaker TTS baselines.
+Recurrent,Generative,Speech/Audio,MAESTRO / NSynth,Music generation,SMALL–MEDIUM,200h / 300k notes,Piano performance & musical notes; autoregressive/diffusion audio.
+Recurrent,Generative,Speech/Audio,AudioSet (conditioning) / LibriTTS,Conditional audio generation,LARGE,585h / 585h,Generative audio; conditioning on text/labels.
+Recurrent,Generative,3D / Geometry,ShapeNet / ModelNet40 / Objaverse (subset),3D shape generation,MEDIUM–XL,50k–1M+,"3D diffusion/auto-decoder (e.g., NeRF priors); eval with FID-3D/coverage."
+Specialized,Supervised,Vision (Neuromorphic),N-MNIST / CIFAR10-DVS / DVS Gesture / N-Caltech101,Event-based classification,SMALL,tens k events,Spiking NN benchmarks; event cameras.
+Specialized,Reinforcement,RL Envs (Neuromorphic),Atari (spiking variants) / custom event-based sims,Spiking RL,SMALL–MEDIUM,task-dependent,Researchy; compare energy/latency vs ANN.
+Specialized,Supervised,Vision (Capsules),smallNORB / MNIST / Fashion-MNIST,Capsule nets classification,TINY–SMALL,60k–100k,Capsule routing benefits on pose/part-whole tests.
+Specialized,Supervised,Scientific / Quantum,QM9 / MD17 / ISO17,Molecular/atomic properties,SMALL–MEDIUM,100k–1M,Neural operators/quantum-inspired nets; regression tasks.
