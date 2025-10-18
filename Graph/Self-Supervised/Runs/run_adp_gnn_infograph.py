@@ -1,0 +1,78 @@
+# Runner for InfoGraph on TU datasets (e.g., MUTAG) or Planetoid with pseudo-batching
+
+from dataclasses import dataclass
+from pathlib import Path
+import torch
+
+try:
+    from torch_geometric.datasets import TUDataset
+    import torch_geometric.transforms as T
+    from torch_geometric.loader import DataLoader
+except Exception:
+    raise ImportError("Requires torch_geometric.")
+
+from adp_gnn_infograph import InfoGraph, TrainConfig, train_with_early_stop, evaluate_ssl, snapshot
+
+
+@dataclass
+class Config:
+    dataset: str = 'MUTAG'
+    data_root: str = './data'
+    hidden: int = 128
+    out_dim: int = 128
+    num_layers: int = 3
+    dropout: float = 0.2
+    batch_size: int = 64
+    seed: int = 42
+    save_path: str = './checkpoints/infograph_mutag.pt'
+
+
+def set_seed(seed: int):
+    import random, numpy as np
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+
+def get_loader(cfg: Config):
+    transform = T.NormalizeFeatures()
+    ds = TUDataset(cfg.data_root, name=cfg.dataset, use_node_attr=True, transform=transform)
+    loader = DataLoader(ds, batch_size=cfg.batch_size, shuffle=True)
+    return loader
+
+
+def main():
+    cfg = Config()
+    set_seed(cfg.seed)
+
+    loader = get_loader(cfg)
+    in_dim = loader.dataset.num_features
+
+    model = InfoGraph(in_dim, cfg.hidden, cfg.out_dim, cfg.num_layers, cfg.dropout)
+    tcfg = TrainConfig()
+
+    # Train for a few epochs over the loader (use last batch for val proxy)
+    best_loss = float('inf')
+    best_snap = None
+    ran_total = 0
+    for epoch in range(tcfg.max_epochs):
+        for batch in loader:
+            ran, loss, _ = train_with_early_stop(model, batch, tcfg)
+            ran_total += ran
+            val, _ = evaluate_ssl(model, batch)
+            if val < best_loss:
+                best_loss = val
+                best_snap = snapshot(model)
+        if best_snap is not None:
+            model.load_state_dict(best_snap['state'])
+        # simple patience via TrainConfig already used
+
+    Path(cfg.save_path).parent.mkdir(parents=True, exist_ok=True)
+    torch.save(best_snap, cfg.save_path)
+    print({'epochs': ran_total, 'best_ssl_loss': best_loss})
+
+
+if __name__ == '__main__':
+    main()
