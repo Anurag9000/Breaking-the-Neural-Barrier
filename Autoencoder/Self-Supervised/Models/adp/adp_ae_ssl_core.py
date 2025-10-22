@@ -495,6 +495,841 @@ class SelfSupervisedAE(nn.Module):
                     logs = {"recon": rec.item(), "ms_perc": perc.item()}
                     return {"loss": loss, "logs": logs, "recon": r}
 
+                # ---------- 137) Heteroscedastic Reconstruction ----------
+                if algo == "hetero_recon":
+                    z, feats = self.encode(x)
+                    r = self.decode(z, feats)
+                    # lazily add a variance head (log σ^2)
+                    if not hasattr(self, "_var_head"):
+                        Cdec = feats[0].shape[1] if isinstance(feats, (list,tuple)) else z.shape[1]
+                        self._var_head = nn.Conv2d(Cdec, 1, 1).to(x.device)
+                    # use top encoder feat as carrier for σ
+                    f_top = feats[-1] if isinstance(feats, (list,tuple)) else z
+                    logvar = self._var_head(f_top).clamp(-8.0, 4.0)  # σ in ~[e^-4, e^2]
+                    nll = _gauss_nll(x, r, logvar).mean()
+                    # small prior on σ to stop collapse
+                    prior = 0.001 * (logvar.exp().mean() + (logvar**2).mean())
+                    loss = nll + prior
+                    logs = {"nll": float(nll), "sigma_mean": float(logvar.exp().mean())}
+                    return {"loss": loss, "logs": logs, "recon": r, "aux": {"logvar": logvar}}
+
+                # ---------- 138) Aleatoric Consistency ----------
+                if algo == "aleatoric_consistency":
+                    # two different augs; residual^2 should agree with predicted variance
+                    def aug(img):
+                        s = random.uniform(0.9, 1.1); b = random.uniform(-0.05, 0.05)
+                        j = (img*s + b).clamp(0,1)
+                        k = random.choice([0,1,2,3])
+                        return torch.rot90(j, k, dims=[-2,-1])
+                    x1, x2 = aug(x), aug(x)
+                    z1,f1 = self.encode(x1); r1 = self.decode(z1,f1)
+                    z2,f2 = self.encode(x2); r2 = self.decode(z2,f2)
+                    if not hasattr(self, "_var_head"):
+                        Cdec = f1[-1].shape[1] if isinstance(f1, (list,tuple)) else z1.shape[1]
+                        self._var_head = nn.Conv2d(Cdec, 1, 1).to(x.device)
+                    logv1 = self._var_head(f1[-1] if isinstance(f1,(list,tuple)) else z1)
+                    logv2 = self._var_head(f2[-1] if isinstance(f2,(list,tuple)) else z2)
+                    # agreement: E[(res^2 - σ^2)^2]
+                    res1 = (r1 - x1); res2 = (r2 - x2)
+                    cons = ((res1.pow(2) - logv1.exp())**2).mean() + ((res2.pow(2) - logv2.exp())**2).mean()
+                    rec  = 0.5*(self.recon_loss(r1, x1) + self.recon_loss(r2, x2))
+                    loss = rec + 0.05 * cons
+                    logs = {"recon": rec.item(), "var_cons": cons.item()}
+                    return {"loss": loss, "logs": logs, "recon": r1}
+
+                # ---------- 139) Temperature-Scaled Latent ----------
+                if algo == "temp_scale_latent":
+                    # learn a global temperature T on latent to calibrate residuals
+                    z, feats = self.encode(x)
+                    if not hasattr(self, "_logT"):
+                        self._logT = nn.Parameter(torch.zeros(1, device=x.device))
+                    T = self._logT.exp().clamp(0.25, 4.0)
+                    zt = z / T
+                    r = self.decode(zt, feats)
+                    rec = self.recon_loss(r, x)
+                    # mild regularizer to keep T near 1
+                    reg = (T - 1.0).abs()
+                    loss = rec + 0.001 * reg
+                    logs = {"recon": rec.item(), "T": float(T.detach())}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 140) Conformal-Quantile Recon (τ-quantile of |error|) ----------
+                if algo == "conformal_quantile":
+                    tau = 0.9
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    # predict per-pixel quantile qτ for |residual|
+                    if not hasattr(self, "_q_head"):
+                        Cdec = feats[-1].shape[1] if isinstance(feats,(list,tuple)) else z.shape[1]
+                        self._q_head = nn.Conv2d(Cdec, 1, 1).to(x.device)
+                    f_top = feats[-1] if isinstance(feats,(list,tuple)) else z
+                    q = F.softplus(self._q_head(f_top))  # qτ >= 0
+                    err = (r - x).abs()
+                    pin = _pinball(err, q, tau).mean()
+                    # add recon tether for stability
+                    rec = self.recon_loss(r, x)
+                    loss = rec + 0.5 * pin
+                    logs = {"recon": rec.item(), "pinball": pin.item()}
+                    return {"loss": loss, "logs": logs, "recon": r, "aux": {"q_tau": q}}
+
+                # ---------- 141) Selective Reconstruction (confidence with coverage) ----------
+                if algo == "selective_recon":
+                    target_cov = 0.7
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    if not hasattr(self, "_conf_head"):
+                        Cdec = feats[-1].shape[1] if isinstance(feats,(list,tuple)) else z.shape[1]
+                        self._conf_head = nn.Conv2d(Cdec, 1, 1).to(x.device)
+                    conf = torch.sigmoid(self._conf_head(feats[-1] if isinstance(feats,(list,tuple)) else z))  # (B,1,H,W)
+                    # selective loss: weight recon by conf; penalize coverage drift
+                    wrec = (conf * (r - x).pow(2)).mean()
+                    cov  = conf.mean()
+                    cov_pen = (cov - target_cov).abs()
+                    # encourage conf ≈ low error (rank correlation surrogate)
+                    corr = F.mse_loss(conf, (1.0/(1e-3 + (r - x).abs())).detach())
+                    loss = wrec + 0.1*cov_pen + 0.01*corr
+                    logs = {"wrec": wrec.item(), "coverage": cov.item()}
+                    return {"loss": loss, "logs": logs, "recon": r, "aux": {"conf": conf}}
+
+                # ---------- 142) Uncertainty-Guided Recon (WLS) ----------
+                if algo == "uncert_guided":
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    if not hasattr(self, "_var_head"):
+                        Cdec = feats[-1].shape[1] if isinstance(feats,(list,tuple)) else z.shape[1]
+                        self._var_head = nn.Conv2d(Cdec, 1, 1).to(x.device)
+                    logv = self._var_head(feats[-1] if isinstance(feats,(list,tuple)) else z).clamp(-8, 4)
+                    w = (logv.exp() + 1e-6).reciprocal()       # 1/σ^2
+                    w = w / (w.mean() + 1e-8)
+                    wls = (w * (r - x).pow(2)).mean()
+                    # tiny smoothness on σ map
+                    tv = 0.0005 * _total_variation(logv)
+                    loss = wls + tv
+                    logs = {"wls": wls.item(), "tv_sigma": float(tv)}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 143) Robust Worst-of-K ----------
+                if algo == "robust_worstofk":
+                    # small perturbations within a budget; minimize the worst loss
+                    eps = 2/255.0
+                    def make_view(img):
+                        y = img + eps*torch.randn_like(img)
+                        k = random.choice([0,1,2,3])
+                        return torch.rot90(y.clamp(0,1), k, dims=[-2,-1])
+                    views = _worstofk(x, make_view, K=4)
+                    losses, recons = [], []
+                    for v in views:
+                        z,f = self.encode(v); r = self.decode(z,f)
+                        losses.append(self.recon_loss(r, x))
+                        recons.append(r)
+                    idx = torch.argmax(torch.stack([l.detach() for l in losses]))
+                    loss = losses[int(idx)]
+                    logs = {"worst_loss": loss.item()}
+                    return {"loss": loss, "logs": logs, "recon": recons[int(idx)]}
+
+                # ---------- 144) Error-Calibration Curve ----------
+                if algo == "error_calibration":
+                    # compare predicted σ to empirical |error| across soft bins
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    if not hasattr(self, "_var_head"):
+                        Cdec = feats[-1].shape[1] if isinstance(feats,(list,tuple)) else z.shape[1]
+                        self._var_head = nn.Conv2d(Cdec, 1, 1).to(x.device)
+                    logv = self._var_head(feats[-1] if isinstance(feats,(list,tuple)) else z)
+                    sigma = (logv*0.5).exp().clamp(1e-3, 2.5)  # σ
+                    err = (r - x).abs().detach()
+                    # build soft histogram bins on predicted σ and compare average errors per bin
+                    edges = torch.linspace(0.0, 1.0, 8, device=x.device)
+                    wb = _soft_bins(sigma, edges)  # (B,1,H,W,M)
+                    # per-bin expected error ≈ sum(w*err)/sum(w)
+                    num = (wb * err.unsqueeze(-1)).sum(dim=[1,2,3])   # (B,M)
+                    den = (wb.sum(dim=[1,2,3]) + 1e-6)                # (B,M)
+                    e_bin = (num/den).mean(dim=0)                     # (M,)
+                    s_bin = (wb * sigma.unsqueeze(-1)).sum(dim=[1,2,3]).mean(dim=0) / den.mean(dim=0)
+                    # calibration: e_bin ≈ c * s_bin (c≈1); fit c on the fly (least squares)
+                    c = ( (e_bin*s_bin).sum() / (s_bin.pow(2).sum() + 1e-8) ).detach()
+                    cal = ((e_bin - c*s_bin)**2).mean()
+                    rec = self.recon_loss(r, x)
+                    loss = rec + 0.1 * cal
+                    logs = {"recon": rec.item(), "cal": cal.item(), "c": float(c)}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 145) Rate–Distortion (entropy proxy) ----------
+                if algo == "rd_lagrange":
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    D = self.recon_loss(r, x)
+                    R = _entropy_proxy_lat(z)
+                    lam = 5e-3  # start small; tune per dataset
+                    loss = D + lam * R
+                    logs = {"D": D.item(), "R_proxy": R.item(), "lambda": lam}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 146) Latent Quantization (STE) ----------
+                if algo == "latent_quant_ste":
+                    z, feats = self.encode(x)
+                    # quantize latent with learnable step (optional); here fixed Δ=1/16
+                    scale = 16.0
+                    zq = _round_ste(z * scale) / scale
+                    r = self.decode(zq, feats)
+                    # tether to clean and to pre-quant recon for stability
+                    rc = self.decode(z, feats).detach()
+                    rec = self.recon_loss(r, x)
+                    ste = F.mse_loss(r, rc)
+                    loss = rec + 0.1 * ste
+                    logs = {"recon": rec.item(), "ste_cons": ste.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 147) Gate-Prune L1 (channel gating) ----------
+                if algo == "gate_prune_l1":
+                    z, feats = self.encode(x)
+                    # lazy gate vector on top feature channels
+                    if isinstance(feats, (list,tuple)):
+                        Ftop = feats[-1]
+                    else:
+                        Ftop = z
+                    B,C,H,W = Ftop.shape
+                    if not hasattr(self, "_gate"):
+                        self._gate = nn.Parameter(torch.ones(C, device=x.device))
+                    g = torch.sigmoid(self._gate).view(1,C,1,1)
+                    Fg = Ftop * g
+                    if isinstance(feats, (list,tuple)):
+                        feats_mod = list(feats); feats_mod[-1] = Fg
+                    else:
+                        feats_mod = Fg
+                    r = self.decode(z, feats_mod)
+                    rec = self.recon_loss(r, x)
+                    spars = g.mean()
+                    loss = rec + 1e-3 * spars  # L1-like via sigmoid mean
+                    logs = {"recon": rec.item(), "gate_mean": spars.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 148) Distortion-Balance (learnable weights) ----------
+                if algo == "distortion_balance":
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    if not hasattr(self, "_w_mse"):  # log-weights to keep positivity
+                        self._w_mse  = nn.Parameter(torch.tensor(0.0, device=x.device))
+                        self._w_ssim = nn.Parameter(torch.tensor(0.0, device=x.device))
+                        self._w_perc = nn.Parameter(torch.tensor(0.0, device=x.device))
+                    # components
+                    Lmse  = F.mse_loss(r, x)
+                    Lssim = 1.0 - _msssim(r.clamp(0,1), x.clamp(0,1))
+                    f_orig = feats[-1] if isinstance(feats,(list,tuple)) else z
+                    f_rec, _ = self.encode(r.detach()); 
+                    if f_rec.shape != f_orig.shape: f_rec = F.interpolate(f_rec, size=f_orig.shape[-2:])
+                    Lperc = F.l1_loss(f_rec, f_orig.detach())
+                    w_mse  = F.softplus(self._w_mse )
+                    w_ssim = F.softplus(self._w_ssim)
+                    w_perc = F.softplus(self._w_perc)
+                    loss = w_mse*Lmse + w_ssim*Lssim + w_perc*Lperc
+                    logs = {"Lmse": Lmse.item(), "Lssim": float(Lssim.item()), "Lperc": Lperc.item(),
+                            "w_mse": float(w_mse), "w_ssim": float(w_ssim), "w_perc": float(w_perc)}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 149) 8×8 DCT Masking Recon ----------
+                if algo == "block_dct_mask":
+                    # mask high-freq DCT coeffs per 8×8 block; reconstruct original spatial x
+                    bs = 8
+                    # pad to multiple just in case
+                    H,W = x.shape[-2:]
+                    H2 = (H//bs)*bs; W2=(W//bs)*bs
+                    if H2!=H or W2!=W:
+                        x = x[..., :H2, :W2]
+                    D, ctx = _block_dct2(x, bs=bs)      # (BC, 64, nblk)
+                    # keep a low-freq triangle (quality proxy)
+                    keep = 20
+                    idx = torch.arange(D.shape[1], device=x.device)
+                    mask = (idx < keep).float().view(1,-1,1)
+                    Dm = D * mask
+                    xm = _block_idct2(Dm, ctx)
+                    z, feats = self.encode(xm); r = self.decode(z, feats)
+                    loss = self.recon_loss(r, x)
+                    logs = {"recon": loss.item(), "keep_coeffs": keep}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 150) Bitrate Temperature Control ----------
+                if algo == "bitrate_temp_ctrl":
+                    target = 0.08  # target |z| mean (rate proxy)
+                    z, feats = self.encode(x)
+                    if not hasattr(self, "_logT_lat"):
+                        self._logT_lat = nn.Parameter(torch.zeros(1, device=x.device))
+                    T = self._logT_lat.exp().clamp(0.25, 4.0)
+                    zt = z / T
+                    r = self.decode(zt, feats)
+                    rec = self.recon_loss(r, x)
+                    rate = _entropy_proxy_lat(zt)
+                    ctrl = _target_match(rate, target)
+                    loss = rec + 1e-2 * ctrl
+                    logs = {"recon": rec.item(), "rate_proxy": rate.item(), "T": float(T.detach())}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 151) Checkerboard Suppression ----------
+                if algo == "checker_suppress":
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    rec = self.recon_loss(r, x)
+                    ali = _alias_penalty(r)
+                    loss = rec + 0.02 * ali
+                    logs = {"recon": rec.item(), "alias": ali.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 152) JPEG Round-Trip Consistency ----------
+                if algo == "jpeg_roundtrip":
+                    # approximate JPEG: block DCT → quantize → dequant → iDCT
+                    bs = 8; Q = 16.0
+                    H,W = x.shape[-2:]
+                    H2 = (H//bs)*bs; W2=(W//bs)*bs
+                    if H2!=H or W2!=W:
+                        x = x[..., :H2, :W2]
+                    D, ctx = _block_dct2(x, bs=bs)
+                    Dq = _round_ste(D / Q) * Q
+                    xj = _block_idct2(Dq, ctx).clamp(0,1)
+                    # train AE to reconstruct clean x from JPEG-corrupted xj,
+                    # and also make roundtrip close: r -> jpeg(r) ≈ jpeg(x)
+                    z, f = self.encode(xj); r = self.decode(z, f)
+                    Dj, ctx2 = _block_dct2(r.clamp(0,1), bs=bs)
+                    rj = _block_idct2(_round_ste(Dj / Q)*Q, ctx2).clamp(0,1)
+                    Lclean = self.recon_loss(r, x)
+                    Lrt    = F.mse_loss(rj, xj)
+                    loss = Lclean + 0.5 * Lrt
+                    logs = {"clean": Lclean.item(), "roundtrip": Lrt.item(), "Q": Q}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 153) Gamma Sweep ----------
+                if algo == "gamma_sweep":
+                    g = random.uniform(0.6, 1.6)
+                    xg = _gamma_corr(x, g)
+                    z0,f0 = self.encode(x);  r0 = self.decode(z0,f0)   # canonical
+                    z1,f1 = self.encode(xg); r1 = self.decode(z1,f1)   # gamma-view
+                    rec = self.recon_loss(r0, x)
+                    h0 = F.normalize(z0.flatten(2).mean(-1), dim=1)
+                    h1 = F.normalize(z1.flatten(2).mean(-1), dim=1)
+                    inv = F.mse_loss(h0, h1.detach())
+                    loss = rec + 0.1*inv
+                    logs = {"recon": rec.item(), "gamma": g, "latent_inv": inv.item()}
+                    return {"loss": loss, "logs": logs, "recon": r0}
+
+                # ---------- 154) Photometric Affine Consistency ----------
+                if algo == "photo_affine_cons":
+                    xa = _photo_affine(x)
+                    z0,f0 = self.encode(x);  r0 = self.decode(z0,f0)
+                    z1,f1 = self.encode(xa); r1 = self.decode(z1,f1)
+                    rec = self.recon_loss(r0, x)
+                    inv = F.mse_loss(z0.flatten(2).mean(-1), z1.flatten(2).mean(-1).detach())
+                    loss = rec + 0.1*inv
+                    logs = {"recon": rec.item(), "latent_inv": inv.item()}
+                    return {"loss": loss, "logs": logs, "recon": r0}
+
+                # ---------- 155) RandConv Invariance ----------
+                if algo == "randconv_invariance":
+                    xr = _rand_depthwise_conv3(x)
+                    z0,f0 = self.encode(x);  r0 = self.decode(z0,f0)
+                    z1,f1 = self.encode(xr); r1 = self.decode(z1,f1)
+                    rec = self.recon_loss(r0, x)
+                    cons = F.mse_loss(r0, r1.detach())
+                    loss = rec + 0.1*cons
+                    logs = {"recon": rec.item(), "recon_cons": cons.item()}
+                    return {"loss": loss, "logs": logs, "recon": r0}
+
+                # ---------- 156) Haze/Fog Recover ----------
+                if algo == "haze_fog_recover":
+                    Ih, t, A = _synth_haze(x)          # hazy view
+                    z,f = self.encode(Ih); r = self.decode(z,f)
+                    loss = self.recon_loss(r, x)
+                    logs = {"recon": loss.item(), "t_mean": float(t.mean()), "A_mean": float(A.mean())}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 157) Background Randomize → Reconstruct ----------
+                if algo == "bg_randomize_recon":
+                    m = _fg_mask_coarse(x)                   # (B,1,H,W)
+                    noise_bg = torch.rand_like(x)
+                    xb = x*m + noise_bg*(1-m)
+                    z,f = self.encode(xb); r = self.decode(z,f)
+                    # emphasize FG reconstruction but keep small BG tether
+                    denom = m.mean().clamp_min(1e-6)
+                    if self.cfg.recon_loss == "mse":
+                        fg = ((r-x).pow(2) * m).sum() / (x.numel()*denom)
+                    elif self.cfg.recon_loss == "l1":
+                        fg = ((r-x).abs() * m).sum() / (x.numel()*denom)
+                    else:
+                        hub = F.huber_loss(r, x, delta=self.cfg.huber_delta, reduction="none")
+                        fg = (hub*m).sum() / (x.shape[0]*x.shape[2]*x.shape[3]*denom)
+                    bg = 0.1 * self.recon_loss(r*(1-m), x*(1-m))
+                    loss = fg + bg
+                    logs = {"fg": fg.item(), "bg": bg.item(), "fg_ratio": float(denom)}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 158) Gamut Consistency (sRGB↔linear) ----------
+                if algo == "gamut_consistency":
+                    # sRGB ≈ gamma 2.2; compare latent/recon across domains
+                    x_lin  = x.clamp(0,1).pow(2.2)          # pseudo-linear
+                    x_srgb = x_lin.clamp(0,1).pow(1/2.2)
+                    z1,f1 = self.encode(x_lin);  r1 = self.decode(z1,f1)
+                    z2,f2 = self.encode(x_srgb); r2 = self.decode(z2,f2)
+                    # train in linear domain as canonical
+                    rec = self.recon_loss(r1, x_lin)
+                    inv = F.mse_loss(z1.flatten(2).mean(-1), z2.flatten(2).mean(-1).detach())
+                    loss = rec + 0.1*inv
+                    logs = {"recon_lin": rec.item(), "latent_inv": inv.item()}
+                    return {"loss": loss, "logs": logs, "recon": r1.clamp(0,1).pow(1/2.2)}  # show sRGB preview
+
+                # ---------- 159) Histogram-Equalization Consistency ----------
+                if algo == "hist_eq_consistency":
+                    xe = _soft_equalize(x)
+                    z0,f0 = self.encode(x);  r0 = self.decode(z0,f0)
+                    z1,f1 = self.encode(xe); r1 = self.decode(z1,f1)
+                    rec = self.recon_loss(r0, x)
+                    inv = F.mse_loss(z0.flatten(2).mean(-1), z1.flatten(2).mean(-1).detach())
+                    # also encourage hist of r0 to match hist of x (soft)
+                    hx  = _soft_hist(x.clamp(0,1), bins=32, sigma=0.02)
+                    hr0 = _soft_hist(r0.clamp(0,1), bins=32, sigma=0.02)
+                    hL = F.mse_loss(hr0, hx.detach())
+                    loss = rec + 0.05*inv + 0.02*hL
+                    logs = {"recon": rec.item(), "latent_inv": inv.item(), "hist": hL.item()}
+                    return {"loss": loss, "logs": logs, "recon": r0}
+
+                # ---------- 160) AdaBN-Sim Invariance (channel-stats shift) ----------
+                if algo == "adabn_sim_invariance":
+                    xs = _channel_stats_shift(x)
+                    z0,f0 = self.encode(x);  r0 = self.decode(z0,f0)
+                    z1,f1 = self.encode(xs); r1 = self.decode(z1,f1)
+                    rec = self.recon_loss(r0, x)
+                    inv = F.mse_loss(z0.flatten(2).mean(-1), z1.flatten(2).mean(-1).detach())
+                    loss = rec + 0.1*inv
+                    logs = {"recon": rec.item(), "latent_inv": inv.item()}
+                    return {"loss": loss, "logs": logs, "recon": r0}
+
+                # ---------- 161) Homography Cycle ----------
+                if algo == "homography_cycle":
+                    B = x.size(0)
+                    Hm = _rand_homography(B, device=x.device, dtype=x.dtype)
+                    x_w = _warp_homography(x, Hm)
+                    z,f = self.encode(x_w); r_w = self.decode(z,f)
+                    # unwarp reconstruction with inverse H
+                    Hinv = torch.inverse(Hm)
+                    r_un = _warp_homography(r_w, Hinv)
+                    # cycle to canonical + small recon tether in warped space
+                    Lcyc = self.recon_loss(r_un, x)
+                    Lt   = 0.3 * self.recon_loss(r_w, x_w)
+                    loss = Lcyc + Lt
+                    logs = {"cycle": Lcyc.item(), "tether": Lt.item()}
+                    return {"loss": loss, "logs": logs, "recon": r_un}
+
+                # ---------- 162) Perspective Invariance ----------
+                if algo == "perspective_invariance":
+                    B = x.size(0)
+                    H1 = _rand_homography(B, device=x.device, dtype=x.dtype)
+                    H2 = _rand_homography(B, device=x.device, dtype=x.dtype)
+                    x1 = _warp_homography(x, H1); x2 = _warp_homography(x, H2)
+                    z1,f1 = self.encode(x1); r1 = self.decode(z1,f1)
+                    z2,f2 = self.encode(x2); r2 = self.decode(z2,f2)
+                    h1 = F.normalize(z1.flatten(2).mean(-1), dim=1)
+                    h2 = F.normalize(z2.flatten(2).mean(-1), dim=1)
+                    inv = F.mse_loss(h1, h2.detach())
+                    # small reconstruction tethers in each view
+                    rec = 0.5*(self.recon_loss(r1, x1) + self.recon_loss(r2, x2))
+                    loss = rec + 0.1*inv
+                    logs = {"recon": rec.item(), "latent_inv": inv.item()}
+                    return {"loss": loss, "logs": logs, "recon": r1}
+
+                # ---------- 163) Rectify Recon (affine tilts/shears) ----------
+                if algo == "rectify_recon":
+                    xa = _rand_affine(x)
+                    z,f = self.encode(xa); r = self.decode(z,f)
+                    loss = self.recon_loss(r, x)  # canonical target = original
+                    logs = {"recon": loss.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 164) Vanishing-Orientation Consistency ----------
+                if algo == "vanish_consistency":
+                    z,f = self.encode(x); r = self.decode(z,f)
+                    hx = _grad_orientation_hist(x); hr = _grad_orientation_hist(r.clamp(0,1))
+                    hL = F.mse_loss(hr, hx.detach())
+                    rec = self.recon_loss(r, x)
+                    loss = rec + 0.05*hL
+                    logs = {"recon": rec.item(), "ori_hist": hL.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 165) Principal-Point Shift (crop/pad) ----------
+                if algo == "ppoint_shift":
+                    B,C,H,W = x.shape
+                    # crop a random window, then resize back (simulate principal point shift)
+                    dh = int(0.1*H); dw = int(0.1*W)
+                    y0 = random.randint(0, dh); x0 = random.randint(0, dw)
+                    y1 = H - (dh - y0); x1 = W - (dw - x0)
+                    xc = F.interpolate(x[..., y0:y1, x0:x1], size=(H,W), mode="bilinear", align_corners=False)
+                    z0,f0 = self.encode(x);  r0 = self.decode(z0,f0)
+                    zc,fc = self.encode(xc); rc = self.decode(zc,fc)
+                    rec = self.recon_loss(r0, x)
+                    inv = F.mse_loss(z0.flatten(2).mean(-1), zc.flatten(2).mean(-1).detach())
+                    loss = rec + 0.1*inv
+                    logs = {"recon": rec.item(), "latent_inv": inv.item()}
+                    return {"loss": loss, "logs": logs, "recon": r0}
+
+                # ---------- 166) Radial De-warp ----------
+                if algo == "radial_dewarp":
+                    xd = _radial_distort(x)
+                    z,f = self.encode(xd); r = self.decode(z,f)
+                    loss = self.recon_loss(r, x)  # train to undo distortion
+                    logs = {"recon": loss.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 167) Overlap Stitch Consistency ----------
+                if algo == "overlap_stitch":
+                    # two overlapping crops should reconstruct consistently on the overlap
+                    B,C,H,W = x.shape
+                    oh = H//3; ow = W//3
+                    y0 = random.randint(0, H-oh-1); x0 = random.randint(0, W-ow-1)
+                    y1 = random.randint(0, H-oh-1); x1 = random.randint(0, W-ow-1)
+                    A = x[..., y0:y0+2*oh, x0:x0+2*ow]
+                    Bv= x[..., y1:y1+2*oh, x1:x1+2*ow]
+                    # define overlap in full coords
+                    Ay0, Ay1 = y0+oh//2, y0+3*oh//2
+                    Ax0, Ax1 = x0+ow//2, x0+3*ow//2
+                    By0, By1 = y1, y1+2*oh
+                    Bx0, Bx1 = x1, x1+2*ow
+                    # encode-decode both (resized back to native for loss)
+                    Ar = F.interpolate(self.decode(*self.encode(A)), size=(H,W), mode="bilinear", align_corners=False)
+                    Br = F.interpolate(self.decode(*self.encode(Bv)), size=(H,W), mode="bilinear", align_corners=False)
+                    # overlap region (intersection)
+                    oy0, oy1 = max(Ay0, By0), min(Ay1, By1)
+                    ox0, ox1 = max(Ax0, Bx0), min(Ax1, Bx1)
+                    if oy1<=oy0 or ox1<=ox0:
+                        # degenerate overlap; fall back to full recon tether
+                        z,f = self.encode(x); r = self.decode(z,f)
+                        loss = self.recon_loss(r, x)
+                        logs = {"recon": loss.item(), "overlap": 0}
+                        return {"loss": loss, "logs": logs, "recon": r}
+                    overlapA = Ar[..., oy0:oy1, ox0:ox1]
+                    overlapB = Br[..., oy0:oy1, ox0:ox1]
+                    cons = F.mse_loss(overlapA, overlapB.detach())
+                    # small global tether
+                    glob = 0.5*(self.recon_loss(Ar, x) + self.recon_loss(Br, x))
+                    loss = glob + 0.1*cons
+                    logs = {"glob": glob.item(), "overlap_cons": cons.item(), "overlap_px": (oy1-oy0)*(ox1-ox0)}
+                    return {"loss": loss, "logs": logs, "recon": Ar}
+
+                # ---------- 168) Homography Keypoint Alignment ----------
+                if algo == "homo_kp_alignment":
+                    B = x.size(0)
+                    Hm = _rand_homography(B, device=x.device, dtype=x.dtype)
+                    xw = _warp_homography(x, Hm)
+                    # pseudo keypoints (sparse mask) on both
+                    kp_x  = _corner_kp_map(x)
+                    kp_xw = _corner_kp_map(xw)
+                    # warp back kp_xw into original frame and compare maps
+                    Hinv = torch.inverse(Hm)
+                    kp_xw_back = _warp_homography(kp_xw, Hinv)
+                    # loss: kp maps agree + recon tether on warped view to avoid trivialities
+                    z,f = self.encode(xw); rw = self.decode(z,f)
+                    kpL = F.mse_loss(kp_xw_back, kp_x.detach())
+                    rec = self.recon_loss(rw, xw)
+                    loss = rec + 0.1*kpL
+                    logs = {"recon": rec.item(), "kp_align": kpL.item()}
+                    return {"loss": loss, "logs": logs, "recon": _warp_homography(rw, Hinv)}
+
+                # ---------- 169) BYOL-StopGrad (single-net) ----------
+                if algo == "byol_stopgrad":
+                    # two augs; predict stop-grad target from the other view; no EMA/teacher
+                    x1, x2 = _simple_aug(x), _simple_aug(x)
+                    z1, f1 = self.encode(x1); z2, f2 = self.encode(x2)
+                    h1 = _pool_lat(z1); h2 = _pool_lat(z2)          # (B,D)
+                    # tiny predictor head (shared) on top features
+                    if not hasattr(self, "_pred_head"):
+                        D = h1.shape[1]
+                        self._pred_head = nn.Sequential(nn.Linear(D, D, bias=False)).to(x.device)
+                    p1 = F.normalize(self._pred_head(h1), dim=1)
+                    t2 = F.normalize(h2.detach(), dim=1)
+                    inv12 = 2 - 2*(p1*t2).sum(dim=1).mean()        # 2*(1 - cosine)
+                    # symmetric branch
+                    p2 = F.normalize(self._pred_head(h2), dim=1)
+                    t1 = F.normalize(h1.detach(), dim=1)
+                    inv21 = 2 - 2*(p2*t1).sum(dim=1).mean()
+                    # reconstruction tether on one view
+                    r = self.decode(z1, f1)
+                    rec = self.recon_loss(r, x1)
+                    loss = 0.5*(inv12 + inv21) + 0.1*rec
+                    logs = {"inv": 0.5*(inv12.item()+inv21.item()), "recon": rec.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 170) VICReg-AE ----------
+                if algo == "vicreg_ae":
+                    x1, x2 = _simple_aug(x), _simple_aug(x)
+                    z1, f1 = self.encode(x1); z2, f2 = self.encode(x2)
+                    h1, h2 = _pool_lat(z1), _pool_lat(z2)
+                    # invariance
+                    iL = F.mse_loss(h1, h2.detach())
+                    # variance (avoid collapse)
+                    def var_term(h): 
+                        s = h.std(dim=0) + 1e-6
+                        return F.relu(1.0 - s).mean()
+                    vL = var_term(h1) + var_term(h2)
+                    # covariance (decorrelate)
+                    C = _cov(h1); covL = (_offdiag(C).pow(2).mean() + _offdiag(_cov(h2)).pow(2).mean())
+                    # recon tether
+                    r = self.decode(z1, f1); rec = self.recon_loss(r, x1)
+                    loss = iL + 0.1*vL + 0.05*covL + 0.1*rec
+                    logs = {"inv": iL.item(), "var": vL.item(), "cov": covL.item(), "recon": rec.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 171) Barlow-Single ----------
+                if algo == "barlow_single":
+                    x1, x2 = _simple_aug(x), _simple_aug(x)
+                    z1, _ = self.encode(x1); z2, _ = self.encode(x2)
+                    h1, h2 = _pool_lat(z1), _pool_lat(z2)
+                    C = _corr_matrix(h1, h2)                      # (D,D)
+                    on  = (C.diag() - 1).pow(2).mean()
+                    off = _offdiag(C).pow(2).mean()
+                    r = self.decode(z1, _); rec = self.recon_loss(r, x1)
+                    loss = on + 0.01*off + 0.1*rec
+                    logs = {"on": on.item(), "off": off.item(), "recon": rec.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 172) Decoder Feature Decor ----------
+                if algo == "decoder_decor":
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    rec = self.recon_loss(r, x)
+                    Ftop = feats[-1] if isinstance(feats,(list,tuple)) else z
+                    B,C,H,W = Ftop.shape
+                    Fflat = Ftop.permute(0,2,3,1).reshape(-1, C)      # (B*H*W, C)
+                    Cc = _cov(Fflat)
+                    decor = _offdiag(Cc).pow(2).mean()
+                    loss = rec + 0.01*decor
+                    logs = {"recon": rec.item(), "decor": decor.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 173) Filter Ortho ----------
+                if algo == "filter_ortho":
+                    # Orthonormalize conv filters (last encoder block) via penalty
+                    rec_loss = 0.0
+                    ortho = 0.0
+                    # call a forward to get recon/tether
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    rec_loss = self.recon_loss(r, x)
+                    # iterate parameters once; penalize conv weight correlations
+                    for m in self.modules():
+                        if isinstance(m, nn.Conv2d):
+                            W = m.weight  # (Cout,Cin,kh,kw)
+                            Cout = W.shape[0]
+                            M = W.view(Cout, -1)                     # filters flattened
+                            G = (M @ M.t())                          # (Cout,Cout)
+                            I = torch.eye(Cout, device=W.device, dtype=W.dtype)
+                            ortho = ortho + ((G - I).pow(2).mean())
+                    loss = rec_loss + 1e-4*ortho
+                    logs = {"recon": rec_loss.item(), "ortho": float(ortho)}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 174) Activation Balance ----------
+                if algo == "act_balance":
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    rec = self.recon_loss(r, x)
+                    Ftop = feats[-1] if isinstance(feats,(list,tuple)) else z
+                    m, s = _channel_stats(Ftop)
+                    # want means ~0 and stds ~ shared median
+                    m_pen = m.abs().mean()
+                    s_med = s.median()
+                    s_pen = (s - s_med).abs().mean()
+                    loss = rec + 0.01*m_pen + 0.01*s_pen
+                    logs = {"recon": rec.item(), "m_pen": m_pen.item(), "s_pen": s_pen.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 175) Target Sparsity ----------
+                if algo == "target_sparsity":
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    rec = self.recon_loss(r, x)
+                    l1, pen, frac = _soft_sparsity(z, target=0.2)
+                    loss = rec + 1e-3*l1 + 0.05*pen
+                    logs = {"recon": rec.item(), "l1": l1.item(), "sparse_frac": float(frac)}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 176) Latent Whiten Unit ----------
+                if algo == "latent_whiten_unit":
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    rec = self.recon_loss(r, x)
+                    h = _pool_lat(z)
+                    C = _cov(h)
+                    white = ((C - torch.eye(C.shape[0], device=C.device, dtype=C.dtype))**2).mean()
+                    loss = rec + 0.01*white
+                    logs = {"recon": rec.item(), "white": white.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 177) Patch-Graph Contrast ----------
+                if algo == "patch_graph_contrast":
+                    ps, stride = 16, 16
+                    B,C,H,W = x.shape
+                    P, Gh, Gw = _unfold_patches(x, ps, stride)
+                    h, zraw = _patch_latents(self.encode, P)       # (B,n,D)
+                    # same-image positives: each patch ↔ its immediate neighbors
+                    n = h.shape[1]
+                    # pick one neighbor per patch (4-neighborhood)
+                    pos_idx = []
+                    for r in range(Gh):
+                        for c in range(Gw):
+                            i = r*Gw+c
+                            nbrs = []
+                            if r>0: nbrs.append((r-1)*Gw+c)
+                            if r< Gh-1: nbrs.append((r+1)*Gw+c)
+                            if c>0: nbrs.append(r*Gw+c-1)
+                            if c< Gw-1: nbrs.append(r*Gw+c+1)
+                            pos_idx.append(random.choice(nbrs))
+                    pos_idx = torch.tensor(pos_idx, device=x.device)
+                    h_flat = h.reshape(B*n, -1)
+                    h_pos  = h.reshape(B*n, -1)[pos_idx.repeat(B) % n]
+                    # in-batch negatives
+                    logits = (h_flat @ h_pos.t()) / 0.2
+                    targets = torch.arange(B*n, device=x.device)
+                    nce = F.cross_entropy(logits, targets)
+                    # small recon tether on the full image
+                    z, f = self.encode(x); r = self.decode(z,f); rec = self.recon_loss(r, x)
+                    loss = nce + 0.1*rec
+                    logs = {"nce": nce.item(), "recon": rec.item(), "Gh": Gh, "Gw": Gw}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 178) Patch-Order Consistency ----------
+                if algo == "patch_order_consistency":
+                    ps, stride = 16, 16
+                    B,C,H,W = x.shape
+                    P, Gh, Gw = _unfold_patches(x, ps, stride)          # (B,n,C,ps,ps)
+                    n = P.shape[1]
+                    # shuffle patches spatially
+                    perm = torch.stack([torch.randperm(n, device=x.device) for _ in range(B)], dim=0)
+                    P_shuf = P[torch.arange(B).unsqueeze(1), perm]
+                    x_shuf = _fold_patches(P_shuf, H, W, ps, stride)
+                    # train to reconstruct canonical x
+                    z, f = self.encode(x_shuf); r = self.decode(z,f)
+                    loss = self.recon_loss(r, x)
+                    logs = {"recon": loss.item(), "n_patches": n}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 179) Region-Prototype Consistency ----------
+                if algo == "region_proto_consistency":
+                    ps, stride = 16, 16
+                    B,C,H,W = x.shape
+                    P, Gh, Gw = _unfold_patches(x, ps, stride)
+                    h, _ = _patch_latents(self.encode, P)                # (B,n,D)
+                    # per-image soft K-means → assignments should be sharp & consistent
+                    K = min(6, h.shape[1])
+                    Ctr = []
+                    Assign = []
+                    for b in range(B):
+                        Cb, ab = _kmeans_one_step(h[b], K=K)            # (K,D), (n,K)
+                        Ctr.append(Cb); Assign.append(ab)
+                    Ctr = torch.stack(Ctr,0); ab = torch.stack(Assign,0)  # (B,K,D), (B,n,K)
+                    recon_loss = self.recon_loss(self.decode(*self.encode(x)), x)
+                    # encourage entropy low (confident patch-region assignment)
+                    ent = -(ab.clamp_min(1e-6).log() * ab).sum(dim=-1).mean()
+                    # encourage proto coverage (avoid collapse): mean assignment ~ uniform
+                    cov = F.mse_loss(ab.mean(dim=1), torch.full_like(ab.mean(1), 1.0/K))
+                    loss = recon_loss + 0.01*ent + 0.01*cov
+                    logs = {"recon": recon_loss.item(), "entropy": ent.item(), "cover": cov.item()}
+                    return {"loss": loss, "logs": logs, "recon": self.decode(*self.encode(x))}
+
+                # ---------- 180) Nonlocal Self-Recon ----------
+                if algo == "nonlocal_self_recon":
+                    ps, stride = 16, 16
+                    B,C,H,W = x.shape
+                    P, Gh, Gw = _unfold_patches(x, ps, stride)          # (B,n,C,ps,ps)
+                    h, _ = _patch_latents(self.encode, P)               # (B,n,D)
+                    Bn, n, D = h.shape
+                    # for each patch, find a similar patch (nonlocal) within same image and swap a subset
+                    P_sw = P.clone()
+                    for b in range(Bn):
+                        sim = h[b] @ h[b].t()                           # (n,n)
+                        nn = sim.topk(k=3, dim=1).indices[:,1]          # 1st is itself; take 2nd best
+                        idx = torch.randperm(n, device=x.device)[: n//4]
+                        P_sw[b, idx] = P[b, nn[idx]]
+                    x_sw = _fold_patches(P_sw, H, W, ps, stride)
+                    z,f = self.encode(x_sw); r = self.decode(z,f)
+                    loss = self.recon_loss(r, x)
+                    logs = {"recon": loss.item(), "Gh": Gh, "Gw": Gw}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 181) Patch Cycle Consistency ----------
+                if algo == "patch_cycle_consistency":
+                    ps = 32
+                    B,C,H,W = x.shape
+                    y0 = random.randint(0, H-ps); x0 = random.randint(0, W-ps)
+                    crop = x[..., y0:y0+ps, x0:x0+ps]
+                    # recon full then crop same region from recon; require cycle closeness on the crop
+                    z,f = self.encode(x); r = self.decode(z,f)
+                    r_crop = r[..., y0:y0+ps, x0:x0+ps]
+                    cyc = self.recon_loss(r_crop, crop)
+                    # also tether full recon a bit
+                    rec = 0.5*self.recon_loss(r, x)
+                    loss = cyc + rec
+                    logs = {"cycle_crop": cyc.item(), "recon": rec.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 182) CutBlur Recon ----------
+                if algo == "cutblur_recon":
+                    B,C,H,W = x.shape
+                    # pick region and replace with blurred version
+                    rh, rw = H//3, W//3
+                    y0 = random.randint(0, H-rh); x0 = random.randint(0, W-rw)
+                    xb = _gauss_blur(x, k=7, sigma=1.2)
+                    xm = x.clone(); xm[..., y0:y0+rh, x0:x0+rw] = xb[..., y0:y0+rh, x0:x0+rw]
+                    z,f = self.encode(xm); r = self.decode(z,f)
+                    # emphasize the blurred window to be sharpened back
+                    w = torch.zeros(B,1,H,W, device=x.device, dtype=x.dtype)
+                    w[..., y0:y0+rh, x0:x0+rw] = 1.0
+                    denom = w.mean().clamp_min(1e-6)
+                    Lw = ((r - x).pow(2) * w).sum() / (x.numel()*denom)
+                    Lg = 0.2*self.recon_loss(r, x)
+                    loss = Lw + Lg
+                    logs = {"win": Lw.item(), "global": Lg.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 183) Set Invariance (multi-patch pools) ----------
+                if algo == "set_invariance_pools":
+                    ps, stride = 24, 24
+                    B,C,H,W = x.shape
+                    P, Gh, Gw = _unfold_patches(x, ps, stride)      # (B,n,C,ps,ps)
+                    # sample two disjoint sets of patches from same image
+                    n = P.shape[1]
+                    idxA = torch.randperm(n, device=x.device)[: n//4]
+                    idxB = torch.randperm(n, device=x.device)[: n//4]
+                    hA, _ = _patch_latents(self.encode, P[:, idxA])
+                    hB, _ = _patch_latents(self.encode, P[:, idxB])
+                    pA = F.normalize(hA.mean(dim=1), dim=1)         # set pooling
+                    pB = F.normalize(hB.mean(dim=1), dim=1)
+                    inv = F.mse_loss(pA, pB.detach())
+                    # recon tether on full image
+                    r = self.decode(*self.encode(x))
+                    rec = self.recon_loss(r, x)
+                    loss = rec + 0.1*inv
+                    logs = {"recon": rec.item(), "set_inv": inv.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 184) Patch Link Prediction (adjacency) ----------
+                if algo == "patch_link_prediction":
+                    ps, stride = 16, 16
+                    B,C,H,W = x.shape
+                    P, Gh, Gw = _unfold_patches(x, ps, stride)      # (B,n,C,ps,ps)
+                    h, _ = _patch_latents(self.encode, P)           # (B,n,D)
+                    # build simple positive/negative pairs: neighbors = positive; far = negative
+                    pairs, labels = [], []
+                    for r in range(Gh):
+                        for c in range(Gw):
+                            i = r*Gw+c
+                            nbrs = []
+                            if r>0: nbrs.append((r-1)*Gw+c)
+                            if c>0: nbrs.append(r*Gw+c-1)
+                            if r< Gh-1: nbrs.append((r+1)*Gw+c)
+                            if c< Gw-1: nbrs.append(r*Gw+c+1)
+                            if nbrs:
+                                j = random.choice(nbrs); pairs.append((i,j)); labels.append(1.0)
+                                # sample a non-neighbor
+                                k = random.randrange(Gh*Gw)
+                                while k in nbrs or k==i: k = random.randrange(Gh*Gw)
+                                pairs.append((i,k)); labels.append(0.0)
+                    pairs = torch.tensor(pairs, device=x.device)
+                    y = torch.tensor(labels, device=x.device).float()
+                    i, j = pairs[:,0], pairs[:,1]
+                    # use cosine sim as link score; BCE with targets
+                    sim = (h.reshape(B*Gh*Gw, -1)[i] * h.reshape(B*Gh*Gw, -1)[j]).sum(dim=1)
+                    sim = (sim / (1e-6 + h.reshape(B*Gh*Gw, -1)[i].norm(dim=1) * h.reshape(B*Gh*Gw, -1)[j].norm(dim=1))).clamp(-1,1)
+                    score = (sim+1)/2
+                    # small recon tether
+                    rec = self.recon_loss(self.decode(*self.encode(x)), x)
+                    link = F.binary_cross_entropy(score, y)
+                    loss = rec + 0.1*link
+                    logs = {"recon": rec.item(), "link": link.item(), "Gh": Gh, "Gw": Gw}
+                    return {"loss": loss, "logs": logs, "recon": self.decode(*self.encode(x))}
+
                 # ---------- 119) Anti-Alias Consistency ----------
                 if algo == "anti_alias":
                     # After low-pass then down+up, image should return close to original ↔ decoder should produce anti-aliased detail
@@ -524,6 +1359,259 @@ class SelfSupervisedAE(nn.Module):
                     loss = L_hi + 0.5*L_cyc
                     logs = {"hi": L_hi.item(), "cycle_lo": L_cyc.item()}
                     return {"loss": loss, "logs": logs, "recon": rA}
+
+                # ---------- 129) Energy-Contrast AE ----------
+                if algo == "energy_contrast":
+                    # energy E(x) = ||r(x) - x||^2 ; minimize on data, maximize on corrupted
+                    z, f = self.encode(x); r = self.decode(z, f)
+                    E_pos = ((r - x)**2).mean()
+
+                    sigma = _rand_sigma()
+                    xn = (x + sigma*torch.randn_like(x)).clamp(0,1)
+                    zn, fn = self.encode(xn); rn = self.decode(zn, fn)
+                    E_neg = ((rn - xn)**2).mean()
+
+                    loss = E_pos + 0.25 * _hinge(0.05 - (E_neg - E_pos))  # push neg energy up
+                    logs = {"E_pos": float(E_pos), "E_neg": float(E_neg), "sigma": sigma}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 130) Noise-Conditional DAE (multi-σ + cross-σ consistency) ----------
+                if algo == "noise_cond_dae":
+                    s1, s2 = _rand_sigma(), _rand_sigma()
+                    x1 = (x + s1*torch.randn_like(x)).clamp(0,1)
+                    x2 = (x + s2*torch.randn_like(x)).clamp(0,1)
+                    z1,f1 = self.encode(x1); r1 = self.decode(z1,f1)
+                    z2,f2 = self.encode(x2); r2 = self.decode(z2,f2)
+                    Ld = 0.5*(self.recon_loss(r1, x) + self.recon_loss(r2, x))
+                    # cross-σ score consistency
+                    sθ1 = _dae_score(x1, r1, s1); sθ2 = _dae_score(x2, r2, s2)
+                    Lc = F.mse_loss(sθ1, sθ2.detach())
+                    loss = Ld + 0.05*Lc
+                    logs = {"denoise": Ld.item(), "cross_sigma": Lc.item(), "s1": s1, "s2": s2}
+                    return {"loss": loss, "logs": logs, "recon": r1}
+
+                # ---------- 131) Sliced Score Matching (Hutchinson) ----------
+                if algo == "sliced_score_match":
+                    sigma = _rand_sigma()
+                    xn = (x + sigma*torch.randn_like(x)).clamp(0,1)
+                    xn = xn.detach().requires_grad_(True)
+                    z,f = self.encode(xn); r = self.decode(z,f)
+                    sθ = _dae_score(xn, r, sigma)
+                    # sliced score matching: 0.5||s||^2 + div s
+                    v = torch.randn_like(xn)  # or Rademacher
+                    sm = 0.5 * (sθ**2).mean() + _divergence_sliced(sθ, xn, v)
+                    # tiny recon tether (stabilize)
+                    rec = 0.1 * self.recon_loss(r, x)
+                    loss = sm + rec
+                    logs = {"ssm": float(sm.detach()), "recon": float(rec.detach()), "sigma": sigma}
+                    return {"loss": loss, "logs": logs, "recon": r.detach()}
+
+                # ---------- 132) Langevin Consistency ----------
+                if algo == "langevin_consistency":
+                    sigma = _rand_sigma()
+                    xn = (x + sigma*torch.randn_like(x)).clamp(0,1)
+                    z,f = self.encode(xn); r = self.decode(z,f)
+                    sθ = _dae_score(xn, r, sigma)
+                    step = 0.5 * (sigma**2)
+                    x_step = (xn + step * sθ).clamp(0,1)
+
+                    # after one Langevin-like step, recon should move closer to clean
+                    z2,f2 = self.encode(x_step); r2 = self.decode(z2,f2)
+                    d0 = F.mse_loss(r,  x); d1 = F.mse_loss(r2, x)
+                    improve = _hinge(d1 - d0)  # want d1 <= d0
+                    loss = d1 + 0.1*improve
+                    logs = {"d_before": d0.item(), "d_after": d1.item(), "sigma": sigma}
+                    return {"loss": loss, "logs": logs, "recon": r2}
+
+                # ---------- 133) Adversarial-Energy (hard negatives) ----------
+                if algo == "adv_energy":
+                    # PGD on input to *increase* energy; then train to lower energy on clean
+                    eps = 4/255.0; step = 2/255.0; iters = 3
+                    x_adv = x.clone().detach().requires_grad_(True)
+                    for _ in range(iters):
+                        z,f = self.encode(x_adv); r = self.decode(z,f)
+                        E = ((r - x_adv)**2).mean()
+                        (-E).backward()  # ascend energy
+                        with torch.no_grad():
+                            x_adv = (x_adv + step * x_adv.grad.sign())
+                            x_adv = torch.min(torch.max(x_adv, x - eps), x + eps).clamp(0,1).detach().requires_grad_(True)
+                        x_adv.grad = None
+                    # contrast: high energy on x_adv, low on x
+                    zc,fc = self.encode(x); rc = self.decode(zc,fc)
+                    Ec = ((rc - x)**2).mean()
+                    za,fa = self.encode(x_adv); ra = self.decode(za,fa)
+                    Ea = ((ra - x_adv)**2).mean()
+                    loss = Ec + 0.25*_hinge(0.1 - (Ea - Ec))
+                    logs = {"E_clean": float(Ec), "E_adv": float(Ea)}
+                    return {"loss": loss, "logs": logs, "recon": rc}
+
+                # ---------- 134) Multi-σ Path (σ1→σ2 monotone improvement) ----------
+                if algo == "multi_sigma_path":
+                    s1, s2 = sorted([_rand_sigma(), _rand_sigma()], reverse=True)  # s1 > s2
+                    x1 = (x + s1*torch.randn_like(x)).clamp(0,1)
+                    z1,f1 = self.encode(x1); r1 = self.decode(z1,f1)
+                    # denoise again starting from x1 but assuming smaller σ2
+                    sθ1 = _dae_score(x1, r1, s1)
+                    x2 = (x1 + 0.5*(s1**2) * sθ1).clamp(0,1)
+                    z2,f2 = self.encode(x2); r2 = self.decode(z2,f2)
+
+                    Ld = self.recon_loss(r2, x)
+                    # ensure r2 is closer than r1
+                    imp = _hinge(F.mse_loss(r2, x) - F.mse_loss(r1, x))
+                    loss = Ld + 0.1*imp
+                    logs = {"denoise": Ld.item(), "improve": imp.item(), "s1": s1, "s2": s2}
+                    return {"loss": loss, "logs": logs, "recon": r2}
+
+                # ---------- 135) Residual-Denoise (predict ε) ----------
+                if algo == "residual_denoise":
+                    sigma = _rand_sigma()
+                    xn = (x + sigma*torch.randn_like(x)).clamp(0,1)
+                    z,f = self.encode(xn)
+                    base = self.decode(z,f)       # same decoder; use it to predict residual ε̂
+                    eps_hat = base - xn           # residual branch (no new head needed)
+                    x_hat = (xn + eps_hat).clamp(0,1)
+                    Lres = F.mse_loss(eps_hat, x - xn)  # residual supervision
+                    Lrec = self.recon_loss(x_hat, x)
+                    loss = Lres + 0.5*Lrec
+                    logs = {"res": Lres.item(), "recon": Lrec.item(), "sigma": sigma}
+                    return {"loss": loss, "logs": logs, "recon": x_hat}
+
+                # ---------- 136) Score-Norm Balance ----------
+                if algo == "score_norm_balance":
+                    sigma = _rand_sigma()
+                    xn = (x + sigma*torch.randn_like(x)).clamp(0,1)
+                    z,f = self.encode(xn); r = self.decode(z,f)
+                    sθ = _dae_score(xn, r, sigma)
+                    # control score magnitude: target batch norm roughly ||(x - xn)|| / σ^2
+                    target = ((x - xn).flatten(1).norm(dim=1) / (sigma**2 + 1e-8)).mean()
+                    snorm = sθ.flatten(1).norm(dim=1).mean()
+                    reg = (snorm - target.detach()).abs()
+                    rec = self.recon_loss(r, x)
+                    loss = rec + 0.01*reg
+                    logs = {"recon": rec.item(), "score_norm": float(snorm), "target": float(target)}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 121) HSIC Disentangle ----------
+                if algo == "hsic_disentangle":
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    rec = self.recon_loss(r, x)
+                    h = _flat_lat(z)
+                    D = h.shape[1]; D2 = D//2
+                    A, Bp = h[:, :D2], h[:, D2:]
+                    hsic = _hsic_lin(A, Bp)         # lower is better (independence)
+                    loss = rec + 0.01 * hsic
+                    logs = {"recon": rec.item(), "hsic": hsic.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 122) Total-Correlation Min ----------
+                if algo == "total_corr_min":
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    rec = self.recon_loss(r, x)
+                    tc = _tc_offdiag(_flat_lat(z))
+                    loss = rec + 0.01 * tc
+                    logs = {"recon": rec.item(), "tc": tc.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 123) Jacobian-Ortho (rand-direction deltas) ----------
+                if algo == "jacobian_ortho":
+                    z, feats = self.encode(x)
+                    r0 = self.decode(z, feats)
+                    eps = 0.05
+                    v1, v2 = _two_rand_dirs_like(z)
+                    r1 = self.decode(z + eps*v1, feats)
+                    r2 = self.decode(z + eps*v2, feats)
+                    d1 = (r1 - r0) / eps
+                    d2 = (r2 - r0) / eps
+                    cos = _cos_sim(d1, d2).mean().abs()        # want near-orthogonal sensitivities
+                    rec = self.recon_loss(r0, x)
+                    loss = rec + 0.05 * cos
+                    logs = {"recon": rec.item(), "jac_ortho": cos.item()}
+                    return {"loss": loss, "logs": logs, "recon": r0}
+
+                # ---------- 124) Style-Invariant Split (AdaIN cue) ----------
+                if algo == "style_invariant_split":
+                    fA, _ = self.encode(x)
+                    # style-perturbed view via AdaIN with shuffled style
+                    perm = torch.randperm(x.size(0), device=x.device)
+                    fB, _ = self.encode(x[perm])
+                    f_mix = _apply_AdaIN_feat(fA, fB)
+                    # split latent: first half = "content"; enforce invariance across style swap
+                    zA = _flat_lat(fA); zMix = _flat_lat(f_mix)
+                    D = zA.shape[1]; D2 = D//2
+                    inv = F.mse_loss(zA[:, :D2], zMix[:, :D2].detach())
+                    # decode content features (use mixed as carrier to avoid trivial)
+                    r = self.decode(f_mix, [f_mix])
+                    rec = self.recon_loss(r, x)
+                    loss = rec + 0.1 * inv
+                    logs = {"recon": rec.item(), "content_inv": inv.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 125) Color/Shape Split ----------
+                if algo == "color_shape_split":
+                    # gray vs. color view; gray should use 'shape' half, color the 'color' half
+                    gray = (0.299*x[:,0:1] + 0.587*x[:,1:2] + 0.114*x[:,2:3]).repeat(1,3,1,1)
+                    zc, fc = self.encode(x); rg = self.decode(zc, fc)       # color path
+                    zg, fg = self.encode(gray); rg2 = self.decode(zg, fg)    # gray path
+                    h = _flat_lat(zc); D = h.shape[1]; D2 = D//2
+                    # encourage gray to live in shape half (first D2): shrink color-half energy for gray
+                    hg = _flat_lat(zg)
+                    sup = (hg[:, D2:]**2).mean()
+                    # recon both
+                    rec = 0.5*(self.recon_loss(rg, x) + self.recon_loss(rg2, gray))
+                    loss = rec + 1e-3 * sup
+                    logs = {"recon": rec.item(), "gray_suppress": sup.item()}
+                    return {"loss": loss, "logs": logs, "recon": rg}
+
+                # ---------- 126) Latent-Dropout Recon ----------
+                if algo == "latent_dropout_recon":
+                    z, f = self.encode(x)
+                    h = z
+                    if h.dim()==4:
+                        B,C,H,W = h.shape
+                        keep = int(C * 0.75)
+                        idx = torch.randperm(C, device=x.device)[:keep]
+                        m = torch.zeros(C, device=x.device); m[idx]=1.0
+                        m = m.view(1,C,1,1)
+                        r_drop = self.decode(h*m, f)
+                    else:
+                        B,D = h.shape
+                        keep = int(D * 0.75)
+                        idx = torch.randperm(D, device=x.device)[:keep]
+                        m = torch.zeros(D, device=x.device); m[idx]=1.0
+                        r_drop = self.decode(h*m, f)
+                    r_full = self.decode(h, f)
+                    rec = self.recon_loss(r_full, x)
+                    cons = F.mse_loss(r_drop, r_full.detach())
+                    loss = rec + 0.1 * cons
+                    logs = {"recon": rec.item(), "latent_cons": cons.item()}
+                    return {"loss": loss, "logs": logs, "recon": r_full}
+
+                # ---------- 127) kNN Geodesic / Diffusion Consistency ----------
+                if algo == "knn_geodesic":
+                    f, z = self.encode(x)
+                    r = self.decode(z, f)
+                    rec = self.recon_loss(r, x)
+                    zx = f.mean(dim=[2,3])              # input-proxy embedding
+                    zl = _flat_lat(z)
+                    Px = _diffusion_affinity(zx, k=5)   # row-stochastic
+                    Pz = _diffusion_affinity(zl, k=5)
+                    # align one-step diffusion (or 2-step for stability)
+                    Df = F.mse_loss(Pz, Px.detach())
+                    loss = rec + 0.1 * Df
+                    logs = {"recon": rec.item(), "diff_align": Df.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
+
+                # ---------- 128) Subspace Independence (decorrelate groups + whiten) ----------
+                if algo == "subspace_independence":
+                    z, feats = self.encode(x); r = self.decode(z, feats)
+                    rec = self.recon_loss(r, x)
+                    h = _flat_lat(z); D = h.shape[1]; D2 = D//2
+                    a, b = h[:, :D2], h[:, D2:]
+                    cross = _hsic_lin(a, b)
+                    white = 0.5*(_whiten_penalty(a) + _whiten_penalty(b))
+                    loss = rec + 0.01*cross + 0.001*white
+                    logs = {"recon": rec.item(), "cross": cross.item(), "white": white.item()}
+                    return {"loss": loss, "logs": logs, "recon": r}
 
                 # ---------- 97) Symmetry Consistency ----------
                 if algo == "symmetry_consistency":
@@ -2009,6 +3097,406 @@ def _build_laplacian_pyr(x, levels=3):
         cur = low
     pyrG.append(cur)     # coarsest Gaussian
     return pyrL, pyrG    # list of Laplacian bands, list with 1 Gaussian (coarsest)
+
+def _flat_lat(z):
+    # pool spatial if needed → (B,D)
+    return z.flatten(2).mean(-1) if z.dim()==4 else z
+
+def _cov(z):  # z: (B,D) -> (D,D)
+    z0 = z - z.mean(0, keepdim=True)
+    return (z0.T @ z0) / (z0.shape[0]-1 + 1e-6)
+
+def _tc_offdiag(z):
+    C = _cov(z)
+    off = C - torch.diag(torch.diag(C))
+    return off.abs().mean()
+
+def _whiten_penalty(z):
+    C = _cov(z)
+    I = torch.eye(C.shape[0], device=z.device, dtype=z.dtype)
+    return ((C - I)**2).mean()
+
+def _hsic_lin(x, y):
+    # linear-kernel HSIC ~ ||Cov(x,y)||_F^2
+    x0 = x - x.mean(0, keepdim=True); y0 = y - y.mean(0, keepdim=True)
+    Cxy = (x0.T @ y0) / (x.shape[0]-1 + 1e-6)
+    return (Cxy**2).mean()
+
+def _two_rand_dirs_like(z):
+    # produce two orthonormal random directions with same shape as z (per-sample)
+    if z.dim()==4:
+        B,C,H,W = z.shape
+        v1 = torch.randn_like(z); v2 = torch.randn_like(z)
+        def norm(v): return v / (v.flatten(1).norm(dim=1, keepdim=True).view(B,1,1,1)+1e-6)
+        v1 = norm(v1); v2 = norm(v2 - (v1*v2).sum(dim=(1,2,3),keepdim=True)*v1)
+        return v1, norm(v2)
+    else:
+        B,D = z.shape
+        v1 = torch.randn_like(z); v2 = torch.randn_like(z)
+        def norm(v): return v / (v.norm(dim=1, keepdim=True)+1e-6)
+        v1 = norm(v1); v2 = norm(v2 - (v1*v2).sum(dim=1,keepdim=True)*v1)
+        return v1, norm(v2)
+
+def _apply_AdaIN_feat(fA, fB, eps=1e-5):
+    mA, vA = fA.mean([2,3], keepdim=True), fA.var([2,3], keepdim=True)
+    mB, vB = fB.mean([2,3], keepdim=True), fB.var([2,3], keepdim=True)
+    fn = (fA - mA) / (vA+eps).sqrt()
+    return fn * (vB+eps).sqrt() + mB
+
+def _pdist(U):
+    G = U @ U.t(); n2 = U.pow(2).sum(1, keepdim=True); return (n2 + n2.t() - 2*G).clamp_min(0)
+
+def _diffusion_affinity(U, k=5):
+    # build kNN heat kernel W; return normalized diffusion matrix P
+    D2 = _pdist(U)
+    # sigma via median of nonzero dists
+    m = torch.median(D2[D2>0]).clamp_min(1e-6)
+    W = torch.exp(-D2/(2*m))
+    # keep only kNN per row (sparsify softly)
+    B = W.shape[0]
+    topk = torch.topk(W, k=min(k, B), dim=1).values[:, -1:].clamp_min(1e-9)
+    W = W * (W >= topk)  # soft mask
+    d = W.sum(1, keepdim=True) + 1e-6
+    P = W / d
+    return P  # row-stochastic diffusion
+
+def _cos_sim(a, b):  # both flattened
+    a = a.flatten(1); b = b.flatten(1)
+    return (a*b).sum(1) / (a.norm(dim=1)+1e-6) / (b.norm(dim=1)+1e-6)
+
+def _dae_score(x_noisy, recon, sigma):
+    # DAE identity: r*(x) ≈ x + σ^2 ∇ log p(x)  → score ≈ (recon - x_noisy) / σ^2
+    return (recon - x_noisy) / (sigma**2 + 1e-8)
+
+def _rand_sigma(lo=0.05, hi=0.25):
+    return float(random.uniform(lo, hi))
+
+def _hinge(a):  # ReLU
+    return F.relu(a)
+
+def _divergence_sliced(s, x, v):
+    # s: score(x) same shape as x ; v: Rademacher/normal noise same shape as x
+    # Hutchinson trick: E_v[ v^T (∂s/∂x) v ] = tr(J_s) = div s
+    g = (s * v).sum()
+    (dv,) = torch.autograd.grad(g, x, retain_graph=True, create_graph=True)
+    return (dv * v).sum() / v.numel()
+
+def _gauss_nll(x, mu, logvar):
+    # per-pixel Gaussian NLL: 0.5*(log(2π) + log σ^2 + (x-μ)^2 / σ^2)
+    return 0.5*(math.log(2*math.pi) + logvar + ((x-mu)**2) / (logvar.exp() + 1e-8))
+
+def _soft_bins(v, edges):
+    # v: (B,...) in R+, edges: 1D tensor sorted length M+1
+    # returns (B,...,M) soft assignments using triangular kernels
+    M = edges.numel() - 1
+    ctr = 0.5*(edges[:-1] + edges[1:])
+    w = torch.clamp(1.0 - (v.unsqueeze(-1) - ctr)**2 / (0.25*(edges[1:]-edges[:-1])**2 + 1e-8), min=0.0)
+    w = w / (w.sum(dim=-1, keepdim=True)+1e-8)
+    return w  # (..., M)
+
+def _pinball(y, q, tau):
+    # y, q >=0 ; pinball loss for |residual| quantile
+    d = y - q
+    return torch.maximum(tau*d, (tau-1)*d)
+
+def _worstofk(x, make_view, K=4):
+    cand = []
+    for _ in range(K):
+        cand.append(make_view(x))
+    return cand  # list length K
+
+# --- DCT basis ---
+def _dct_mat(n, device, dtype):
+    k = torch.arange(n, device=device, dtype=dtype).view(-1,1)
+    i = torch.arange(n, device=device, dtype=dtype).view(1,-1)
+    M = torch.cos(math.pi*(i+0.5)*k/n)
+    M[0,:] = M[0,:] / math.sqrt(2.0)
+    return M * math.sqrt(2.0/n)
+
+def _block_dct2(x, bs=8):
+    # x: (B,C,H,W) in [0,1]
+    B,C,H,W = x.shape
+    assert H%bs==0 and W%bs==0, "H,W must be multiples of block size"
+    M = _dct_mat(bs, x.device, x.dtype)             # (bs,bs)
+    xt = x.view(B*C, 1, H, W)
+    # unfold blocks
+    u = F.unfold(xt, bs, stride=bs)                 # (BC*1, bs*bs, nblk)
+    u = u.transpose(1,2).contiguous().view(-1,1,bs,bs)
+    # 2D DCT: M*u*M^T
+    d = torch.einsum('ab,nbcd->nacd', M, u.squeeze(1))
+    d = torch.einsum('nbcd,ab->nbca', d, M.t()).unsqueeze(1)  # (N,1,bs,bs)
+    d = d.view(B*C, -1, bs*bs).transpose(1,2)      # (BC, bs*bs, nblk)
+    return d, (B,C,H,W,bs,M)
+
+def _block_idct2(D, ctx):
+    B,C,H,W,bs,M = ctx
+    D = D.transpose(1,2).contiguous().view(-1,1,bs,bs)   # (BC*nblk,1,bs,bs)
+    u = torch.einsum('ab,nbcd->nacd', M.t(), D.squeeze(1))
+    u = torch.einsum('nbcd,ab->nbca', u, M).unsqueeze(1) # (N,1,bs,bs)
+    u = u.view(B*C, bs*bs, -1).contiguous()
+    x = F.fold(u, output_size=(H,W), kernel_size=bs, stride=bs)
+    return x.view(B,C,H,W)
+
+def _round_ste(z):
+    # straight-through rounding
+    return (z - z.detach()) + torch.round(z.detach())
+
+def _alias_penalty(img):
+    # penalize checkerboard/aliasing via down-up mismatch (odd/even grids)
+    d1 = F.avg_pool2d(img, 2, 2)
+    u1 = F.interpolate(d1, scale_factor=2, mode="nearest")
+    d2 = F.avg_pool2d(img[:,:,1:,1:], 2, 2)  # shifted grid
+    u2 = F.interpolate(d2, scale_factor=2, mode="nearest")
+    return F.l1_loss(u1, u2)
+
+def _entropy_proxy_lat(z):
+    # Laplace-like proxy: E|z| encourages compressibility
+    h = z.flatten(2).mean(-1) if z.dim()==4 else z
+    return h.abs().mean()
+
+def _target_match(val, target):
+    return (val - target).abs()
+
+def _gamma_corr(x, gamma):
+    # x in [0,1]
+    return x.clamp(0,1).pow(gamma)
+
+def _photo_affine(x, alpha=None, beta=None):
+    # y = alpha * x + beta, clamp to [0,1]
+    if alpha is None: alpha = random.uniform(0.7, 1.4)
+    if beta  is None: beta  = random.uniform(-0.2, 0.2)
+    return (alpha*x + beta).clamp(0,1)
+
+def _rand_depthwise_conv3(x):
+    # Random positive 3×3 depthwise kernel (anti/blur-ish depending on weights)
+    B,C,H,W = x.shape
+    k = torch.rand(C,1,3,3, device=x.device, dtype=x.dtype)
+    k = k / (k.sum(dim=(2,3), keepdim=True) + 1e-6)
+    return F.conv2d(x, k, padding=1, groups=C)
+
+def _synth_haze(x, beta=None, A=None):
+    # Simple atmospheric scattering: I = J * t + A*(1-t), t=exp(-β d)
+    # Use luminance as depth surrogate ∈ [0,1]
+    if beta is None: beta = random.uniform(0.6, 1.8)
+    Y = (0.299*x[:,0:1] + 0.587*x[:,1:2] + 0.114*x[:,2:3]).clamp(0,1)
+    d = (1.0 - Y)                    # closer (bright) → smaller depth
+    t = torch.exp(-beta * d)         # transmission
+    if A is None:
+        A = torch.rand(x.size(0), 1, 1, 1, device=x.device, dtype=x.dtype)*0.3 + 0.7  # [0.7,1.0]
+    I = x * t + A * (1.0 - t)
+    return I.clamp(0,1), t, A
+
+def _fg_mask_coarse(x):
+    # reuse edges + symmetry (from earlier parts) to get a crude FG mask
+    e = _sobel_edges(x)
+    s = _symmetry_map(x) if ' _symmetry_map' in globals() else 0.0*e
+    m = (e + 0.3*s)
+    m = m / (m.amax(dim=(-2,-1), keepdim=True) + 1e-6)
+    return (m > 0.25).float()
+
+def _soft_equalize(x, bins=64, sigma=0.02):
+    # differentiable per-channel histogram equalization using soft hist/CDF
+    # returns x_eq in [0,1]
+    B,C,H,W = x.shape
+    # soft histogram
+    hist = _soft_hist(x.clamp(0,1), bins=bins, sigma=sigma)            # (B,C,bins)
+    cdf  = torch.cumsum(hist, dim=-1)
+    # bin centers
+    ctr = torch.linspace(0,1,bins, device=x.device, dtype=x.dtype).view(1,1,bins)
+    # map each pixel by soft assignment to CDF( value )
+    xv = x.unsqueeze(2)                                                # (B,C,1,H,W)
+    # soft bin weights (same as _soft_hist internal, but re-compute lightweight)
+    d = (xv - ctr.view(1,1,bins,1,1))/sigma
+    w = torch.exp(-0.5*d*d); w = w / (w.sum(dim=2, keepdim=True) + 1e-6)  # (B,C,bins,H,W)
+    cdf_img = (w * cdf.unsqueeze(-1).unsqueeze(-1)).sum(dim=2)             # (B,C,H,W)
+    return cdf_img.clamp(0,1)
+
+def _channel_stats_shift(x):
+    # Simulate BN stats shift: normalize per-channel, then re-standardize with random μ,σ
+    B,C,H,W = x.shape
+    mu  = x.mean(dim=[2,3], keepdim=True)
+    var = x.var(dim=[2,3], keepdim=True)
+    xn = (x - mu) / (var + 1e-6).sqrt()
+    mu2  = torch.empty_like(mu).uniform_(-0.3, 0.3)
+    std2 = torch.empty_like(var).uniform_(0.7, 1.5).sqrt()
+    y = (xn * std2 + mu2).clamp(-2, 2)  # allow small out-of-[0,1] before clamp
+    return y.clamp(0,1)
+
+def _meshgrid(B, H, W, device, dtype):
+    yy, xx = torch.meshgrid(
+        torch.linspace(-1, 1, H, device=device, dtype=dtype),
+        torch.linspace(-1, 1, W, device=device, dtype=dtype),
+        indexing="ij"
+    )
+    g = torch.stack([xx, yy, torch.ones_like(xx)], dim=-1)  # (H,W,3)
+    return g.unsqueeze(0).repeat(B,1,1,1)  # (B,H,W,3)
+
+def _rand_homography(B, mag=0.15, tilt=0.10, persp=0.02, device="cpu", dtype=torch.float32):
+    # small rotation/scale/translation + mild tilt + perspective
+    Hs = []
+    for _ in range(B):
+        ang = (torch.rand(1)*2-1)*mag*math.pi  # ~[-0.15π,0.15π]
+        s   = 1.0 + (torch.rand(1)*2-1)*0.1
+        tx  = (torch.rand(1)*2-1)*0.2
+        ty  = (torch.rand(1)*2-1)*0.2
+        shx = (torch.rand(1)*2-1)*tilt
+        shy = (torch.rand(1)*2-1)*tilt
+        p1  = (torch.rand(1)*2-1)*persp
+        p2  = (torch.rand(1)*2-1)*persp
+        ca, sa = torch.cos(ang), torch.sin(ang)
+        R = torch.tensor([[ca, -sa, 0.0],
+                          [sa,  ca, 0.0],
+                          [0.0, 0.0, 1.0]], dtype=dtype, device=device)
+        S = torch.tensor([[s, 0, 0],[0, s, 0],[0,0,1]], dtype=dtype, device=device)
+        Sh= torch.tensor([[1, shx, 0],[shy, 1, 0],[0,0,1]], dtype=dtype, device=device)
+        T = torch.tensor([[1,0,tx],[0,1,ty],[0,0,1]], dtype=dtype, device=device)
+        P = torch.tensor([[1,0,0],[0,1,0],[p1,p2,1]], dtype=dtype, device=device)
+        Hm = (T @ Sh @ R @ S) @ P
+        Hs.append(Hm)
+    return torch.stack(Hs, dim=0)  # (B,3,3)
+
+def _warp_homography(x, H):
+    # x: (B,C,H,W), H: (B,3,3) mapping NDC→NDC
+    B,C,Hh,Wh = x.shape
+    g = _meshgrid(B, Hh, Wh, x.device, x.dtype)   # (B,H,W,3)
+    Hg = torch.einsum("bij,bhwj->bhwi", H, g)     # (B,H,W,3)
+    xn = Hg[...,:2] / (Hg[...,2:3].clamp_min(1e-6))
+    # grid_sample expects (y,x) order; we have (x,y) in xn[...,0],xn[...,1]
+    grid = torch.stack([xn[...,0], xn[...,1]], dim=-1)
+    return F.grid_sample(x, grid, mode="bilinear", align_corners=True)
+
+def _rand_affine(x):
+    B,_,H,W = x.shape
+    ang = (torch.rand(B, device=x.device)-0.5)*0.35*math.pi
+    shx = (torch.rand(B, device=x.device)-0.5)*0.25
+    shy = (torch.rand(B, device=x.device)-0.5)*0.25
+    sc  = 1.0 + (torch.rand(B, device=x.device)-0.5)*0.2
+    tx  = (torch.rand(B, device=x.device)-0.5)*0.3
+    ty  = (torch.rand(B, device=x.device)-0.5)*0.3
+    M = []
+    for i in range(B):
+        ca, sa = torch.cos(ang[i]), torch.sin(ang[i])
+        A = torch.tensor([[ca, -sa],[sa, ca]], device=x.device, dtype=x.dtype) * sc[i]
+        A = A @ torch.tensor([[1, shx[i]],[shy[i], 1]], device=x.device, dtype=x.dtype)
+        t = torch.tensor([tx[i], ty[i]], device=x.device, dtype=x.dtype)
+        M.append(torch.cat([A, t.view(2,1)], dim=1))
+    M = torch.stack(M, dim=0)  # (B,2,3)
+    grid = F.affine_grid(M, size=x.size(), align_corners=True)
+    return F.grid_sample(x, grid, mode="bilinear", align_corners=True)
+
+def _radial_distort(x, k1=None, k2=None):
+    # simple barrel/pincushion via r' = r*(1 + k1 r^2 + k2 r^4)
+    B,C,H,W = x.shape
+    if k1 is None: k1 = (torch.rand(B, device=x.device)-0.5)*0.4  # [-0.2,0.2]
+    if k2 is None: k2 = (torch.rand(B, device=x.device)-0.5)*0.2
+    yy, xx = torch.meshgrid(
+        torch.linspace(-1,1,H,device=x.device),
+        torch.linspace(-1,1,W,device=x.device),
+        indexing="ij"
+    )
+    rr2 = xx**2 + yy**2
+    k1v = k1.view(B,1,1); k2v = k2.view(B,1,1)
+    s = 1 + k1v*rr2 + k2v*rr2*rr2
+    xg = xx*s; yg = yy*s
+    grid = torch.stack([xg, yg], dim=-1).unsqueeze(0).repeat(B,1,1,1)
+    return F.grid_sample(x, grid, mode="bilinear", align_corners=True)
+
+def _grad_orientation_hist(x, bins=36):
+    # orientation histogram from Sobel (per-image, grayscale); returns (B,bins) normalized
+    g = _sobel_edges(x)                    # (B,1,H,W) magnitude
+    # quick orientations using finite diffs (reuse Sobel gx/gy approximations)
+    kx = torch.tensor([[1,0,-1],[2,0,-2],[1,0,-1]], device=x.device, dtype=x.dtype).view(1,1,3,3)
+    ky = kx.transpose(-1,-2)
+    gx = F.conv2d(x.mean(1, keepdim=True), kx, padding=1)
+    gy = F.conv2d(x.mean(1, keepdim=True), ky, padding=1)
+    ang = torch.atan2(gy, gx)  # [-π, π]
+    ang = (ang + math.pi) / (2*math.pi)  # [0,1)
+    # soft binning by triangular kernels around centers
+    B,_,H,W = ang.shape
+    centers = torch.linspace(0,1, bins+1, device=x.device)[:-1] + 0.5/bins
+    angv = ang.view(B,1,H,W)
+    dif = torch.abs(angv - centers.view(1,bins,1,1))
+    w = (1 - dif*bins).clamp_min(0.0) * g  # weight by magnitude
+    h = w.view(B, bins, -1).sum(-1)
+    return (h / (h.sum(-1, keepdim=True) + 1e-6))  # (B,bins)
+
+def _corner_kp_map(x, k=5):
+    # pseudo keypoints via Harris-like cornerness from gradients; returns (B,1,H,W)
+    kx = torch.tensor([[1,0,-1],[2,0,-2],[1,0,-1]], device=x.device, dtype=x.dtype).view(1,1,3,3)
+    ky = kx.transpose(-1,-2)
+    g = x.mean(1, keepdim=True)
+    gx = F.conv2d(g, kx, padding=1); gy = F.conv2d(g, ky, padding=1)
+    R = (gx*gx * gy*gy - (gx*gy)**2) - 0.04*(gx*gx + gy*gy)**2
+    R = torch.relu(R)
+    # non-max suppression via max-pool
+    Rmax = F.max_pool2d(R, k, stride=1, padding=k//2)
+    M = (R == Rmax).float() * (R > R.mean(dim=[2,3], keepdim=True)).float()
+    return M  # sparse mask of keypoints
+
+def _simple_aug(x):
+    k = random.choice([0,1,2,3])
+    y = x * random.uniform(0.8, 1.2) + random.uniform(-0.08, 0.08)
+    if random.random() < 0.5: y = torch.flip(y, dims=[-1])
+    return torch.rot90(y.clamp(0,1), k, dims=[-2, -1])
+
+def _pool_lat(z):
+    return z.flatten(2).mean(-1) if z.dim()==4 else z  # (B,D)
+
+def _offdiag(M):
+    return M - torch.diag(torch.diag(M))
+
+def _corr_matrix(A, B=None, eps=1e-6):
+    # A,B: (B,D) zero-mean -> (D,D) correlation
+    if B is None: B = A
+    A0 = A - A.mean(0, keepdim=True); B0 = B - B.mean(0, keepdim=True)
+    As = A0 / (A0.std(0, keepdim=True) + eps)
+    Bs = B0 / (B0.std(0, keepdim=True) + eps)
+    N = A.shape[0]
+    return (As.T @ Bs) / (N + eps)
+
+def _channel_stats(x):
+    # x: (B,C,H,W) -> per-channel mean/std over spatial & batch
+    B,C,H,W = x.shape
+    m = x.mean(dim=[0,2,3])                # (C,)
+    s = x.std(dim=[0,2,3]) + 1e-6          # (C,)
+    return m, s
+
+def _soft_sparsity(z, target=0.2):
+    # encourage fraction of (approx) zeros ~ target, via L1 & mean-activation control
+    h = _pool_lat(z)                        # (B,D)
+    l1 = h.abs().mean()
+    mean_act = h.abs().gt(1e-3).float().mean()
+    pen = (mean_act - target)**2
+    return l1, pen, mean_act
+
+def _unfold_patches(x, ps=16, stride=None):
+    # x: (B,C,H,W) -> (B, n, C, ps, ps), grid (Gh,Gw)
+    if stride is None: stride = ps
+    B,C,H,W = x.shape
+    Gh, Gw = (H - ps)//stride + 1, (W - ps)//stride + 1
+    P = F.unfold(x, ps, stride=stride)                      # (B, C*ps*ps, n)
+    n = P.shape[-1]
+    P = P.transpose(1,2).contiguous().view(B, n, C, ps, ps) # (B,n,C,ps,ps)
+    return P, Gh, Gw
+
+def _fold_patches(P, H, W, ps=16, stride=None):
+    # P: (B,n,C,ps,ps)
+    if stride is None: stride = ps
+    B,n,C,ps,ps = P.shape
+    P2 = P.view(B, n, C*ps*ps).transpose(1,2).contiguous()  # (B,C*ps*ps,n)
+    out = F.fold(P2, output_size=(H,W), kernel_size=ps, stride=stride)
+    # recompose normalizer for overlap
+    ones = torch.ones(B,1,H,W, device=P.device, dtype=P.dtype)
+    norm = F.fold(F.unfold(ones, ps, stride=stride), (H,W), ps, stride=stride)
+    return out / (norm + 1e-6)
+
+def _patch_latents(encoder, patches):
+    # patches: (B,n,C,ps,ps) -> (B,n,D) pooled latents
+    B,n,C,ps,ps = patches.shape
+    P = patches.view(B*n, C, ps, ps)
+    z, _ = encoder(P)
+    h = F.normalize(z.flatten(2).mean(-1), dim=1) if z.dim()==4 else F.normalize(z, dim=1)
+    return h.view(B, n, -1), z  # (B,n,D), raw z (B*n, ...)
 
 # ----------------------------
 # Quick self-test (optional)
