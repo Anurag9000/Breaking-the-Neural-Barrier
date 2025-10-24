@@ -1,0 +1,54 @@
+import torch
+import torch.optim as optim
+from torch.utils.data import DataLoader
+from core.sde_core import (
+    SDEConfig,
+    ScoreLoss,
+    rand_times,
+    euler_maruyama_sampler,
+)
+from models.score_unet import ScoreUNet
+
+
+# ====== Dummy Dataset ======
+class Dummy(torch.utils.data.Dataset):
+    def __init__(self, n=4096):
+        self.x = torch.randn(n, 3, 32, 32)
+
+    def __len__(self):
+        return len(self.x)
+
+    def __getitem__(self, i):
+        return self.x[i]
+
+
+# ====== Setup ======
+loader = DataLoader(Dummy(), batch_size=128, shuffle=True)
+
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+cfg = SDEConfig(type='vp', beta_min=0.1, beta_max=20.0)
+
+net = ScoreUNet(img_ch=3, base=64, tdim=256).to(device)
+lossf = ScoreLoss(cfg)
+opt = optim.AdamW(net.parameters(), lr=2e-4)
+
+
+# ====== Training Loop ======
+for epoch in range(5):
+    for x in loader:
+        x = x.to(device)
+        t = rand_times(x.size(0), cfg.T, device)
+
+        loss = lossf(net, x, None, t)
+        opt.zero_grad()
+        loss.backward()
+        opt.step()
+
+    print(f"Epoch {epoch}: loss {loss.item():.4f}")
+
+
+# ====== Stochastic Sampling Demo ======
+with torch.no_grad():
+    xT = torch.randn(8, 3, 32, 32, device=device)
+    x0 = euler_maruyama_sampler(net, xT, None, cfg, steps=100)
+    print("Sampled batch shape:", x0.shape)
