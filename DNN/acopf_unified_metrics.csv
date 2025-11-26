@@ -1,0 +1,177 @@
+Section,Paper / Method,System / Case,Metric,Value,Notes
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),IEEE 30,Feasibility (pre-recovery),100%,Uniformly sampled loads
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),IEEE 30,Avg. cost diff,<0.1%,vs. Pypower
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),IEEE 30,Avg. speedup,24×,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),IEEE 30,Feasibility (pre-recovery),42%,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),IEEE 30,Avg. cost diff,<0.1%,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),IEEE 30,Avg. speedup,12×,
+DeepOPF (PR2) and Baselines,DNN-W (warm-start),IEEE 30,Feasibility (pre-recovery),100%,
+DeepOPF (PR2) and Baselines,DNN-W (warm-start),IEEE 30,Avg. cost diff,0%,
+DeepOPF (PR2) and Baselines,DNN-W (warm-start),IEEE 30,Avg. speedup,1.1×,
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),IEEE 118,Feasibility (pre-recovery),100%,
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),IEEE 118,Avg. cost diff,<0.1%,
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),IEEE 118,Avg. speedup,22×,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),IEEE 118,Feasibility (pre-recovery),22%,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),IEEE 118,Avg. cost diff,<0.1%,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),IEEE 118,Avg. speedup,4.2×,
+DeepOPF (PR2) and Baselines,DNN-W (warm-start),IEEE 118,Feasibility (pre-recovery),100%,
+DeepOPF (PR2) and Baselines,DNN-W (warm-start),IEEE 118,Avg. cost diff,0%,
+DeepOPF (PR2) and Baselines,DNN-W (warm-start),IEEE 118,Avg. speedup,1.3×,
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),IEEE 300,Feasibility (pre-recovery),99%,
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),IEEE 300,Avg. cost diff,<0.1%,
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),IEEE 300,Avg. speedup,20×,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),IEEE 300,Feasibility (pre-recovery),21%,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),IEEE 300,Avg. cost diff,<0.1%,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),IEEE 300,Avg. speedup,5.4×,
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),2000-bus,Feasibility (pre-recovery),99%,
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),2000-bus,Avg. cost diff,<0.1%,
+DeepOPF (PR2) and Baselines,DeepOPF (PR2),2000-bus,Avg. speedup,123×,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),2000-bus,Feasibility (pre-recovery),29%,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),2000-bus,Avg. cost diff,<0.1%,
+DeepOPF (PR2) and Baselines,DNN-E (baseline),2000-bus,Avg. speedup,24×,
+DeepOPF (PR2) and Baselines,DeepOPF-IF,IEEE 118,Feasibility (pre-recovery),95%,w1=1 (default)
+DeepOPF (PR2) and Baselines,DeepOPF-ZO,IEEE 118,Feasibility (pre-recovery),100%,
+DeepOPF (PR2) and Baselines,DeepOPF-IF,IEEE 118,Avg. cost diff,<0.1%,
+DeepOPF (PR2) and Baselines,DeepOPF-ZO,IEEE 118,Avg. cost diff,<0.1%,
+DeepOPF (PR2) and Baselines,DeepOPF-IF,IEEE 118,Avg. speedup,21×,
+DeepOPF (PR2) and Baselines,DeepOPF-ZO,IEEE 118,Avg. speedup,22×,
+DeepOPF (PR2) and Baselines,DeepOPF (weights V1),IEEE 118,w2,1.0,w1=1
+DeepOPF (PR2) and Baselines,DeepOPF (weights V1),IEEE 118,Feasibility (pre-recovery),100%,
+DeepOPF (PR2) and Baselines,DeepOPF (weights V1),IEEE 118,Cost diff,1.5%,
+DeepOPF (PR2) and Baselines,DeepOPF (weights V2),IEEE 118,w2,0.1,
+DeepOPF (PR2) and Baselines,DeepOPF (weights V2),IEEE 118,Feasibility (pre-recovery),100%,
+DeepOPF (PR2) and Baselines,DeepOPF (weights V2),IEEE 118,Cost diff,<0.1%,
+COMPACT LEARNING,COMPACT LEARNING,300_ieee,Optimality gap,0.1859 ± 0.0079 %,Before PF post-processing; bold in paper
+COMPACT LEARNING,PLAIN-LARGE,300_ieee,Optimality gap,0.1804 ± 0.0087 %,
+COMPACT LEARNING,PLAIN-SMALL,300_ieee,Optimality gap,0.9886 ± 0.0287 %,
+COMPACT LEARNING,COMPACT LEARNING,300_ieee,Max violation (p.u.),0.5509 ± 0.0025,bold in paper
+COMPACT LEARNING,PLAIN-LARGE,300_ieee,Max violation (p.u.),0.9256 ± 0.0117,
+COMPACT LEARNING,PLAIN-SMALL,300_ieee,Max violation (p.u.),3.7282 ± 0.0758,
+COMPACT LEARNING,COMPACT LEARNING,1354_pegase,Optimality gap,0.0942 ± 0.0089 %,bold in paper
+COMPACT LEARNING,PLAIN-LARGE,1354_pegase,Optimality gap,0.0711 ± 0.0094 %,
+COMPACT LEARNING,PLAIN-SMALL,1354_pegase,Optimality gap,0.1494 ± 0.0142 %,
+COMPACT LEARNING,COMPACT LEARNING,1354_pegase,Max violation (p.u.),0.5044 ± 0.0081,bold in paper
+COMPACT LEARNING,PLAIN-LARGE,1354_pegase,Max violation (p.u.),3.0360 ± 0.1221,
+COMPACT LEARNING,PLAIN-SMALL,1354_pegase,Max violation (p.u.),6.6858 ± 0.1248,
+COMPACT LEARNING,COMPACT LEARNING,9241_pegase,Optimality gap,0.1344 ± 0.0097 %,bold in paper
+COMPACT LEARNING,PLAIN-SMALL,9241_pegase,Optimality gap,0.1521 ± 0.0138 %,
+COMPACT LEARNING,COMPACT LEARNING,9241_pegase,Max violation (p.u.),1.1791 ± 0.0725,bold in paper
+COMPACT LEARNING,PLAIN-SMALL,9241_pegase,Max violation (p.u.),6.7379 ± 0.1980,
+COMPACT LEARNING,COMPACT LEARNING,30000_goc,Optimality gap,0.1091 ± 0.0112 %,bold in paper
+COMPACT LEARNING,PLAIN-SMALL,30000_goc,Optimality gap,0.2296 ± 0.0224 %,
+COMPACT LEARNING,COMPACT LEARNING,30000_goc,Max violation (p.u.),0.0770 ± 0.0188,bold in paper
+COMPACT LEARNING,PLAIN-SMALL,30000_goc,Max violation (p.u.),4.7172 ± 0.0678,
+COMPACT LEARNING,COMPACT LEARNING,France_2018,Optimality gap,1.2869 ± 0.0845 %,bold in paper
+COMPACT LEARNING,PLAIN-SMALL,France_2018,Optimality gap,1.4872 ± 0.1352 %,
+COMPACT LEARNING,COMPACT LEARNING,France_2018,Max violation (p.u.),2.1041 ± 0.2218,bold in paper
+COMPACT LEARNING,PLAIN-SMALL,France_2018,Max violation (p.u.),47.4012 ± 3.4524,
+COMPACT LEARNING,COMPACT LEARNING (PF),4917_goc,Gen/Volt viol. (p.u.),0.0739,Eq.(3a–4) sat. 99.88% (bold in paper)
+COMPACT LEARNING,PLAIN-SMALL (PF),4917_goc,Gen/Volt viol. (p.u.),0.1148,Eq.(3a–4) sat. 99.77%
+COMPACT LEARNING,COMPACT LEARNING (PF),4917_goc,Thermal viol. (MVA),2.3134,Eq.(7) sat. 99.50% (bold in paper)
+COMPACT LEARNING,PLAIN-SMALL (PF),4917_goc,Thermal viol. (MVA),13.5821,Eq.(7) sat. 99.47%
+COMPACT LEARNING,COMPACT LEARNING (PF),13659_pegase,Gen/Volt viol. (p.u.),0.0852,Eq.(3a–4) sat. 99.97% (bold in paper)
+COMPACT LEARNING,PLAIN-SMALL (PF),13659_pegase,Gen/Volt viol. (p.u.),0.2192,Eq.(3a–4) sat. 99.85%
+COMPACT LEARNING,COMPACT LEARNING (PF),13659_pegase,Thermal viol. (MVA),3.1203,Eq.(7) sat. 100% (bold in paper)
+COMPACT LEARNING,PLAIN-SMALL (PF),13659_pegase,Thermal viol. (MVA),14.5279,Eq.(7) sat. 99.99%
+DeepOPF-AL vs DeepOPF-V,DeepOPF-AL,IEEE 39 (Bal.),η_opt,0.48%,bold in paper
+DeepOPF-AL vs DeepOPF-V,DeepOPF-V,IEEE 39 (Bal.),η_opt,-8.56%,negative means slightly better than reference cost
+DeepOPF-AL vs DeepOPF-V,DeepOPF-AL,IEEE 39 (Bal.),"η_PG, η_QG, η_Sl","97.5%, 94.6%, 99.9%",
+DeepOPF-AL vs DeepOPF-V,DeepOPF-V,IEEE 39 (Bal.),"η_PG, η_QG, η_Sl","99.3%, 91.7%, 100%",
+DeepOPF-AL vs DeepOPF-V,DeepOPF-AL,IEEE 39 (Bal.),"η_PD, η_QD","0.19%, 6.47%",mismatch percentages (bold in paper)
+DeepOPF-AL vs DeepOPF-V,DeepOPF-V,IEEE 39 (Bal.),"η_PD, η_QD","0.61%, 27.6%",
+DeepOPF-AL vs DeepOPF-V,DeepOPF-AL,IEEE 39 (Unbal.),η_opt,0.66%,bold in paper
+DeepOPF-AL vs DeepOPF-V,DeepOPF-V,IEEE 39 (Unbal.),η_opt,-5.98%,
+DeepOPF-AL vs DeepOPF-V,DeepOPF-AL,IEEE 39 (Unbal.),"η_PG, η_QG, η_Sl","97.4%, 98.4%, 99.9%",η_QG bold in paper
+DeepOPF-AL vs DeepOPF-V,DeepOPF-V,IEEE 39 (Unbal.),"η_PG, η_QG, η_Sl","99.8%, 96.7%, 100%",
+DeepOPF-AL vs DeepOPF-V,DeepOPF-AL,IEEE 39 (Unbal.),"η_PD, η_QD","0.09%, 0.49%",bold in paper
+DeepOPF-AL vs DeepOPF-V,DeepOPF-V,IEEE 39 (Unbal.),"η_PD, η_QD","0.32%, 12.9%",
+DeepOPF-FT,DeepOPF-FT,IEEE 57,η_opt,0.14%,vs discrete baselines (bold in paper)
+DeepOPF-FT,DeepOPF-FT,IEEE 57,"η_pg,η_qg,η_sl,η_pd,η_qd","95.0%, 96.0%, >99.9%, 97.2%, 94.3%",
+DeepOPF-FT,DIS baselines,IEEE 57,η_opt,-4.79% to 1.07%,four settings (50k/150k)
+DeepOPF-FT,DIS baselines,IEEE 57,"η_pg,η_qg","93.3–97.0%, 92.4–96.3%",>99.9% branch sat.
+DeepOPF-FT,DeepOPF-FT,2000-bus (N),η_opt,0.02%,vs DeepOPF-V single-topology (bold in paper)
+DeepOPF-FT,DeepOPF-FT,2000-bus (N),"η_pg,η_qg,η_sl",">99.9%, 99.9%, >99.9%","η_pd=98.9%, η_qd=95.9%"
+DeepOPF-FT,DeepOPF-V (N),2000-bus,η_opt,0.28%,"η_pd=99.4%, η_qd=96.1%"
+DeepOPF-FT,DeepOPF-V (N-1),2000-bus,η_opt,0.27%,"η_pd=99.4%, η_qd=96.1%"
+DeepOPF-U vs DeepOPF-V,DeepOPF-U,Case57/118/300,η_opt,0.44% / 0.35% / 0.60%,
+DeepOPF-U vs DeepOPF-V,DeepOPF-V,Case57/118/300,η_opt,0.31% / 0.32% / 0.43%,bold in paper
+DeepOPF-U vs DeepOPF-V,DeepOPF-U,Case57/118/300,"η_V,η_Pg,η_Qg,η_Sl","100, 100/99.64/99.80, 99.85/99.92/99.87, 100",
+DeepOPF-U vs DeepOPF-V,DeepOPF-U,Case57/118/300,"η_Pd,η_Qd","99.67/99.74/99.54, 99.63/99.70/99.47",
+DeepOPF-U vs DeepOPF-V,DeepOPF-V,Case57/118/300,"η_V,η_Pg,η_Qg,η_Sl","100, 100/99.64/99.80, 99.86/99.91/99.85, 100",
+DeepOPF-U vs DeepOPF-V,DeepOPF-V,Case57/118/300,"η_Pd,η_Qd","99.77/99.76/99.67, 99.67/99.75/99.63",
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),IEEE 118,l^v_max (× 10^-1),0.33/0.01/0.05/0.04/0.02/0.06,MFCNN/MDC3/MDUAL/M0/M1/M4
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),IEEE 118,l̄_v (× 10^-4),0.68/0.02/0.13/0.07/0.04/0.12,
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),IEEE 118,l_cost,0.88/0.27/0.04/0.32/0.25/0.54,
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),1354_pegase,l^v_max (× 10^-1),5.8/4.8/3.7/1.6/1.3/1.4,bold value for M0 (1.6) in paper
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),1354_pegase,l̄_v (× 10^-4),8.6/2.3/3.0/0.63/0.44/0.44,bold value for M0 (0.63) in paper
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),1354_pegase,l_cost,0.98/0.76/0.80/0.05/0.05/0.06,bold for M0 (0.05) in paper
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),2869_pegase,l^v_max (× 10^-1),4.5/3.6/1.8/1.3/1.3/1.4,bold for M0 (1.3) in paper
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),2869_pegase,l̄_v (× 10^-4),4.2/1.4/1.9/0.40/0.31/0.30,bold for M0 (0.40) in paper
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),2869_pegase,l_cost,0.84/0.43/0.22/0.04/0.04/0.05,bold for M0 (0.04) in paper
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),9241_pegase,l^v_max (× 10^-1),—/—/—/2.2/2.0/2.0,Only M0/M1/M4 reported; bold for M0 (2.2)
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),9241_pegase,l̄_v (× 10^-4),—/—/—/0.69/0.52/0.53,bold for M0 (0.69)
+Physics-Informed Gradient Estimation (M0–M4),Physics-Informed (M0–M4),9241_pegase,l_cost,—/—/—/0.06/0.06/0.06,bold for M0 (0.06)
+OPF-DNN (Lagrangian dual + hot start),OPF-DNN (MB/MC/MCS/MLcs/MDcs),IEEE 300,pg/qg/v/θ/ṗ_f errors (%),MB: 0.0838/0.0900/28.025/12.137/125.47; MC: 0.0914/0.0860/14.727/7.7450/34.133; MCS: 0.0174/0.0240/3.113/7.233/26.905; MLcs: 0.0139/0.0240/0.218/4.648/2.018; MDcs: 0.0126/0.0190/0.0610/2.567/1.136,L1 distance; MDcs best
+OPF-DNN (Lagrangian dual + hot start),OPF-DNN (avg across cases),Multiple,Avg. pg/v error (%),DC: 0.7751 / 2.4284 vs MDcs: 0.0198 / 0.1996,
+OPF-DNN (Lagrangian dual + hot start),OPF-DNN,Multiple,Violation degrees ν,Defined (2a–6b),"Voltage, angle, gen limits, branch, Ohm, KCL"
+TAS-97 (Realistic),DeepOPF (feas.-opt.),TAS-97,"η_opt, η_fea","2.89%, 94.10%",Synthetic (Uniform) → Realistic test
+TAS-97 (Realistic),DeepOPF (feas.-opt.),TAS-97,"ΔPG, ΔQG, Δ|V|, ΔS (p.u.)","0.014, 0.000, 0, 0",
+TAS-97 (Realistic),DeepOPF (feas.-opt.),TAS-97,"η_opt, η_fea","0.16%, 94.99%",Synthetic (Normal)
+TAS-97 (Realistic),DeepOPF (feas.-opt.),TAS-97,"ΔPG, ΔQG, Δ|V|, ΔS (p.u.)","0.018, 0.001, 0, 0",
+TAS-97 (Realistic),DeepOPF (feas.-opt.),TAS-97,"η_opt, η_fea","0.13%, 99.73%",Synthetic (MVN)
+TAS-97 (Realistic),DeepOPF (feas.-opt.),TAS-97,"ΔPG, ΔQG, Δ|V|, ΔS (p.u.)","0.0005, 0, 0, 0",p.u.; slack dominates ΔPG
+TAS-97 (Realistic),DeepOPF (feas.-opt.),TAS-97,"η_opt, η_fea","2.58%, 94.73%",Realistic train/test (half test size)
+Lagrange Multiplier Assisted SELM,"SELM (M4, proposed)",IEEE 39,"χ_PG, χ_QG, χ_V, χ_θ, χ_F (%)","99.62, 99.57, 99.67, 99.82, 99.98","thr: 2MW, 2MVA, 0.001 p.u., 0.2°, 100"
+Lagrange Multiplier Assisted SELM,DNN baselines (M1/M2),IEEE 39,χ_F (cost) (%),54.54 / 26.26,others listed in text
+Lagrange Multiplier Assisted SELM,"SELM (M4, proposed)",IEEE 57,"χ_PG, χ_QG, χ_V, χ_θ, χ_F (%)","98.37, 99.78, 99.87, 98.74, 99.96",
+Lagrange Multiplier Assisted SELM,"SELM (M4, proposed)",IEEE 118,"χ_PG, χ_QG, χ_V, χ_θ, χ_F (%)","99.86, 99.99, 99.94, 99.97, 96.02",bold except χ_F
+DE-OP (Stability Constrained),DE-OP (Neural-SDE),IEEE 57,Stability violation,0.00%,bold in paper
+DE-OP (Stability Constrained),DE-OP (Neural-SDE),IEEE 57,Flow / Boundary viol.,9.15e-3 / 2.5e-5,Mean ± std given
+DE-OP (Stability Constrained),DE-OP (Neural-SDE),IEEE 57,Optimality gap* (steady-state),0.22%,*not dynamic gap
+DE-OP (Stability Constrained),Static baselines (MSE/LD/DC3),IEEE 57,Flow / Boundary viol.,23.3e-3 / 12.65e-4 (MSE); DC3 boundary 0; opt gap 0.16%,
+DE-OP (Stability Constrained),"DE-OP, Static baselines","WSCC 9, IEEE 57",Decision MSE (scaled),Listed,"p_r,q_r,|V|,θ tables provided"
+PDL-SCOPF (DC-SCOPF),PDL-SCOPF (SSL),300_ieee,Max P-balance viol. (p.u.),0.000,hard constraints (contingency); bold in paper
+PDL-SCOPF (DC-SCOPF),LD / Penalty (SL/SSL),300_ieee,Max P-balance viol. (p.u.),0.001 / 0.003,
+PDL-SCOPF (DC-SCOPF),PDL-SCOPF (SSL),1354_peg,Max P-balance viol. (p.u.),0.000,
+PDL-SCOPF (DC-SCOPF),PDL-SCOPF (SSL),4917_goc,Max P-balance viol. (p.u.),0.000,
+PDL-SCOPF (DC-SCOPF),PDL-SCOPF (SSL),6515_rte,Max P-balance viol. (p.u.),0.000,
+PDL-SCOPF (DC-SCOPF),PDL-SCOPF (SSL),300_ieee,% violated contingencies,0.00% (0),tol 1e-4; bold in paper
+PDL-SCOPF (DC-SCOPF),LD / Penalty (SL/SSL),300_ieee,% violated contingencies,3.51% (2) / 3.51% (2),
+PDL-SCOPF (DC-SCOPF),PDL-SCOPF (SSL),1354_peg,% violated contingencies,0.00% (0),
+PDL-SCOPF (DC-SCOPF),Naive / LD / Penalty,1354_peg,% violated contingencies,7.25% (14) / 2.07% (4) / 0.00% (0),Penalty hits 0%
+PDL-SCOPF (DC-SCOPF),PDL-SCOPF (SSL),3022_goc,% violated contingencies,0.00% (0),
+PDL-SCOPF (DC-SCOPF),Naive / LD,3022_goc,% violated contingencies,17.43% (57) / 3.98% (13),
+PDL-SCOPF (DC-SCOPF),PDL-SCOPF (SSL),6515_rte,% violated contingencies,0.00% (0),
+PDL-SCOPF (DC-SCOPF),PDL-SCOPF (SSL),1354_peg,Mean optimality gap,0.856%,bold in paper
+PDL-SCOPF (DC-SCOPF),PDL-SCOPF (SSL),6515_rte,Mean optimality gap,0.815%,bold in paper
+PDL-SCOPF (DC-SCOPF),LD (SL),300_ieee,Mean optimality gap,0.908%,better than Penalty 3.867%
+PDL-SCOPF (DC-SCOPF),PDL-SCOPF (SSL),1354_peg,Thermal slack (soft),Smallest,vs Naive/LD/Penalty/Gurobi
+Meta-Learning (Topology Reconfiguration),Meta-Learning (MTL),IEEE 118,η1 (DNN loss),0.0105 → 0.0028,Epoch 0 → 100; bold end value
+Meta-Learning (Topology Reconfiguration),Meta-Learning (MTL),IEEE 118,η2 (state accuracy),0.9372 → 0.9720,Epoch 0 → 100; bold end value
+Meta-Learning (Topology Reconfiguration),Meta-Learning (MTL),IEEE 118,η3 (cost accuracy),0.9886 → 0.9950,Epoch 0 → 100; bold end value
+Meta-Learning (Topology Reconfiguration),Feasibility rate,14/30/118,Learn/MTL/Pre1/Pre2,"0.978/0.998/0.989/0.989 (14); similarly 30,118",
+Load Encoding,Load Encoding (EF),14/30/118,"L1-loss (Pg,Qg)",0.0026/0.0038/0.0032,best vs None/EL
+Load Encoding,No encoder / EL,14/30/118,"L1-loss (Pg,Qg)",0.0118/0.0033 ; 0.0124/0.0044 ; 0.0215/0.0036,order: None/EL
+Load Encoding,Load Encoding (EF),1394 / 3375wp,"L1-loss (Pg,Qg)",0.0044 / 0.0075,large cases; strong reduction
+Load Encoding,Load Encoding (EL/EF),Large cases,Train loss (MSE),↓ 10× vs None,after 2500 epochs
+"Generic Proxies (FSNet, DC3, Πnet)",FSNet vs baselines,QP (smooth),Opt. gap (%),0.121 ± 0.038,Penalty: -0.029; DC3: -0.035
+"Generic Proxies (FSNet, DC3, Πnet)",FSNet vs baselines,QP (smooth),"||h||_1, ||g^+||_1","1.3e-4, 1.6e-6",DC3 ||h||_1 ≈ 5e-13
+"Generic Proxies (FSNet, DC3, Πnet)",FSNet vs baselines,SOCP (smooth),Opt. gap (%),0.049 ± 3.4e-3,DC3: 0.053
+"Generic Proxies (FSNet, DC3, Πnet)",FSNet vs baselines,SOCP (smooth),"||h||_1, ||g^+||_1","0.064, 0.011",DC3 ||h||_1 ≈ 7.8e-14
+"Generic Proxies (FSNet, DC3, Πnet)",FSNet (non-convex),QP/QCQP,Max/median violations,listed,"e.g., max ||h||_1 1.4e-3 (QP)"
+"Generic Proxies (FSNet, DC3, Πnet)",Πnet vs DC3,Non-convex (small),Median RS / CV,~1e-3 / ~1e-14,DC3 ~1e-1 / 1e-4
+"Generic Proxies (FSNet, DC3, Πnet)",Πnet vs DC3,Non-convex (large),Median RS / CV,~1e-3 / ~1e-12,DC3 ~1e-1 / 1e-2
+"Generic Proxies (FSNet, DC3, Πnet)",Πnet vs DC3,Convex (small),Median RS / CV,~1e-4 / ~1e-14,DC3 ~1e-2 / ~1e-14
+"Generic Proxies (FSNet, DC3, Πnet)",Targets (general),Generic,Thresholds,CV ≤ 1e-5,high-accuracy target
+Optimization Learning (ED/DCOPF proxy),E2ELR vs DNN/DeepOPF/DC3,ieee300 (SL),Mean opt. gap (%),1.52 vs 75.06/2.80/2.94,bold for E2ELR in paper
+Optimization Learning (ED/DCOPF proxy),E2ELR vs DNN/DeepOPF/DC3,pegase1k (SL),Mean opt. gap (%),0.74 vs 47.84/7.50/2.97,
+Optimization Learning (ED/DCOPF proxy),E2ELR vs DNN/DeepOPF/DC3,rte6470 (SL),Mean opt. gap (%),1.82 vs 70.57/46.66/3.49,
+Optimization Learning (ED/DCOPF proxy),E2ELR vs DNN/DeepOPF/DC3,ieee300 (SSL),Mean opt. gap (%),0.78 vs 45.56/2.82/2.80,
+Optimization Learning (ED/DCOPF proxy),E2ELR vs DNN/DeepOPF/DC3,pegase1k (SSL),Mean opt. gap (%),0.68 vs 64.69/9.83/2.61,
+Optimization Learning (ED/DCOPF proxy),E2ELR vs DNN/DeepOPF/DC3,goc30k (SSL),Mean opt. gap (%),0.33 vs 93.91/9.47/0.71,
+Optimization Learning (ED/DCOPF proxy),Power balance (feas.),ieee300 (SL),Feasible / Viol. (p.u.),DeepOPF 100% / 0.06; DNN 0% / 0.70; DC3 100% / 0.25,
+Optimization Learning (ED/DCOPF proxy),Power balance (feas.),ieee300 (SSL),Feasible / Viol. (p.u.),DeepOPF 100% / 0.56; DNN 0% / 0.73; DC3 100% / 0.29,
+Optimization Learning (ED/DCOPF proxy),Power balance (feas.),pegase9k (SSL),Feasible / Viol. (p.u.),DC3 25% / 0.08; DeepOPF 3% / 7.87; DNN 0% / 7.00,
+Classic ANN,Classic ANN (DNN),IEEE 14 (Bus 1),|V| deviation,0.023%,observed in 100% tests
+Classic ANN,Classic ANN (DNN),IEEE 30 (Bus 29),|V| deviation,0.27%,observed in 8.8% tests
+Classic ANN,Classic ANN (DNN),IEEE 14/30,Avg. cost dev.,nearly equivalent,vs interior point solver
