@@ -2,12 +2,16 @@ import copy
 from dataclasses import dataclass
 from pathlib import Path
 import importlib.util
+import sys
 from typing import List
 
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
+
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
 
 BASE_PATH = Path(__file__).with_name("ae_noise_stl_py_dropout_noise_regularized_autoencoder.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
@@ -80,7 +84,7 @@ def make_loaders(batch_size: int = 128, val_split: float = 0.1):
     return dl_train, dl_val
 
 
-def train_with_patience(model: AE_NOISE_STL, dl_train, dl_val, acfg: ADPConfig, device):
+def train_with_patience(model: AE_NOISE_STL, dl_train, dl_val, acfg: ADPConfig, device, history: list):
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
     crit = nn.MSELoss()
     best = float("inf")
@@ -108,6 +112,7 @@ def train_with_patience(model: AE_NOISE_STL, dl_train, dl_val, acfg: ADPConfig, 
                 val += l.item() * x.size(0)
                 n += x.size(0)
             val = val / max(n, 1)
+        history.append(val)
         if val < best - acfg.delta:
             best = val
             best_state = copy.deepcopy(model.state_dict())
@@ -121,15 +126,18 @@ def train_with_patience(model: AE_NOISE_STL, dl_train, dl_val, acfg: ADPConfig, 
     return best
 
 
-def adp_search(model: AE_NOISE_STL, dl_train, dl_val, acfg: ADPConfig, device):
+def adp_search(model: AE_NOISE_STL, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
+    val_history = []
+    improvements = []
     def can_widen():
         return (model.width + acfg.ex_k) <= acfg.max_width and total_neurons(model) < acfg.max_neurons
 
     def can_deepen():
         return (model.depth + 1) <= acfg.max_depth and (total_neurons(model) + model.width) <= acfg.max_neurons
 
-    inner_val = train_with_patience(model, dl_train, dl_val, acfg, device)
+    inner_val = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
     best_val, best_state = inner_val, copy.deepcopy(model.state_dict())
+    improvements.append((total_neurons(model), inner_val))
     pw, pd = acfg.trials_width, acfg.trials_depth
     mode = acfg.adp_mode
     improved = True
@@ -141,11 +149,12 @@ def adp_search(model: AE_NOISE_STL, dl_train, dl_val, acfg: ADPConfig, device):
                 pre_val = inner_val
                 pre_w = model.width
                 model = widen_model(model, acfg.ex_k, acfg.max_width).to(device)
-                v = train_with_patience(model, dl_train, dl_val, acfg, device)
+                v = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
                 if v < pre_val - acfg.delta:
                     inner_val = v
                     pw = acfg.trials_width
                     improved = True
+                    improvements.append((total_neurons(model), inner_val))
                     if v < best_val:
                         best_val, best_state = v, copy.deepcopy(model.state_dict())
                 else:
@@ -160,11 +169,12 @@ def adp_search(model: AE_NOISE_STL, dl_train, dl_val, acfg: ADPConfig, device):
                 pre_val = inner_val
                 pre_d = model.depth
                 model = deepen_model(model).to(device)
-                v = train_with_patience(model, dl_train, dl_val, acfg, device)
+                v = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
                 if v < pre_val - acfg.delta:
                     inner_val = v
                     pd = acfg.trials_depth
                     improved = True
+                    improvements.append((total_neurons(model), inner_val))
                     if v < best_val:
                         best_val, best_state = v, copy.deepcopy(model.state_dict())
                 else:
@@ -185,6 +195,10 @@ def adp_search(model: AE_NOISE_STL, dl_train, dl_val, acfg: ADPConfig, device):
             mode = "depth" if mode == "alt_width" else "width"
             improved = True
     model.load_state_dict(best_state)
+    if log_loss:
+        plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
+    if log_neurons and improvements:
+        plot_loss_vs_neurons([n for n, _ in improvements], [v for _, v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
     return best_val
 
 
@@ -199,6 +213,8 @@ def main():
     p.add_argument("--p-drop-dec", type=float, default=0.0)
     p.add_argument("--feat-sigma-enc", type=float, default=0.0)
     p.add_argument("--feat-sigma-dec", type=float, default=0.0)
+    p.add_argument("--plot-loss", action="store_true")
+    p.add_argument("--plot-neurons", action="store_true")
     p.add_argument(
         "--adp-mode",
         type=str,
@@ -245,7 +261,8 @@ def main():
         feat_sigma_enc=args.feat_sigma_enc,
         feat_sigma_dec=args.feat_sigma_dec,
     )
-    best = adp_search(model, dl_train, dl_val, acfg, device)
+    results_dir = Path(f"results_{BASE_PATH.stem}")
+    best = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=results_dir)
     print(f"[ADP Noise AE STL] mode={args.adp_mode} best_val={best:.6f} width={model.width} depth={model.depth}")
 
 
