@@ -1,6 +1,8 @@
 
 import math
+import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List, Tuple, Optional, Dict, Any
 
 import torch
@@ -8,6 +10,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, random_split, Dataset
 from torchvision import datasets, transforms
+
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
 
 class ConvBNReLU(nn.Module):
     def __init__(self, in_ch, out_ch, k=3, s=1, p=None, bias=True):
@@ -267,7 +272,7 @@ class InnerTrainer:
                 loss = self._step_unsup(batch, train=False)
                 b = batch.size(0) if isinstance(batch, torch.Tensor) else batch[0].size(0); tot += loss * b; n += b
         return tot / max(n,1)
-    def fit(self, dl_train, dl_val, max_epochs=200):
+    def fit(self, dl_train, dl_val, max_epochs=200, history: Optional[list]=None):
         es, self.best_val, self.best_state = 0, float("inf"), None
         for _ in range(max_epochs):
             self.model.train()
@@ -276,6 +281,8 @@ class InnerTrainer:
             else:
                 for batch in dl_train: self._step_unsup(batch, train=True)
             val = self._eval_epoch(dl_val); self.epochs_done += 1
+            if history is not None:
+                history.append(val)
             if val + 1e-12 < self.best_val:
                 self.best_val = val; self.best_state = {"model": {k: v.detach().cpu().clone() for k,v in self.model.state_dict().items()}}; es = 0
             else:
@@ -313,46 +320,78 @@ def can_deepen(model: AutoencoderSSL, scfg: 'SearchConfig'):
     projected = model.total_neurons() + 2*model.encoder[-1].bn.num_features
     return projected <= scfg.max_neurons
 
-def _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs): return InnerTrainer(model, tcfg).fit(dl_train, dl_val, max_epochs=max_epochs)
+def _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=None): return InnerTrainer(model, tcfg).fit(dl_train, dl_val, max_epochs=max_epochs, history=history)
 
-def ae_ssl_width_to_depth(model, dl_train, dl_val, tcfg, scfg, max_epochs=200):
-    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs)
+def _log_plots(val_history, improvements, results_dir: Path, mode: str):
+    results_dir.mkdir(parents=True, exist_ok=True)
+    if val_history:
+        plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{Path(__file__).stem} ({mode})")
+    if improvements:
+        ns = [n for n, _ in improvements]; vs = [v for _, v in improvements]
+        plot_loss_vs_neurons(ns, vs, results_dir / "loss_vs_neurons.png", title=f"{Path(__file__).stem} ({mode})")
+
+def ae_ssl_width_to_depth(model, dl_train, dl_val, tcfg, scfg, max_epochs=200, log_loss: bool = False, log_neurons: bool = False, results_dir: Optional[Path] = None):
+    results_dir = results_dir or Path("results_adp_ssl")
+    val_history = [] if (log_loss or log_neurons) else None
+    improvements = [] if log_neurons else []
+    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+    improvements.append((model.total_neurons(), best_val)) if log_neurons else None
     width_fails = 0
     while width_fails < scfg.patience_width and can_widen(model, scfg.ex_k, scfg):
         pre = snapshot(model); model.widen_all(scfg.ex_k)
-        v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs)
+        v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
         if v < best_val - scfg.delta:
             best_val = v; best_snap = snapshot(model)
+            if log_neurons: improvements.append((model.total_neurons(), best_val))
             depth_fails = 0
             while depth_fails < scfg.patience_depth and can_deepen(model, scfg):
                 pre2 = snapshot(model); model.append_depth()
-                v2 = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs)
-                if v2 < best_val - scfg.delta: best_val = v2; best_snap = snapshot(model)
+                v2 = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+                if v2 < best_val - scfg.delta:
+                    best_val = v2; best_snap = snapshot(model)
+                    if log_neurons: improvements.append((model.total_neurons(), best_val))
                 else: depth_fails += 1; restore(model, pre2)
         else:
             width_fails += 1; restore(model, pre)
-    restore(model, best_snap); return model
+    restore(model, best_snap)
+    if log_loss or log_neurons:
+        _log_plots(val_history or [], improvements, results_dir, mode="width_to_depth")
+    return model
 
-def ae_ssl_depth_to_width(model, dl_train, dl_val, tcfg, scfg, max_epochs=200):
-    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs)
+def ae_ssl_depth_to_width(model, dl_train, dl_val, tcfg, scfg, max_epochs=200, log_loss: bool = False, log_neurons: bool = False, results_dir: Optional[Path] = None):
+    results_dir = results_dir or Path("results_adp_ssl")
+    val_history = [] if (log_loss or log_neurons) else None
+    improvements = [] if log_neurons else []
+    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+    improvements.append((model.total_neurons(), best_val)) if log_neurons else None
     depth_fails = 0
     while depth_fails < scfg.patience_depth and can_deepen(model, scfg):
         pre = snapshot(model); model.append_depth()
-        v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs)
+        v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
         if v < best_val - scfg.delta:
             best_val = v; best_snap = snapshot(model)
+            if log_neurons: improvements.append((model.total_neurons(), best_val))
             width_fails = 0
             while width_fails < scfg.patience_width and can_widen(model, scfg.ex_k, scfg):
                 pre2 = snapshot(model); model.widen_all(scfg.ex_k)
-                v2 = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs)
-                if v2 < best_val - scfg.delta: best_val = v2; best_snap = snapshot(model)
+                v2 = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+                if v2 < best_val - scfg.delta:
+                    best_val = v2; best_snap = snapshot(model)
+                    if log_neurons: improvements.append((model.total_neurons(), best_val))
                 else: width_fails += 1; restore(model, pre2)
         else:
             depth_fails += 1; restore(model, pre)
-    restore(model, best_snap); return model
+    restore(model, best_snap)
+    if log_loss or log_neurons:
+        _log_plots(val_history or [], improvements, results_dir, mode="depth_to_width")
+    return model
 
-def ae_ssl_alt_depth_first(model, dl_train, dl_val, tcfg, scfg, max_epochs=200):
-    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs)
+def ae_ssl_alt_depth_first(model, dl_train, dl_val, tcfg, scfg, max_epochs=200, log_loss: bool = False, log_neurons: bool = False, results_dir: Optional[Path] = None):
+    results_dir = results_dir or Path("results_adp_ssl")
+    val_history = [] if (log_loss or log_neurons) else None
+    improvements = [] if log_neurons else []
+    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+    improvements.append((model.total_neurons(), best_val)) if log_neurons else None
     total = 0; ok = lambda e: scfg.max_total_epochs is None or e < scfg.max_total_epochs
     improved = True
     while improved and ok(total):
@@ -360,19 +399,30 @@ def ae_ssl_alt_depth_first(model, dl_train, dl_val, tcfg, scfg, max_epochs=200):
         depth_fails = 0
         while depth_fails < scfg.patience_depth and can_deepen(model, scfg) and ok(total):
             pre = snapshot(model); model.append_depth()
-            v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs); total += max_epochs
-            if v < best_val - scfg.delta: best_val = v; best_snap = snapshot(model); improved = True
+            v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history); total += max_epochs
+            if v < best_val - scfg.delta:
+                best_val = v; best_snap = snapshot(model); improved = True
+                if log_neurons: improvements.append((model.total_neurons(), best_val))
             else: depth_fails += 1; restore(model, pre)
         width_fails = 0
         while width_fails < scfg.patience_width and can_widen(model, scfg.ex_k, scfg) and ok(total):
             pre = snapshot(model); model.widen_all(scfg.ex_k)
-            v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs); total += max_epochs
-            if v < best_val - scfg.delta: best_val = v; best_snap = snapshot(model); improved = True
+            v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history); total += max_epochs
+            if v < best_val - scfg.delta:
+                best_val = v; best_snap = snapshot(model); improved = True
+                if log_neurons: improvements.append((model.total_neurons(), best_val))
             else: width_fails += 1; restore(model, pre)
-    restore(model, best_snap); return model
+    restore(model, best_snap)
+    if log_loss or log_neurons:
+        _log_plots(val_history or [], improvements, results_dir, mode="alt_depth")
+    return model
 
-def ae_ssl_alt_width_first(model, dl_train, dl_val, tcfg, scfg, max_epochs=200):
-    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs)
+def ae_ssl_alt_width_first(model, dl_train, dl_val, tcfg, scfg, max_epochs=200, log_loss: bool = False, log_neurons: bool = False, results_dir: Optional[Path] = None):
+    results_dir = results_dir or Path("results_adp_ssl")
+    val_history = [] if (log_loss or log_neurons) else None
+    improvements = [] if log_neurons else []
+    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+    improvements.append((model.total_neurons(), best_val)) if log_neurons else None
     total = 0; ok = lambda e: scfg.max_total_epochs is None or e < scfg.max_total_epochs
     improved = True
     while improved and ok(total):
@@ -380,31 +430,56 @@ def ae_ssl_alt_width_first(model, dl_train, dl_val, tcfg, scfg, max_epochs=200):
         width_fails = 0
         while width_fails < scfg.patience_width and can_widen(model, scfg.ex_k, scfg) and ok(total):
             pre = snapshot(model); model.widen_all(scfg.ex_k)
-            v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs); total += max_epochs
-            if v < best_val - scfg.delta: best_val = v; best_snap = snapshot(model); improved = True
+            v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history); total += max_epochs
+            if v < best_val - scfg.delta:
+                best_val = v; best_snap = snapshot(model); improved = True
+                if log_neurons: improvements.append((model.total_neurons(), best_val))
             else: width_fails += 1; restore(model, pre)
         depth_fails = 0
         while depth_fails < scfg.patience_depth and can_deepen(model, scfg) and ok(total):
             pre = snapshot(model); model.append_depth()
-            v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs); total += max_epochs
-            if v < best_val - scfg.delta: best_val = v; best_snap = snapshot(model); improved = True
+            v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history); total += max_epochs
+            if v < best_val - scfg.delta:
+                best_val = v; best_snap = snapshot(model); improved = True
+                if log_neurons: improvements.append((model.total_neurons(), best_val))
             else: depth_fails += 1; restore(model, pre)
-    restore(model, best_snap); return model
+    restore(model, best_snap)
+    if log_loss or log_neurons:
+        _log_plots(val_history or [], improvements, results_dir, mode="alt_width")
+    return model
 
-def ae_ssl_depth_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=200):
-    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs); fails = 0
+def ae_ssl_depth_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=200, log_loss: bool = False, log_neurons: bool = False, results_dir: Optional[Path] = None):
+    results_dir = results_dir or Path("results_adp_ssl")
+    val_history = [] if (log_loss or log_neurons) else None
+    improvements = [] if log_neurons else []
+    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history); fails = 0
+    improvements.append((model.total_neurons(), best_val)) if log_neurons else None
     while fails < scfg.patience_depth and can_deepen(model, scfg):
         pre = snapshot(model); model.append_depth()
-        v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs)
-        if v < best_val - scfg.delta: best_val = v; best_snap = snapshot(model)
+        v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+        if v < best_val - scfg.delta:
+            best_val = v; best_snap = snapshot(model)
+            if log_neurons: improvements.append((model.total_neurons(), best_val))
         else: fails += 1; restore(model, pre)
-    restore(model, best_snap); return model
+    restore(model, best_snap)
+    if log_loss or log_neurons:
+        _log_plots(val_history or [], improvements, results_dir, mode="depth_only")
+    return model
 
-def ae_ssl_width_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=200):
-    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs); fails = 0
+def ae_ssl_width_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=200, log_loss: bool = False, log_neurons: bool = False, results_dir: Optional[Path] = None):
+    results_dir = results_dir or Path("results_adp_ssl")
+    val_history = [] if (log_loss or log_neurons) else None
+    improvements = [] if log_neurons else []
+    best_snap = snapshot(model); best_val = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history); fails = 0
+    improvements.append((model.total_neurons(), best_val)) if log_neurons else None
     while fails < scfg.patience_width and can_widen(model, scfg.ex_k, scfg):
         pre = snapshot(model); model.widen_all(scfg.ex_k)
-        v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs)
-        if v < best_val - scfg.delta: best_val = v; best_snap = snapshot(model)
+        v = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+        if v < best_val - scfg.delta:
+            best_val = v; best_snap = snapshot(model)
+            if log_neurons: improvements.append((model.total_neurons(), best_val))
         else: fails += 1; restore(model, pre)
-    restore(model, best_snap); return model
+    restore(model, best_snap)
+    if log_loss or log_neurons:
+        _log_plots(val_history or [], improvements, results_dir, mode="width_only")
+    return model

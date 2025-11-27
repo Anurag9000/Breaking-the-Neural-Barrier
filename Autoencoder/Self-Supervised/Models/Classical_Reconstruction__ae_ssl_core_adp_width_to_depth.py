@@ -63,21 +63,29 @@ def run_adp(adp_mode: str, args):
 
     # Dispatch
     if adp_mode == "width_only":
-        ae_core.ae_ssl_width_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs)
+        ae_core.ae_ssl_width_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs,
+                                  log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     elif adp_mode == "depth_only":
-        ae_core.ae_ssl_depth_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs)
+        ae_core.ae_ssl_depth_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs,
+                                  log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     elif adp_mode == "width_to_depth":
-        ae_core.ae_ssl_width_to_depth(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs)
+        ae_core.ae_ssl_width_to_depth(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs,
+                                      log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     elif adp_mode == "depth_to_width":
-        ae_core.ae_ssl_depth_to_width(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs)
+        ae_core.ae_ssl_depth_to_width(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs,
+                                      log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     elif adp_mode == "alt_width":
-        ae_core.ae_ssl_alt_width_first(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs)
+        ae_core.ae_ssl_alt_width_first(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs,
+                                       log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     elif adp_mode == "alt_depth":
-        ae_core.ae_ssl_alt_depth_first(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs)
+        ae_core.ae_ssl_alt_depth_first(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs,
+                                       log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     elif adp_mode == "width":
-        ae_core.ae_ssl_width_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs)
+        ae_core.ae_ssl_width_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs,
+                                  log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     elif adp_mode == "depth":
-        ae_core.ae_ssl_depth_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs)
+        ae_core.ae_ssl_depth_only(model, dl_train, dl_val, tcfg, scfg, max_epochs=args.inner_epochs,
+                                  log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     else:
         raise ValueError(f"Unsupported adp_mode {adp_mode}")
     # Model is updated in-place; nothing else to return
@@ -114,6 +122,9 @@ def main():
     p.add_argument("--adp-mode", type=str, default="width_to_depth",
                    choices=["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth", "width", "depth"])
     p.add_argument("--device", type=str, default=None, help="force device, e.g. cpu or cuda")
+    p.add_argument("--results-dir", type=Path, default=Path("results_adp_classical_ssl"))
+    p.add_argument("--plot-loss", action="store_true", help="Save loss-vs-epoch (log scale)")
+    p.add_argument("--plot-neurons", action="store_true", help="Save neurons-vs-loss (log scale)")
     args = p.parse_args()
 
     model = run_adp(args.adp_mode, args)

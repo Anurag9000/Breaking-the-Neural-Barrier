@@ -2,12 +2,16 @@ import copy
 from dataclasses import dataclass
 from pathlib import Path
 import importlib.util
-from typing import Tuple
+import sys
+from typing import Tuple, List
 
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
+
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
 
 # Load baseline
 BASE_PATH = Path(__file__).with_name("ae_seq.py").resolve()
@@ -133,7 +137,7 @@ def recon_loss(model: SeqAE, x: torch.Tensor, crit):
     return crit(y, x)
 
 
-def train_with_patience(model: SeqAE, dl_train, dl_val, acfg: ADPConfig, device):
+def train_with_patience(model: SeqAE, dl_train, dl_val, acfg: ADPConfig, device, history: list):
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
     crit = nn.MSELoss()
     best = float("inf")
@@ -159,6 +163,7 @@ def train_with_patience(model: SeqAE, dl_train, dl_val, acfg: ADPConfig, device)
                 val += l.item() * x.size(0)
                 n += x.size(0)
             val = val / max(n, 1)
+        history.append(val)
         if val < best - acfg.delta:
             best = val
             best_state = copy.deepcopy(model.state_dict())
@@ -172,15 +177,19 @@ def train_with_patience(model: SeqAE, dl_train, dl_val, acfg: ADPConfig, device)
     return best
 
 
-def adp_search(model: SeqAE, dl_train, dl_val, acfg: ADPConfig, device):
+def adp_search(model: SeqAE, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
+    results_dir.mkdir(parents=True, exist_ok=True)
+    val_history: List[float] = []
+    improvements: List[tuple[int, float]] = []
     def can_widen():
         return (model.hidden_size + acfg.ex_k) <= acfg.max_width and (model.hidden_size + acfg.ex_k) * model.num_layers * 2 <= acfg.max_neurons
 
     def can_deepen():
         return (model.num_layers + 1) <= acfg.max_depth and (model.num_layers + 1) * model.hidden_size * 2 <= acfg.max_neurons
 
-    inner_val = train_with_patience(model, dl_train, dl_val, acfg, device)
+    inner_val = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
     best_val, best_state = inner_val, copy.deepcopy(model.state_dict())
+    improvements.append((model.hidden_size * model.num_layers * 2, inner_val))
     pw, pd = acfg.trials_width, acfg.trials_depth
     mode = acfg.adp_mode
     improved = True
@@ -192,11 +201,12 @@ def adp_search(model: SeqAE, dl_train, dl_val, acfg: ADPConfig, device):
                 pre_val = inner_val
                 pre_h = model.hidden_size
                 widen_model(model, acfg.ex_k, acfg.max_width)
-                v = train_with_patience(model, dl_train, dl_val, acfg, device)
+                v = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
                 if v < pre_val - acfg.delta:
                     inner_val = v
                     pw = acfg.trials_width
                     improved = True
+                    improvements.append((model.hidden_size * model.num_layers * 2, inner_val))
                     if v < best_val:
                         best_val, best_state = v, copy.deepcopy(model.state_dict())
                 else:
@@ -211,11 +221,12 @@ def adp_search(model: SeqAE, dl_train, dl_val, acfg: ADPConfig, device):
                 pre_val = inner_val
                 pre_layers = model.num_layers
                 deepen_model(model)
-                v = train_with_patience(model, dl_train, dl_val, acfg, device)
+                v = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
                 if v < pre_val - acfg.delta:
                     inner_val = v
                     pd = acfg.trials_depth
                     improved = True
+                    improvements.append((model.hidden_size * model.num_layers * 2, inner_val))
                     if v < best_val:
                         best_val, best_state = v, copy.deepcopy(model.state_dict())
                 else:
@@ -236,6 +247,10 @@ def adp_search(model: SeqAE, dl_train, dl_val, acfg: ADPConfig, device):
             mode = "depth" if mode == "alt_width" else "width"
             improved = True
     model.load_state_dict(best_state)
+    if log_loss:
+        plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
+    if log_neurons and improvements:
+        plot_loss_vs_neurons([n for n, _ in improvements], [v for _, v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
     return best_val
 
 
@@ -263,6 +278,9 @@ def main():
     p.add_argument("--max-epochs", type=int, default=20)
     p.add_argument("--batch-size", type=int, default=128)
     p.add_argument("--dropout", type=float, default=0.1)
+    p.add_argument("--results-dir", type=Path, default=Path("results_adp_seq"))
+    p.add_argument("--plot-loss", action="store_true", help="Save loss-vs-epoch (log scale)")
+    p.add_argument("--plot-neurons", action="store_true", help="Save neurons-vs-loss (log scale)")
     args = p.parse_args()
 
     dl_train, dl_val, feat_dim = make_seq_loaders(args.batch_size, 0.1)
@@ -282,7 +300,7 @@ def main():
         dropout=args.dropout,
         bidirectional=args.bidirectional,
     )
-    best = adp_search(model, dl_train, dl_val, acfg, device)
+    best = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     print(f"[ADP SeqAE] mode={args.adp_mode} best_val={best:.6f} hidden={model.hidden_size} layers={model.num_layers}")
 
 
