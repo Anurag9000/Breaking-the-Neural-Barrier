@@ -21,6 +21,23 @@ baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
 AE_TCN_STL = baseline_module.AE_TCN_STL  # type: ignore
 TCNBlock = baseline_module.TCNBlock  # type: ignore
+ae_tcn_total_neurons = baseline_module.ae_tcn_total_neurons  # type: ignore
+
+# ADP REVIEW (BEFORE REFACTOR)
+# - Supported modes in this core:
+#     * width_only/width      -> Single while-loop widening with trials_width counter; no structured width-expansion patience.
+#     * depth_only/depth      -> Single while-loop deepening with trials_depth counter; no dedicated depth-expansion patience.
+#     * width_to_depth        -> Starts width search, then flips to depth when no improvement; width inner/outer separation missing.
+#     * depth_to_width        -> Starts depth search, then flips to width when no improvement; lacks width-outer/depth-inner structure.
+#     * alt_width / alt_depth -> Alternates single expansions between width and depth regardless of saturation definition.
+# - Inner training: train_with_patience uses single delta/patience for ES; accepts improvements > delta only, resets patience; no phys metric.
+# - Expansions: rebuild_model increments width by ex_k or depth by +1 but merges state shallowly; no explicit snapshot/restore helpers.
+# - Acceptance criteria: single delta used for both width/depth; failure counters are trials_width/trials_depth applied ad hoc, not per context.
+# - Deviations vs ADP_algorithms.md:
+#     * Missing distinct patience_es / patience_width_exp / patience_depth_exp and delta_width / delta_depth handling.
+#     * No snapshot_arch_and_state / restore_arch_and_state abstractions; rollback logic is manual and incomplete.
+#     * 2D searches (depth_outer_width_inner, width_outer_depth_inner) and ALT phases do not follow specified outer/inner or phase saturation rules.
+#     * Stopping conditions rely on a generic 'improved' flag rather than spec-defined patience counters per dimension/phase.
 
 
 @dataclass
@@ -42,9 +59,9 @@ class ADPConfig:
     pool_every: int = 0
 
 
-def _resize_tensor(to_shape: torch.Size, src: torch.Tensor) -> torch.Tensor:
-    tgt = torch.zeros(to_shape, device=src.device, dtype=src.dtype)
-    common = tuple(min(a, b) for a, b in zip(to_shape, src.shape))
+def _resize_tensor(target: torch.Tensor, src: torch.Tensor) -> torch.Tensor:
+    tgt = target.clone()
+    common = tuple(min(a, b) for a, b in zip(target.shape, src.shape))
     slices = tuple(slice(0, c) for c in common)
     tgt[slices] = src[slices]
     return tgt
@@ -55,26 +72,80 @@ def _merge_state(new_state, old_state):
     for k, v in new_state.items():
         if k in old_state:
             ov = old_state[k]
-            merged[k] = ov if ov.shape == v.shape else _resize_tensor(v.shape, ov)
+            merged[k] = ov if ov.shape == v.shape else _resize_tensor(v, ov)
         else:
             merged[k] = v
     return merged
 
 
+def _normalize_dilations(model: AE_TCN_STL, target_depth: int) -> List[int]:
+    dils = list(getattr(model, "dilations", [1] * getattr(model, "depth", target_depth)))
+    if not dils:
+        dils = [1] * target_depth
+    if len(dils) < target_depth:
+        dils = dils + [dils[-1]] * (target_depth - len(dils))
+    else:
+        dils = dils[:target_depth]
+    return dils
+
+
+def _build_model(in_channels: int, width: int, depth: int, dilations: List[int], device, pool_every: int) -> AE_TCN_STL:
+    kwargs = dict(in_channels=in_channels, width=width, depth=depth, dilations=dilations)
+    try:
+        new_model = AE_TCN_STL(**kwargs, pool_every=pool_every)  # type: ignore[arg-type]
+    except TypeError:
+        new_model = AE_TCN_STL(**kwargs)  # type: ignore[arg-type]
+    return new_model.to(device)
+
+
 def rebuild_model(model: AE_TCN_STL, width: int, depth: int, device, pool_every: int) -> AE_TCN_STL:
-    new_model = AE_TCN_STL(in_channels=model.in_channels, width=width, depth=depth, pool_every=pool_every).to(device)
+    dilations = _normalize_dilations(model, depth)
+    new_model = _build_model(model.in_channels, width, depth, dilations, device, pool_every)
     merged = _merge_state(new_model.state_dict(), model.state_dict())
     new_model.load_state_dict(merged, strict=False)
     return new_model
 
 
+def snapshot_arch_and_state(model: AE_TCN_STL):
+    return {
+        "width": model.width,
+        "depth": model.depth,
+        "state": copy.deepcopy(model.state_dict()),
+        "dilations": copy.deepcopy(getattr(model, "dilations", [1] * model.depth)),
+    }
+
+
+def restore_arch_and_state(model: AE_TCN_STL, snapshot, device, pool_every: int) -> AE_TCN_STL:
+    width = snapshot["width"]
+    depth = snapshot["depth"]
+    dilations = snapshot.get("dilations", [1] * depth)
+    dilations = list(dilations) if dilations else [1] * depth
+    dilations = (dilations + [dilations[-1]] * (depth - len(dilations))) if len(dilations) < depth else dilations[:depth]
+    restored = _build_model(model.in_channels, width, depth, dilations, device, pool_every)
+    restored.load_state_dict(snapshot["state"], strict=False)
+    return restored
+
+
+def expand_width(model: AE_TCN_STL, ex_k_width: int, device, pool_every: int) -> AE_TCN_STL:
+    new_w = model.width + ex_k_width
+    return rebuild_model(model, new_w, model.depth, device, pool_every)
+
+
+def expand_depth(model: AE_TCN_STL, ex_k_depth: int, device, pool_every: int) -> AE_TCN_STL:
+    new_d = model.depth + ex_k_depth
+    return rebuild_model(model, model.width, new_d, device, pool_every)
+
+
 def total_neurons(width: int, depth: int) -> int:
-    return int(width * depth)
+    return int(ae_tcn_total_neurons(width, depth))
 
 
-def train_with_patience(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, device, history: list):
+def train_with_early_stopping(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, device, history: list):
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
-    best = float("inf"); best_state=None; pat=acfg.patience
+    best_val = float("inf")
+    best_state = copy.deepcopy(model.state_dict())
+    es_patience = acfg.patience
+    remaining = es_patience
     for _ in range(acfg.max_epochs):
         model.train()
         for x, _ in dl_train:
@@ -96,15 +167,26 @@ def train_with_patience(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, de
                 val += l.item(); n += 1
             val = val / max(n,1)
         history.append(val)
-        if val < best - acfg.delta:
-            best = val; best_state = copy.deepcopy(model.state_dict()); pat = acfg.patience
+        if val < best_val:
+            best_val = val
+            best_state = copy.deepcopy(model.state_dict())
+            remaining = es_patience
         else:
-            pat -= 1
-        if pat <= 0:
+            remaining -= 1
+        if remaining <= 0:
             break
-    if best_state is not None:
-        model.load_state_dict(best_state)
-    return best
+    model.load_state_dict(best_state)
+    return best_val, best_state, None
+
+
+# ADP REVIEW (AFTER REFACTOR)
+# - Mode: width_only / width -> Implements ADP_WIDTH_ONLY (depth fixed, ES with patience_es=patience; width expansions ex_k with acceptance val < best - delta_width; width_failure_count vs trials_width).
+# - Mode: depth_only / depth -> Implements ADP_DEPTH_ONLY (width fixed; depth expansions of +1 with acceptance val < best - delta_depth; depth_failure_count vs trials_depth).
+# - Mode: depth_to_width -> Implements ADP_DEPTH_OUTER_WIDTH_INNER (outer depth steps gated by delta_depth/patience_depth_exp; inner width search with delta_width/patience_width_exp).
+# - Mode: width_to_depth -> Implements ADP_WIDTH_OUTER_DEPTH_INNER (outer width steps gated by delta_width/patience_width_exp; inner depth search with delta_depth/patience_depth_exp).
+# - Mode: alt_depth -> Implements ADP_ALT_DEPTH (phases: depth-only until depth_failure_count hits patience_depth_exp; then width-only until patience_width_exp; repeat until both saturated).
+# - Mode: alt_width -> Implements ADP_ALT_WIDTH (phases start with width-only then depth-only, same patience logic; repeat until both saturated).
+# - Snapshot/restore + expand_width/expand_depth follow ADP_algorithms.md; patience mappings: patience->patience_es, trials_width->patience_width_exp, trials_depth->patience_depth_exp; delta used for both width/depth thresholds.
 
 
 def adp_search(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp_tcn_stl")):
@@ -112,63 +194,205 @@ def adp_search(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, device, log
     val_history: List[float] = []
     improvements: List[tuple[int, float]] = []
 
+    delta_width = acfg.delta
+    delta_depth = acfg.delta
+    patience_width_exp = acfg.trials_width
+    patience_depth_exp = acfg.trials_depth
+    ex_k_width = acfg.ex_k
+    ex_k_depth = 1
+
     def can_widen(width: int, depth: int):
-        new_w = min(acfg.max_width, width + acfg.ex_k)
+        new_w = min(acfg.max_width, width + ex_k_width)
         return new_w > width and total_neurons(new_w, depth) <= acfg.max_neurons
 
     def can_deepen(width: int, depth: int):
-        return depth + 1 <= acfg.max_depth and total_neurons(width, depth + 1) <= acfg.max_neurons
+        new_d = depth + ex_k_depth
+        return new_d <= acfg.max_depth and total_neurons(width, new_d) <= acfg.max_neurons
 
-    cur_w, cur_d = model.width, model.depth
-    best_val = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
-    best_state = copy.deepcopy(model.state_dict())
-    improvements.append((total_neurons(cur_w, cur_d), best_val))
+    # Initial training (shared across all modes)
+    best_val, best_state, _ = train_with_early_stopping(model, dl_train, dl_val, acfg, device, val_history)
+    best_width, best_depth = model.width, model.depth
+    model.load_state_dict(best_state)
+    improvements.append((total_neurons(best_width, best_depth), best_val))
 
-    pw, pd = acfg.trials_width, acfg.trials_depth
+    def width_search(local_model: AE_TCN_STL, initial_val=None, initial_state=None, log_improvement: bool = False):
+        local_best_val = initial_val
+        local_best_state = initial_state
+        local_best_width = local_model.width
+        if local_best_val is None or local_best_state is None:
+            local_best_val, local_best_state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+        local_model.load_state_dict(local_best_state)
+        width_failure_count = 0
+        while width_failure_count < patience_width_exp and can_widen(local_model.width, local_model.depth):
+            snap = snapshot_arch_and_state(local_model)
+            local_model = expand_width(local_model, ex_k_width, device, acfg.pool_every)
+            val, state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+            if val < local_best_val - delta_width:
+                local_best_val = val
+                local_best_state = state
+                local_best_width = local_model.width
+                width_failure_count = 0
+                if log_improvement:
+                    improvements.append((total_neurons(local_model.width, local_model.depth), local_best_val))
+                local_model.load_state_dict(local_best_state)
+            else:
+                width_failure_count += 1
+                local_model = restore_arch_and_state(local_model, snap, device, acfg.pool_every)
+                local_model.load_state_dict(local_best_state)
+        local_model = rebuild_model(local_model, local_best_width, local_model.depth, device, acfg.pool_every)
+        local_model.load_state_dict(local_best_state)
+        return local_model, local_best_val, local_best_state, local_best_width
+
+    def depth_search(local_model: AE_TCN_STL, initial_val=None, initial_state=None, log_improvement: bool = False):
+        local_best_val = initial_val
+        local_best_state = initial_state
+        local_best_depth = local_model.depth
+        if local_best_val is None or local_best_state is None:
+            local_best_val, local_best_state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+        local_model.load_state_dict(local_best_state)
+        depth_failure_count = 0
+        while depth_failure_count < patience_depth_exp and can_deepen(local_model.width, local_model.depth):
+            snap = snapshot_arch_and_state(local_model)
+            local_model = expand_depth(local_model, ex_k_depth, device, acfg.pool_every)
+            val, state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+            if val < local_best_val - delta_depth:
+                local_best_val = val
+                local_best_state = state
+                local_best_depth = local_model.depth
+                depth_failure_count = 0
+                if log_improvement:
+                    improvements.append((total_neurons(local_model.width, local_model.depth), local_best_val))
+                local_model.load_state_dict(local_best_state)
+            else:
+                depth_failure_count += 1
+                local_model = restore_arch_and_state(local_model, snap, device, acfg.pool_every)
+                local_model.load_state_dict(local_best_state)
+        local_model = rebuild_model(local_model, local_model.width, local_best_depth, device, acfg.pool_every)
+        local_model.load_state_dict(local_best_state)
+        return local_model, local_best_val, local_best_state, local_best_depth
+
     mode = acfg.adp_mode
-    improved = True
-    while improved:
-        improved = False
-        if mode in ("width_only","width","width_to_depth","alt_width"):
-            if can_widen(cur_w, cur_d) and pw > 0:
-                pre_state = copy.deepcopy(model.state_dict()); pre_w = cur_w; pre_val = best_val
-                cur_w = min(acfg.max_width, cur_w + acfg.ex_k)
-                model = rebuild_model(model, cur_w, cur_d, device, acfg.pool_every)
-                v = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
-                if v < pre_val - acfg.delta:
-                    best_val = v; pw = acfg.trials_width; improved=True
-                    best_state = copy.deepcopy(model.state_dict())
-                    improvements.append((total_neurons(cur_w, cur_d), best_val))
+    if mode in ("width_only", "width"):
+        model, best_val, best_state, best_width = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+        best_depth = model.depth
+    elif mode in ("depth_only", "depth"):
+        model, best_val, best_state, best_depth = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+        best_width = model.width
+    elif mode == "depth_to_width":  # ADP_DEPTH_OUTER_WIDTH_INNER
+        model, best_val, best_state, best_width = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+        best_depth = model.depth
+        depth_failure_count = 0
+        while depth_failure_count < patience_depth_exp and can_deepen(best_width, best_depth):
+            saved_snap = snapshot_arch_and_state(model)
+            model = expand_depth(model, ex_k_depth, device, acfg.pool_every)
+            cand_model, cand_val, cand_state, cand_width = width_search(model, log_improvement=False)
+            if cand_val < best_val - delta_depth:
+                best_val = cand_val
+                best_state = cand_state
+                best_depth = cand_model.depth
+                best_width = cand_width
+                depth_failure_count = 0
+                model = cand_model
+                model.load_state_dict(best_state)
+                improvements.append((total_neurons(best_width, best_depth), best_val))
+            else:
+                depth_failure_count += 1
+                model = restore_arch_and_state(model, saved_snap, device, acfg.pool_every)
+                model.load_state_dict(best_state)
+    elif mode == "width_to_depth":  # ADP_WIDTH_OUTER_DEPTH_INNER
+        model, best_val, best_state, best_depth = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+        best_width = model.width
+        width_failure_count = 0
+        while width_failure_count < patience_width_exp and can_widen(best_width, best_depth):
+            saved_snap = snapshot_arch_and_state(model)
+            model = expand_width(model, ex_k_width, device, acfg.pool_every)
+            cand_model, cand_val, cand_state, cand_depth = depth_search(model, log_improvement=False)
+            if cand_val < best_val - delta_width:
+                best_val = cand_val
+                best_state = cand_state
+                best_width = cand_model.width
+                best_depth = cand_depth
+                width_failure_count = 0
+                model = cand_model
+                model.load_state_dict(best_state)
+                improvements.append((total_neurons(best_width, best_depth), best_val))
+            else:
+                width_failure_count += 1
+                model = restore_arch_and_state(model, saved_snap, device, acfg.pool_every)
+                model.load_state_dict(best_state)
+    elif mode == "alt_depth":
+        depth_saturated = False
+        width_saturated = False
+        phase = "depth"
+        while not (depth_saturated and width_saturated):
+            if phase == "depth":
+                model, phase_val, phase_state, phase_depth = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+                if phase_val < best_val:
+                    best_val = phase_val
+                    best_state = phase_state
+                    best_depth = phase_depth
+                    depth_saturated = False
+                    improvements.append((total_neurons(best_width, best_depth), best_val))
                 else:
-                    model.load_state_dict(pre_state); cur_w = pre_w; pw -= 1
-            if mode == "width_only":
-                continue
-        if mode in ("depth_only","depth","depth_to_width","alt_depth"):
-            if can_deepen(cur_w, cur_d) and pd > 0:
-                pre_state = copy.deepcopy(model.state_dict()); pre_d = cur_d; pre_val = best_val
-                cur_d += 1
-                model = rebuild_model(model, cur_w, cur_d, device, acfg.pool_every)
-                v = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
-                if v < pre_val - acfg.delta:
-                    best_val = v; pd = acfg.trials_depth; improved=True
-                    best_state = copy.deepcopy(model.state_dict())
-                    improvements.append((total_neurons(cur_w, cur_d), best_val))
+                    depth_saturated = True
+                model = rebuild_model(model, best_width, best_depth, device, acfg.pool_every)
+                model.load_state_dict(best_state)
+                phase = "width"
+            else:
+                model, phase_val, phase_state, phase_width = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+                if phase_val < best_val:
+                    best_val = phase_val
+                    best_state = phase_state
+                    best_width = phase_width
+                    width_saturated = False
+                    improvements.append((total_neurons(best_width, best_depth), best_val))
                 else:
-                    model.load_state_dict(pre_state); cur_d = pre_d; pd -= 1
-            if mode == "depth_only":
-                continue
-        if mode == "width_to_depth" and not improved:
-            mode = "depth"; pd = acfg.trials_depth; improved=True
-        elif mode == "depth_to_width" and not improved:
-            mode = "width"; pw = accfg.trials_width; improved=True
-        elif mode in ("alt_width","alt_depth"):
-            mode = "depth" if mode=="alt_width" else "width"; improved=True
+                    width_saturated = True
+                model = rebuild_model(model, best_width, best_depth, device, acfg.pool_every)
+                model.load_state_dict(best_state)
+                phase = "depth"
+    elif mode == "alt_width":
+        depth_saturated = False
+        width_saturated = False
+        phase = "width"
+        while not (depth_saturated and width_saturated):
+            if phase == "width":
+                model, phase_val, phase_state, phase_width = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+                if phase_val < best_val:
+                    best_val = phase_val
+                    best_state = phase_state
+                    best_width = phase_width
+                    width_saturated = False
+                    improvements.append((total_neurons(best_width, best_depth), best_val))
+                else:
+                    width_saturated = True
+                model = rebuild_model(model, best_width, best_depth, device, acfg.pool_every)
+                model.load_state_dict(best_state)
+                phase = "depth"
+            else:
+                model, phase_val, phase_state, phase_depth = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+                if phase_val < best_val:
+                    best_val = phase_val
+                    best_state = phase_state
+                    best_depth = phase_depth
+                    depth_saturated = False
+                    improvements.append((total_neurons(best_width, best_depth), best_val))
+                else:
+                    depth_saturated = True
+                model = rebuild_model(model, best_width, best_depth, device, acfg.pool_every)
+                model.load_state_dict(best_state)
+                phase = "width"
+    else:
+        raise ValueError(f"Unsupported ADP mode: {mode}")
+
+    # Finalize at global best architecture/state
+    model = rebuild_model(model, best_width, best_depth, device, acfg.pool_every)
     model.load_state_dict(best_state)
     if log_loss:
         plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
     if log_neurons and improvements:
         plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
-    return best_val, model, cur_w, cur_d
+    return best_val, model, best_width, best_depth
 
 
 def make_loaders(batch_size: int = 128, val_split: float = 0.1):
@@ -207,7 +431,10 @@ def main():
 
     dl_train, dl_val = make_loaders(args.batch_size, 0.1)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = AE_TCN_STL(in_channels=3, width=args.width, depth=args.depth, pool_every=args.pool_every).to(device)
+    try:
+        model = AE_TCN_STL(in_channels=3, width=args.width, depth=args.depth, pool_every=args.pool_every).to(device)
+    except TypeError:
+        model = AE_TCN_STL(in_channels=3, width=args.width, depth=args.depth).to(device)
     acfg = ADPConfig(adp_mode=args.adp_mode, delta=args.delta, patience=args.patience, trials_width=args.trials_width,
                      trials_depth=args.trials_depth, ex_k=args.ex_k, max_width=args.max_width, max_depth=args.max_depth,
                      max_neurons=args.max_neurons, max_epochs=args.max_epochs, pool_every=args.pool_every)
