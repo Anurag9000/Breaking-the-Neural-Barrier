@@ -217,10 +217,8 @@ def adp_search(model: InpaintingConvAE, dl_train, dl_val, acfg: ADPConfig, devic
         local_best_widths = list(local_model.widths)
         if local_best_val is None or local_best_state is None:
             local_best_val, local_best_state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
-        local_model.load_state_dict(local_best_state)
         width_failure_count = 0
         while width_failure_count < patience_width_exp and can_widen(local_model.widths, local_model):
-            snap = snapshot_arch_and_state(local_model)
             local_model = expand_width(local_model, ex_k_width, acfg.max_width, device)
             val, state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
             if val < local_best_val - delta_width:
@@ -230,11 +228,8 @@ def adp_search(model: InpaintingConvAE, dl_train, dl_val, acfg: ADPConfig, devic
                 width_failure_count = 0
                 if log_improvement:
                     improvements.append((total_neurons(local_model), local_best_val))
-                local_model.load_state_dict(local_best_state)
             else:
                 width_failure_count += 1
-                local_model = restore_arch_and_state(local_model, snap, device)
-                local_model.load_state_dict(local_best_state)
         local_model = rebuild_model(local_model, local_best_widths, device)
         local_model.load_state_dict(local_best_state)
         return local_model, local_best_val, local_best_state, local_best_widths
@@ -245,10 +240,8 @@ def adp_search(model: InpaintingConvAE, dl_train, dl_val, acfg: ADPConfig, devic
         local_best_widths = list(local_model.widths)
         if local_best_val is None or local_best_state is None:
             local_best_val, local_best_state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
-        local_model.load_state_dict(local_best_state)
         depth_failure_count = 0
         while depth_failure_count < patience_depth_exp and can_deepen(local_model.widths, local_model):
-            snap = snapshot_arch_and_state(local_model)
             local_model = expand_depth(local_model, ex_k_depth, device)
             val, state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
             if val < local_best_val - delta_depth:
@@ -258,11 +251,8 @@ def adp_search(model: InpaintingConvAE, dl_train, dl_val, acfg: ADPConfig, devic
                 depth_failure_count = 0
                 if log_improvement:
                     improvements.append((total_neurons(local_model), local_best_val))
-                local_model.load_state_dict(local_best_state)
             else:
                 depth_failure_count += 1
-                local_model = restore_arch_and_state(local_model, snap, device)
-                local_model.load_state_dict(local_best_state)
         local_model = rebuild_model(local_model, local_best_widths, device)
         local_model.load_state_dict(local_best_state)
         return local_model, local_best_val, local_best_state, local_best_widths
@@ -275,7 +265,6 @@ def adp_search(model: InpaintingConvAE, dl_train, dl_val, acfg: ADPConfig, devic
         model, best_val, best_state, best_widths = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
         depth_failure_count = 0
         while depth_failure_count < patience_depth_exp and can_deepen(best_widths, model):
-            saved_snap = snapshot_arch_and_state(model)
             model = expand_depth(model, ex_k_depth, device)
             cand_model, cand_val, cand_state, cand_widths = width_search(model, log_improvement=False)
             if cand_val < best_val - delta_depth:
@@ -288,13 +277,10 @@ def adp_search(model: InpaintingConvAE, dl_train, dl_val, acfg: ADPConfig, devic
                 improvements.append((total_neurons(model), best_val))
             else:
                 depth_failure_count += 1
-                model = restore_arch_and_state(model, saved_snap, device)
-                model.load_state_dict(best_state)
     elif acfg.adp_mode == "width_to_depth":  # ADP_WIDTH_OUTER_DEPTH_INNER
         model, best_val, best_state, best_widths = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
         width_failure_count = 0
         while width_failure_count < patience_width_exp and can_widen(best_widths, model):
-            saved_snap = snapshot_arch_and_state(model)
             model = expand_width(model, ex_k_width, acfg.max_width, device)
             cand_model, cand_val, cand_state, cand_widths = depth_search(model, log_improvement=False)
             if cand_val < best_val - delta_width:
@@ -307,8 +293,6 @@ def adp_search(model: InpaintingConvAE, dl_train, dl_val, acfg: ADPConfig, devic
                 improvements.append((total_neurons(model), best_val))
             else:
                 width_failure_count += 1
-                model = restore_arch_and_state(model, saved_snap, device)
-                model.load_state_dict(best_state)
     elif acfg.adp_mode == "alt_depth":
         depth_saturated = False
         width_saturated = False

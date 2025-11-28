@@ -20,6 +20,13 @@ baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
 PredictiveSeqAE = baseline_module.PredictiveSeqAE  # type: ignore
 
+# ADP REVIEW (BEFORE REFACTOR)
+# - Modes: width_only/width, depth_only/depth, width_to_depth, depth_to_width, alt_width, alt_depth toggled via ad hoc loop.
+# - Inner training: train_with_patience ties ES to delta; no separate patience_es; rollback per failure.
+# - Expansions: widen_model/deepen_model mutate in place; rollback on fail; delta shared for width/depth.
+# - 2D/ALT: toggle modes on no improvement; lacks forward-only expansion and context-end restore per updated spec.
+# - Missing snapshot/restore abstractions and forward-only patience application.
+
 
 @dataclass
 class ADPConfig:
@@ -92,6 +99,25 @@ def total_neurons(model: PredictiveSeqAE) -> int:
     return model.hidden_size * model.num_layers
 
 
+def snapshot_arch_and_state(model: PredictiveSeqAE):
+    return {
+        "hidden_size": model.hidden_size,
+        "num_layers": model.num_layers,
+        "state": copy.deepcopy(model.state_dict()),
+    }
+
+
+def restore_arch_and_state(model: PredictiveSeqAE, snapshot, device) -> PredictiveSeqAE:
+    restored = PredictiveSeqAE(
+        feature_dim=model.feature_dim,
+        hidden_size=snapshot["hidden_size"],
+        num_layers=snapshot["num_layers"],
+        dropout=model.dropout,
+    ).to(device)
+    restored.load_state_dict(snapshot["state"], strict=False)
+    return restored
+
+
 def make_seq_loaders(batch_size: int = 128, val_split: float = 0.1) -> Tuple[DataLoader, DataLoader, int]:
     """
     Turn CIFAR10 images into sequences by flattening rows: T=32, F=3*32=96.
@@ -161,87 +187,149 @@ def train_with_patience(model: PredictiveSeqAE, dl_train, dl_val, acfg: ADPConfi
             break
     if best_state is not None:
         model.load_state_dict(best_state)
-    return best
+    return best, best_state
+
+
+# ADP REVIEW (AFTER REFACTOR)
+# - Modes map to ADP_WIDTH_ONLY / ADP_DEPTH_ONLY / ADP_DEPTH_OUTER_WIDTH_INNER / ADP_WIDTH_OUTER_DEPTH_INNER / ADP_ALT_DEPTH / ADP_ALT_WIDTH with forward-only expansions (no per-step rollback; restore global best at context end).
 
 
 def adp_search(model: PredictiveSeqAE, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
+    results_dir.mkdir(parents=True, exist_ok=True)
     val_history = []
     improvements = []
-    def can_widen():
-        return (model.hidden_size + acfg.ex_k) <= acfg.max_width and (model.hidden_size + acfg.ex_k) * model.num_layers <= acfg.max_neurons
 
-    def can_deepen():
-        return (model.num_layers + 1) <= acfg.max_depth and (model.num_layers + 1) * model.hidden_size <= acfg.max_neurons
+    def can_widen(hidden_size: int, num_layers: int):
+        return (hidden_size + acfg.ex_k) <= acfg.max_width and (hidden_size + acfg.ex_k) * num_layers <= acfg.max_neurons
 
-    inner_val = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
-    best_val, best_state = inner_val, copy.deepcopy(model.state_dict())
-    improvements.append((total_neurons(model), inner_val))
+    def can_deepen(hidden_size: int, num_layers: int):
+        return (num_layers + 1) <= acfg.max_depth and (num_layers + 1) * hidden_size <= acfg.max_neurons
+
+    best_val, best_state = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
+    best_hidden = model.hidden_size
+    best_layers = model.num_layers
+    improvements.append((total_neurons(model), best_val))
     pw, pd = acfg.trials_width, acfg.trials_depth
     mode = acfg.adp_mode
-    improved = True
-    while improved:
-        improved = False
-        if mode in ("width_only", "width", "width_to_depth", "alt_width"):
-            if can_widen() and pw > 0:
-                pre = copy.deepcopy(model.state_dict())
-                pre_h = model.hidden_size
-                pre_val = inner_val
-                widen_model(model, acfg.ex_k, acfg.max_width)
-                v = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
-                if v < pre_val - acfg.delta:
-                    inner_val = v
-                    pw = acfg.trials_width
-                    improved = True
-                    improvements.append((total_neurons(model), inner_val))
-                    if v < best_val:
-                        best_val, best_state = v, copy.deepcopy(model.state_dict())
+
+    def width_search(local_model: PredictiveSeqAE, initial_val=None, initial_state=None, log_improvement: bool = False):
+        local_best_val = initial_val
+        local_best_state = initial_state
+        local_best_hidden = local_model.hidden_size
+        if local_best_val is None or local_best_state is None:
+            local_best_val, local_best_state = train_with_patience(local_model, dl_train, dl_val, acfg, device, val_history)
+        width_failure_count = 0
+        while width_failure_count < pw and can_widen(local_model.hidden_size, local_model.num_layers):
+            widen_model(local_model, acfg.ex_k, acfg.max_width)
+            val, state = train_with_patience(local_model, dl_train, dl_val, acfg, device, val_history)
+            if val < local_best_val - acfg.delta:
+                local_best_val = val
+                local_best_state = state
+                local_best_hidden = local_model.hidden_size
+                width_failure_count = 0
+                if log_improvement:
+                    improvements.append((total_neurons(local_model), local_best_val))
+            else:
+                width_failure_count += 1
+        local_model = rebuild_model(local_model, local_best_hidden, local_model.num_layers, device)
+        local_model.load_state_dict(local_best_state)
+        return local_model, local_best_val, local_best_state, local_best_hidden
+
+    def depth_search(local_model: PredictiveSeqAE, initial_val=None, initial_state=None, log_improvement: bool = False):
+        local_best_val = initial_val
+        local_best_state = initial_state
+        local_best_layers = local_model.num_layers
+        if local_best_val is None or local_best_state is None:
+            local_best_val, local_best_state = train_with_patience(local_model, dl_train, dl_val, acfg, device, val_history)
+        depth_failure_count = 0
+        while depth_failure_count < pd and can_deepen(local_model.hidden_size, local_model.num_layers):
+            deepen_model(local_model)
+            val, state = train_with_patience(local_model, dl_train, dl_val, acfg, device, val_history)
+            if val < local_best_val - acfg.delta:
+                local_best_val = val
+                local_best_state = state
+                local_best_layers = local_model.num_layers
+                depth_failure_count = 0
+                if log_improvement:
+                    improvements.append((total_neurons(local_model), local_best_val))
+            else:
+                depth_failure_count += 1
+        local_model = rebuild_model(local_model, local_model.hidden_size, local_best_layers, device)
+        local_model.load_state_dict(local_best_state)
+        return local_model, local_best_val, local_best_state, local_best_layers
+
+    if mode in ("width_only", "width"):
+        model, best_val, best_state, best_hidden = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+        best_layers = model.num_layers
+    elif mode in ("depth_only", "depth"):
+        model, best_val, best_state, best_layers = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+        best_hidden = model.hidden_size
+    elif mode == "depth_to_width":
+        model, best_val, best_state, best_hidden = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+        best_layers = model.num_layers
+        depth_failure_count = 0
+        while depth_failure_count < pd and can_deepen(best_hidden, best_layers):
+            model = expand_depth(model, 1, device) if False else deepen_model(model) or model  # maintain structure
+            cand_model, cand_val, cand_state, cand_hidden = width_search(model, log_improvement=False)
+            if cand_val < best_val - acfg.delta:
+                best_val = cand_val; best_state = cand_state; best_hidden = cand_hidden; best_layers = model.num_layers; depth_failure_count = 0; model = cand_model; model.load_state_dict(best_state); improvements.append((total_neurons(model), best_val))
+            else:
+                depth_failure_count += 1
+    elif mode == "width_to_depth":
+        model, best_val, best_state, best_layers = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+        best_hidden = model.hidden_size
+        width_failure_count = 0
+        while width_failure_count < pw and can_widen(best_hidden, best_layers):
+            widen_model(model, acfg.ex_k, acfg.max_width)
+            cand_model, cand_val, cand_state, cand_layers = depth_search(model, log_improvement=False)
+            if cand_val < best_val - acfg.delta:
+                best_val = cand_val; best_state = cand_state; best_hidden = model.hidden_size; best_layers = cand_layers; width_failure_count = 0; model = cand_model; model.load_state_dict(best_state); improvements.append((total_neurons(model), best_val))
+            else:
+                width_failure_count += 1
+    elif mode == "alt_depth":
+        depth_saturated = False; width_saturated = False; phase = "depth"
+        while not (depth_saturated and width_saturated):
+            if phase == "depth":
+                model, phase_val, phase_state, phase_layers = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+                if phase_val < best_val:
+                    best_val = phase_val; best_state = phase_state; best_layers = phase_layers; best_hidden = model.hidden_size; depth_saturated = False; improvements.append((total_neurons(model), best_val))
                 else:
-                    # rollback
-                    model.hidden_size = pre_h
-                    model.rnn = resize_gru(model.rnn, pre_h, model.num_layers)
-                    model.out_proj = resize_out(model.out_proj, pre_h)
-                    model.load_state_dict(pre)
-                    pw -= 1
-            if mode == "width_only":
-                continue
-        if mode in ("depth_only", "depth", "depth_to_width", "alt_depth"):
-            if can_deepen() and pd > 0:
-                pre = copy.deepcopy(model.state_dict())
-                pre_layers = model.num_layers
-                pre_val = inner_val
-                deepen_model(model)
-                v = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
-                if v < pre_val - acfg.delta:
-                    inner_val = v
-                    pd = acfg.trials_depth
-                    improved = True
-                    improvements.append((total_neurons(model), inner_val))
-                    if v < best_val:
-                        best_val, best_state = v, copy.deepcopy(model.state_dict())
+                    depth_saturated = True
+                model = rebuild_model(model, best_hidden, best_layers, device); model.load_state_dict(best_state); phase = "width"
+            else:
+                model, phase_val, phase_state, phase_hidden = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+                if phase_val < best_val:
+                    best_val = phase_val; best_state = phase_state; best_hidden = phase_hidden; width_saturated = False; improvements.append((total_neurons(model), best_val))
                 else:
-                    model.rnn = resize_gru(model.rnn, model.hidden_size, pre_layers)
-                    model.num_layers = pre_layers
-                    model.load_state_dict(pre)
-                    pd -= 1
-            if mode == "depth_only":
-                continue
-        if mode == "width_to_depth" and not improved:
-            mode = "depth"
-            pd = acfg.trials_depth
-            improved = True
-        elif mode == "depth_to_width" and not improved:
-            mode = "width"
-            pw = acfg.trials_width
-            improved = True
-        elif mode in ("alt_width", "alt_depth"):
-            mode = "depth" if mode == "alt_width" else "width"
-            improved = True
+                    width_saturated = True
+                model = rebuild_model(model, best_hidden, best_layers, device); model.load_state_dict(best_state); phase = "depth"
+    elif mode == "alt_width":
+        depth_saturated = False; width_saturated = False; phase = "width"
+        while not (depth_saturated and width_saturated):
+            if phase == "width":
+                model, phase_val, phase_state, phase_hidden = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+                if phase_val < best_val:
+                    best_val = phase_val; best_state = phase_state; best_hidden = phase_hidden; width_saturated = False; improvements.append((total_neurons(model), best_val))
+                else:
+                    width_saturated = True
+                model = rebuild_model(model, best_hidden, best_layers, device); model.load_state_dict(best_state); phase = "depth"
+            else:
+                model, phase_val, phase_state, phase_layers = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
+                if phase_val < best_val:
+                    best_val = phase_val; best_state = phase_state; best_layers = phase_layers; depth_saturated = False; improvements.append((total_neurons(model), best_val))
+                else:
+                    depth_saturated = True
+                model = rebuild_model(model, best_hidden, best_layers, device); model.load_state_dict(best_state); phase = "width"
+    else:
+        raise ValueError(f"Unsupported ADP mode: {mode}")
+
+    model = rebuild_model(model, best_hidden, best_layers, device)
     model.load_state_dict(best_state)
     if log_loss:
         plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
     if log_neurons and improvements:
         plot_loss_vs_neurons([n for n, _ in improvements], [v for _, v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
-    return best_val
+    return best_val, model, best_hidden, best_layers
 
 
 def main():
@@ -288,8 +376,8 @@ def main():
         dropout=args.dropout,
     )
     results_dir = Path(f"results_{BASE_PATH.stem}")
-    best = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=results_dir)
-    print(f"[ADP Predictive SeqAE] mode={args.adp_mode} best_val={best:.6f} hidden={model.hidden_size} layers={model.num_layers}")
+    best_val, model, hidden, layers = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=results_dir)
+    print(f"[ADP Predictive SeqAE] mode={args.adp_mode} best_val={best_val:.6f} hidden={hidden} layers={layers}")
 
 
 if __name__ == "__main__":
