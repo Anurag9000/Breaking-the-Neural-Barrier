@@ -19,6 +19,13 @@ baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
 AE_GROUPSPARSE_STL = baseline_module.AE_GROUPSPARSE_STL  # type: ignore
 
+# ADP REVIEW (BEFORE REFACTOR)
+# - Modes: width_only/width, depth_only/depth, width_to_depth, depth_to_width, alt_width, alt_depth use single loop with per-expansion rollback.
+# - Inner training: train_with_patience ties ES reset to delta and reloads immediately.
+# - Expansions: widen/deepen rollback on failure; shared delta/patience; no snapshot helpers.
+# - Control flow: toggles modes on no improvement; lacks forward-only march and context-end restore required by updated spec.
+# - No snapshot/restore; ES patience conflated with expansion patiences.
+
 
 @dataclass
 class ADPConfig:
