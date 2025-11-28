@@ -2,29 +2,26 @@ import copy
 from dataclasses import dataclass
 from pathlib import Path
 import importlib.util
-import sys
 from typing import List
 
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
+from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons
 
-sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
-
-BASE_PATH = Path(__file__).with_name("ae_multi_stl_py_multi_scale_pyramid_autoencoder.py").resolve()
+BASE_PATH = Path(__file__).with_name("ae_mask_stl.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
 baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
-AE_MULTI_STL = baseline_module.AE_MULTI_STL  # type: ignore
+AE_MASK_STL = baseline_module.AE_MASK_STL  # type: ignore
 
 # ADP REVIEW (BEFORE REFACTOR)
-# - Modes: width_only/width, depth_only/depth, width_to_depth, depth_to_width, alt_width, alt_depth share single loop with per-expansion rollback.
+# - Modes: width_only/width, depth_only/depth, width_to_depth, depth_to_width, alt_width, alt_depth via single loop with per-expansion rollback.
 # - Inner training: train_with_patience ties ES reset to delta and reloads immediately.
 # - Expansions: widen/deepen rollback on failure; shared delta/patience; no snapshot helpers.
 # - Control flow: toggles modes on no improvement; lacks forward-only march and context-end restore per updated spec.
-# - ES patience conflated with expansion patiences; no snapshot/restore of arch/state.
+# - ES patience conflated with expansion patiences; no snapshot/restore separation.
 
 
 @dataclass
@@ -44,27 +41,38 @@ class ADPConfig:
     max_epochs: int = 20
 
 
-def rebuild_model(width: int, depth: int, pool_after: List[int]) -> AE_MULTI_STL:
-    return AE_MULTI_STL(in_channels=3, width=width, depth=depth, pool_after=pool_after)
+def rebuild_model(width: int, depth: int, pool_after: List[int]) -> AE_MASK_STL:
+    return AE_MASK_STL(in_channels=3, width=width, depth=depth, pool_after=pool_after)
 
 
-def widen_model(model: AE_MULTI_STL, ex_k: int, max_width: int):
+def widen_model(model: AE_MASK_STL, ex_k: int, max_width: int):
     new_w = min(max_width, model.width + ex_k)
     if new_w == model.width:
-        return model
+        return
     new_model = rebuild_model(new_w, model.depth, list(model.pool_after))
     new_model.load_state_dict(model.state_dict(), strict=False)
     return new_model
 
 
-def deepen_model(model: AE_MULTI_STL):
+def deepen_model(model: AE_MASK_STL):
     new_model = rebuild_model(model.width, model.depth + 1, list(model.pool_after))
     new_model.load_state_dict(model.state_dict(), strict=False)
     return new_model
 
 
-def total_neurons(model: AE_MULTI_STL) -> int:
+def total_neurons(model: AE_MASK_STL) -> int:
     return model.width * (model.depth + 1)
+
+
+def snapshot_arch_and_state(model: AE_MASK_STL, state_dict=None):
+    state = state_dict if state_dict is not None else model.state_dict()
+    return {"width": model.width, "depth": model.depth, "pool_after": list(model.pool_after), "state": copy.deepcopy(state)}
+
+
+def restore_arch_and_state(model: AE_MASK_STL, snap, device):
+    restored = rebuild_model(snap["width"], snap["depth"], list(snap["pool_after"])).to(device)
+    restored.load_state_dict(snap["state"])
+    return restored
 
 
 def make_loaders(batch_size: int = 128, val_split: float = 0.1):
@@ -78,18 +86,18 @@ def make_loaders(batch_size: int = 128, val_split: float = 0.1):
     return dl_train, dl_val
 
 
-def train_with_patience(model: AE_MULTI_STL, dl_train, dl_val, acfg: ADPConfig, device, history: list):
+def train_with_early_stopping(model: AE_MASK_STL, dl_train, dl_val, acfg: ADPConfig, device, history: list):
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
     crit = nn.MSELoss()
     best = float("inf")
     best_state = None
-    pat = acfg.patience
+    es_counter = 0
     for _ in range(acfg.max_epochs):
         model.train()
         for x, _ in dl_train:
             x = x.to(device)
-            outs = model(x)
-            loss = sum(crit(o, nn.functional.interpolate(x, size=o.shape[-2:])) for o in outs) / len(outs)
+            x_rec, _ = model(x)
+            loss = crit(x_rec, x)
             opt.zero_grad(set_to_none=True)
             loss.backward()
             if acfg.grad_clip is not None:
@@ -101,26 +109,25 @@ def train_with_patience(model: AE_MULTI_STL, dl_train, dl_val, acfg: ADPConfig, 
             n = 0
             for x, _ in dl_val:
                 x = x.to(device)
-                outs = model(x)
-                l = sum(crit(o, nn.functional.interpolate(x, size=o.shape[-2:])) for o in outs) / len(outs)
+                x_rec, _ = model(x)
+                l = crit(x_rec, x)
                 val += l.item() * x.size(0)
                 n += x.size(0)
             val = val / max(n, 1)
         history.append(val)
-        if val < best - acfg.delta:
+        if val < best:
             best = val
             best_state = copy.deepcopy(model.state_dict())
-            pat = acfg.patience
         else:
-            pat -= 1
-        if pat <= 0:
+            es_counter += 1
+        if es_counter >= acfg.patience:
             break
     if best_state is not None:
         model.load_state_dict(best_state)
-    return best
+    return best, best_state
 
 
-def adp_search(model: AE_MULTI_STL, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
+def adp_search(model: AE_MASK_STL, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
     val_history = []
     improvements: List[tuple] = []
     def can_widen():
@@ -148,9 +155,10 @@ def adp_search(model: AE_MULTI_STL, dl_train, dl_val, acfg: ADPConfig, device, l
                     inner_val = v
                     pw = acfg.trials_width
                     improved = True
-                    improvements.append((total_neurons(model), inner_val))
+                    neurons_history.append(total_neurons(model))
                     if v < best_val:
                         best_val, best_state = v, copy.deepcopy(model.state_dict())
+                    improvements.append((total_neurons(model), inner_val))
                 else:
                     model.load_state_dict(pre_state)
                     model.width = pre_w
@@ -168,9 +176,10 @@ def adp_search(model: AE_MULTI_STL, dl_train, dl_val, acfg: ADPConfig, device, l
                     inner_val = v
                     pd = acfg.trials_depth
                     improved = True
-                    improvements.append((total_neurons(model), inner_val))
+                    neurons_history.append(total_neurons(model))
                     if v < best_val:
                         best_val, best_state = v, copy.deepcopy(model.state_dict())
+                    improvements.append((total_neurons(model), inner_val))
                 else:
                     model.load_state_dict(pre_state)
                     model.depth = pre_d
@@ -199,7 +208,7 @@ def adp_search(model: AE_MULTI_STL, dl_train, dl_val, acfg: ADPConfig, device, l
 def main():
     import argparse
 
-    p = argparse.ArgumentParser(description="ADP Multi-scale AE (Supervised) width/depth search")
+    p = argparse.ArgumentParser(description="ADP Masked AE (Supervised) width/depth search")
     p.add_argument("--width", type=int, default=64)
     p.add_argument("--depth", type=int, default=4)
     p.add_argument("--pool-after", type=int, nargs="*", default=[])
@@ -225,7 +234,7 @@ def main():
 
     dl_train, dl_val = make_loaders(args.batch_size, 0.1)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = AE_MULTI_STL(in_channels=3, width=args.width, depth=args.depth, pool_after=args.pool_after).to(device)
+    model = AE_MASK_STL(in_channels=3, width=args.width, depth=args.depth, pool_after=args.pool_after).to(device)
     acfg = ADPConfig(
         adp_mode=args.adp_mode,
         delta=args.delta,
@@ -240,7 +249,7 @@ def main():
     )
     results_dir = Path(f"results_{BASE_PATH.stem}")
     best = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=results_dir)
-    print(f"[ADP Multi-Scale AE STL] mode={args.adp_mode} best_val={best:.6f} width={model.width} depth={model.depth}")
+    print(f"[ADP Mask AE STL] mode={args.adp_mode} best_val={best:.6f} width={model.width} depth={model.depth}")
 
 
 if __name__ == "__main__":
