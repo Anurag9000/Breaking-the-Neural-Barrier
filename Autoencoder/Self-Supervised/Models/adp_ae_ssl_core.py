@@ -4152,15 +4152,354 @@ def _tv2d(x):
 # ----------------------------
 # Quick self-test (optional)
 # ----------------------------
-if __name__ == "__main__":
-    # Simple smoke test on random data
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    cfg = AEConfig(in_channels=3, base_channels=32, depth=3, bottleneck_dim=128, device=device)
-    net = build_model(cfg).to(device)
-    x = torch.randn(4, 3, 64, 64, device=device)
+# ----------------------------
+# ADP INTEGRATION (Added during refactor)
+# ----------------------------
 
-    for algo in ["plain", "masked", "dropblock", "half", "inpaint", "context",
-                 "colorize", "rotation", "jigsaw", "self_distortion",
-                 "freq_mask", "latent_cycle", "split_latent"]:
-        out = net.forward_train(x, algo=algo)
-        print(f"{algo}: loss={out['loss'].item():.4f} logs={ {k:round(v,4) for k,v in out['logs'].items()} }")
+import copy
+
+@dataclass
+class ADPConfig:
+    adp_mode: str = "width_to_depth"
+    algo: str = "plain"  # The SSL algo to train with
+    delta: float = 1e-3
+    patience: int = 10
+    trials_width: int = 2
+    trials_depth: int = 2
+    ex_k: int = 8  # For base_channels expansion
+    max_width: int = 1024  # max base_channels
+    max_depth: int = 12
+    max_neurons: int = 5_000_000
+    lr: float = 1e-3
+    weight_decay: float = 1e-4
+    grad_clip: float = 1.0
+    max_epochs: int = 30
+    batch_size: int = 32
+
+def _overlap_copy_(dst, src):
+    # Copy overlapping sub-region from src to dst (in-place)
+    dims = [min(a, b) for a, b in zip(dst.shape, src.shape)]
+    if not dims: return
+    slices = tuple(slice(0, d) for d in dims)
+    dst[slices].copy_(src[slices])
+
+def _struct_copy(dst_model, src_model):
+    # Copy weights from src to dst by name, handling shape mismatches via overlap
+    src_params = dict(src_model.named_parameters())
+    for name, dst_p in dst_model.named_parameters():
+        if name in src_params:
+            _overlap_copy_(dst_p.data, src_params[name].data)
+    src_bufs = dict(src_model.named_buffers())
+    for name, dst_b in dst_model.named_buffers():
+        if name in src_bufs:
+            _overlap_copy_(dst_b.data, src_bufs[name].data)
+
+def snapshot_arch_and_state(model, state_dict=None):
+    # We snapshot the CONFIG and the state.
+    # If state_dict is provided (e.g. from best_state), use it.
+    # Otherwise use model.state_dict().
+    sd = state_dict if state_dict is not None else model.state_dict()
+    # We need to deepcopy the config to preserve architecture definition
+    return {
+        "cfg": copy.deepcopy(model.cfg),
+        "state": copy.deepcopy(sd)
+    }
+
+def restore_arch_and_state(model, snap, device):
+    # Reconstruct model from snap config
+    new_model = SelfSupervisedAE(snap["cfg"]).to(device)
+    new_model.load_state_dict(snap["state"])
+    return new_model
+
+def expand_width(model, ex_k, max_width):
+    # Expand base_channels
+    if model.cfg.base_channels + ex_k > max_width:
+        return None
+    new_cfg = copy.deepcopy(model.cfg)
+    new_cfg.base_channels += ex_k
+    
+    # Check max neurons constraint roughly? (Optional, skip for now or use dummy calc)
+    # Rebuild
+    device = next(model.parameters()).device
+    new_model = SelfSupervisedAE(new_cfg).to(device)
+    _struct_copy(new_model, model)
+    return new_model
+
+def expand_depth(model, max_depth):
+    # Expand depth
+    if model.cfg.depth + 1 > max_depth:
+        return None
+    new_cfg = copy.deepcopy(model.cfg)
+    new_cfg.depth += 1
+    
+    device = next(model.parameters()).device
+    new_model = SelfSupervisedAE(new_cfg).to(device)
+    _struct_copy(new_model, model)
+    return new_model
+
+def total_neurons(model):
+    # Rough estimate: count parameters
+    return sum(p.numel() for p in model.parameters())
+
+def train_with_early_stopping(model, data, acfg: ADPConfig, device) -> Tuple[float, Dict[str, Any]]:
+    # Unpack data
+    train_loader, val_loader = data
+    opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
+    
+    best_val = float("inf")
+    best_state = copy.deepcopy(model.state_dict())
+    es_counter = 0
+
+    for epoch in range(acfg.max_epochs):
+        model.train()
+        for batch in train_loader:
+            x = batch[0].to(device) if isinstance(batch, (list,tuple)) else batch.to(device)
+            # Some algos might need cleaner checks, but assuming simple x input for now
+            # If batch is (img, target), we only use img for SSL typically
+            
+            opt.zero_grad(set_to_none=True)
+            out = model.forward_train(x, algo=acfg.algo)
+            loss = out["loss"]
+            loss.backward()
+            if acfg.grad_clip is not None:
+                nn.utils.clip_grad_norm_(model.parameters(), acfg.grad_clip)
+            opt.step()
+        
+        # Validation
+        model.eval()
+        val_loss = 0.0
+        steps = 0
+        with torch.no_grad():
+            for batch in val_loader:
+                x = batch[0].to(device) if isinstance(batch, (list,tuple)) else batch.to(device)
+                out = model.forward_train(x, algo=acfg.algo)
+                val_loss += out["loss"].item()
+                steps += 1
+        val_loss /= max(1, steps)
+        
+        if val_loss < best_val:
+            best_val = val_loss
+            best_state = copy.deepcopy(model.state_dict())
+            es_counter = 0
+        else:
+            es_counter += 1
+            
+        if es_counter >= acfg.patience:
+            break
+
+    return best_val, best_state
+
+def adp_search(model, data, acfg: ADPConfig, device):
+    # Initial Baseline
+    best_val, best_state = train_with_early_stopping(model, data, acfg, device)
+    model.load_state_dict(best_state)
+    
+    global_best_val = best_val
+    global_best_snap = snapshot_arch_and_state(model, best_state)
+
+    # Helpers for the loops
+    def can_widen(m):
+        return (m.cfg.base_channels + acfg.ex_k <= acfg.max_width) and (total_neurons(m) < acfg.max_neurons)
+    
+    def can_deepen(m):
+        return (m.cfg.depth + 1 <= acfg.max_depth) and (total_neurons(m) < acfg.max_neurons) # Approximate check
+
+    def optimize_width_at_fixed_depth(curr_model):
+        local_val, local_state = train_with_early_stopping(curr_model, data, acfg, device)
+        local_best_val = local_val
+        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
+        
+        width_fails = 0
+        while width_fails < acfg.trials_width:
+            if not can_widen(curr_model):
+                break
+            
+            next_model = expand_width(curr_model, acfg.ex_k, acfg.max_width)
+            if next_model is None: break
+            curr_model = next_model
+            
+            v, s = train_with_early_stopping(curr_model, data, acfg, device)
+            if v < local_best_val - acfg.delta:
+                local_best_val = v
+                local_best_snap = snapshot_arch_and_state(curr_model, s)
+                width_fails = 0
+            else:
+                width_fails += 1
+                # Forward-only: NO ROLLBACK per-expansion
+        
+        # Restore local best for this context
+        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
+        return final_model, local_best_val, local_best_snap
+
+    def optimize_depth_at_fixed_width(curr_model):
+        local_val, local_state = train_with_early_stopping(curr_model, data, acfg, device)
+        local_best_val = local_val
+        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
+        
+        depth_fails = 0
+        while depth_fails < acfg.trials_depth:
+            if not can_deepen(curr_model):
+                break
+                
+            next_model = expand_depth(curr_model, acfg.max_depth)
+            if next_model is None: break
+            curr_model = next_model
+            
+            v, s = train_with_early_stopping(curr_model, data, acfg, device)
+            if v < local_best_val - acfg.delta:
+                local_best_val = v
+                local_best_snap = snapshot_arch_and_state(curr_model, s)
+                depth_fails = 0
+            else:
+                depth_fails += 1
+        
+        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
+        return final_model, local_best_val, local_best_snap
+
+    mode = acfg.adp_mode
+    if mode in ["width_only", "width"]:
+        model, global_best_val, global_best_snap = optimize_width_at_fixed_depth(model)
+        
+    elif mode in ["depth_only", "depth"]:
+        model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
+        
+    elif mode == "depth_to_width":
+        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
+        global_best_val = base_val
+        global_best_snap = base_snap
+        
+        depth_fails = 0
+        while depth_fails < acfg.trials_depth:
+            if not can_deepen(model): break
+            nm = expand_depth(model, acfg.max_depth)
+            if nm is None: break
+            model = nm
+            
+            model, val_d, snap_d = optimize_width_at_fixed_depth(model)
+            if val_d < global_best_val - acfg.delta:
+                global_best_val = val_d
+                global_best_snap = snap_d
+                depth_fails = 0
+            else:
+                depth_fails += 1
+        model = restore_arch_and_state(model, global_best_snap, device)
+
+    elif mode == "width_to_depth":
+        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
+        global_best_val = base_val
+        global_best_snap = base_snap
+        
+        width_fails = 0
+        while width_fails < acfg.trials_width:
+            if not can_widen(model): break
+            nm = expand_width(model, acfg.ex_k, acfg.max_width)
+            if nm is None: break
+            model = nm
+            
+            model, val_w, snap_w = optimize_depth_at_fixed_width(model)
+            if val_w < global_best_val - acfg.delta:
+                global_best_val = val_w
+                global_best_snap = snap_w
+                width_fails = 0
+            else:
+                width_fails += 1
+        model = restore_arch_and_state(model, global_best_snap, device)
+
+    elif mode in ["alt_width", "alt_depth"]:
+        depth_sat, width_sat = False, False
+        phase = "width" if mode == "alt_width" else "depth"
+        
+        while not (depth_sat and width_sat):
+            improved = False
+            if phase == "width":
+                model, val, snap = optimize_width_at_fixed_depth(model)
+                if val < global_best_val - acfg.delta:
+                    global_best_val = val
+                    global_best_snap = snap
+                    improved = True
+                width_sat = not improved
+                model = restore_arch_and_state(model, global_best_snap, device)
+                phase = "depth"
+            else:
+                model, val, snap = optimize_depth_at_fixed_width(model)
+                if val < global_best_val - acfg.delta:
+                    global_best_val = val
+                    global_best_snap = snap
+                    improved = True
+                depth_sat = not improved
+                model = restore_arch_and_state(model, global_best_snap, device)
+                phase = "width"
+                
+        model = restore_arch_and_state(model, global_best_snap, device)
+
+    return global_best_val, model
+
+def main():
+    import argparse
+    p = argparse.ArgumentParser(description="ADP Unified SSL Core")
+    p.add_argument("--algo", type=str, default="plain", help="SSL algorithm name")
+    p.add_argument("--adp-mode", type=str, default="width_to_depth")
+    p.add_argument("--delta", type=float, default=1e-3)
+    p.add_argument("--patience", type=int, default=10)
+    p.add_argument("--trials-width", type=int, default=2)
+    p.add_argument("--trials-depth", type=int, default=2)
+    p.add_argument("--ex-k", type=int, default=8, help="Expand base_channels by this")
+    p.add_argument("--max-width", type=int, default=128, help="Max base_channels")
+    p.add_argument("--max-depth", type=int, default=6)
+    p.add_argument("--max-neurons", type=int, default=1_000_000)
+    p.add_argument("--max-epochs", type=int, default=10)
+    p.add_argument("--batch-size", type=int, default=16)
+    p.add_argument("--data-root", type=str, default=".")
+    
+    # Model init args
+    p.add_argument("--base-channels", type=int, default=32)
+    p.add_argument("--depth", type=int, default=3)
+    p.add_argument("--bottleneck-dim", type=int, default=64)
+    
+    args, unknown = p.parse_known_args()
+    
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    
+    # Synthetic Data for "Refactoring" demo (since we can't depend on external data presence)
+    # Creating a simple dataset
+    class SyntheticData(torch.utils.data.Dataset):
+        def __init__(self, N=100):
+            self.data = torch.randn(N, 3, 32, 32)
+        def __len__(self): return len(self.data)
+        def __getitem__(self, idx): return self.data[idx], 0 # dummy target
+        
+    train_ds = SyntheticData(100)
+    val_ds = SyntheticData(50)
+    train_dl = torch.utils.data.DataLoader(train_ds, batch_size=args.batch_size, shuffle=True)
+    val_dl = torch.utils.data.DataLoader(val_ds, batch_size=args.batch_size, shuffle=False)
+    
+    cfg = AEConfig(
+        base_channels=args.base_channels,
+        depth=args.depth,
+        bottleneck_dim=args.bottleneck_dim,
+        device=device
+    )
+    model = SelfSupervisedAE(cfg).to(device)
+    
+    acfg = ADPConfig(
+        adp_mode=args.adp_mode,
+        algo=args.algo,
+        delta=args.delta,
+        patience=args.patience,
+        trials_width=args.trials_width,
+        trials_depth=args.trials_depth,
+        ex_k=args.ex_k,
+        max_width=args.max_width,
+        max_depth=args.max_depth,
+        max_neurons=args.max_neurons,
+        max_epochs=args.max_epochs,
+        batch_size=args.batch_size
+    )
+    
+    print(f"[ADP Unified Core] Starting search: mode={acfg.adp_mode} algo={acfg.algo} init_width={model.cfg.base_channels}")
+    best_val, best_model = adp_search(model, (train_dl, val_dl), acfg, device)
+    print(f"[ADP Unified Core] DONE. Best Val={best_val:.6f} Width={best_model.cfg.base_channels} Depth={best_model.cfg.depth}")
+
+if __name__ == "__main__":
+    main()
+

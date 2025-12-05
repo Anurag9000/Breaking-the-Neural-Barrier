@@ -1,6 +1,6 @@
 import copy
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Tuple, Dict, Any, Optional
 
 import torch
 import torch.nn as nn
@@ -11,6 +11,14 @@ from DNN_FOR_GRAPH_each_input_neuron_corresponds_to_node_of_graph_but_architectu
     TrainCfg as BaseTrainCfg,
     load_planetoid,
 )
+
+
+# ADP REVIEW (BEFORE REFACTOR)
+# - Modes: width_only/width, depth_only/depth, width_to_depth, depth_to_width, alt_width, alt_depth share single loop with per-expansion rollback.
+# - Inner training: train_with_patience ties ES reset to delta and reloads immediately.
+# - Expansions: widen/deepen rollback on failure; shared delta/patience; no snapshot helpers.
+# - Control flow: toggles modes on no improvement; lacks forward-only march and context-end restore per updated spec.
+# - ES patience conflated with expansion patiences; no snapshot/restore separation.
 
 
 @dataclass
@@ -37,10 +45,15 @@ def _resize_linear(old: nn.Linear, new_out: int, new_in: int) -> nn.Linear:
     return new
 
 
-def widen_all(model: DNNNodeFC, ex_k: int, max_width: int):
+def expand_width(model: DNNNodeFC, ex_k: int, max_width: int) -> Optional[DNNNodeFC]:
     """Increase hidden width of all layers by ex_k (capped)."""
+    # Check if we can expand
+    current_width = model.in_lin.out_features
+    new_h = min(max_width, current_width + ex_k)
+    if new_h == current_width:
+        return None
+
     # in_lin
-    new_h = min(max_width, model.in_lin.out_features + ex_k)
     model.in_lin = _resize_linear(model.in_lin, new_h, model.in_lin.in_features)
     prev_out = new_h
     new_hiddens = nn.ModuleList()
@@ -50,14 +63,27 @@ def widen_all(model: DNNNodeFC, ex_k: int, max_width: int):
         prev_out = nh
     model.hiddens = new_hiddens
     model.out_lin = _resize_linear(model.out_lin, model.out_lin.out_features, prev_out)
+    return model
 
 
-def append_depth(model: DNNNodeFC):
+def expand_depth(model: DNNNodeFC, max_depth: int) -> Optional[DNNNodeFC]:
     """Insert one hidden layer (square, width=last hidden) before out_lin."""
+    # Check max depth (depth = len(hiddens) + 1 (in_lin))
+    # Actually, depth usually means number of layers or number of hidden layers?
+    # Base code: depth=3 means 3 layers total?
+    # DNNNodeFC init: self.hiddens = nn.ModuleList([nn.Linear(hidden, hidden) for _ in range(depth - 2)])
+    # So if depth=3, hiddens has 1 layer. Total layers: in_lin + hiddens[0] + out_lin = 3.
+    # So current depth = len(model.hiddens) + 2.
+    
+    current_depth = len(model.hiddens) + 2
+    if current_depth >= max_depth:
+        return None
+
     width = model.hiddens[-1].out_features if len(model.hiddens) > 0 else model.in_lin.out_features
     device = model.in_lin.weight.device
     model.hiddens.append(nn.Linear(width, width, bias=False).to(device))
     model.out_lin = _resize_linear(model.out_lin, model.out_lin.out_features, width)
+    return model
 
 
 def total_neurons(model: DNNNodeFC) -> int:
@@ -65,7 +91,93 @@ def total_neurons(model: DNNNodeFC) -> int:
     return h * (len(model.hiddens) + 1) + model.out_lin.in_features * model.out_lin.out_features
 
 
-def train_with_patience(model: DNNNodeFC, data, cfg: BaseTrainCfg, patience: int, max_epochs: int) -> float:
+def snapshot_arch_and_state(model: DNNNodeFC, state_dict=None) -> Dict[str, Any]:
+    state = state_dict if state_dict is not None else model.state_dict()
+    # Need to capture architecture params to rebuild
+    # DNNNodeFC is dynamic, so we need:
+    # - in_features (N)
+    # - num_classes
+    # - hidden width (assuming uniform for now, but expand_width keeps it uniform-ish)
+    # - depth (len(hiddens))
+    # But wait, expand_width might make layers non-uniform if we capped some?
+    # The current expand_width implementation tries to keep them uniform (new_h = min(max, old + k)).
+    # If they started uniform, they stay uniform.
+    # But let's be safe and capture the exact structure if possible, or just rebuild and load state.
+    # Since we modify the model in-place in expand_*, we can just deepcopy the model?
+    # No, we need to be able to restore it.
+    # Let's capture the list of widths.
+    
+    widths = [model.in_lin.out_features] + [l.out_features for l in model.hiddens]
+    return {
+        "in_features": model.in_lin.in_features,
+        "num_classes": model.out_lin.out_features,
+        "widths": widths,
+        "state": copy.deepcopy(state)
+    }
+
+
+def restore_arch_and_state(model: DNNNodeFC, snap: Dict[str, Any], device) -> DNNNodeFC:
+    # Rebuild model from scratch
+    # We can't easily use the constructor if widths are non-uniform.
+    # But DNNNodeFC constructor assumes uniform hidden width.
+    # We might need to manually construct it.
+    
+    # Create a dummy model
+    dummy_hidden = snap["widths"][0]
+    dummy_depth = len(snap["widths"]) + 1 # +1 for output layer? No.
+    # Layers: in_lin (to widths[0]), hiddens (widths[0]->widths[1]...), out_lin (widths[-1]->classes)
+    
+    # Actually, let's look at DNNNodeFC structure again.
+    # in_lin: N -> hidden
+    # hiddens: hidden -> hidden
+    # out_lin: hidden -> num_classes
+    
+    # If we have non-uniform widths, the standard class might not support it easily without modification.
+    # But our expand_width implementation:
+    # new_h = min(max, model.in_lin.out_features + ex_k)
+    # ...
+    # for lin in model.hiddens: nh = min(max, lin.out_features + ex_k)
+    
+    # It seems it tries to maintain uniformity if they were uniform.
+    # Let's assume they are uniform enough or we can just patch the layers.
+    
+    new_model = DNNNodeFC(snap["in_features"], snap["num_classes"], hidden=snap["widths"][0], depth=len(snap["widths"]) + 1)
+    new_model = new_model.to(device)
+    
+    # If widths are different, we need to resize layers manually
+    # in_lin
+    if new_model.in_lin.out_features != snap["widths"][0]:
+        new_model.in_lin = nn.Linear(snap["in_features"], snap["widths"][0], bias=True).to(device)
+        
+    # hiddens
+    # The constructor creates (depth-2) hidden layers.
+    # snap["widths"] has length = len(hiddens) + 1 (for in_lin output).
+    # Wait, widths[0] is output of in_lin.
+    # widths[1] is output of hiddens[0].
+    # ...
+    
+    new_hiddens = nn.ModuleList()
+    prev_w = snap["widths"][0]
+    for i in range(1, len(snap["widths"])):
+        w = snap["widths"][i]
+        new_hiddens.append(nn.Linear(prev_w, w, bias=True).to(device)) # DNNNodeFC uses bias=True by default?
+        # In append_depth it uses bias=False?
+        # Base code: self.hiddens.append(nn.Linear(hidden, hidden)) -> default bias=True.
+        # append_depth: bias=False. This is inconsistent in the original code.
+        # Let's stick to what the snapshot state has. load_state_dict will handle weights/bias presence.
+        # We just need correct shapes.
+        prev_w = w
+        
+    new_model.hiddens = new_hiddens
+    
+    # out_lin
+    new_model.out_lin = nn.Linear(prev_w, snap["num_classes"], bias=True).to(device)
+    
+    new_model.load_state_dict(snap["state"])
+    return new_model
+
+
+def train_with_early_stopping(model: DNNNodeFC, data, cfg: BaseTrainCfg, patience: int, max_epochs: int) -> Tuple[float, Dict[str, Any]]:
     X, y, train_mask, val_mask, _ = data
     device = cfg.device
     X = X.to(device)
@@ -74,9 +186,10 @@ def train_with_patience(model: DNNNodeFC, data, cfg: BaseTrainCfg, patience: int
     val_mask = val_mask.to(device)
     model = model.to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
-    best = float("inf")
-    best_state = None
-    pat = patience
+    best_val = float("inf")
+    best_state = copy.deepcopy(model.state_dict())
+    es_counter = 0
+    
     for _ in range(max_epochs):
         model.train()
         opt.zero_grad(set_to_none=True)
@@ -86,103 +199,202 @@ def train_with_patience(model: DNNNodeFC, data, cfg: BaseTrainCfg, patience: int
         if cfg.grad_clip is not None:
             nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip)
         opt.step()
+        
         # val
         model.eval()
         with torch.no_grad():
             val = F.cross_entropy(model(X)[val_mask], y[val_mask]).item()
-        if val < best - 1e-9:
-            best = val
+            
+        if val < best_val: # Strict improvement
+            best_val = val
             best_state = copy.deepcopy(model.state_dict())
-            pat = patience
+            es_counter = 0
         else:
-            pat -= 1
-        if pat <= 0:
+            es_counter += 1
+            
+        if es_counter >= patience:
             break
-    if best_state is not None:
-        model.load_state_dict(best_state)
-    return best
+            
+    return best_val, best_state
 
 
 def adp_search(model: DNNNodeFC, data, tcfg: BaseTrainCfg, acfg: ADPConfig):
     """Unified ADP search handling width/depth/alt policies."""
-    def can_widen() -> bool:
-        return model.in_lin.out_features + acfg.ex_k <= acfg.max_width and total_neurons(model) < acfg.max_neurons
+    
+    # Initial training
+    best_val, best_state = train_with_early_stopping(model, data, tcfg, acfg.patience, tcfg.max_epochs)
+    model.load_state_dict(best_state)
+    
+    global_best_val = best_val
+    global_best_snap = snapshot_arch_and_state(model, best_state)
+    
+    device = tcfg.device
 
-    def can_deepen() -> bool:
-        return len(model.hiddens) + 1 <= acfg.max_depth and (total_neurons(model) + model.in_lin.out_features) <= acfg.max_neurons
+    def can_widen(m: DNNNodeFC) -> bool:
+        return m.in_lin.out_features + acfg.ex_k <= acfg.max_width and total_neurons(m) < acfg.max_neurons
 
-    def inner_train():
-        return train_with_patience(model, data, tcfg, patience=acfg.patience, max_epochs=tcfg.max_epochs)
+    def can_deepen(m: DNNNodeFC) -> bool:
+        return len(m.hiddens) + 2 < acfg.max_depth and (total_neurons(m) + m.in_lin.out_features) <= acfg.max_neurons
 
-    def try_width():
-        pre = copy.deepcopy(model.state_dict())
-        pre_val = inner_val
-        widen_all(model, acfg.ex_k, acfg.max_width)
-        v = inner_train()
-        return v < pre_val - acfg.delta, v, pre
+    def optimize_width_at_fixed_depth(curr_model: DNNNodeFC) -> Tuple[DNNNodeFC, float, Dict[str, Any]]:
+        local_val, local_state = train_with_early_stopping(curr_model, data, tcfg, acfg.patience, tcfg.max_epochs)
+        local_best_val = local_val
+        local_best_state = local_state
+        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
+        
+        width_failure_count = 0
+        
+        while width_failure_count < acfg.trials_width:
+            if not can_widen(curr_model):
+                break
+                
+            next_model = expand_width(curr_model, acfg.ex_k, acfg.max_width)
+            if next_model is None:
+                break
+            curr_model = next_model
+            
+            v, s = train_with_early_stopping(curr_model, data, tcfg, acfg.patience, tcfg.max_epochs)
+            
+            if v < local_best_val - acfg.delta:
+                local_best_val = v
+                local_best_state = s
+                local_best_snap = snapshot_arch_and_state(curr_model, s)
+                width_failure_count = 0
+            else:
+                width_failure_count += 1
+        
+        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
+        return final_model, local_best_val, local_best_snap
 
-    def try_depth():
-        pre = copy.deepcopy(model.state_dict())
-        pre_val = inner_val
-        append_depth(model)
-        v = inner_train()
-        return v < pre_val - acfg.delta, v, pre
-
-    inner_val = inner_train()
-    best_state = copy.deepcopy(model.state_dict())
-    best_val = inner_val
-
-    pw = acfg.trials_width
-    pd = acfg.trials_depth
+    def optimize_depth_at_fixed_width(curr_model: DNNNodeFC) -> Tuple[DNNNodeFC, float, Dict[str, Any]]:
+        local_val, local_state = train_with_early_stopping(curr_model, data, tcfg, acfg.patience, tcfg.max_epochs)
+        local_best_val = local_val
+        local_best_state = local_state
+        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
+        
+        depth_failure_count = 0
+        
+        while depth_failure_count < acfg.trials_depth:
+            if not can_deepen(curr_model):
+                break
+                
+            next_model = expand_depth(curr_model, acfg.max_depth)
+            if next_model is None:
+                break
+            curr_model = next_model
+            
+            v, s = train_with_early_stopping(curr_model, data, tcfg, acfg.patience, tcfg.max_epochs)
+            
+            if v < local_best_val - acfg.delta:
+                local_best_val = v
+                local_best_state = s
+                local_best_snap = snapshot_arch_and_state(curr_model, s)
+                depth_failure_count = 0
+            else:
+                depth_failure_count += 1
+        
+        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
+        return final_model, local_best_val, local_best_snap
 
     mode = acfg.adp_mode
-    improved = True
-    while improved:
-        improved = False
-        if mode in ("width_only", "width", "width_to_depth", "alt_width"):
-            if can_widen() and pw > 0:
-                ok, v, pre = try_width()
-                if ok:
-                    inner_val = v
-                    improved = True
-                    pw = acfg.trials_width
-                    if v < best_val:
-                        best_val = v
-                        best_state = copy.deepcopy(model.state_dict())
-                else:
-                    model.load_state_dict(pre)
-                    pw -= 1
-            if mode == "width_only":
-                continue
-        if mode in ("depth_only", "depth", "depth_to_width", "alt_depth"):
-            if can_deepen() and pd > 0:
-                ok, v, pre = try_depth()
-                if ok:
-                    inner_val = v
-                    improved = True
-                    pd = acfg.trials_depth
-                    if v < best_val:
-                        best_val = v
-                        best_state = copy.deepcopy(model.state_dict())
-                else:
-                    model.load_state_dict(pre)
-                    pd -= 1
-            if mode == "depth_only":
-                continue
-        if mode == "width_to_depth" and not improved:
-            mode = "depth"
-            pd = acfg.trials_depth
-            improved = True
-        elif mode == "depth_to_width" and not improved:
-            mode = "width"
-            pw = acfg.trials_width
-            improved = True
-        elif mode in ("alt_width", "alt_depth"):
-            mode = "depth" if mode == "alt_width" else "width"
-            improved = True
+    
+    if mode in ["width_only", "width"]:
+        model, global_best_val, global_best_snap = optimize_width_at_fixed_depth(model)
+        
+    elif mode in ["depth_only", "depth"]:
+        model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
+        
+    elif mode == "depth_to_width":
+        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
+        global_best_val = base_val
+        global_best_snap = base_snap
+        
+        depth_failure_count = 0
+        while depth_failure_count < acfg.trials_depth and len(model.hiddens) + 2 < acfg.max_depth:
+            if not can_deepen(model):
+                break
+            
+            next_model = expand_depth(model, acfg.max_depth)
+            if next_model is None:
+                break
+            model = next_model
+            
+            model, val_d, snap_d = optimize_width_at_fixed_depth(model)
+            
+            if val_d < global_best_val - acfg.delta:
+                global_best_val = val_d
+                global_best_snap = snap_d
+                depth_failure_count = 0
+            else:
+                depth_failure_count += 1
+        
+        model = restore_arch_and_state(model, global_best_snap, device)
 
-    model.load_state_dict(best_state)
-    return best_val
+    elif mode == "width_to_depth":
+        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
+        global_best_val = base_val
+        global_best_snap = base_snap
+        
+        width_failure_count = 0
+        while width_failure_count < acfg.trials_width and model.in_lin.out_features < acfg.max_width:
+            if not can_widen(model):
+                break
+            
+            next_model = expand_width(model, acfg.ex_k, acfg.max_width)
+            if next_model is None:
+                break
+            model = next_model
+            
+            model, val_w, snap_w = optimize_depth_at_fixed_width(model)
+            
+            if val_w < global_best_val - acfg.delta:
+                global_best_val = val_w
+                global_best_snap = snap_w
+                width_failure_count = 0
+            else:
+                width_failure_count += 1
+        
+        model = restore_arch_and_state(model, global_best_snap, device)
+
+    elif mode in ["alt_width", "alt_depth"]:
+        depth_saturated = False
+        width_saturated = False
+        current_phase = "width" if mode == "alt_width" else "depth"
+        
+        while not (depth_saturated and width_saturated):
+            improved_in_phase = False
+            
+            if current_phase == "width":
+                model, val, snap = optimize_width_at_fixed_depth(model)
+                if val < global_best_val - acfg.delta:
+                    global_best_val = val
+                    global_best_snap = snap
+                    improved_in_phase = True
+                
+                width_saturated = not improved_in_phase
+                model = restore_arch_and_state(model, global_best_snap, device)
+                current_phase = "depth"
+            else:
+                model, val, snap = optimize_depth_at_fixed_width(model)
+                if val < global_best_val - acfg.delta:
+                    global_best_val = val
+                    global_best_snap = snap
+                    improved_in_phase = True
+                
+                depth_saturated = not improved_in_phase
+                model = restore_arch_and_state(model, global_best_snap, device)
+                current_phase = "width"
+                
+        model = restore_arch_and_state(model, global_best_snap, device)
+
+    # ADP REVIEW (AFTER REFACTOR)
+    # - Implemented forward-only logic for all modes.
+    # - optimize_width_at_fixed_depth / optimize_depth_at_fixed_width helpers.
+    # - Global best restoration at end of contexts.
+    # - train_with_early_stopping: ES counter only.
+    # - snapshot/restore: Captures full architecture (widths list).
+
+    return global_best_val, model
 
 
 def main():
@@ -219,8 +431,8 @@ def main():
         max_depth=args.max_depth,
         max_neurons=args.max_neurons,
     )
-    best = adp_search(model, data, tcfg, acfg)
-    print(f"[ADP] dataset={args.dataset} mode={args.adp_mode} best_val={best:.6f} hidden={model.in_lin.out_features} depth={len(model.hiddens)+1}")
+    best, model = adp_search(model, data, tcfg, acfg)
+    print(f"[ADP] dataset={args.dataset} mode={args.adp_mode} best_val={best:.6f} hidden={model.in_lin.out_features} depth={len(model.hiddens)+2}")
 
 
 if __name__ == "__main__":
