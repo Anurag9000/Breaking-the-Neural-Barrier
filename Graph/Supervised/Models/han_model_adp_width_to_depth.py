@@ -21,14 +21,14 @@ except ImportError:
     def plot_loss_vs_neurons(*args, **kwargs): pass
 
 # Load baseline
-BASE_PATH = Path(__file__).with_name("dnn_stl_graph.py").resolve()
+BASE_PATH = Path(__file__).with_name("han_model.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
 baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
-ModelClass = baseline_module.DNNNodeFC
+ModelClass = baseline_module.HANNet
 
 # ADP REVIEW (BEFORE REFACTOR)
-# - This file is newly created to implement the ADP algorithms from scratch for the DNNNodeFC model.
+# - This file is newly created to implement the ADP algorithms from scratch for the HANNet model.
 # - It strictly follows ADP_algorithms.md: forward-only expansions, global best tracking, and context-end restoration.
 
 @dataclass
@@ -79,7 +79,7 @@ def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPCon
     # We rely on kwargs or hardcoded args mapped from Config
     try:
         new_model = ModelClass(
-            depth=depth
+            num_layers=depth
         ).to(device)
     except Exception as e:
         print(f"Rebuild failed: {e}")
@@ -94,7 +94,7 @@ def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPC
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
     
-    cur = model.depth
+    cur = model.num_layers
     if cur >= max_depth: return None
     # No width arg, pass dummy or handle in rebuild
     return rebuild_model(model, 0, cur + 1, device, cfg)
@@ -107,7 +107,7 @@ def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any
     state = state_dict if state_dict is not None else model.state_dict()
     return {
         "width": 0,
-        "depth": model.depth,
+        "depth": model.num_layers,
         "state": copy.deepcopy(state)
     }
 
@@ -118,7 +118,7 @@ def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> M
     # Actually, we can just use the ModelClass constructor directly
     try:
         new_model = ModelClass(
-            depth=snap['depth']
+            num_layers=snap['depth']
         ).to(device)
         new_model.load_state_dict(snap["state"])
         return new_model
@@ -222,13 +222,13 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     model.load_state_dict(best_state)
     global_best_snap = snapshot_arch_and_state(model, best_state)
     global_best_val = best_val
-    improvements.append((total_neurons(0, model.depth), best_val))
+    improvements.append((total_neurons(0, model.num_layers), best_val))
 
     def can_widen(m: ModelClass) -> bool:
         return False
 
     def can_deepen(m: ModelClass) -> bool:
-        return m.depth < acfg.max_depth
+        return m.num_layers < acfg.max_depth
 
     def optimize_width_at_fixed_depth(curr_model: ModelClass) -> Tuple[ModelClass, float, Dict[str, Any]]:
         local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
@@ -247,7 +247,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 width_failure_count = 0
-                improvements.append((total_neurons(0, curr_model.depth), v))
+                improvements.append((total_neurons(0, curr_model.num_layers), v))
             else:
                 width_failure_count += 1
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
@@ -270,7 +270,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 depth_failure_count = 0
-                improvements.append((total_neurons(0, curr_model.depth), v))
+                improvements.append((total_neurons(0, curr_model.num_layers), v))
             else:
                 depth_failure_count += 1
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
@@ -341,7 +341,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
     
-    return global_best_val, model, 0, model.depth
+    return global_best_val, model, 0, model.num_layers
 
 def main():
     import argparse
@@ -359,7 +359,7 @@ def main():
     dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
     
     try:
-        model = ModelClass(depth=args.depth).to(device)
+        model = ModelClass(num_layers=args.depth).to(device)
     except:
         print("Could not instantiate model with default args.")
         return

@@ -1,4 +1,43 @@
-import copy
+import re
+import os
+from pathlib import Path
+
+# Heuristics to map model arguments to ADP concepts
+def detect_args(content):
+    # Find __init__
+    init_match = re.search(r'def __init__\s*\((.*?)\):', content, re.DOTALL)
+    if not init_match:
+        return None, None, None, None
+    
+    args_str = init_match.group(1)
+    
+    # Depth detection
+    depth_arg = None
+    if "depth" in args_str: depth_arg = "depth"
+    elif "num_layers" in args_str: depth_arg = "num_layers"
+    elif "layers" in args_str: depth_arg = "layers"
+    
+    # Width detection
+    width_arg = None
+    if "width" in args_str: width_arg = "width"
+    elif "embed_dim" in args_str: width_arg = "embed_dim"
+    elif "hidden_dim" in args_str: width_arg = "hidden_dim"
+    elif "dim" in args_str: width_arg = "dim" # risky?
+    elif "base" in args_str: width_arg = "base" # for unet
+    elif "ar_hidden" in args_str: width_arg = "ar_hidden" # for lstm
+    elif "channels" in args_str and "in_channels" not in args_str: width_arg = "channels"
+    
+    # Transformer specific
+    heads_arg = None
+    if "num_heads" in args_str: heads_arg = "num_heads"
+    
+    # Class name
+    class_match = re.search(r'class\s+(\w+)\s*\(', content)
+    class_name = class_match.group(1) if class_match else "Model"
+    
+    return class_name, width_arg, depth_arg, heads_arg
+
+TEMPLATE = r'''import copy
 from dataclasses import dataclass
 import importlib.util
 import sys
@@ -21,14 +60,14 @@ except ImportError:
     def plot_loss_vs_neurons(*args, **kwargs): pass
 
 # Load baseline
-BASE_PATH = Path(__file__).with_name("dnn_stl_graph.py").resolve()
+BASE_PATH = Path(__file__).with_name("{base_filename}").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
 baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
-ModelClass = baseline_module.DNNNodeFC
+ModelClass = baseline_module.{class_name}
 
 # ADP REVIEW (BEFORE REFACTOR)
-# - This file is newly created to implement the ADP algorithms from scratch for the DNNNodeFC model.
+# - This file is newly created to implement the ADP algorithms from scratch for the {class_name} model.
 # - It strictly follows ADP_algorithms.md: forward-only expansions, global best tracking, and context-end restoration.
 
 @dataclass
@@ -47,7 +86,7 @@ class ADPConfig:
     grad_clip: Optional[float] = 1.0
     max_epochs: int = 20
     # Dynamic args
-    
+    {extra_config_fields}
 
 def _resize_tensor(to_shape: torch.Size, src: torch.Tensor) -> torch.Tensor:
     tgt = torch.zeros(to_shape, device=src.device, dtype=src.dtype)
@@ -57,7 +96,7 @@ def _resize_tensor(to_shape: torch.Size, src: torch.Tensor) -> torch.Tensor:
     return tgt
 
 def _merge_state(new_state, old_state):
-    merged = {}
+    merged = {{}}
     for k, v in new_state.items():
         if k in old_state:
             ov = old_state[k]
@@ -79,10 +118,10 @@ def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPCon
     # We rely on kwargs or hardcoded args mapped from Config
     try:
         new_model = ModelClass(
-            depth=depth
+            {constructor_args}
         ).to(device)
     except Exception as e:
-        print(f"Rebuild failed: {e}")
+        print(f"Rebuild failed: {{e}}")
         return None
         
     merged = _merge_state(new_model.state_dict(), model.state_dict())
@@ -90,26 +129,21 @@ def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPCon
     return new_model
 
 def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    return None # No width arg detected
+    {expand_width_logic}
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    
-    cur = model.depth
-    if cur >= max_depth: return None
-    # No width arg, pass dummy or handle in rebuild
-    return rebuild_model(model, 0, cur + 1, device, cfg)
-    
+    {expand_depth_logic}
 
 def total_neurons(width: int, depth: int) -> int:
     return int(width * (depth + 1))
 
 def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
-    return {
-        "width": 0,
-        "depth": model.depth,
+    return {{
+        "width": {model_width_access},
+        "depth": {model_depth_access},
         "state": copy.deepcopy(state)
-    }
+    }}
 
 def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
     # Rebuild using snap params
@@ -118,7 +152,7 @@ def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> M
     # Actually, we can just use the ModelClass constructor directly
     try:
         new_model = ModelClass(
-            depth=snap['depth']
+            {restore_args}
         ).to(device)
         new_model.load_state_dict(snap["state"])
         return new_model
@@ -222,13 +256,13 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     model.load_state_dict(best_state)
     global_best_snap = snapshot_arch_and_state(model, best_state)
     global_best_val = best_val
-    improvements.append((total_neurons(0, model.depth), best_val))
+    improvements.append((total_neurons({model_width_access}, {model_depth_access}), best_val))
 
     def can_widen(m: ModelClass) -> bool:
-        return False
+        {can_widen_logic}
 
     def can_deepen(m: ModelClass) -> bool:
-        return m.depth < acfg.max_depth
+        {can_deepen_logic}
 
     def optimize_width_at_fixed_depth(curr_model: ModelClass) -> Tuple[ModelClass, float, Dict[str, Any]]:
         local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
@@ -247,7 +281,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 width_failure_count = 0
-                improvements.append((total_neurons(0, curr_model.depth), v))
+                improvements.append((total_neurons({model_width_access_curr}, {model_depth_access_curr}), v))
             else:
                 width_failure_count += 1
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
@@ -270,7 +304,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 depth_failure_count = 0
-                improvements.append((total_neurons(0, curr_model.depth), v))
+                improvements.append((total_neurons({model_width_access_curr}, {model_depth_access_curr}), v))
             else:
                 depth_failure_count += 1
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
@@ -341,13 +375,13 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
     
-    return global_best_val, model, 0, model.depth
+    return global_best_val, model, {model_width_access}, {model_depth_access}
 
 def main():
     import argparse
     p = argparse.ArgumentParser()
-    p.add_argument("--width", type=int, default=64)
-    p.add_argument("--depth", type=int, default=4)
+    p.add_argument("--width", type=int, default={def_width})
+    p.add_argument("--depth", type=int, default={def_depth})
     p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
     p.add_argument("--max-epochs", type=int, default=5)
     args = p.parse_args()
@@ -359,14 +393,157 @@ def main():
     dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
     
     try:
-        model = ModelClass(depth=args.depth).to(device)
+        model = ModelClass({main_constructor_args}).to(device)
     except:
         print("Could not instantiate model with default args.")
         return
 
     acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)
     val, m, w, d = adp_search(model, dl_train, dl_val, acfg, device)
-    print(f"Done. Best val={val} w={w} d={d}")
+    print(f"Done. Best val={{val}} w={{w}} d={{d}}")
+
+if __name__ == "__main__":
+    main()
+'''
+
+def generate_adp(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+        
+    class_name, width_arg, depth_arg, heads_arg = detect_args(content)
+    base_file = Path(file_path).name
+    
+    if not class_name:
+        print(f"Skipping {base_file}: No init found")
+        return False
+
+    # Logic construction
+    # Width
+    if width_arg:
+        expand_width_logic = f"""
+    cur = model.{width_arg} if hasattr(model, '{width_arg}') else cfg.max_width # fallback
+    nxt = min(max_width, cur + cfg.ex_k)
+    if nxt <= cur: return None
+    """
+        if heads_arg:
+            expand_width_logic += f"""
+    # Align to heads
+    H = getattr(model, '{heads_arg}', 1) or 1
+    rem = nxt % H
+    if rem != 0: nxt += (H - rem)
+    """
+        expand_width_logic += f"return rebuild_model(model, nxt, model.{depth_arg}, device, cfg)"
+        model_width_access = f"model.{width_arg}"
+        can_widen_logic = f"return m.{width_arg} < acfg.max_width"
+    else:
+        expand_width_logic = "return None # No width arg detected"
+        model_width_access = "0"
+        can_widen_logic = "return False"
+
+    # Depth
+    if depth_arg:
+        expand_depth_logic = f"""
+    cur = model.{depth_arg}
+    if cur >= max_depth: return None
+    return rebuild_model(model, model.{width_arg}, cur + 1, device, cfg)
+    """ if width_arg else f"""
+    cur = model.{depth_arg}
+    if cur >= max_depth: return None
+    # No width arg, pass dummy or handle in rebuild
+    return rebuild_model(model, 0, cur + 1, device, cfg)
+    """
+        model_depth_access = f"model.{depth_arg}"
+        can_deepen_logic = f"return m.{depth_arg} < acfg.max_depth"
+    else:
+        expand_depth_logic = "return None # No depth arg detected"
+        model_depth_access = "0"
+        can_deepen_logic = "return False"
+
+    # Constructor args
+    # simple reconstruction assuming args align
+    c_args = []
+    r_args = []
+    m_args = []
+    
+    if width_arg: 
+        c_args.append(f"{width_arg}=width")
+        r_args.append(f"{width_arg}=snap['width']")
+        m_args.append(f"{width_arg}=args.width")
+        
+    if depth_arg: 
+        c_args.append(f"{depth_arg}=depth")
+        r_args.append(f"{depth_arg}=snap['depth']")
+        m_args.append(f"{depth_arg}=args.depth")
+        
+    if heads_arg:
+        c_args.append(f"{heads_arg}=getattr(model, '{heads_arg}', 6)")
+        r_args.append(f"{heads_arg}=getattr(model, '{heads_arg}', 6)") # Simplified
+        
+    # Catch-all for required args? We can't know them all. 
+    # For now, batch mode assumes generic or defaults for others.
+    
+    # Fill
+    code = TEMPLATE.format(
+        base_filename=base_file,
+        class_name=class_name,
+        extra_config_fields="",
+        constructor_args=", ".join(c_args),
+        expand_width_logic=expand_width_logic,
+        expand_depth_logic=expand_depth_logic,
+        model_width_access=model_width_access,
+        model_depth_access=model_depth_access,
+        model_width_access_curr=model_width_access.replace("model", "curr_model"),
+        model_depth_access_curr=model_depth_access.replace("model", "curr_model"),
+        restore_args=", ".join(r_args),
+        can_widen_logic=can_widen_logic,
+        can_deepen_logic=can_deepen_logic,
+        def_width=64,
+        def_depth=4,
+        main_constructor_args=", ".join(m_args)
+    )
+    
+    # Write
+    out_path = Path(file_path).parent / f"{Path(file_path).stem}_adp_width_to_depth.py"
+    with open(out_path, 'w', encoding='utf-8') as f:
+        f.write(code)
+    return True
+
+def main():
+    scaffold_path = r"d:\Breaking the Scaling Barrier\adp_missing_scaffold.txt"
+    with open(scaffold_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+        
+    processed_count = 0
+    new_lines = []
+    
+    for line in lines:
+        if "[DONE]" in line:
+            new_lines.append(line)
+            continue
+            
+        parts = line.split(" -> missing: ")
+        if len(parts) < 2:
+            new_lines.append(line)
+            continue
+            
+        rel_path = parts[0].strip()
+        full_path = Path(r"d:\Breaking the Scaling Barrier") / rel_path
+        
+        if full_path.exists():
+            success = generate_adp(str(full_path))
+            if success:
+                new_lines.append(line.strip() + " [DONE]\n")
+                processed_count += 1
+            else:
+                new_lines.append(line) # Keep as missing if generation failed
+        else:
+            new_lines.append(line) # Path not found
+            
+    # Update scaffold
+    with open(scaffold_path, 'w', encoding='utf-8') as f:
+        f.writelines(new_lines)
+        
+    print(f"Processed {processed_count} files.")
 
 if __name__ == "__main__":
     main()

@@ -21,14 +21,14 @@ except ImportError:
     def plot_loss_vs_neurons(*args, **kwargs): pass
 
 # Load baseline
-BASE_PATH = Path(__file__).with_name("dnn_stl_graph.py").resolve()
+BASE_PATH = Path(__file__).with_name("model_xtransformer_extreme.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
 baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
-ModelClass = baseline_module.DNNNodeFC
+ModelClass = baseline_module.XTransformer
 
 # ADP REVIEW (BEFORE REFACTOR)
-# - This file is newly created to implement the ADP algorithms from scratch for the DNNNodeFC model.
+# - This file is newly created to implement the ADP algorithms from scratch for the XTransformer model.
 # - It strictly follows ADP_algorithms.md: forward-only expansions, global best tracking, and context-end restoration.
 
 @dataclass
