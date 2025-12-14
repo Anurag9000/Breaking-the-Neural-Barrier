@@ -35,7 +35,7 @@ ModelClass = baseline_module.DeiT
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 10
+    patience: int = 100_000_000
     trials_width: int = 2
     trials_depth: int = 2
     ex_k: int = 16
@@ -45,7 +45,7 @@ class ADPConfig:
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: Optional[float] = 1.0
-    max_epochs: int = 20
+    max_epochs: int = 100_000_000
     # Dynamic args
     
 
@@ -344,7 +344,7 @@ def main():
     p.add_argument("--width", type=int, default=64)
     p.add_argument("--depth", type=int, default=4)
     p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
-    p.add_argument("--max-epochs", type=int, default=5)
+    p.add_argument("--max-epochs", type=int, default=100000000)
     args = p.parse_args()
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

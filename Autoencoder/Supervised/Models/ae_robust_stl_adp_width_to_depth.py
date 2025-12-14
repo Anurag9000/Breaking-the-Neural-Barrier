@@ -37,7 +37,7 @@ ae_robust_total_neurons = baseline_module.ae_robust_total_neurons  # type: ignor
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 10
+    patience: int = 100_000_000
     trials_width: int = 2
     trials_depth: int = 2
     ex_k: int = 16
@@ -47,7 +47,7 @@ class ADPConfig:
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
-    max_epochs: int = 20
+    max_epochs: int = 100_000_000
     huber_delta: float = 1.0
     pool_after: List[int] = None
 
@@ -369,14 +369,14 @@ def main():
     p.add_argument("--adp-mode", type=str, default="width_to_depth",
                    choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth","width","depth"])
     p.add_argument("--delta", type=float, default=1e-3)
-    p.add_argument("--patience", type=int, default=10)
+    p.add_argument("--patience", type=int, default=100000000)
     p.add_argument("--trials-width", type=int, default=2)
     p.add_argument("--trials-depth", type=int, default=2)
     p.add_argument("--ex-k", type=int, default=16)
     p.add_argument("--max-width", type=int, default=512)
     p.add_argument("--max-depth", type=int, default=16)
     p.add_argument("--max-neurons", type=int, default=5_000_000)
-    p.add_argument("--max-epochs", type=int, default=20)
+    p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--huber-delta", type=float, default=1.0)
     p.add_argument("--batch-size", type=int, default=128)
     p.add_argument("--results-dir", type=Path, default=Path("results_adp_robust_stl"))

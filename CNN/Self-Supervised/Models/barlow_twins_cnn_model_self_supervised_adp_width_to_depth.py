@@ -36,7 +36,7 @@ ModelClass = baseline_module.ConvBNReLU
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 10
+    patience: int = 100_000_000
     trials_width: int = 2
     trials_depth: int = 2
     ex_k: int = 16
@@ -46,7 +46,7 @@ class ADPConfig:
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: Optional[float] = 1.0
-    max_epochs: int = 20
+    max_epochs: int = 100_000_000
     # Dynamic args
     
 
@@ -76,25 +76,44 @@ def _merge_state(new_state, old_state):
     return merged
 
 def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPConfig) -> ModelClass:
-    # Re-instantiate with new dim/depth
-    # We rely on kwargs or hardcoded args mapped from Config
+    def get_attr(obj, candidates, default):
+        for c in candidates:
+            try:
+                val = obj
+                for part in c.split('.'): val = getattr(val, part)
+                return val
+            except: continue
+        return default
     try:
-        new_model = ModelClass(
-            
-        ).to(device)
+        kwargs = {}
+        kwargs['in_ch'] = get_attr(model, ['in_ch'], None)
+        kwargs['out_ch'] = get_attr(model, ['out_ch'], None)
+        kwargs['k'] = get_attr(model, ['k'], None)
+        kwargs['s'] = get_attr(model, ['s'], None)
+        kwargs['p'] = get_attr(model, ['p'], None)
+        new_model = ModelClass(**kwargs).to(device)
     except Exception as e:
-        print(f"Rebuild failed: {e}")
+        print(f'Rebuild failed: {e}')
         return None
+    merged = _merge_state(new_model.state_dict(), model.state_dict())
+    new_model.load_state_dict(merged, strict=False)
+    return new_model
         
     merged = _merge_state(new_model.state_dict(), model.state_dict())
     new_model.load_state_dict(merged, strict=False)
     return new_model
 
 def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    return None # No width arg detected
+    cur_w = width = getattr(model, 'None', 0) if 'None' != 'None' else getattr(model.cfg, 'width', 0) if hasattr(model, 'cfg') else 0
+    new_w = min(cur_w + ex_k, max_width)
+    if new_w == cur_w: return None
+    return rebuild_model(model, new_w, getattr(model, 'None', 1) if 'None' != 'None' else 1, device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    return None # No depth arg detected
+    cur_d = getattr(model, 'None', 1) if 'None' != 'None' else getattr(model.cfg, 'depth', 1) if hasattr(model, 'cfg') else 1
+    new_d = min(cur_d + 1, max_depth)
+    if new_d == cur_d: return None
+    return rebuild_model(model, getattr(model, 'None', 64) if 'None' != 'None' else 64, new_d, device, cfg)
 
 def total_neurons(width: int, depth: int) -> int:
     return int(width * (depth + 1))
@@ -102,10 +121,18 @@ def total_neurons(width: int, depth: int) -> int:
 def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
     return {
-        "width": 0,
-        "depth": 0,
+        "width": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "depth": getattr(model, 'None', 0) if 'None' != 'None' else 0,
         "state": copy.deepcopy(state)
     }
+
+def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
+    # Basic restore relying on rebuild
+    # We use CURRENT model's other params (implicitly handled by rebuild if we pass them)
+    # But restore actually needs to recreate the model strictly from snapshot metadata.
+    # Our simple rebuild might default to model attrs.
+    # For now, we reuse rebuild_model with snap width/depth.
+    return rebuild_model(model, snap['width'], snap['depth'], device, None)
 
 def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
     # Rebuild using snap params
@@ -220,8 +247,8 @@ def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConf
             logger.log_epoch_stats({
                 "epoch": len(history),
                 "width": 0,
-                "depth": 0,
-                "neurons": total_neurons(0, 0),
+                "depth": 0
+                "neurons": total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)),
                 "val_loss": val,
                 "best_val": best_val,
                 "es_counter": es_counter,
@@ -242,7 +269,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     model.load_state_dict(best_state)
     global_best_snap = snapshot_arch_and_state(model, best_state)
     global_best_val = best_val
-    improvements.append((total_neurons(0, 0), best_val))
+    improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), best_val))
 
     def can_widen(m: ModelClass) -> bool:
         return False
@@ -267,7 +294,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 width_failure_count = 0
-                improvements.append((total_neurons(0, 0), v))
+                improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), v))
                 logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: New best: {v:.6f}")
                 if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
                 if log_neurons: plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
@@ -294,7 +321,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 depth_failure_count = 0
-                improvements.append((total_neurons(0, 0), v))
+                improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), v))
                 logger.log_console(f"[DEPTH OPT] ✓ IMPROVEMENT: New best: {v:.6f}")
                 if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
                 if log_neurons: plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
@@ -377,7 +404,7 @@ def main():
     p.add_argument("--width", type=int, default=64)
     p.add_argument("--depth", type=int, default=4)
     p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
-    p.add_argument("--max-epochs", type=int, default=5)
+    p.add_argument("--max-epochs", type=int, default=100000000)
     args = p.parse_args()
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

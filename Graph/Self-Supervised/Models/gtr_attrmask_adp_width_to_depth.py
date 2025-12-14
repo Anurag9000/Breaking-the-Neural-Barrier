@@ -39,7 +39,7 @@ ModelClass = baseline_module.GTR
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 10
+    patience: int = 100_000_000
     trials_width: int = 2
     trials_depth: int = 2
     ex_k: int = 16
@@ -49,7 +49,7 @@ class ADPConfig:
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: Optional[float] = 1.0
-    max_epochs: int = 20
+    max_epochs: int = 100_000_000
     # Dynamic args
     
 
@@ -79,15 +79,28 @@ def _merge_state(new_state, old_state):
     return merged
 
 def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPConfig) -> ModelClass:
-    # Re-instantiate with new dim/depth
-    # We rely on kwargs or hardcoded args mapped from Config
+    def get_attr(obj, candidates, default):
+        for c in candidates:
+            try:
+                val = obj
+                for part in c.split('.'): val = getattr(val, part)
+                return val
+            except: continue
+        return default
     try:
-        new_model = ModelClass(
-            dim=width, layers=depth
-        ).to(device)
+        kwargs = {}
+        kwargs['in_dim'] = get_attr(model, ['in_dim'], 1)
+        kwargs['hid'] = get_attr(model, ['hid'], None)
+        kwargs['layers'] = depth
+        kwargs['heads'] = get_attr(model, ['heads'], None)
+        kwargs['dropout'] = get_attr(model, ['dropout'], None)
+        new_model = ModelClass(**kwargs).to(device)
     except Exception as e:
-        print(f"Rebuild failed: {e}")
+        print(f'Rebuild failed: {e}')
         return None
+    merged = _merge_state(new_model.state_dict(), model.state_dict())
+    new_model.load_state_dict(merged, strict=False)
+    return new_model
         
     merged = _merge_state(new_model.state_dict(), model.state_dict())
     new_model.load_state_dict(merged, strict=False)
@@ -113,10 +126,18 @@ def total_neurons(width: int, depth: int) -> int:
 def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
     return {
-        "width": model.dim,
-        "depth": model.layers,
+        "width": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "depth": getattr(model, 'layers', 0) if 'layers' != 'None' else 0,
         "state": copy.deepcopy(state)
     }
+
+def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
+    # Basic restore relying on rebuild
+    # We use CURRENT model's other params (implicitly handled by rebuild if we pass them)
+    # But restore actually needs to recreate the model strictly from snapshot metadata.
+    # Our simple rebuild might default to model attrs.
+    # For now, we reuse rebuild_model with snap width/depth.
+    return rebuild_model(model, snap['width'], snap['depth'], device, None)
 
 def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
     # Rebuild using snap params
@@ -377,7 +398,7 @@ def main():
     p.add_argument("--width", type=int, default=64)
     p.add_argument("--depth", type=int, default=4)
     p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
-    p.add_argument("--max-epochs", type=int, default=5)
+    p.add_argument("--max-epochs", type=int, default=100000000)
     args = p.parse_args()
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

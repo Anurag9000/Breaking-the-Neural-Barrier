@@ -33,7 +33,7 @@ _spec.loader.exec_module(baseline_module)
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 10
+    patience: int = 100_000_000
     trials_width: int = 2
     trials_depth: int = 2
     ex_k: int = 16
@@ -43,7 +43,7 @@ class ADPConfig:
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
-    max_epochs: int = 20
+    max_epochs: int = 100_000_000
     grid_size: int = 3
     num_permutations: int = 30
 
@@ -534,14 +534,14 @@ def main():
         choices=["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth", "width", "depth"],
     )
     p.add_argument("--delta", type=float, default=1e-3)
-    p.add_argument("--patience", type=int, default=10)
+    p.add_argument("--patience", type=int, default=100000000)
     p.add_argument("--trials-width", type=int, default=2)
     p.add_argument("--trials-depth", type=int, default=2)
     p.add_argument("--ex-k", type=int, default=16)
     p.add_argument("--max-width", type=int, default=256)
     p.add_argument("--max-depth", type=int, default=5)
     p.add_argument("--max-neurons", type=int, default=5_000_000)
-    p.add_argument("--max-epochs", type=int, default=20)
+    p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--batch-size", type=int, default=128)
     args = p.parse_args()
 

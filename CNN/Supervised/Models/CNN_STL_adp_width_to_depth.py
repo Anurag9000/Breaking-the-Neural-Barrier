@@ -1,6 +1,10 @@
 import copy
 from dataclasses import dataclass
 import importlib.util
+
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader, random_split
+import torch
 import sys
 from pathlib import Path
 from typing import List, Optional, Tuple, Dict, Any
@@ -26,7 +30,7 @@ BASE_PATH = Path(__file__).with_name("CNN_STL.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
 baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
-ModelClass = baseline_module.ConvBNReLU
+ModelClass = baseline_module.ConvNetSTL
 
 # ADP REVIEW (BEFORE REFACTOR)
 # - This file is newly created to implement the ADP algorithms from scratch for the ConvBNReLU model.
@@ -36,7 +40,7 @@ ModelClass = baseline_module.ConvBNReLU
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 10
+    patience: int = 100_000_000
     trials_width: int = 2
     trials_depth: int = 2
     ex_k: int = 16
@@ -46,7 +50,7 @@ class ADPConfig:
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: Optional[float] = 1.0
-    max_epochs: int = 20
+    max_epochs: int = 100_000_000
     # Dynamic args
     
 
@@ -76,11 +80,13 @@ def _merge_state(new_state, old_state):
     return merged
 
 def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPConfig) -> ModelClass:
-    # Re-instantiate with new dim/depth
-    # We rely on kwargs or hardcoded args mapped from Config
     try:
         new_model = ModelClass(
-            
+            input_channels=model.input_channels,
+            num_classes=model.num_classes,
+            width=width,
+            depth=depth,
+            pooling_indices=model.pooling_indices
         ).to(device)
     except Exception as e:
         print(f"Rebuild failed: {e}")
@@ -91,10 +97,15 @@ def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPCon
     return new_model
 
 def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    return None # No width arg detected
+    new_w = min(model.width + ex_k, max_width)
+    if new_w == model.width and ex_k > 0: return None
+    if new_w > max_width: return None
+    return rebuild_model(model, new_w, model.depth, device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    return None # No depth arg detected
+    new_d = min(model.depth + 1, max_depth)
+    if new_d == model.depth: return None
+    return rebuild_model(model, model.width, new_d, device, cfg)
 
 def total_neurons(width: int, depth: int) -> int:
     return int(width * (depth + 1))
@@ -102,24 +113,27 @@ def total_neurons(width: int, depth: int) -> int:
 def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
     return {
-        "width": 0,
-        "depth": 0,
+        "width": model.width,
+        "depth": model.depth,
+        "pooling_indices": model.pooling_indices,
+        "input_channels": model.input_channels,
+        "num_classes": model.num_classes,
         "state": copy.deepcopy(state)
     }
 
 def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
-    # Rebuild using snap params
-    # We need a way to pass 'cfg' or context. 
-    # For now we create a dummy cfg with snap values or rely on defaults from main
-    # Actually, we can just use the ModelClass constructor directly
     try:
         new_model = ModelClass(
-            
+            input_channels=snap.get("input_channels", 3),
+            num_classes=snap.get("num_classes", 10),
+            width=snap["width"],
+            depth=snap["depth"],
+            pooling_indices=snap.get("pooling_indices", ())
         ).to(device)
         new_model.load_state_dict(snap["state"])
         return new_model
     except Exception:
-        return model # Fallback
+        return model
 
 def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, history: list, logger: Optional[ContinuousLogger] = None, verbose: bool = True) -> Tuple[float, Dict[str, Any]]:
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
@@ -219,9 +233,9 @@ def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConf
         if logger:
             logger.log_epoch_stats({
                 "epoch": len(history),
-                "width": 0, # not tracked in this scaffold
-                "depth": 0,
-                "neurons": total_neurons(0, 0),
+                "width": model.width,
+                "depth": model.depth,
+                "neurons": total_neurons(model.width, model.depth),
                 "val_loss": val,
                 "best_val": best_val,
                 "es_counter": es_counter,
@@ -242,13 +256,13 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     model.load_state_dict(best_state)
     global_best_snap = snapshot_arch_and_state(model, best_state)
     global_best_val = best_val
-    improvements.append((total_neurons(0, 0), best_val))
+    improvements.append((total_neurons(model.width, model.depth), best_val))
 
     def can_widen(m: ModelClass) -> bool:
-        return False
+        return (m.width + acfg.ex_k <= acfg.max_width) and (total_neurons(m.width + acfg.ex_k, m.depth) <= acfg.max_neurons)
 
     def can_deepen(m: ModelClass) -> bool:
-        return False
+        return (m.depth + 1 <= acfg.max_depth) and (total_neurons(m.width, m.depth + 1) <= acfg.max_neurons)
 
     def optimize_width_at_fixed_depth(curr_model: ModelClass) -> Tuple[ModelClass, float, Dict[str, Any]]:
         local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history, logger=logger)
@@ -267,7 +281,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 width_failure_count = 0
-                improvements.append((total_neurons(0, 0), v))
+                improvements.append((total_neurons(curr_model.width, curr_model.depth), v))
                 logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: New best: {v:.6f}")
                 if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
                 if log_neurons: plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
@@ -369,7 +383,20 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
     
+    
+    if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
+    
     return global_best_val, model, 0, 0
+
+def make_loaders(batch_size: int = 128, val_split: float = 0.1, num_workers: int = 0):
+    tf = transforms.Compose([transforms.ToTensor()])
+    ds = datasets.CIFAR10(root="./data", train=True, download=True, transform=tf)
+    n_val = int(len(ds) * val_split)
+    n_train = len(ds) - n_val
+    train_ds, val_ds = random_split(ds, [n_train, n_val])
+    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+    return dl_train, dl_val
 
 def main():
     import argparse
@@ -377,27 +404,59 @@ def main():
     p.add_argument("--width", type=int, default=64)
     p.add_argument("--depth", type=int, default=4)
     p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
-    p.add_argument("--max-epochs", type=int, default=5)
+    p.add_argument("--max-epochs", type=int, default=100000000)
+    p.add_argument("--results-dir", type=str, default="results_adp_cnn_stl")
+    
+    # ADP Args
+    p.add_argument("--delta", type=float, default=1e-3)
+    p.add_argument("--patience", type=int, default=100000000)
+    p.add_argument("--trials-width", type=int, default=2)
+    p.add_argument("--trials-depth", type=int, default=2)
+    p.add_argument("--ex-k", type=int, default=16)
+    p.add_argument("--max-width", type=int, default=512)
+    p.add_argument("--max-depth", type=int, default=16)
+    p.add_argument("--max-neurons", type=int, default=5_000_000)
+    p.add_argument("--lr", type=float, default=1e-3)
+    p.add_argument("--weight-decay", type=float, default=1e-4)
+    p.add_argument("--grad-clip", type=float, default=1.0)
+    p.add_argument("--batch-size", type=int, default=128)
+    
+    # Plotting flags
+    p.add_argument("--plot-loss", action="store_true")
+    p.add_argument("--plot-neurons", action="store_true")
+
     args = p.parse_args()
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    # Real data
+    dl_train, dl_val = make_loaders(batch_size=args.batch_size)
     
-    try:
-        model = ModelClass().to(device)
-    except:
-        print("Could not instantiate model with default args.")
-        return
+    model = ModelClass(input_channels=3, num_classes=10, width=args.width, depth=args.depth).to(device)
 
-    acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)
+    acfg = ADPConfig(
+        adp_mode=args.adp_mode, 
+        max_epochs=args.max_epochs,
+        delta=args.delta,
+        patience=args.patience,
+        trials_width=args.trials_width,
+        trials_depth=args.trials_depth,
+        ex_k=args.ex_k,
+        max_width=args.max_width,
+        max_depth=args.max_depth,
+        max_neurons=args.max_neurons,
+        lr=args.lr,
+        weight_decay=args.weight_decay,
+        grad_clip=args.grad_clip
+    )
+    
+    results_dir = Path(args.results_dir)
+    results_dir.mkdir(parents=True, exist_ok=True)
     
     # Initialize Logger
-    logger = ContinuousLogger(Path("results_adp_cnn_stl"), "cnn_stl", args.adp_mode)
+    logger = ContinuousLogger(results_dir, "cnn_stl", args.adp_mode)
     
-    val, m, w, d = adp_search(model, dl_train, dl_val, acfg, device, logger=logger)
+    val, m, w, d = adp_search(model, dl_train, dl_val, acfg, device, logger=logger, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=results_dir)
     logger.log_console(f"Done. Best val={val} w={w} d={d}")
     logger.close()
 
