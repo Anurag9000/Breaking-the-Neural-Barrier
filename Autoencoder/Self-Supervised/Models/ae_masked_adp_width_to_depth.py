@@ -34,7 +34,7 @@ ConvBNReLU = baseline_module.ConvBNReLU  # type: ignore
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 100_000_000
+    patience: int = 20
     trials_width: int = 2
     trials_depth: int = 2
     ex_k: int = 16
@@ -343,7 +343,7 @@ def main():
     p.add_argument("--adp-mode", type=str, default="width_to_depth",
                    choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth","width","depth"])
     p.add_argument("--delta", type=float, default=1e-3)
-    p.add_argument("--patience", type=int, default=100000000)
+    p.add_argument("--patience", type=int, default=20)
     p.add_argument("--trials-width", type=int, default=2)
     p.add_argument("--trials-depth", type=int, default=2)
     p.add_argument("--ex-k", type=int, default=16)

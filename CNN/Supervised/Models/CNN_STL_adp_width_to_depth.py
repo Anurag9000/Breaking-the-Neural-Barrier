@@ -40,7 +40,7 @@ ModelClass = baseline_module.ConvNetSTL
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 100_000_000
+    patience: int = 20
     trials_width: int = 2
     trials_depth: int = 2
     ex_k: int = 16
@@ -409,7 +409,7 @@ def main():
     
     # ADP Args
     p.add_argument("--delta", type=float, default=1e-3)
-    p.add_argument("--patience", type=int, default=100000000)
+    p.add_argument("--patience", type=int, default=20)
     p.add_argument("--trials-width", type=int, default=2)
     p.add_argument("--trials-depth", type=int, default=2)
     p.add_argument("--ex-k", type=int, default=16)

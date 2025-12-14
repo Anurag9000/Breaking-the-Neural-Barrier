@@ -35,7 +35,7 @@ ModelClass = baseline_module.SEModule
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 100_000_000
+    patience: int = 20
     trials_width: int = 2
     trials_depth: int = 2
     ex_k: int = 16
