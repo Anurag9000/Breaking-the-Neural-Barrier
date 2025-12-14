@@ -1,4 +1,8 @@
 import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from core.sde_core import (
@@ -34,6 +38,11 @@ opt = optim.AdamW(net.parameters(), lr=2e-4)
 
 
 # ====== Training Loop ======
+
+# Init Logger
+
+logger = ContinuousLogger(Path('results_run_pf_ode_supervised'), 'run_pf_ode_supervised', 'train')
+
 for epoch in range(5):
     for x in loader:
         x = x.to(device)
@@ -44,7 +53,28 @@ for epoch in range(5):
         loss.backward()
         opt.step()
 
-    print(f"Epoch {epoch}: loss {loss.item():.4f}")
+    # Log
+
+
+msg = f"Epoch {epoch}: loss {loss.item():.4f}"
+
+
+    logger.log_console(msg)
+
+
+    logger.log_epoch_stats({
+
+
+        "epoch": epoch,
+
+
+        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+
+        "train_loss": loss.item() if 'loss' in locals() else 0
+
+
+    })
 
 
 # ====== Deterministic Sampling Demo ======

@@ -1,7 +1,10 @@
 import argparse
 from pathlib import Path
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 from model_longformer_encoder import LongformerEncoder
@@ -95,6 +98,11 @@ def main():
 
     crit = nn.CrossEntropyLoss(); opt = torch.optim.AdamW(model.parameters(), lr=args.lr)
     best, bad = 0.0, 0
+
+    # Init Logger
+
+    logger = ContinuousLogger(Path('results_run_longformer_text'), 'run_longformer_text', 'train')
+
     for epoch in range(1, args.epochs+1):
         model.train()
         for ids, labels in train_loader:
@@ -102,7 +110,21 @@ def main():
             opt.zero_grad(); logits = model(ids); loss = crit(logits, labels); loss.backward();
             nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
         acc = evaluate(model, val_loader, args.device)
-        print(f"Epoch {epoch}: val_acc={acc:.4f}")
+        # Log
+
+        msg = f"Epoch {epoch}: val_acc={acc:.4f}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if acc > best + 1e-6:
             best = acc; bad = 0; torch.save({'model': model.state_dict(), 'vocab': vocab}, 'LongformerEncoder_best.pth')
         else:

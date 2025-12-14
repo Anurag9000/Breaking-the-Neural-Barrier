@@ -1,7 +1,10 @@
 import argparse, math, random
 from pathlib import Path
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 from model_t5_style import T5Style
@@ -95,6 +98,11 @@ def main():
     crit = nn.CrossEntropyLoss(ignore_index=tgt_vocab['<pad>']); opt = torch.optim.AdamW(model.parameters(), lr=args.lr)
 
     best, bad=1e9,0
+
+    # Init Logger
+
+    logger = ContinuousLogger(Path('results_run_t_5_style_seq_2_seq'), 'run_t_5_style_seq_2_seq', 'train')
+
     for epoch in range(1, args.epochs+1):
         model.train()
         for src, sp, tgt_in, tp, tgt_out in train_loader:
@@ -103,7 +111,21 @@ def main():
             nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
         val = evaluate(model, val_loader, crit, args.device, tgt_vocab['<pad>'])
         ppl = math.exp(val)
-        print(f"Epoch {epoch}: val_ppl={ppl:.3f}")
+        # Log
+
+        msg = f"Epoch {epoch}: val_ppl={ppl:.3f}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if val + 1e-6 < best:
             best=val; bad=0; torch.save({'model': model.state_dict(),'src_vocab':src_vocab,'tgt_vocab':tgt_vocab}, 'T5Style_best.pth')
         else:

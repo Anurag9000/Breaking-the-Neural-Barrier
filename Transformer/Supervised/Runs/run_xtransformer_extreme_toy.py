@@ -1,6 +1,9 @@
 import argparse
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import DataLoader, Dataset
 
 from model_xtransformer_extreme import XTransformer
@@ -48,6 +51,11 @@ def main():
     crit = nn.BCEWithLogitsLoss()
 
     best, bad, patience = 0.0, 0, 4
+
+    # Init Logger
+
+    logger = ContinuousLogger(Path('results_run_xtransformer_extreme_toy'), 'run_xtransformer_extreme_toy', 'train')
+
     for epoch in range(1, args.epochs+1):
         model.train()
         for ids,y in train:
@@ -55,7 +63,21 @@ def main():
             opt.zero_grad(); logits=model(ids); loss=crit(logits,y); loss.backward();
             nn.utils.clip_grad_norm_(model.parameters(),1.0); opt.step()
         p3 = evaluate(model, val, args.device)
-        print(f"Epoch {epoch}: P@3={p3:.4f}")
+        # Log
+
+        msg = f"Epoch {epoch}: P@3={p3:.4f}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if p3 > best + 1e-6:
             best=p3; bad=0; torch.save({'model': model.state_dict()}, 'XTransformerExtreme_best.pth')
         else:

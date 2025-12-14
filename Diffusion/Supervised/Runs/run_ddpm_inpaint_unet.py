@@ -3,7 +3,10 @@ import json
 from dataclasses import dataclass
 
 import torch
-import torch.nn.functional as F
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn.functional as F
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms, utils
 
@@ -123,6 +126,13 @@ def train(cfg: TrainConfig):
     patience = 0
     hist = []
 
+
+    # Init Logger
+
+
+    logger = ContinuousLogger(Path('results_run_ddpm_inpaint_unet'), 'run_ddpm_inpaint_unet', 'train')
+
+
     for epoch in range(cfg.max_epochs):
         model.train()
         for batch in train_loader:
@@ -141,7 +151,21 @@ def train(cfg: TrainConfig):
             torch.save({"model": model.state_dict(), "betas": betas.cpu()}, os.path.join(cfg.out_dir, "best.pth"))
         else:
             patience += 1
-        print(f"Epoch {epoch} | val {val:.4f} | best {best['val']:.4f}@{best['epoch']}")
+        # Log
+
+        msg = f"Epoch {epoch} | val {val:.4f} | best {best['val']:.4f}@{best['epoch']}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if patience >= cfg.early_patience:
             break
 

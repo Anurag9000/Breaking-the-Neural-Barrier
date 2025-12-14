@@ -1,6 +1,10 @@
 import os, json, argparse, random
 import numpy as np
 import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
 import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
@@ -93,6 +97,13 @@ def train(cfg: Config):
     best_val = float('inf'); best_state=None; patience = cfg.patience
     tr_curve=[]; va_curve=[]
 
+
+    # Init Logger
+
+
+    logger = ContinuousLogger(Path('results_run_vicreg_vit'), 'run_vicreg_vit', 'train')
+
+
     for epoch in range(cfg.epochs):
         model.train(); tr_loss=0
         for imgs, _ in train_loader:
@@ -112,7 +123,28 @@ def train(cfg: Config):
                 va_loss += loss.item() * imgs.size(0)
         va_loss /= len(val_loader.dataset); va_curve.append(va_loss)
 
-        print(f"Epoch {epoch+1}/{cfg.epochs} | train {tr_loss:.4f} | val {va_loss:.4f}")
+        # Log
+
+
+        msg = f"Epoch {epoch+1}/{cfg.epochs} | train {tr_loss:.4f} | val {va_loss:.4f}"
+
+
+        logger.log_console(msg)
+
+
+        logger.log_epoch_stats({
+
+
+            "epoch": epoch,
+
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+
+        })
         if va_loss < best_val - 1e-4:
             best_val = va_loss; best_state = {k: v.detach().cpu() for k,v in model.state_dict().items()}; patience = cfg.patience
         else:

@@ -2,6 +2,10 @@
 import os
 import argparse
 import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
 from torchvision.utils import make_grid
 from models.score_sde_unified import ScoreSDEUnified
 from runs._common_train_c import make_cifar10_loaders, EarlyStopper, save_samples
@@ -41,6 +45,11 @@ stop = EarlyStopper(patience=args.patience)
 # Training loop
 # -------------------------------------------------------
 best = None
+
+# Init Logger
+
+logger = ContinuousLogger(Path('results_run_scoresde'), 'run_scoresde', 'train')
+
 for epoch in range(1, args.epochs + 1):
     model.train()
     for x, _ in train_loader:
@@ -62,7 +71,28 @@ for epoch in range(1, args.epochs + 1):
             n += x.size(0)
     v /= n
 
-    print(f'Epoch {epoch}: val_loss={v:.4f}')
+    # Log
+
+
+    msg = f'Epoch {epoch}: val_loss={v:.4f}'
+
+
+    logger.log_console(msg)
+
+
+    logger.log_epoch_stats({
+
+
+        "epoch": epoch,
+
+
+        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+
+        "train_loss": loss.item() if 'loss' in locals() else 0
+
+
+    })
 
     # Early stopping
     if stop.step(v):

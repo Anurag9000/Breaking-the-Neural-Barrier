@@ -5,7 +5,10 @@ from typing import List, Tuple
 import random
 
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 from lstm_cls_vanilla import LSTMClassifier, LSTMClassifierConfig
@@ -183,12 +186,31 @@ def main():
     stopper = EarlyStopper(patience=args.patience)
 
     best_val_acc = 0.0
+
+    # Init Logger
+
+    logger = ContinuousLogger(Path('results_run_lstm_cls_vanilla'), 'run_lstm_cls_vanilla', 'train')
+
     for epoch in range(1, args.max_epochs + 1):
         train_loss = train_one_epoch(model, train_loader, optimizer, criterion, args.device)
         val_loss, val_acc = evaluate(model, val_loader, criterion, args.device)
         stopper.step(val_loss, model)
         best_val_acc = max(best_val_acc, val_acc)
-        print(f"Epoch {epoch:03d} | train_loss={train_loss:.4f} | val_loss={val_loss:.4f} | val_acc={val_acc:.4f}")
+        # Log
+
+        msg = f"Epoch {epoch:03d} | train_loss={train_loss:.4f} | val_loss={val_loss:.4f} | val_acc={val_acc:.4f}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if stopper.should_stop():
             print("Early stopping triggered.")
             break

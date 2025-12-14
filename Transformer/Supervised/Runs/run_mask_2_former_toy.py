@@ -1,7 +1,10 @@
 import argparse
 import random
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 from model_mask2former_toy import Mask2FormerToy
@@ -67,6 +70,11 @@ def main():
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr)
 
     best, bad, patience = 0.0, 0, 8
+
+    # Init Logger
+
+    logger = ContinuousLogger(Path('results_run_mask_2_former_toy'), 'run_mask_2_former_toy', 'train')
+
     for epoch in range(1, args.epochs+1):
         model.train()
         for x,y in train_loader:
@@ -76,7 +84,21 @@ def main():
             loss = soft_iou_loss(masks, y)
             loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(),1.0); opt.step()
         score = evaluate(model, val_loader, args.device)
-        print(f"Epoch {epoch}: val_fgIoU={score:.4f}")
+        # Log
+
+        msg = f"Epoch {epoch}: val_fgIoU={score:.4f}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if score > best + 1e-6:
             best=score; bad=0; torch.save({'model': model.state_dict()}, 'Mask2FormerToy_best.pth')
         else:

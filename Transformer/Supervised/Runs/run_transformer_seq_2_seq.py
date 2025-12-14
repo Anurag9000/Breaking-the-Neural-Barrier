@@ -5,7 +5,10 @@ from pathlib import Path
 from typing import List, Tuple
 
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 from model_transformer_seq2seq import TransformerSeq2Seq
@@ -170,6 +173,11 @@ def main():
     optim = torch.optim.AdamW(model.parameters(), lr=args.lr)
 
     best_val, bad = float('inf'), 0
+
+    # Init Logger
+
+    logger = ContinuousLogger(Path('results_run_transformer_seq_2_seq'), 'run_transformer_seq_2_seq', 'train')
+
     for epoch in range(1, args.epochs + 1):
         model.train()
         total_tokens = 0
@@ -190,7 +198,21 @@ def main():
         train_ppl = math.exp(total_loss / max(total_tokens, 1))
         val_loss = evaluate(model, val_loader, criterion, args.device, tgt_vocab['<pad>'])
         val_ppl = math.exp(val_loss)
-        print(f"Epoch {epoch}: train_ppl={train_ppl:.3f} val_ppl={val_ppl:.3f}")
+        # Log
+
+        msg = f"Epoch {epoch}: train_ppl={train_ppl:.3f} val_ppl={val_ppl:.3f}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if val_loss + 1e-6 < best_val:
             best_val = val_loss
             bad = 0

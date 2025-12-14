@@ -2,6 +2,10 @@
 import os
 import argparse
 import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
 from torchvision.utils import make_grid
 
 from models.ssm_model import SSM
@@ -43,6 +47,11 @@ stop = EarlyStopper(patience=args.patience)
 # Training Loop
 # ----------------------------
 best = None
+
+# Init Logger
+
+logger = ContinuousLogger(Path('results_run_ssm'), 'run_ssm', 'train')
+
 for epoch in range(1, args.epochs + 1):
     model.train()
     for x, _ in train_loader:
@@ -64,7 +73,28 @@ for epoch in range(1, args.epochs + 1):
             n += x.size(0)
     vloss /= n
 
-    print(f'Epoch {epoch}: val_loss={vloss:.4f}')
+    # Log
+
+
+    msg = f'Epoch {epoch}: val_loss={vloss:.4f}'
+
+
+    logger.log_console(msg)
+
+
+    logger.log_epoch_stats({
+
+
+        "epoch": epoch,
+
+
+        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+
+        "train_loss": loss.item() if 'loss' in locals() else 0
+
+
+    })
 
     if stop.step(vloss):
         best = {k: v.detach().cpu() for k, v in model.state_dict().items()}

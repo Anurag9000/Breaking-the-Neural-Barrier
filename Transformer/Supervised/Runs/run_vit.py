@@ -5,7 +5,14 @@ import random
 from pathlib import Path
 
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
+import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
 import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
@@ -132,12 +139,40 @@ def main():
 
     best_val, best_state, bad = float("inf"), None, 0
 
+
+    # Init Logger
+
+
+    logger = ContinuousLogger(Path('results_run_vit'), 'run_vit', 'train')
+
+
     for epoch in range(1, args.epochs + 1):
         tr_loss = train_one_epoch(model, train_loader, device, criterion, optimizer)
         val_loss, val_acc = evaluate(model, val_loader, device, criterion)
         scheduler.step()
 
-        print(f"Epoch {epoch:03d} | train {tr_loss:.4f} | val {val_loss:.4f} | acc {val_acc*100:.2f}%")
+        # Log
+
+
+        msg = f"Epoch {epoch:03d} | train {tr_loss:.4f} | val {val_loss:.4f} | acc {val_acc*100:.2f}%"
+
+
+        logger.log_console(msg)
+
+
+        logger.log_epoch_stats({
+
+
+            "epoch": epoch,
+
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+
+        })
 
         if val_loss < best_val - 1e-4:
             best_val = val_loss

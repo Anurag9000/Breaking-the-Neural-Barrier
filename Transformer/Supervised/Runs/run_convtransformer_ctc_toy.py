@@ -1,6 +1,9 @@
 import argparse
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import DataLoader, Dataset
 
 from model_convtransformer_ctc import ConvTransformerCTC
@@ -55,6 +58,11 @@ def main():
     crit = nn.CTCLoss(blank=0, zero_infinity=True)
 
     best, bad, patience = 1e9, 0, 4
+
+    # Init Logger
+
+    logger = ContinuousLogger(Path('results_run_convtransformer_ctc_toy'), 'run_convtransformer_ctc_toy', 'train')
+
     for epoch in range(1, args.epochs+1):
         model.train()
         for x, ycat, ylen in train:
@@ -65,7 +73,21 @@ def main():
             opt.zero_grad(); loss = crit(logp, ycat.to(args.device), Tt, ylen.to(args.device)); loss.backward();
             nn.utils.clip_grad_norm_(model.parameters(),1.0); opt.step()
         val = evaluate(model, val, args.device)
-        print(f"Epoch {epoch}: val_CTC={val:.4f}")
+        # Log
+
+        msg = f"Epoch {epoch}: val_CTC={val:.4f}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if val + 1e-6 < best:
             best=val; bad=0; torch.save({'model': model.state_dict()}, 'ConvTransformerCTC_best.pth')
         else:

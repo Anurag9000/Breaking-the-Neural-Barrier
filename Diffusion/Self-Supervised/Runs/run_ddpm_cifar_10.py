@@ -4,7 +4,10 @@ import random
 from pathlib import Path
 
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms, utils as tvutils
 
@@ -135,10 +138,31 @@ def main():
     patience = 30
     bad = 0
 
+
+    # Init Logger
+
+
+    logger = ContinuousLogger(Path('results_run_ddpm_cifar_10'), 'run_ddpm_cifar_10', 'train')
+
+
     for epoch in range(1, args.epochs + 1):
         tr_loss = train_one_epoch(diff, train_loader, optimizer, device)
         va_loss = evaluate(diff, val_loader, device)
-        print(f"Epoch {epoch:03d} | train {tr_loss:.4f} | val {va_loss:.4f}")
+        # Log
+
+        msg = f"Epoch {epoch:03d} | train {tr_loss:.4f} | val {va_loss:.4f}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
 
         if va_loss + 1e-12 < best_val:
             best_val = va_loss

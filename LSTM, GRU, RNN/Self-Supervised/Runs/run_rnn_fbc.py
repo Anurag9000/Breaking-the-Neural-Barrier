@@ -2,7 +2,10 @@ import argparse
 import random
 import numpy as np
 import torch
-import torch.nn.functional as F
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn.functional as F
 from torch.utils.data import Dataset, DataLoader, random_split
 
 from rnn_fbc import FBCGRU
@@ -68,6 +71,11 @@ def main():
     es = EarlyStopper(args.patience, 1e-4)
 
     best=None
+
+    # Init Logger
+
+    logger = ContinuousLogger(Path('results_run_rnn_fbc'), 'run_rnn_fbc', 'train')
+
     for epoch in range(1, args.epochs+1):
         net.train(); tr_loss=0.0
         for x,y in tr:
@@ -89,7 +97,21 @@ def main():
 
         improved = es.step(va_loss)
         if improved: best={k:v.detach().cpu().clone() for k,v in net.state_dict().items()}
-        print(f"Epoch {epoch:03d} | train {tr_loss:.6f} | val {va_loss:.6f} | best {es.best:.6f}")
+        # Log
+
+        msg = f"Epoch {epoch:03d} | train {tr_loss:.6f} | val {va_loss:.6f} | best {es.best:.6f}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if es.should_stop(): print('Early stopping.'); break
 
     if best is not None: net.load_state_dict(best)

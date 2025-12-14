@@ -23,6 +23,11 @@ def train(args):
     opt = AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
 
     best_val = float('inf'); best_state=None; patience=args.patience
+
+    # Init Logger
+
+    logger = ContinuousLogger(Path('results_run_graph_gat'), 'run_graph_gat', 'train')
+
     for epoch in range(1, args.max_epochs+1):
         model.train()
         opt.zero_grad()
@@ -37,7 +42,21 @@ def train(args):
             if patience <= 0:
                 break
         if epoch % 50 == 0:
-            print(f"Epoch {epoch:04d} | loss {loss.item():.4f} | val {val_loss:.4f} | tr {tr_acc:.3f} | va {va_acc:.3f} | te {te_acc:.3f}")
+            # Log
+
+msg = f"Epoch {epoch:04d} | loss {loss.item():.4f} | val {val_loss:.4f} | tr {tr_acc:.3f} | va {va_acc:.3f} | te {te_acc:.3f}"
+
+            logger.log_console(msg)
+
+            logger.log_epoch_stats({
+
+                "epoch": epoch,
+
+                "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+                "train_loss": loss.item() if 'loss' in locals() else 0
+
+            })
 
     if best_state is not None:
         model.load_state_dict({k:v.to(args.device) for k,v in best_state.items()})

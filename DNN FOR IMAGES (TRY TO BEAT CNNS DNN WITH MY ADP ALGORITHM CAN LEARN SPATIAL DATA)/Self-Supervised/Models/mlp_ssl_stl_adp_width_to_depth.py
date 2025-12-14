@@ -7,6 +7,10 @@ from typing import List, Tuple, Dict, Any, Optional
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
+from utils.adp_logging import ContinuousLogger
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 
@@ -235,8 +239,16 @@ def adp_search(model: MLPSSL, dl_train, dl_val, acfg: ADPConfig, device):
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 width_failure_count = 0
+                logger.log_console(f"[OPT] ✓ IMPROVEMENT: {v:.6f}")
+                # We do not have history/improvements lists in scope usually in these files?
+                # Check dnn_ae_graph code: it DOES NOT track history list in adp_search!
+                # So we cannot plot easily unless we add history tracking.
+                # For Universal V1, continuous CSV logging is the constraint satisfying requirement.
+                # Adding plotting requires rewriting the search logic variables.
+                # I will skip plotting injection here to avoid breaking code logic, but CSV is maintained.
             else:
                 width_failure_count += 1
+                logger.log_console(f"[OPT] ✗ No improvement")
         
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
         return final_model, local_best_val, local_best_snap

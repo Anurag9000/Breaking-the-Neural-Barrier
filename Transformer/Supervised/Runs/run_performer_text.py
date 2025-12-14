@@ -1,6 +1,9 @@
 import argparse
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import DataLoader, Dataset
 
 from model_performer import PerformerEncoder
@@ -40,6 +43,11 @@ def main():
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr); crit = nn.CrossEntropyLoss()
 
     best, bad, patience = 0.0, 0, 4
+
+    # Init Logger
+
+    logger = ContinuousLogger(Path('results_run_performer_text'), 'run_performer_text', 'train')
+
     for epoch in range(1, args.epochs+1):
         model.train()
         for ids,y in train:
@@ -47,7 +55,21 @@ def main():
             opt.zero_grad(); logits=model(ids); loss=crit(logits,y); loss.backward();
             nn.utils.clip_grad_norm_(model.parameters(),1.0); opt.step()
         acc = evaluate(model, val, args.device)
-        print(f"Epoch {epoch}: val_acc={acc:.4f}")
+        # Log
+
+        msg = f"Epoch {epoch}: val_acc={acc:.4f}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if acc > best + 1e-6:
             best=acc; bad=0; torch.save({'model': model.state_dict()}, 'Performer_best.pth')
         else:

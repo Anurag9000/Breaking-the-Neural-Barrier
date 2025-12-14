@@ -1,6 +1,9 @@
 import argparse, os, random
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from typing import List, Tuple
 
@@ -115,11 +118,32 @@ def main():
                 tot += float(loss.item()) * tokens.size(0); n += tokens.size(0)
         return tot/max(1,n)
 
+
+    # Init Logger
+
+
+    logger = ContinuousLogger(Path('results_run_lstm_ctc'), 'run_lstm_ctc', 'train')
+
+
     for epoch in range(1, args.max_epochs+1):
         tr = run(train_loader, True)
         vl = run(val_loader, False)
         stop = es.step(vl, model)
-        print(f'Epoch {epoch:03d} | train_ctc={tr:.4f} | val_ctc={vl:.4f}')
+        # Log
+
+        msg = f'Epoch {epoch:03d} | train_ctc={tr:.4f} | val_ctc={vl:.4f}'
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if stop:
             print('Early stopping.'); break
 

@@ -5,8 +5,15 @@ import json
 from dataclasses import dataclass
 
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
+import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn.functional as F
 from torch.utils.data import random_split, DataLoader
 from torchvision import datasets, transforms, utils
 
@@ -140,6 +147,13 @@ def train(cfg: TrainConfig):
     global cfg  # for label drop in loss
     globals()["cfg"] = cfg
 
+
+    # Init Logger
+
+
+    logger = ContinuousLogger(Path('results_run_ddpm_classcond_unet'), 'run_ddpm_classcond_unet', 'train')
+
+
     for epoch in range(cfg.max_epochs):
         model.train()
         t0 = time.time()
@@ -161,7 +175,21 @@ def train(cfg: TrainConfig):
             torch.save({"model": model.state_dict(), "betas": betas.cpu()}, os.path.join(cfg.out_dir, "best.pth"))
         else:
             patience += 1
-        print(f"Epoch {epoch} | val {val_loss:.4f} | best {best['val']:.4f} @ {best['epoch']} | {time.time()-t0:.1f}s")
+        # Log
+
+        msg = f"Epoch {epoch} | val {val_loss:.4f} | best {best['val']:.4f} @ {best['epoch']} | {time.time(
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })-t0:.1f}s")
         if patience >= cfg.early_patience:
             break
 

@@ -5,7 +5,10 @@ from pathlib import Path
 
 import numpy as np
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import Dataset, DataLoader, random_split
 
 from rnn_dsae import GRUDenoisingAutoencoder
@@ -103,6 +106,11 @@ def main():
     es = EarlyStopper(patience=args.patience, min_delta=args.min_delta)
 
     best = None
+
+    # Init Logger
+
+    logger = ContinuousLogger(Path('results_run_rnn_dsae'), 'run_rnn_dsae', 'train')
+
     for epoch in range(1, args.epochs+1):
         model.train()
         tr = 0.0
@@ -139,7 +147,21 @@ def main():
         improved = es.step(va)
         if improved:
             best = {k: v.detach().cpu().clone() for k,v in model.state_dict().items()}
-        print(f"Epoch {epoch:03d} | train {tr:.6f} | val {va:.6f} | best {es.best:.6f}")
+        # Log
+
+        msg = f"Epoch {epoch:03d} | train {tr:.6f} | val {va:.6f} | best {es.best:.6f}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if es.should_stop():
             print('Early stopping.')
             break

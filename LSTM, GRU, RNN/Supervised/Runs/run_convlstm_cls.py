@@ -1,6 +1,9 @@
 import argparse, os, random
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 from convlstm_cls import ConvLSTMClassifier, ConvLSTMConfig
@@ -34,6 +37,10 @@ class SyntheticVideoCls(Dataset):
         frames, T, q = self.samples[i]
         # to tensor (T,1,H,W)
         import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
         vid = torch.tensor(frames, dtype=torch.float32).unsqueeze(1)
         return vid, T, q
 
@@ -134,11 +141,32 @@ def main():
     crit = nn.CrossEntropyLoss()
     es = EarlyStopper(args.patience)
 
+
+    # Init Logger
+
+
+    logger = ContinuousLogger(Path('results_run_convlstm_cls'), 'run_convlstm_cls', 'train')
+
+
     for epoch in range(1, args.max_epochs+1):
         tr = train_epoch(model, train_loader, opt, crit, args.device)
         vl, vacc = eval_epoch(model, val_loader, crit, args.device)
         stop = es.step(vl, model)
-        print(f'Epoch {epoch:03d} | train_loss={tr:.4f} | val_loss={vl:.4f} | val_acc={vacc:.4f}')
+        # Log
+
+        msg = f'Epoch {epoch:03d} | train_loss={tr:.4f} | val_loss={vl:.4f} | val_acc={vacc:.4f}'
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if stop:
             print('Early stopping.'); break
 

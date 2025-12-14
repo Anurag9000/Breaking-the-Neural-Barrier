@@ -2,6 +2,10 @@
 import os
 import argparse
 import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
 from torchvision.utils import make_grid
 from models.d3pm_masked import D3PMMasked
 from runs._common_train_f import make_cifar10_loaders, EarlyStopper, save_samples
@@ -38,6 +42,11 @@ stop = EarlyStopper(patience=args.patience)
 # Training loop
 # -------------------------
 best = None
+
+# Init Logger
+
+logger = ContinuousLogger(Path('results_run_d3pm_masked'), 'run_d3pm_masked', 'train')
+
 for epoch in range(1, args.epochs + 1):
     model.train()
     for x, _ in train_loader:
@@ -58,7 +67,21 @@ for epoch in range(1, args.epochs + 1):
             val_loss += model.loss(x).item() * x.size(0)
             n += x.size(0)
     val_loss /= n
-    print(f'Epoch {epoch}: val_loss={val_loss:.4f}')
+    # Log
+
+    msg = f'Epoch {epoch}: val_loss={val_loss:.4f}'
+
+    logger.log_console(msg)
+
+    logger.log_epoch_stats({
+
+        "epoch": epoch,
+
+        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+        "train_loss": loss.item() if 'loss' in locals() else 0
+
+    })
 
     # Early stopping
     if stop.step(val_loss):

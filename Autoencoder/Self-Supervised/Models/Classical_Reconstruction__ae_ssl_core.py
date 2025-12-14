@@ -14,6 +14,7 @@ from torchvision import datasets, transforms
 
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
+from utils.adp_logging import ContinuousLogger
 
 class ConvBNReLU(nn.Module):
     def __init__(self, in_ch, out_ch, k=3, s=1, p=None, bias=True):
@@ -234,11 +235,12 @@ def barlow_twins_loss(z1, z2):
     return on + off
 
 class InnerTrainer:
-    def __init__(self, model: AutoencoderSSL, train_c: TrainConfig):
+    def __init__(self, model: AutoencoderSSL, train_c: TrainConfig, logger: Optional[ContinuousLogger] = None):
         self.model = model; self.cfg = train_c
         self.device = train_c.device; self.model.to(self.device)
         self.optim = torch.optim.AdamW(self.model.parameters(), lr=train_c.lr, weight_decay=train_c.weight_decay)
         self.best_val = float("inf"); self.best_state = None; self.epochs_done = 0
+        self.logger = logger
     def _recon_loss(self, x, rec): return F.mse_loss(rec, x)
     def _step_unsup(self, batch, train=True):
         x = batch.to(self.device, non_blocking=True) if isinstance(batch, torch.Tensor) else batch[0].to(self.device)
@@ -289,8 +291,28 @@ class InnerTrainer:
                 history.append(val)
             if val < self.best_val:
                 self.best_val = val; self.best_state = {"model": {k: v.detach().cpu().clone() for k,v in self.model.state_dict().items()}}; es = 0
+                improved_str = " ✓ NEW BEST"
             else:
                 es += 1
+                improved_str = ""
+            
+            # Log
+            msg = f"  Epoch {self.epochs_done}/{max_epochs} | Device: {self.device} | Val Loss: {val:.6f} | Best: {self.best_val:.6f} | ES: {es}/{self.cfg.es_patience}{improved_str}"
+            if self.logger:
+                self.logger.log_console(msg)
+                self.logger.log_epoch_stats({
+                    "epoch": self.epochs_done,
+                    "width": self.model.widths[-1], # approximate
+                    "depth": len(self.model.widths),
+                    "neurons": self.model.total_neurons(),
+                    "val_loss": val,
+                    "best_val": self.best_val,
+                    "es_counter": es,
+                    "improved": bool(improved_str)
+                })
+            else:
+                print(msg)
+            
             if es >= self.cfg.es_patience: break
         # We return best_val and best_state, but do NOT load it here. The caller handles restoration if needed.
         # Actually, standard practice in my other refactors is to load it.
@@ -328,8 +350,8 @@ def can_deepen(model: AutoencoderSSL, scfg: 'SearchConfig'):
     projected = model.total_neurons() + 2*model.encoder[-1].bn.num_features
     return projected <= scfg.max_neurons
 
-def _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=None):
-    return InnerTrainer(model, tcfg).fit(dl_train, dl_val, max_epochs=max_epochs, history=history)
+def _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=None, logger=None):
+    return InnerTrainer(model, tcfg, logger=logger).fit(dl_train, dl_val, max_epochs=max_epochs, history=history)
 
 def _log_plots(val_history, improvements, results_dir: Path, mode: str):
     results_dir.mkdir(parents=True, exist_ok=True)
@@ -346,8 +368,13 @@ def adp_search(model: AutoencoderSSL, dl_train, dl_val, tcfg: TrainConfig, scfg:
     val_history = [] if (log_loss or log_neurons) else None
     improvements = [] if log_neurons else []
     
+    # Initialize Logger
+    logger = ContinuousLogger(results_dir, "ae_ssl_core", mode)
+    logger.log_console(f"ADP SEARCH STARTED: mode={mode}, delta={scfg.delta}")
+    logger.log_console(f"Initial: widths={model.widths}, total_neurons={model.total_neurons()}")
+
     # Initial training
-    best_val, best_state = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+    best_val, best_state = _train_eval_val(model, dl_train, dl_val, tcfg, max_epochs, history=val_history, logger=logger)
     # _train_eval_val loads best state
     
     global_best_val = best_val
@@ -355,7 +382,7 @@ def adp_search(model: AutoencoderSSL, dl_train, dl_val, tcfg: TrainConfig, scfg:
     if log_neurons: improvements.append((model.total_neurons(), global_best_val))
 
     def optimize_width_at_fixed_depth(curr_model):
-        local_val, local_state = _train_eval_val(curr_model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+        local_val, local_state = _train_eval_val(curr_model, dl_train, dl_val, tcfg, max_epochs, history=val_history, logger=logger)
         local_best_val = local_val
         local_best_snap = snapshot(curr_model, local_state["model"])
         
@@ -366,22 +393,25 @@ def adp_search(model: AutoencoderSSL, dl_train, dl_val, tcfg: TrainConfig, scfg:
             # Forward only: expand
             curr_model.widen_all(scfg.ex_k)
             
-            v, s = _train_eval_val(curr_model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+            v, s = _train_eval_val(curr_model, dl_train, dl_val, tcfg, max_epochs, history=val_history, logger=logger)
             
             if v < local_best_val - scfg.delta:
                 local_best_val = v
                 local_best_snap = snapshot(curr_model, s["model"])
                 width_failure_count = 0
                 if log_neurons: improvements.append((curr_model.total_neurons(), v))
+                logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: New best: {v:.6f}")
+                if log_loss: _log_plots(val_history, improvements, results_dir, mode)
             else:
                 width_failure_count += 1
+                logger.log_console(f"[WIDTH OPT] ✗ No improvement | Failures: {width_failure_count}/{scfg.patience_width}")
                 # No rollback
         
         restore(curr_model, local_best_snap)
         return curr_model, local_best_val, local_best_snap
 
     def optimize_depth_at_fixed_width(curr_model):
-        local_val, local_state = _train_eval_val(curr_model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+        local_val, local_state = _train_eval_val(curr_model, dl_train, dl_val, tcfg, max_epochs, history=val_history, logger=logger)
         local_best_val = local_val
         local_best_snap = snapshot(curr_model, local_state["model"])
         
@@ -392,15 +422,18 @@ def adp_search(model: AutoencoderSSL, dl_train, dl_val, tcfg: TrainConfig, scfg:
             # Forward only: expand
             curr_model.append_depth()
             
-            v, s = _train_eval_val(curr_model, dl_train, dl_val, tcfg, max_epochs, history=val_history)
+            v, s = _train_eval_val(curr_model, dl_train, dl_val, tcfg, max_epochs, history=val_history, logger=logger)
             
             if v < local_best_val - scfg.delta:
                 local_best_val = v
                 local_best_snap = snapshot(curr_model, s["model"])
                 depth_failure_count = 0
                 if log_neurons: improvements.append((curr_model.total_neurons(), v))
+                logger.log_console(f"[DEPTH OPT] ✓ IMPROVEMENT: New best: {v:.6f}")
+                if log_loss: _log_plots(val_history, improvements, results_dir, mode)
             else:
                 depth_failure_count += 1
+                logger.log_console(f"[DEPTH OPT] ✗ No improvement | Failures: {depth_failure_count}/{scfg.patience_depth}")
                 # No rollback
         
         restore(curr_model, local_best_snap)
@@ -478,6 +511,7 @@ def adp_search(model: AutoencoderSSL, dl_train, dl_val, tcfg: TrainConfig, scfg:
     if log_loss or log_neurons:
         _log_plots(val_history or [], improvements, results_dir, mode=mode)
     
+    logger.close()
     return model
 
 # Legacy wrappers calling adp_search

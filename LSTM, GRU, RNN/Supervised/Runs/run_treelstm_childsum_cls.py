@@ -1,7 +1,10 @@
 import argparse, os, random
 from typing import List
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 from treelstm_childsum_cls import ChildSumTreeLSTM, TreeLSTMConfig
@@ -122,11 +125,32 @@ def main():
 
     es = EarlyStopper(args.patience)
 
+
+    # Init Logger
+
+
+    logger = ContinuousLogger(Path('results_run_treelstm_childsum_cls'), 'run_treelstm_childsum_cls', 'train')
+
+
     for epoch in range(1, args.max_epochs+1):
         tr = train_epoch(model, train_loader, opt, crit, args.device)
         vl, vacc = eval_epoch(model, val_loader, crit, args.device)
         stop = es.step(vl, model)
-        print(f'Epoch {epoch:03d} | train_loss={tr:.4f} | val_loss={vl:.4f} | val_acc={vacc:.4f}')
+        # Log
+
+        msg = f'Epoch {epoch:03d} | train_loss={tr:.4f} | val_loss={vl:.4f} | val_acc={vacc:.4f}'
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
         if stop:
             print('Early stopping.'); break
 

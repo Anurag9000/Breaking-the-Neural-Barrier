@@ -1,4 +1,8 @@
 import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from core.diffusion_core import DiffusionConfig, BetaSchedule, DiffusionLoss
@@ -32,6 +36,11 @@ opt = optim.AdamW(model.parameters(), lr=2e-4)
 
 
 # ====== Training Loop ======
+
+# Init Logger
+
+logger = ContinuousLogger(Path('results_run_ddpm_textcond_unet'), 'run_ddpm_textcond_unet', 'train')
+
 for epoch in range(3):
     for x, txt in loader:
         x, txt = x.to(device), txt.to(device)
@@ -46,4 +55,25 @@ for epoch in range(3):
         loss.backward()
         opt.step()
 
-    print(f"Epoch {epoch}: loss {loss.item():.4f}")
+    # Log
+
+
+msg = f"Epoch {epoch}: loss {loss.item():.4f}"
+
+
+    logger.log_console(msg)
+
+
+    logger.log_epoch_stats({
+
+
+        "epoch": epoch,
+
+
+        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+
+        "train_loss": loss.item() if 'loss' in locals() else 0
+
+
+    })

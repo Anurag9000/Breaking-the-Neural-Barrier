@@ -2,6 +2,10 @@
 import os
 import argparse
 import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
 from torchvision.utils import make_grid
 from models.studentt_diffusion_model import StudentTDiffusion
 from runs._common_train_e import make_cifar10_loaders, EarlyStopper, save_samples
@@ -42,6 +46,13 @@ stop = EarlyStopper(patience=args.patience)
 # -----------------------
 best_state = None
 
+
+# Init Logger
+
+
+logger = ContinuousLogger(Path('results_run_studentt_diffusion'), 'run_studentt_diffusion', 'train')
+
+
 for epoch in range(1, args.epochs + 1):
     # Training
     model.train()
@@ -63,7 +74,28 @@ for epoch in range(1, args.epochs + 1):
             n_samples += x.size(0)
     val_loss /= n_samples
 
-    print(f'Epoch {epoch}: val_loss={val_loss:.4f}')
+    # Log
+
+
+    msg = f'Epoch {epoch}: val_loss={val_loss:.4f}'
+
+
+    logger.log_console(msg)
+
+
+    logger.log_epoch_stats({
+
+
+        "epoch": epoch,
+
+
+        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+
+        "train_loss": loss.item() if 'loss' in locals() else 0
+
+
+    })
 
     if stop.step(val_loss):
         best_state = {k: v.cpu() for k, v in model.state_dict().items()}

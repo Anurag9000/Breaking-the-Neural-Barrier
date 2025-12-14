@@ -8,6 +8,10 @@ from typing import List, Optional, Tuple, Dict, Any
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
+from utils.adp_logging import ContinuousLogger
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 
@@ -206,8 +210,29 @@ def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConf
             best_val = val
             best_state = copy.deepcopy(model.state_dict())
             es_counter = 0
+            improved = True
         else:
             es_counter += 1
+            improved = False
+
+        # Log
+        msg = f"  Epoch {_+1}/{max_epochs} | Val Loss: {val:.6f} | Best: {best_val:.6f} | ES: {es_counter}/{patience}"
+        if verbose and logger:
+            logger.log_console(msg)
+        elif verbose:
+             pass # print(msg)
+        
+        if logger:
+             logger.log_epoch_stats({
+                "epoch": _,
+                "width": getattr(model, 'width', 0) if hasattr(model, 'width') else (getattr(model.in_lin, 'out_features', 0) if hasattr(model, 'in_lin') else 0),
+                "depth": getattr(model, 'depth', 0),
+                "neurons": total_neurons(model) if 'total_neurons' in globals() else 0,
+                "val_loss": val,
+                "best_val": best_val,
+                "es_counter": es_counter,
+                "improved": improved
+             })
         if es_counter >= acfg.patience: break
             
     return best_val, best_state

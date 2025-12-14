@@ -2,6 +2,10 @@
 import os
 import argparse
 import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
 from torchvision.utils import make_grid
 from models.flow_matching_model import FlowMatching
 from runs._common_train_d import make_cifar10_loaders, EarlyStopper, save_samples
@@ -33,6 +37,11 @@ stop = EarlyStopper(patience=args.patience)
 
 # Training loop
 best = None
+
+# Init Logger
+
+logger = ContinuousLogger(Path('results_run_flow_matching'), 'run_flow_matching', 'train')
+
 for epoch in range(1, args.epochs + 1):
     model.train()
     for x, _ in train_loader:
@@ -54,7 +63,28 @@ for epoch in range(1, args.epochs + 1):
             n += x.size(0)
     val_loss /= n
 
-    print(f'Epoch {epoch}: val_loss={val_loss:.4f}')
+    # Log
+
+
+    msg = f'Epoch {epoch}: val_loss={val_loss:.4f}'
+
+
+    logger.log_console(msg)
+
+
+    logger.log_epoch_stats({
+
+
+        "epoch": epoch,
+
+
+        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+
+        "train_loss": loss.item() if 'loss' in locals() else 0
+
+
+    })
 
     if stop.step(val_loss):
         best = {k: v.detach().cpu() for k, v in model.state_dict().items()}

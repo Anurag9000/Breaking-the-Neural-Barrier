@@ -12,6 +12,7 @@ from torchvision import datasets, transforms
 
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
+from utils.adp_logging import ContinuousLogger
 
 BASE_PATH = Path(__file__).with_name("ae_groupsparse_stl_py_group_structured_sparse_autoencoder.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
@@ -118,6 +119,27 @@ def train_with_early_stopping(model: AE_GROUPSPARSE_STL, dl_train, dl_val, acfg:
                 n += x.size(0)
             val = val / max(n, 1)
         history.append(val)
+        
+        # Log to console and text file
+        msg = f"  Epoch {_+1}/{acfg.max_epochs} | Device: {device} | Val Loss: {val:.6f} | Best: {best:.6f} | Pat: {pat}/{acfg.patience}"
+        if verbose and logger:
+            logger.log_console(msg)
+        elif verbose:
+            # print(msg) # optional, keep silent if desired, but logger is preferred
+            pass
+        
+        # Log to CSV immediately
+        if logger:
+            logger.log_epoch_stats({
+                "epoch": len(history),
+                "width": model.width,
+                "depth": model.depth,
+                "neurons": total_neurons(model),
+                "val_loss": val,
+                "best_val": best,
+                "es_counter": acfg.patience - pat, # approx
+                "improved": (val < best - acfg.delta)
+            })
         if val < best:
             best = val
             best_state = copy.deepcopy(model.state_dict())
@@ -130,7 +152,7 @@ def train_with_early_stopping(model: AE_GROUPSPARSE_STL, dl_train, dl_val, acfg:
     return best, best_state
 
 
-def adp_search(model: AE_GROUPSPARSE_STL, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
+def adp_search(model: AE_GROUPSPARSE_STL, dl_train, dl_val, acfg: ADPConfig, device, logger: ContinuousLogger, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path(\"results_adp\")):
     results_dir.mkdir(parents=True, exist_ok=True)
     val_history = []
     improvements: List[tuple] = []
@@ -143,7 +165,7 @@ def adp_search(model: AE_GROUPSPARSE_STL, dl_train, dl_val, acfg: ADPConfig, dev
         deeper_neurons = local_model.width * (local_model.depth + 2)
         return (local_model.depth + 1) <= acfg.max_depth and deeper_neurons <= acfg.max_neurons
 
-    best_val, best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, val_history)
+    best_val, best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, val_history, logger=logger)
     best_snap = snapshot_arch_and_state(model, best_state)
     best_width = model.width
     best_depth = model.depth
@@ -154,7 +176,7 @@ def adp_search(model: AE_GROUPSPARSE_STL, dl_train, dl_val, acfg: ADPConfig, dev
         local_best_val = initial_val
         local_best_snap = initial_snap
         if local_best_val is None or local_best_snap is None:
-            local_best_val, local_best_state = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+            local_best_val, local_best_state = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history, logger=logger)
             local_best_snap = snapshot_arch_and_state(local_model, local_best_state)
         width_failure_count = 0
         while width_failure_count < pw and can_widen(local_model):
@@ -162,15 +184,19 @@ def adp_search(model: AE_GROUPSPARSE_STL, dl_train, dl_val, acfg: ADPConfig, dev
             if widened is None:
                 break
             local_model = widened.to(device)
-            cand_val, cand_state = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+            cand_val, cand_state = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history, logger=logger)
             if cand_val < local_best_val - acfg.delta:
                 local_best_val = cand_val
                 local_best_snap = snapshot_arch_and_state(local_model, cand_state)
                 width_failure_count = 0
                 if log_improvement:
                     improvements.append((total_neurons(local_model), local_best_val))
+                    logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: New best: {val:.6f}")
+                    if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
+                    if log_neurons: plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
             else:
                 width_failure_count += 1
+                logger.log_console(f'[WIDTH OPT] ✗ No improvement')
         local_model = restore_arch_and_state(local_model, local_best_snap, device)
         return local_model, local_best_val, local_best_snap
 
@@ -178,20 +204,24 @@ def adp_search(model: AE_GROUPSPARSE_STL, dl_train, dl_val, acfg: ADPConfig, dev
         local_best_val = initial_val
         local_best_snap = initial_snap
         if local_best_val is None or local_best_snap is None:
-            local_best_val, local_best_state = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+            local_best_val, local_best_state = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history, logger=logger)
             local_best_snap = snapshot_arch_and_state(local_model, local_best_state)
         depth_failure_count = 0
         while depth_failure_count < pd and can_deepen(local_model):
             local_model = deepen_model(local_model).to(device)
-            cand_val, cand_state = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+            cand_val, cand_state = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history, logger=logger)
             if cand_val < local_best_val - acfg.delta:
                 local_best_val = cand_val
                 local_best_snap = snapshot_arch_and_state(local_model, cand_state)
                 depth_failure_count = 0
                 if log_improvement:
                     improvements.append((total_neurons(local_model), local_best_val))
+                    logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: New best: {val:.6f}")
+                    if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
+                    if log_neurons: plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
             else:
                 depth_failure_count += 1
+                logger.log_console(f'[DEPTH OPT] ✗ No improvement')
         local_model = restore_arch_and_state(local_model, local_best_snap, device)
         return local_model, local_best_val, local_best_snap
 
@@ -365,7 +395,12 @@ def main():
         max_epochs=args.max_epochs,
     )
     results_dir = Path(f"results_{BASE_PATH.stem}")
-    best_val, model, width, depth = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=results_dir)
+    # Initialize Logger
+    logger = ContinuousLogger(results_dir, "ae_groupsparse_stl_py_group_structured_sparse_autoencoder", args.adp_mode)
+    
+    best_val, model, width, depth = adp_search(model, dl_train, dl_val, acfg, device, logger=logger, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=results_dir)
+    logger.log_console(f"Done. Best val={best_val} w={width} d={depth}")
+    logger.close()
     print(f"[ADP GroupSparse AE STL] mode={args.adp_mode} best_val={best_val:.6f} width={width} depth={depth}")
 
 

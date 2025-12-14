@@ -1,6 +1,14 @@
 import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
 import torch.optim as optim
-import torch.nn.functional as F
+import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn.functional as F
 from torch.utils.data import DataLoader
 
 from core.diffusion_core import DiffusionConfig, BetaSchedule, DiffusionLoss
@@ -47,6 +55,11 @@ opt = optim.AdamW(list(backbone.parameters()) + list(net.parameters()), lr=2e-4)
 # -----------------------------------------------------
 # Training loop
 # -----------------------------------------------------
+
+# Init Logger
+
+logger = ContinuousLogger(Path('results_run_fmd_unet'), 'run_fmd_unet', 'train')
+
 for epoch in range(3):
     for x in loader:
         x = x.to(device)
@@ -66,4 +79,25 @@ for epoch in range(3):
         loss.backward()
         opt.step()
 
-    print(f"Epoch {epoch}: loss = {loss.item():.4f}")
+    # Log
+
+
+msg = f"Epoch {epoch}: loss = {loss.item():.4f}"
+
+
+    logger.log_console(msg)
+
+
+    logger.log_epoch_stats({
+
+
+        "epoch": epoch,
+
+
+        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+
+        "train_loss": loss.item() if 'loss' in locals() else 0
+
+
+    })

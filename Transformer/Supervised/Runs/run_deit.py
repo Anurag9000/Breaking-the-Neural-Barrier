@@ -3,7 +3,14 @@ import os
 import random
 
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
+import torch
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
 import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
@@ -181,6 +188,13 @@ def main():
 
     best_val, best_state, bad = float("inf"), None, 0
 
+
+    # Init Logger
+
+
+    logger = ContinuousLogger(Path('results_run_deit'), 'run_deit', 'train')
+
+
     for epoch in range(1, args.epochs + 1):
         if epoch <= args.warmup:
             for g in optimizer.param_groups:
@@ -190,7 +204,21 @@ def main():
 
         tr_loss = train_one_epoch(model, tl, device, criterion, optimizer, args.mixup, args.cutmix)
         val_loss, val_acc = evaluate(model, vl, device, criterion)
-        print(f"Epoch {epoch:03d} | train {tr_loss:.4f} | val {val_loss:.4f} | acc {val_acc*100:.2f}% | lr {optimizer.param_groups[0]['lr']:.2e}")
+        # Log
+
+        msg = f"Epoch {epoch:03d} | train {tr_loss:.4f} | val {val_loss:.4f} | acc {val_acc*100:.2f}% | lr {optimizer.param_groups[0]['lr']:.2e}"
+
+        logger.log_console(msg)
+
+        logger.log_epoch_stats({
+
+            "epoch": epoch,
+
+            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+            "train_loss": loss.item() if 'loss' in locals() else 0
+
+        })
 
         if val_loss < best_val - 1e-4:
             best_val = val_loss

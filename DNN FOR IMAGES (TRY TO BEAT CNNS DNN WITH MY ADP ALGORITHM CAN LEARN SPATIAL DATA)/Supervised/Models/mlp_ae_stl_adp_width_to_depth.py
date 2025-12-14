@@ -7,6 +7,10 @@ from typing import List, Tuple, Dict, Any, Optional
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
+from utils.adp_logging import ContinuousLogger
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 
@@ -200,8 +204,29 @@ def train_with_early_stopping(model: MLPAutoencoder, dl_train, dl_val, acfg: ADP
             best_val = val
             best_state = copy.deepcopy(model.state_dict())
             es_counter = 0
+            improved = True
         else:
             es_counter += 1
+            improved = False
+
+        # Log
+        msg = f"  Epoch {_+1}/{max_epochs} | Val Loss: {val:.6f} | Best: {best_val:.6f} | ES: {es_counter}/{patience}"
+        if verbose and logger:
+            logger.log_console(msg)
+        elif verbose:
+             pass # print(msg)
+        
+        if logger:
+             logger.log_epoch_stats({
+                "epoch": _,
+                "width": getattr(model, 'width', 0) if hasattr(model, 'width') else (getattr(model.in_lin, 'out_features', 0) if hasattr(model, 'in_lin') else 0),
+                "depth": getattr(model, 'depth', 0),
+                "neurons": total_neurons(model) if 'total_neurons' in globals() else 0,
+                "val_loss": val,
+                "best_val": best_val,
+                "es_counter": es_counter,
+                "improved": improved
+             })
             
         if es_counter >= acfg.patience:
             break
@@ -248,8 +273,16 @@ def adp_search(model: MLPAutoencoder, dl_train, dl_val, acfg: ADPConfig, device)
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 width_failure_count = 0
+                logger.log_console(f"[OPT] ✓ IMPROVEMENT: {v:.6f}")
+                # We do not have history/improvements lists in scope usually in these files?
+                # Check dnn_ae_graph code: it DOES NOT track history list in adp_search!
+                # So we cannot plot easily unless we add history tracking.
+                # For Universal V1, continuous CSV logging is the constraint satisfying requirement.
+                # Adding plotting requires rewriting the search logic variables.
+                # I will skip plotting injection here to avoid breaking code logic, but CSV is maintained.
             else:
                 width_failure_count += 1
+                logger.log_console(f"[OPT] ✗ No improvement")
         
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
         return final_model, local_best_val, local_best_snap

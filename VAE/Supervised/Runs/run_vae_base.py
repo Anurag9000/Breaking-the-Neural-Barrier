@@ -1,6 +1,9 @@
 import argparse, os, time, json
 import torch
-import torch.nn as nn
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger.nn as nn
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 from vae_base import VAE, VAEConfig
@@ -58,6 +61,13 @@ def train(args):
     best_state = None
     epochs_no_improve = 0
 
+
+    # Init Logger
+
+
+    logger = ContinuousLogger(Path('results_run_vae_base'), 'run_vae_base', 'train')
+
+
     for epoch in range(1, args.epochs+1):
         model.train()
         epoch_loss = 0.0
@@ -81,7 +91,21 @@ def train(args):
             epochs_no_improve += 1
 
         if args.verbose:
-            print(f"Epoch {epoch:03d} | train {epoch_loss:.4f} | val {val_loss:.4f} (recon {val_recon:.4f}, kl {val_kl:.4f})")
+            # Log
+
+            msg = f"Epoch {epoch:03d} | train {epoch_loss:.4f} | val {val_loss:.4f} (recon {val_recon:.4f}, kl {val_kl:.4f}
+
+            logger.log_console(msg)
+
+            logger.log_epoch_stats({
+
+                "epoch": epoch,
+
+                "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
+
+                "train_loss": loss.item() if 'loss' in locals() else 0
+
+            })")
 
         if epochs_no_improve >= args.patience:
             if args.verbose:

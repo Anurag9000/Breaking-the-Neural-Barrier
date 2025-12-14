@@ -13,6 +13,7 @@ from torchvision import datasets, transforms
 
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
+from utils.adp_logging import ContinuousLogger, setup_logging # type: ignore
 
 # Load baseline
 BASE_PATH = Path(__file__).with_name("ae_stl.py").resolve()
@@ -112,14 +113,16 @@ def restore_arch_and_state(model: AE_STL, snap: Dict[str, Any], device) -> AE_ST
     return restored
 
 
-def train_with_early_stopping(model: AE_STL, dl_train, dl_val, acfg: ADPConfig, device, history: list) -> Tuple[float, Dict[str, Any]]:
+def train_with_early_stopping(model: AE_STL, dl_train, dl_val, acfg: ADPConfig, device, history: list, logger: Optional[ContinuousLogger] = None, verbose: bool = True) -> Tuple[float, Dict[str, Any]]:
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
     best_val = float("inf")
     best_state = copy.deepcopy(model.state_dict())
     es_counter = 0
     
-    for _ in range(acfg.max_epochs):
+    for epoch in range(acfg.max_epochs):
         model.train()
+        train_loss = 0.0
+        train_batches = 0
         for x, _ in dl_train:
             x = x.to(device)
             opt.zero_grad(set_to_none=True)
@@ -129,6 +132,10 @@ def train_with_early_stopping(model: AE_STL, dl_train, dl_val, acfg: ADPConfig, 
             if acfg.grad_clip is not None:
                 nn.utils.clip_grad_norm_(model.parameters(), acfg.grad_clip)
             opt.step()
+            train_loss += loss.item()
+            train_batches += 1
+        
+        train_loss /= max(train_batches, 1)
         
         model.eval()
         with torch.no_grad():
@@ -144,27 +151,61 @@ def train_with_early_stopping(model: AE_STL, dl_train, dl_val, acfg: ADPConfig, 
         
         history.append(val)
         
+        improved = ""
         if val < best_val: # Strict improvement for inner loop ES
             best_val = val
             best_state = copy.deepcopy(model.state_dict())
             es_counter = 0
+            improved = " ✓ NEW BEST"
         else:
             es_counter += 1
+        
+        # Log to console and text file
+        msg = f"  Epoch {epoch+1:3d}/{acfg.max_epochs} | Device: {device} | Train Loss: {train_loss:.6f} | Val Loss: {val:.6f} | Best: {best_val:.6f} | ES: {es_counter}/{acfg.patience}{improved}"
+        if verbose and logger:
+            logger.log_console(msg)
+        elif verbose:
+            print(msg)
+            
+        # Log to CSV immediately
+        if logger:
+            logger.log_epoch_stats({
+                "epoch": epoch + 1,
+                "width": model.width,
+                "depth": model.depth,
+                "neurons": total_neurons(model.width, model.depth),
+                "train_loss": train_loss,
+                "val_loss": val,
+                "best_val": best_val,
+                "es_counter": es_counter,
+                "improved": bool(improved)
+            })
             
         if es_counter >= acfg.patience:
+            if verbose and logger:
+                logger.log_console(f"  Early stopping triggered at epoch {epoch+1}")
+            elif verbose:
+                print(f"  Early stopping triggered at epoch {epoch+1}")
             break
             
     return best_val, best_state
 
 
-def adp_search(model: AE_STL, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp_ae_stl")):
+def adp_search(model: AE_STL, dl_train, dl_val, acfg: ADPConfig, device, logger: ContinuousLogger, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp_ae_stl")):
     results_dir.mkdir(parents=True, exist_ok=True)
     val_history: List[float] = []
     improvements: List[tuple[int, float]] = []
 
+    logger.log_console("\n" + "="*80)
+    logger.log_console(f"ADP SEARCH STARTED: mode={acfg.adp_mode}, delta={acfg.delta}")
+    logger.log_console(f"Initial: width={model.width}, depth={model.depth}, neurons={total_neurons(model.width, model.depth)}")
+    logger.log_console("="*80 + "\n")
+
     # Initial training
-    best_val, best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, val_history)
+    logger.log_console(f"[INITIAL TRAINING] width={model.width}, depth={model.depth}")
+    best_val, best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, val_history, logger=logger, verbose=True)
     model.load_state_dict(best_state)
+    logger.log_console(f"[INITIAL RESULT] Best val loss: {best_val:.6f}\n")
     
     # Global best snapshot
     global_best_snap = snapshot_arch_and_state(model, best_state)
@@ -180,75 +221,100 @@ def adp_search(model: AE_STL, dl_train, dl_val, acfg: ADPConfig, device, log_los
 
     # 3.1 Inner: optimize_width_at_fixed_depth
     def optimize_width_at_fixed_depth(curr_model: AE_STL) -> Tuple[AE_STL, float, Dict[str, Any]]:
-        # Start from current model state (already trained or expanded)
-        # We assume curr_model is the starting point.
-        # If it was just expanded, we should probably train it?
-        # But optimize_width_at_fixed_depth usually implies we start searching FROM here.
-        # Let's assume the caller has trained it if they wanted to check the base.
-        # Actually, let's train the base here to be safe and get a baseline for THIS search.
+        logger.log_console(f"\n[WIDTH OPTIMIZATION] Starting at width={curr_model.width}, depth={curr_model.depth}")
         
-        local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
+        local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history, logger=logger, verbose=True)
         local_best_val = local_val
         local_best_state = local_state
         local_best_snap = snapshot_arch_and_state(curr_model, local_state)
+        logger.log_console(f"[WIDTH OPT] Base result: {local_val:.6f}\n")
         
         width_failure_count = 0
+        expansion_count = 0
         
         while width_failure_count < acfg.trials_width:
             if not can_widen(curr_model):
+                logger.log_console(f"[WIDTH OPT] Cannot widen further (max width reached)")
                 break
             
             # Always expand from current width
             next_model = expand_width(curr_model, acfg.ex_k, acfg.max_width, device)
             if next_model is None: 
+                logger.log_console(f"[WIDTH OPT] Expansion returned None")
                 break
             curr_model = next_model # Update reference
+            expansion_count += 1
             
-            v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
+            logger.log_console(f"\n[WIDTH EXPANSION #{expansion_count}] width: {curr_model.width-acfg.ex_k} → {curr_model.width}, neurons: {total_neurons(curr_model.width, curr_model.depth)}")
+            v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history, logger=logger, verbose=True)
             
+            improvement = local_best_val - v
             if v < local_best_val - acfg.delta:
                 local_best_val = v
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 width_failure_count = 0
                 improvements.append((total_neurons(curr_model.width, curr_model.depth), v))
+                logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: {improvement:.6f} | New best: {v:.6f} | Failures reset: 0/{acfg.trials_width}")
+                
+                # Continuous plotting on improvement
+                if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
+                if log_neurons: plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
             else:
                 width_failure_count += 1
+                logger.log_console(f"[WIDTH OPT] ✗ No improvement (delta={acfg.delta}) | Failures: {width_failure_count}/{acfg.trials_width}")
                 # do NOT rollback; continue from this (possibly worse) width
         
+        logger.log_console(f"\n[WIDTH OPT COMPLETE] Best width: {local_best_snap['width']}, Best loss: {local_best_val:.6f}, Total expansions: {expansion_count}\n")
         # After inner search: ensure model is set to best width at this depth
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
         return final_model, local_best_val, local_best_snap
 
     # 4.1 Inner: optimize_depth_at_fixed_width
     def optimize_depth_at_fixed_width(curr_model: AE_STL) -> Tuple[AE_STL, float, Dict[str, Any]]:
-        local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
+        logger.log_console(f"\n[DEPTH OPTIMIZATION] Starting at width={curr_model.width}, depth={curr_model.depth}")
+        
+        local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history, logger=logger, verbose=True)
         local_best_val = local_val
         local_best_state = local_state
         local_best_snap = snapshot_arch_and_state(curr_model, local_state)
+        logger.log_console(f"[DEPTH OPT] Base result: {local_val:.6f}\n")
         
         depth_failure_count = 0
+        expansion_count = 0
         
         while depth_failure_count < acfg.trials_depth:
             if not can_deepen(curr_model):
+                logger.log_console(f"[DEPTH OPT] Cannot deepen further (max depth reached)")
                 break
                 
             next_model = expand_depth(curr_model, acfg.max_depth, device)
             if next_model is None:
+                logger.log_console(f"[DEPTH OPT] Expansion returned None")
                 break
             curr_model = next_model
+            expansion_count += 1
             
-            v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
+            logger.log_console(f"\n[DEPTH EXPANSION #{expansion_count}] depth: {curr_model.depth-1} → {curr_model.depth}, neurons: {total_neurons(curr_model.width, curr_model.depth)}")
+            v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history, logger=logger, verbose=True)
             
+            improvement = local_best_val - v
             if v < local_best_val - acfg.delta:
                 local_best_val = v
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 depth_failure_count = 0
                 improvements.append((total_neurons(curr_model.width, curr_model.depth), v))
+                logger.log_console(f"[DEPTH OPT] ✓ IMPROVEMENT: {improvement:.6f} | New best: {v:.6f} | Failures reset: 0/{acfg.trials_depth}")
+                
+                # Continuous plotting
+                if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
+                if log_neurons: plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
             else:
                 depth_failure_count += 1
+                logger.log_console(f"[DEPTH OPT] ✗ No improvement (delta={acfg.delta}) | Failures: {depth_failure_count}/{acfg.trials_depth}")
         
+        logger.log_console(f"\n[DEPTH OPT COMPLETE] Best depth: {local_best_snap['depth']}, Best loss: {local_best_val:.6f}, Total expansions: {expansion_count}\n")
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
         return final_model, local_best_val, local_best_snap
 
@@ -385,8 +451,18 @@ def adp_search(model: AE_STL, dl_train, dl_val, acfg: ADPConfig, device, log_los
     
     if log_loss:
         plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
+        logger.log_console(f"\n[PLOTS] Saved loss vs epoch plot to {results_dir / 'loss_vs_epoch.png'}")
     if log_neurons and improvements:
         plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
+        logger.log_console(f"[PLOTS] Saved loss vs neurons plot to {results_dir / 'loss_vs_neurons.png'}")
+    
+    logger.log_console("\n" + "="*80)
+    logger.log_console(f"ADP SEARCH COMPLETE")
+    logger.log_console(f"Final: width={model.width}, depth={model.depth}, neurons={total_neurons(model.width, model.depth)}")
+    logger.log_console(f"Best validation loss: {global_best_val:.6f}")
+    logger.log_console(f"Total improvements: {len(improvements)}")
+    logger.log_console(f"Total epochs trained: {len(val_history)}")
+    logger.log_console("="*80 + "\n")
         
     return global_best_val, model, model.width, model.depth
 
@@ -397,8 +473,8 @@ def make_loaders(batch_size: int = 128, val_split: float = 0.1):
     n_val = int(len(ds) * val_split)
     n_train = len(ds) - n_val
     train_ds, val_ds = random_split(ds, [n_train, n_val])
-    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
-    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)
+    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)
+    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=True)
     return dl_train, dl_val
 
 
@@ -424,16 +500,27 @@ def main():
     p.add_argument("--plot-loss", action="store_true", help="Save loss-vs-epoch (log scale)")
     p.add_argument("--plot-neurons", action="store_true", help="Save neurons-vs-loss (log scale)")
     args = p.parse_args()
+    print(f"DEBUG: Parsed arguments: {args}")
+    
+    if not torch.cuda.is_available():
+        print("ERROR: Strict GPU requirement not met. CUDA is not available.")
+        return
+
+    device = torch.device("cuda")
+    print(f"Running on device: {device}")
 
     dl_train, dl_val = make_loaders(args.batch_size, 0.1)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = AE_STL(in_channels=3, width=args.width, depth=args.depth, pool_after=args.pool_after).to(device)
     acfg = ADPConfig(adp_mode=args.adp_mode, delta=args.delta, patience=args.patience, trials_width=args.trials_width,
                      trials_depth=args.trials_depth, ex_k=args.ex_k, max_width=args.max_width, max_depth=args.max_depth,
                      max_neurons=args.max_neurons, max_epochs=args.max_epochs, pool_after=args.pool_after)
     
-    best, model, w, d = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
-    print(f"[ADP AE_STL] mode={args.adp_mode} best_val={best:.6f} width={w} depth={d}")
+    # Initialize Logger
+    logger = ContinuousLogger(args.results_dir, "ae_stl", args.adp_mode)
+
+    best, model, w, d = adp_search(model, dl_train, dl_val, acfg, device, logger=logger, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
+    logger.log_console(f"\n[FINAL RESULT] mode={args.adp_mode} best_val={best:.6f} width={w} depth={d}\n")
+    logger.close()
 
 
 if __name__ == "__main__":

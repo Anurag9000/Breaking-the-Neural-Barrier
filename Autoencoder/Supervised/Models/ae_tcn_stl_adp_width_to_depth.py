@@ -13,6 +13,7 @@ from torchvision import datasets, transforms
 
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
+from utils.adp_logging import ContinuousLogger
 
 # Load baseline
 BASE_PATH = Path(__file__).with_name("ae_tcn_stl.py").resolve()
@@ -167,6 +168,27 @@ def train_with_early_stopping(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConf
                 val += l.item(); n += 1
             val = val / max(n,1)
         history.append(val)
+        
+        # Log to console and text file
+        msg = f"  Epoch {_+1}/{acfg.max_epochs} | Device: {device} | Val Loss: {val:.6f} | Best: {best:.6f} | Pat: {pat}/{acfg.patience}"
+        if verbose and logger:
+            logger.log_console(msg)
+        elif verbose:
+            # print(msg) # optional, keep silent if desired, but logger is preferred
+            pass
+        
+        # Log to CSV immediately
+        if logger:
+            logger.log_epoch_stats({
+                "epoch": len(history),
+                "width": model.width,
+                "depth": model.depth,
+                "neurons": total_neurons(model),
+                "val_loss": val,
+                "best_val": best,
+                "es_counter": acfg.patience - pat, # approx
+                "improved": (val < best - acfg.delta)
+            })
         if val < best_val:
             best_val = val
             best_state = copy.deepcopy(model.state_dict())
@@ -210,7 +232,7 @@ def adp_search(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, device, log
         return new_d <= acfg.max_depth and total_neurons(width, new_d) <= acfg.max_neurons
 
     # Initial training (shared across all modes)
-    best_val, best_state, _ = train_with_early_stopping(model, dl_train, dl_val, acfg, device, val_history)
+    best_val, best_state, _ = train_with_early_stopping(model, dl_train, dl_val, acfg, device, val_history, logger=logger)
     best_width, best_depth = model.width, model.depth
     model.load_state_dict(best_state)
     improvements.append((total_neurons(best_width, best_depth), best_val))
@@ -220,11 +242,11 @@ def adp_search(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, device, log
         local_best_state = initial_state
         local_best_width = local_model.width
         if local_best_val is None or local_best_state is None:
-            local_best_val, local_best_state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+            local_best_val, local_best_state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history, logger=logger)
         width_failure_count = 0
         while width_failure_count < patience_width_exp and can_widen(local_model.width, local_model.depth):
             local_model = expand_width(local_model, ex_k_width, device, acfg.pool_every)
-            val, state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+            val, state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history, logger=logger)
             if val < local_best_val - delta_width:
                 local_best_val = val
                 local_best_state = state
@@ -234,6 +256,7 @@ def adp_search(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, device, log
                     improvements.append((total_neurons(local_model.width, local_model.depth), local_best_val))
             else:
                 width_failure_count += 1
+                logger.log_console(f'[WIDTH OPT] ✗ No improvement')
         local_model = rebuild_model(local_model, local_best_width, local_model.depth, device, acfg.pool_every)
         local_model.load_state_dict(local_best_state)
         return local_model, local_best_val, local_best_state, local_best_width
@@ -243,11 +266,11 @@ def adp_search(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, device, log
         local_best_state = initial_state
         local_best_depth = local_model.depth
         if local_best_val is None or local_best_state is None:
-            local_best_val, local_best_state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+            local_best_val, local_best_state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history, logger=logger)
         depth_failure_count = 0
         while depth_failure_count < patience_depth_exp and can_deepen(local_model.width, local_model.depth):
             local_model = expand_depth(local_model, ex_k_depth, device, acfg.pool_every)
-            val, state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history)
+            val, state, _ = train_with_early_stopping(local_model, dl_train, dl_val, acfg, device, val_history, logger=logger)
             if val < local_best_val - delta_depth:
                 local_best_val = val
                 local_best_state = state
@@ -257,6 +280,7 @@ def adp_search(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, device, log
                     improvements.append((total_neurons(local_model.width, local_model.depth), local_best_val))
             else:
                 depth_failure_count += 1
+                logger.log_console(f'[DEPTH OPT] ✗ No improvement')
         local_model = rebuild_model(local_model, local_model.width, local_best_depth, device, acfg.pool_every)
         local_model.load_state_dict(local_best_state)
         return local_model, local_best_val, local_best_state, local_best_depth
@@ -286,6 +310,7 @@ def adp_search(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, device, log
                 improvements.append((total_neurons(best_width, best_depth), best_val))
             else:
                 depth_failure_count += 1
+                logger.log_console(f'[DEPTH OPT] ✗ No improvement')
     elif mode == "width_to_depth":  # ADP_WIDTH_OUTER_DEPTH_INNER
         model, best_val, best_state, best_depth = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
         best_width = model.width
@@ -304,6 +329,7 @@ def adp_search(model: AE_TCN_STL, dl_train, dl_val, acfg: ADPConfig, device, log
                 improvements.append((total_neurons(best_width, best_depth), best_val))
             else:
                 width_failure_count += 1
+                logger.log_console(f'[WIDTH OPT] ✗ No improvement')
     elif mode == "alt_depth":
         depth_saturated = False
         width_saturated = False
