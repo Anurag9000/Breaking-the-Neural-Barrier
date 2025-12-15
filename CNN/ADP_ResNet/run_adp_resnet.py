@@ -25,7 +25,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, random_split, Subset
 import torchvision
 
 from CNN.ADP_ResNet.adp_resnet_backbone import ADPResNet, ADPResNetConfig, make_adp_resnet, estimate_neurons
@@ -154,6 +154,18 @@ def make_loaders(
         full_train = torchvision.datasets.CIFAR10(root=data_root, train=True, transform=train_tfms, download=True)
         full_train_eval = torchvision.datasets.CIFAR10(root=data_root, train=True, transform=eval_tfms, download=True)
         num_classes = 10
+
+    # Restrict to first two classes (labels 0 and 1) for this ADP_ResNet subfolder.
+    # This reduces effective dataset size and changes the problem to binary classification.
+    allowed = {0, 1}
+    targets = getattr(full_train, "targets", None)
+    if targets is None and hasattr(full_train, "labels"):
+        targets = full_train.labels
+    if targets is not None:
+        indices = [i for i, y in enumerate(targets) if y in allowed]
+        full_train = Subset(full_train, indices)
+        full_train_eval = Subset(full_train_eval, indices)
+        num_classes = 2
 
     n_total = len(full_train)
     n_val = int(n_total * val_split)
