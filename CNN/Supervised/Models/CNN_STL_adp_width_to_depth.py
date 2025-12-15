@@ -388,12 +388,32 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     return global_best_val, model, 0, 0
 
-def make_loaders(batch_size: int = 128, val_split: float = 0.1, num_workers: int = 0):
-    tf = transforms.Compose([transforms.ToTensor()])
-    ds = datasets.CIFAR10(root="./data", train=True, download=True, transform=tf)
-    n_val = int(len(ds) * val_split)
-    n_train = len(ds) - n_val
-    train_ds, val_ds = random_split(ds, [n_train, n_val])
+def make_loaders(
+    batch_size: int = 128,
+    val_split: float = 0.1,
+    num_workers: int = 0,
+    use_augment: bool = True,
+    data_root: str = "./data",
+):
+    """
+    CIFAR-10 loaders with optional augmentation/normalization.
+    Augment adds RandomCrop+Flip; all splits get channel-wise normalization.
+    """
+    cifar_mean = (0.4914, 0.4822, 0.4465)
+    cifar_std = (0.2470, 0.2435, 0.2616)
+    aug = []
+    if use_augment:
+        aug = [transforms.RandomCrop(32, padding=4), transforms.RandomHorizontalFlip()]
+    train_tf = transforms.Compose([*aug, transforms.ToTensor(), transforms.Normalize(cifar_mean, cifar_std)])
+    eval_tf = transforms.Compose([transforms.ToTensor(), transforms.Normalize(cifar_mean, cifar_std)])
+
+    ds_train = datasets.CIFAR10(root=data_root, train=True, download=True, transform=train_tf)
+    ds_eval = datasets.CIFAR10(root=data_root, train=True, download=False, transform=eval_tf)
+
+    n_val = int(len(ds_train) * val_split)
+    n_train = len(ds_train) - n_val
+    train_ds, val_ds = random_split(ds_train, [n_train, n_val])
+
     dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers)
     dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers)
     return dl_train, dl_val
@@ -420,6 +440,8 @@ def main():
     p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--grad-clip", type=float, default=1.0)
     p.add_argument("--batch-size", type=int, default=128)
+    p.add_argument("--data-root", type=str, default="./data")
+    p.add_argument("--no-augment", action="store_true", help="Disable CIFAR augmentation (crop/flip)")
     
     # Plotting flags
     p.add_argument("--plot-loss", action="store_true")
@@ -430,7 +452,11 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # Real data
-    dl_train, dl_val = make_loaders(batch_size=args.batch_size)
+    dl_train, dl_val = make_loaders(
+        batch_size=args.batch_size,
+        use_augment=not args.no_augment,
+        data_root=args.data_root,
+    )
     
     model = ModelClass(input_channels=3, num_classes=10, width=args.width, depth=args.depth).to(device)
 

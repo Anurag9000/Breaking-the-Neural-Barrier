@@ -270,6 +270,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--num-workers", type=int, default=0)  # Windows safe
     p.add_argument("--val-split", type=int, default=5000)
     p.add_argument("--download", action="store_true")
+    p.add_argument("--no-augment", action="store_true", help="Disable CIFAR augmentation (crop/flip + normalize still applied)")
 
     # Training
     p.add_argument("--epochs", type=int, default=1000000)
@@ -412,6 +413,7 @@ def main():
         val_split=args.val_split,
         num_workers=args.num_workers,
         download=args.download,
+        use_augment=not args.no_augment,
     )
 
     depths = list(range(args.depth_min, args.depth_max + 1, args.depth_step))

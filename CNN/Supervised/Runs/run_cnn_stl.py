@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, Subset
 import torchvision
-import torchvision.transforms as T
+from utils.cnn_data import make_cifar_transforms
 
 import matplotlib.pyplot as plt
 
@@ -35,6 +35,7 @@ def make_loaders(
     num_workers: int = 4,
     pin_memory: bool = True,
     download: bool = False,
+    use_augment: bool = True,
 ) -> Tuple[DataLoader, DataLoader, DataLoader, int]:
     """
     Create train/val/test loaders for CIFAR-10 or CIFAR-100 with standard aug.
@@ -45,26 +46,15 @@ def make_loaders(
         raise ValueError("dataset must be 'cifar10' or 'cifar100'")
 
     if dataset == "cifar10":
-        MEAN, STD = CIFAR10_MEAN, CIFAR10_STD
         ds_train = torchvision.datasets.CIFAR10
         ds_test  = torchvision.datasets.CIFAR10
         num_classes = 10
     else:
-        MEAN, STD = CIFAR100_MEAN, CIFAR100_STD
         ds_train = torchvision.datasets.CIFAR100
         ds_test  = torchvision.datasets.CIFAR100
         num_classes = 100
 
-    train_tfms = T.Compose([
-        T.RandomCrop(32, padding=4),
-        T.RandomHorizontalFlip(),
-        T.ToTensor(),
-        T.Normalize(MEAN, STD),
-    ])
-    eval_tfms = T.Compose([
-        T.ToTensor(),
-        T.Normalize(MEAN, STD),
-    ])
+    train_tfms, eval_tfms = make_cifar_transforms(dataset, use_augment=use_augment)
 
     train_ds_aug = ds_train(root=data_root, train=True, download=download, transform=train_tfms)
     train_ds_eval = ds_train(root=data_root, train=True, download=False, transform=eval_tfms)
@@ -436,6 +426,7 @@ def main():
     parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--val-split", type=int, default=5000)
     parser.add_argument("--download", action="store_true")
+    parser.add_argument("--no-augment", action="store_true", help="Disable CIFAR augmentation (crop/flip)")
 
     # Model (STL) hyperparameters exposed here
     parser.add_argument("--width", type=int, default=64, help="channels per block (width)")
@@ -506,6 +497,7 @@ def main():
         val_split=args.val_split,
         num_workers=args.num_workers,
         download=args.download,
+        use_augment=not args.no_augment,
     )
 
     # Build model

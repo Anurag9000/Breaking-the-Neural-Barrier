@@ -43,7 +43,7 @@ def plot_loss_vs_neurons(
     losses: List[float],
     save_path: Path,
     title: str = "Loss vs Neurons",
-    log_scale_x: bool = True,
+    log_scale_x: bool = False,
     log_scale_y: bool = True
 ):
     """
@@ -135,8 +135,7 @@ def plot_comprehensive_stats(
         ax2.set_ylabel('Validation Loss', fontsize=12)
         ax2.set_title('Loss vs Neurons', fontsize=13, fontweight='bold')
         ax2.grid(True, alpha=0.3, linestyle='--')
-        if min(neurons) > 0:
-            ax2.set_xscale('log')
+        # Keep neurons on a linear scale
         if min(losses) > 0:
             ax2.set_yscale('log')
         

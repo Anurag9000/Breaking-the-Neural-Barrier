@@ -18,6 +18,7 @@ from torch.utils.data import DataLoader, random_split
 
 import torchvision
 import torchvision.transforms as T
+from utils.cnn_data import make_cifar_transforms
 
 from CNN_MnasNet import make_mnasnet_cifar
 
@@ -54,20 +55,10 @@ def train(args):
     set_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() and not args.cpu else "cpu")
 
-    # Transforms
-    cifar_mean = (0.4914, 0.4822, 0.4465)
-    cifar_std  = (0.2470, 0.2435, 0.2616)
-
-    train_tfms = T.Compose([
-        T.RandomCrop(32, padding=4),
-        T.RandomHorizontalFlip(),
-        T.ToTensor(),
-        T.Normalize(cifar_mean, cifar_std),
-    ])
-    eval_tfms = T.Compose([
-        T.ToTensor(),
-        T.Normalize(cifar_mean, cifar_std),
-    ])
+    # Transforms (CIFAR aug + normalize; disable with --no-augment)
+    train_tfms, eval_tfms = make_cifar_transforms(
+        args.dataset, use_augment=not args.no_augment
+    )
 
     # Dataset selection
     if args.dataset.lower() == "cifar100":
@@ -170,6 +161,8 @@ def train(args):
 def build_argparser():
     p = argparse.ArgumentParser(description="Train MnasNet (CIFAR) with early stopping (single-model).")
     p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100"])
+    p.add_argument("--no-augment", dest="no_augment", action="store_true",
+                   help="Disable CIFAR crop/flip augmentation (normalization stays)")
     p.add_argument("--data_root", type=str, default="./data")
     p.add_argument("--save_path", type=str, default="./checkpoints/mnasnet_cifar10.pth")
 
