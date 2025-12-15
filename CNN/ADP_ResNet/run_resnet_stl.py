@@ -35,6 +35,7 @@ class STLConfig:
     num_workers: int = 2
     val_split: float = 0.1
     no_augment: bool = False
+    num_classes: int = 10
 
     width: int = 16
     depth: int = 2
@@ -117,6 +118,7 @@ def train_stl(cfg: STLConfig) -> dict:
         val_split=cfg.val_split,
         num_workers=cfg.num_workers,
         use_augment=not cfg.no_augment,
+        num_classes_limit=cfg.num_classes,
     )
 
     model: ADPResNet = make_adp_resnet(
@@ -253,6 +255,8 @@ def build_argparser() -> argparse.ArgumentParser:
     p.add_argument("--num-workers", type=int, default=2)
     p.add_argument("--val-split", type=float, default=0.1)
     p.add_argument("--no-augment", action="store_true")
+    p.add_argument("--num-classes", type=int, default=10,
+                   help="Use only the first N classes (labels 0..N-1). For CIFAR-10, 2–10 are valid.")
 
     # Architecture
     p.add_argument("--width", type=int, default=16)
@@ -291,6 +295,7 @@ def main() -> None:
         num_workers=args.num_workers,
         val_split=args.val_split,
         no_augment=args.no_augment,
+        num_classes=args.num_classes,
         width=args.width,
         depth=args.depth,
         dropout=args.dropout,
@@ -316,4 +321,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

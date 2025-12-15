@@ -266,6 +266,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--val-split", type=float, default=0.1)
     p.add_argument("--download", action="store_true")
     p.add_argument("--no-augment", action="store_true")
+    p.add_argument("--num-classes", type=int, default=10,
+                   help="Use only the first N classes (labels 0..N-1). For CIFAR-10, 2–10 are valid.")
 
     # Grid
     p.add_argument("--depth-min", type=int, default=1)
@@ -315,6 +317,7 @@ def main() -> None:
         val_split=args.val_split,
         num_workers=args.num_workers,
         use_augment=not args.no_augment,
+        num_classes_limit=args.num_classes,
     )
 
     depths = list(range(args.depth_min, args.depth_max + 1, args.depth_step))
@@ -437,4 +440,3 @@ def main() -> None:
 if __name__ == "__main__":
     os.environ["PYTHONUNBUFFERED"] = "1"
     main()
-

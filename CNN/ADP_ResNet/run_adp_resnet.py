@@ -143,29 +143,38 @@ def make_loaders(
     val_split: float,
     num_workers: int,
     use_augment: bool,
+    num_classes_limit: Optional[int] = None,
 ) -> Tuple[DataLoader, DataLoader, int]:
     train_tfms, eval_tfms = make_cifar_transforms(dataset, use_augment=use_augment)
 
-    if dataset.lower() == "cifar100":
+    ds_name = dataset.lower()
+
+    if ds_name == "cifar100":
         full_train = torchvision.datasets.CIFAR100(root=data_root, train=True, transform=train_tfms, download=True)
         full_train_eval = torchvision.datasets.CIFAR100(root=data_root, train=True, transform=eval_tfms, download=True)
-        num_classes = 100
+        base_num_classes = 100
     else:
         full_train = torchvision.datasets.CIFAR10(root=data_root, train=True, transform=train_tfms, download=True)
         full_train_eval = torchvision.datasets.CIFAR10(root=data_root, train=True, transform=eval_tfms, download=True)
-        num_classes = 10
+        base_num_classes = 10
 
-    # Restrict to first two classes (labels 0 and 1) for this ADP_ResNet subfolder.
-    # This reduces effective dataset size and changes the problem to binary classification.
-    allowed = {0, 1}
-    targets = getattr(full_train, "targets", None)
-    if targets is None and hasattr(full_train, "labels"):
-        targets = full_train.labels
-    if targets is not None:
-        indices = [i for i, y in enumerate(targets) if y in allowed]
-        full_train = Subset(full_train, indices)
-        full_train_eval = Subset(full_train_eval, indices)
-        num_classes = 2
+    num_classes = base_num_classes
+
+    # Optional restriction to the first N classes (e.g., 2–10 for CIFAR-10) to
+    # reduce the problem size. We keep only samples whose labels are in
+    # {0, 1, ..., num_classes_limit-1}.
+    if num_classes_limit is not None:
+        # Clamp to a sensible range
+        n_lim = max(2, min(num_classes_limit, base_num_classes))
+        allowed = set(range(n_lim))
+        targets = getattr(full_train, "targets", None)
+        if targets is None and hasattr(full_train, "labels"):
+            targets = full_train.labels
+        if targets is not None:
+            indices = [i for i, y in enumerate(targets) if y in allowed]
+            full_train = Subset(full_train, indices)
+            full_train_eval = Subset(full_train_eval, indices)
+            num_classes = n_lim
 
     n_total = len(full_train)
     n_val = int(n_total * val_split)
@@ -467,6 +476,8 @@ def build_argparser() -> argparse.ArgumentParser:
     p.add_argument("--num-workers", type=int, default=2)
     p.add_argument("--val-split", type=float, default=0.1)
     p.add_argument("--no-augment", action="store_true", help="Disable CIFAR crop/flip (normalization stays)")
+    p.add_argument("--num-classes", type=int, default=10,
+                   help="Use only the first N classes (labels 0..N-1). For CIFAR-10, 2–10 are valid.")
 
     # Architecture
     p.add_argument("--width", type=int, default=16, help="Base channels in stage 1")
@@ -517,6 +528,7 @@ def main() -> None:
         val_split=args.val_split,
         num_workers=args.num_workers,
         use_augment=not args.no_augment,
+        num_classes_limit=args.num_classes,
     )
 
     model = make_adp_resnet(
