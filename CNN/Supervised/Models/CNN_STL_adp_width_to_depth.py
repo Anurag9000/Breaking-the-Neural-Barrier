@@ -14,6 +14,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
+from torch.optim.lr_scheduler import CosineAnnealingLR
 
 # Add root to sys.path for utils
 sys.path.append(str(Path(__file__).resolve().parents[3]))
@@ -137,6 +138,7 @@ def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> M
 
 def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, history: list, logger: Optional[ContinuousLogger] = None, verbose: bool = True) -> Tuple[float, Dict[str, Any]]:
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
+    scheduler = CosineAnnealingLR(opt, T_max=acfg.max_epochs, eta_min=acfg.lr * 1e-2)
     best_val = float("inf")
     best_state = copy.deepcopy(model.state_dict())
     es_counter = 0
@@ -241,7 +243,11 @@ def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConf
                 "es_counter": es_counter,
                 "improved": bool(improved_str)
             })
-        if es_counter >= acfg.patience: break
+        if es_counter >= acfg.patience:
+            break
+
+        # Cosine LR step per epoch
+        scheduler.step()
             
     return best_val, best_state
 

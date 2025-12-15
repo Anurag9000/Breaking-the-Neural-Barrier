@@ -1,3 +1,4 @@
+import csv
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
@@ -144,3 +145,52 @@ def plot_comprehensive_stats(
         plt.savefig(save_dir / "comprehensive_stats.png", dpi=150, bbox_inches='tight')
         plt.close()
         print(f"Saved comprehensive stats to {save_dir / 'comprehensive_stats.png'}")
+
+
+def plot_best_loss_per_neurons_from_csv(
+    csv_path: Path,
+    save_path: Optional[Path] = None,
+    title: str = "Loss vs Neurons (best per width)",
+    log_scale_x: bool = False,
+    log_scale_y: bool = True,
+) -> None:
+    """
+    Utility to recompute loss-vs-neurons from an ADP training_stats.csv.
+
+    For each distinct neuron count, it takes the *best* (minimum) validation
+    loss across all epochs and plots that curve.
+    """
+    csv_path = Path(csv_path)
+    if save_path is None:
+        save_path = csv_path.with_name("loss_vs_neurons_best_per_width.png")
+
+    best_by_neurons = {}
+    with csv_path.open("r", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                neurons = int(row["neurons"])
+                loss = float(row["val_loss"])
+            except (KeyError, ValueError):
+                continue
+            if loss <= 0:
+                continue
+            prev = best_by_neurons.get(neurons, float("inf"))
+            if loss < prev:
+                best_by_neurons[neurons] = loss
+
+    if not best_by_neurons:
+        print(f"No valid rows found in {csv_path} to plot.")
+        return
+
+    neurons = sorted(best_by_neurons.keys())
+    losses = [best_by_neurons[n] for n in neurons]
+
+    plot_loss_vs_neurons(
+        neurons,
+        losses,
+        save_path,
+        title=title,
+        log_scale_x=log_scale_x,
+        log_scale_y=log_scale_y,
+    )
