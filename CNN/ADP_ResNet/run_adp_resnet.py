@@ -350,11 +350,11 @@ def adp_search(
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
         return final_model, local_best_val, local_best_snap
 
-    def optimize_depth_at_fixed_width(curr_model: ADPResNet) -> Tuple[ADPResNet, float, Dict[str, Any]]:
-        local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history, logger)
-        local_best_val = local_val
-        local_best_state = local_state
-        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
+      def optimize_depth_at_fixed_width(curr_model: ADPResNet) -> Tuple[ADPResNet, float, Dict[str, Any]]:
+        # Start directly from the current global best snapshot at this (width, depth)
+        local_best_val = global_best_val
+        local_best_snap = global_best_snap
+        curr_model = restore_arch_and_state(curr_model, local_best_snap, device)
         depth_failure_count = 0
         while depth_failure_count < acfg.trials_depth:
             if not can_deepen(curr_model):
@@ -366,7 +366,6 @@ def adp_search(
             v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history, logger)
             if v < local_best_val - acfg.delta:
                 local_best_val = v
-                local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 depth_failure_count = 0
                 improvements.append((estimate_neurons(curr_model.width, curr_model.depth), v))
