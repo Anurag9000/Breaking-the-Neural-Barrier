@@ -1,7 +1,7 @@
 """
 ADP runner for a ResNet-style CIFAR backbone (ADPResNet).
 
-Supports all ADP modes:
+Supports ADP modes:
   - width_only
   - depth_only
   - width_to_depth
@@ -9,8 +9,11 @@ Supports all ADP modes:
   - alt_width
   - alt_depth
 
-The ADP logic mirrors the structure of CNN_STL_adp_width_to_depth.py but is
-specialised for classification on CIFAR-10/100 with a ResNet-style model.
+ADP behaviour (per architecture):
+  - Train current (width, depth) once with early stopping.
+  - When validation loss stops improving (ES hits patience), immediately try
+    expanded architectures (wider/deeper) until no improvement for a fixed
+    number of expansion trials.
 """
 from __future__ import annotations
 
@@ -22,7 +25,6 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.utils.data import DataLoader, random_split, Subset
@@ -72,7 +74,7 @@ def _merge_state(new_state: Dict[str, torch.Tensor], old_state: Dict[str, torch.
             if ov.shape == v.shape:
                 merged[k] = ov
             else:
-                if v.ndim == ov.ndim:
+                if ov.ndim == v.ndim:
                     merged[k] = _resize_tensor(v.shape, ov)
                 else:
                     merged[k] = v
@@ -123,7 +125,7 @@ def snapshot_arch_and_state(model: ADPResNet, state_dict: Optional[Dict[str, tor
     }
 
 
-def restore_arch_and_state(model: ADPResNet, snap: Dict[str, Any], device: torch.device) -> ADPResNet:
+def restore_arch_and_state(snap: Dict[str, Any], device: torch.device) -> ADPResNet:
     cfg = ADPResNetConfig(
         input_channels=snap.get("input_channels", 3),
         num_classes=snap.get("num_classes", 10),
@@ -131,9 +133,9 @@ def restore_arch_and_state(model: ADPResNet, snap: Dict[str, Any], device: torch
         depth=snap["depth"],
         dropout=snap.get("dropout", 0.0),
     )
-    new_model = ADPResNet(cfg).to(device)
-    new_model.load_state_dict(snap["state"], strict=False)
-    return new_model
+    model = ADPResNet(cfg).to(device)
+    model.load_state_dict(snap["state"], strict=False)
+    return model
 
 
 def make_loaders(
@@ -148,7 +150,6 @@ def make_loaders(
     train_tfms, eval_tfms = make_cifar_transforms(dataset, use_augment=use_augment)
 
     ds_name = dataset.lower()
-
     if ds_name == "cifar100":
         full_train = torchvision.datasets.CIFAR100(root=data_root, train=True, transform=train_tfms, download=True)
         full_train_eval = torchvision.datasets.CIFAR100(root=data_root, train=True, transform=eval_tfms, download=True)
@@ -160,11 +161,8 @@ def make_loaders(
 
     num_classes = base_num_classes
 
-    # Optional restriction to the first N classes (e.g., 2–10 for CIFAR-10) to
-    # reduce the problem size. We keep only samples whose labels are in
-    # {0, 1, ..., num_classes_limit-1}.
+    # Optional restriction to first N classes (labels 0..N-1)
     if num_classes_limit is not None:
-        # Clamp to a sensible range
         n_lim = max(2, min(num_classes_limit, base_num_classes))
         allowed = set(range(n_lim))
         targets = getattr(full_train, "targets", None)
@@ -179,6 +177,7 @@ def make_loaders(
     n_total = len(full_train)
     n_val = int(n_total * val_split)
     n_train = n_total - n_val
+
     train_ds, _ = random_split(full_train, [n_train, n_val], generator=torch.Generator().manual_seed(42))
     _, val_ds = random_split(full_train_eval, [n_train, n_val], generator=torch.Generator().manual_seed(42))
 
@@ -301,11 +300,11 @@ def adp_search(
     val_history: List[float] = []
     improvements: List[Tuple[int, float]] = []
 
+    # Initial training at starting width/depth
     logger.log_console("[INITIAL TRAINING]")
     best_val, best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, val_history, logger)
     model.load_state_dict(best_state)
-    global_best_snap = snapshot_arch_and_state(model, best_state)
-    global_best_val = best_val
+    best_snap = snapshot_arch_and_state(model, best_state)
     improvements.append((estimate_neurons(model.width, model.depth), best_val))
 
     def can_widen(m: ADPResNet) -> bool:
@@ -318,24 +317,28 @@ def adp_search(
             estimate_neurons(m.width, m.depth + 1) <= acfg.max_neurons
         )
 
-    def optimize_width_at_fixed_depth(curr_model: ADPResNet) -> Tuple[ADPResNet, float, Dict[str, Any]]:
-        # Start directly from the current global best snapshot at this (width, depth)
-        local_best_val = global_best_val
-        local_best_snap = global_best_snap
-        curr_model = restore_arch_and_state(curr_model, local_best_snap, device)
-        width_failure_count = 0
-        while width_failure_count < acfg.trials_width:
+    def optimize_width_at_fixed_depth(
+        curr_snap: Dict[str, Any],
+        start_val: float,
+    ) -> Tuple[Dict[str, Any], float]:
+        """Repeatedly widen while validation loss keeps improving."""
+        local_best_val = start_val
+        local_best_snap = curr_snap
+        curr_model = restore_arch_and_state(curr_snap, device)
+
+        failure_count = 0
+        while failure_count < acfg.trials_width:
             if not can_widen(curr_model):
                 break
-            next_model = expand_width(curr_model, acfg.ex_k, acfg.max_width, device)
-            if next_model is None:
+            widened = expand_width(curr_model, acfg.ex_k, acfg.max_width, device)
+            if widened is None:
                 break
-            curr_model = next_model
+            curr_model = widened
             v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history, logger)
             if v < local_best_val - acfg.delta:
                 local_best_val = v
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
-                width_failure_count = 0
+                failure_count = 0
                 improvements.append((estimate_neurons(curr_model.width, curr_model.depth), v))
                 logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: New best: {v:.6f}")
                 if log_loss:
@@ -345,29 +348,33 @@ def adp_search(
                     l_list = [vv for _, vv in improvements]
                     plot_loss_vs_neurons(n_list, l_list, results_dir / "loss_vs_neurons.png", title="ADPResNet")
             else:
-                width_failure_count += 1
+                failure_count += 1
                 logger.log_console("[WIDTH OPT] ✗ No improvement")
-        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
-        return final_model, local_best_val, local_best_snap
 
-      def optimize_depth_at_fixed_width(curr_model: ADPResNet) -> Tuple[ADPResNet, float, Dict[str, Any]]:
-        # Start directly from the current global best snapshot at this (width, depth)
-        local_best_val = global_best_val
-        local_best_snap = global_best_snap
-        curr_model = restore_arch_and_state(curr_model, local_best_snap, device)
-        depth_failure_count = 0
-        while depth_failure_count < acfg.trials_depth:
+        return local_best_snap, local_best_val
+
+    def optimize_depth_at_fixed_width(
+        curr_snap: Dict[str, Any],
+        start_val: float,
+    ) -> Tuple[Dict[str, Any], float]:
+        """Repeatedly deepen while validation loss keeps improving."""
+        local_best_val = start_val
+        local_best_snap = curr_snap
+        curr_model = restore_arch_and_state(curr_snap, device)
+
+        failure_count = 0
+        while failure_count < acfg.trials_depth:
             if not can_deepen(curr_model):
                 break
-            next_model = expand_depth(curr_model, acfg.max_depth, device)
-            if next_model is None:
+            deepened = expand_depth(curr_model, acfg.max_depth, device)
+            if deepened is None:
                 break
-            curr_model = next_model
+            curr_model = deepened
             v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history, logger)
             if v < local_best_val - acfg.delta:
                 local_best_val = v
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
-                depth_failure_count = 0
+                failure_count = 0
                 improvements.append((estimate_neurons(curr_model.width, curr_model.depth), v))
                 logger.log_console(f"[DEPTH OPT] ✓ IMPROVEMENT: New best: {v:.6f}")
                 if log_loss:
@@ -377,79 +384,79 @@ def adp_search(
                     l_list = [vv for _, vv in improvements]
                     plot_loss_vs_neurons(n_list, l_list, results_dir / "loss_vs_neurons.png", title="ADPResNet")
             else:
-                depth_failure_count += 1
+                failure_count += 1
                 logger.log_console("[DEPTH OPT] ✗ No improvement")
-        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
-        return final_model, local_best_val, local_best_snap
+
+        return local_best_snap, local_best_val
+
+    global_best_val = best_val
+    global_best_snap = best_snap
 
     mode = acfg.adp_mode
     if mode in ["width_only", "width"]:
-        model, global_best_val, global_best_snap = optimize_width_at_fixed_depth(model)
+        global_best_snap, global_best_val = optimize_width_at_fixed_depth(global_best_snap, global_best_val)
     elif mode in ["depth_only", "depth"]:
-        model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
+        global_best_snap, global_best_val = optimize_depth_at_fixed_width(global_best_snap, global_best_val)
     elif mode == "depth_to_width":
-        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
-        global_best_val = base_val
-        global_best_snap = base_snap
-        fc = 0
-        while fc < acfg.trials_depth:
-            if not can_deepen(model):
+        # Depth then width refinement after each depth step
+        global_best_snap, global_best_val = optimize_width_at_fixed_depth(global_best_snap, global_best_val)
+        fail = 0
+        while fail < acfg.trials_depth:
+            tmp_model = restore_arch_and_state(global_best_snap, device)
+            if not can_deepen(tmp_model):
                 break
-            nm = expand_depth(model, acfg.max_depth, device)
-            if nm is None:
+            deeper = expand_depth(tmp_model, acfg.max_depth, device)
+            if deeper is None:
                 break
-            model = nm
-            model, v, s = optimize_width_at_fixed_depth(model)
-            if v < global_best_val - acfg.delta:
-                global_best_val = v
-                global_best_snap = s
-                fc = 0
+            deeper_snap = snapshot_arch_and_state(deeper, deeper.state_dict())
+            deeper_snap, val = optimize_width_at_fixed_depth(deeper_snap, global_best_val)
+            if val < global_best_val - acfg.delta:
+                global_best_val = val
+                global_best_snap = deeper_snap
+                fail = 0
             else:
-                fc += 1
-        model = restore_arch_and_state(model, global_best_snap, device)
+                fail += 1
     elif mode == "width_to_depth":
-        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
-        global_best_val = base_val
-        global_best_snap = base_snap
-        fc = 0
-        while fc < acfg.trials_width:
-            if not can_widen(model):
+        # Width then depth refinement after each width step
+        global_best_snap, global_best_val = optimize_depth_at_fixed_width(global_best_snap, global_best_val)
+        fail = 0
+        while fail < acfg.trials_width:
+            tmp_model = restore_arch_and_state(global_best_snap, device)
+            if not can_widen(tmp_model):
                 break
-            nm = expand_width(model, acfg.ex_k, acfg.max_width, device)
-            if nm is None:
+            wider = expand_width(tmp_model, acfg.ex_k, acfg.max_width, device)
+            if wider is None:
                 break
-            model = nm
-            model, v, s = optimize_depth_at_fixed_width(model)
-            if v < global_best_val - acfg.delta:
-                global_best_val = v
-                global_best_snap = s
-                fc = 0
+            wider_snap = snapshot_arch_and_state(wider, wider.state_dict())
+            wider_snap, val = optimize_depth_at_fixed_width(wider_snap, global_best_val)
+            if val < global_best_val - acfg.delta:
+                global_best_val = val
+                global_best_snap = wider_snap
+                fail = 0
             else:
-                fc += 1
-        model = restore_arch_and_state(model, global_best_snap, device)
+                fail += 1
     elif mode in ["alt_width", "alt_depth"]:
+        # Alternate between width and depth optimisation until both saturate.
         phase = "width" if mode == "alt_width" else "depth"
         sat_w, sat_d = False, False
         while not (sat_w and sat_d):
-            imp = False
+            improved = False
             if phase == "width":
-                model, v, s = optimize_width_at_fixed_depth(model)
-                if v < global_best_val - acfg.delta:
-                    global_best_val = v
-                    global_best_snap = s
-                    imp = True
-                sat_w = not imp
+                new_snap, val = optimize_width_at_fixed_depth(global_best_snap, global_best_val)
+                if val < global_best_val - acfg.delta:
+                    global_best_val = val
+                    global_best_snap = new_snap
+                    improved = True
+                sat_w = not improved
                 phase = "depth"
             else:
-                model, v, s = optimize_depth_at_fixed_width(model)
-                if v < global_best_val - acfg.delta:
-                    global_best_val = v
-                    global_best_snap = s
-                    imp = True
-                sat_d = not imp
+                new_snap, val = optimize_depth_at_fixed_width(global_best_snap, global_best_val)
+                if val < global_best_val - acfg.delta:
+                    global_best_val = val
+                    global_best_snap = new_snap
+                    improved = True
+                sat_d = not improved
                 phase = "width"
-            model = restore_arch_and_state(model, global_best_snap, device)
-        model = restore_arch_and_state(model, global_best_snap, device)
     else:
         logger.log_console(f"[WARN] Unknown adp_mode={mode}, skipping ADP search.")
 
@@ -460,7 +467,7 @@ def adp_search(
         l_list = [vv for _, vv in improvements]
         plot_loss_vs_neurons(n_list, l_list, results_dir / "loss_vs_neurons.png", title="ADPResNet - Loss vs Neurons")
 
-    final_model = restore_arch_and_state(model, global_best_snap, device)
+    final_model = restore_arch_and_state(global_best_snap, device)
     return global_best_val, final_model, final_model.width, final_model.depth
 
 
@@ -474,8 +481,12 @@ def build_argparser() -> argparse.ArgumentParser:
     p.add_argument("--num-workers", type=int, default=2)
     p.add_argument("--val-split", type=float, default=0.1)
     p.add_argument("--no-augment", action="store_true", help="Disable CIFAR crop/flip (normalization stays)")
-    p.add_argument("--num-classes", type=int, default=10,
-                   help="Use only the first N classes (labels 0..N-1). For CIFAR-10, 2–10 are valid.")
+    p.add_argument(
+        "--num-classes",
+        type=int,
+        default=10,
+        help="Use only the first N classes (labels 0..N-1). For CIFAR-10, 2–10 are valid.",
+    )
 
     # Architecture
     p.add_argument("--width", type=int, default=16, help="Base channels in stage 1")
@@ -483,8 +494,12 @@ def build_argparser() -> argparse.ArgumentParser:
     p.add_argument("--dropout", type=float, default=0.0, help="Dropout probability inside residual blocks")
 
     # ADP config
-    p.add_argument("--adp-mode", type=str, default="width_to_depth",
-                   choices=["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth"])
+    p.add_argument(
+        "--adp-mode",
+        type=str,
+        default="width_to_depth",
+        choices=["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth"],
+    )
     p.add_argument("--max-epochs", type=int, default=300)
     p.add_argument("--delta", type=float, default=1e-3)
     p.add_argument("--patience", type=int, default=20)
@@ -578,3 +593,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
