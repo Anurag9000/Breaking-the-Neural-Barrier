@@ -310,7 +310,7 @@ def main() -> None:
     results_dir = Path(args.results_dir)
     _ensure_dir(results_dir)
 
-    train_loader, val_loader, _, num_classes = make_loaders(
+    train_loader, val_loader, num_classes = make_loaders(
         dataset=args.dataset,
         data_root=args.data_root,
         batch_size=args.batch_size,
