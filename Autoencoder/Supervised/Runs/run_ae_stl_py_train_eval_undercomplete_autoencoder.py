@@ -1,4 +1,5 @@
 import argparse
+import csv
 import json
 import os
 from pathlib import Path
@@ -131,36 +132,80 @@ def main():
         seed=args.seed,
     )
 
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Set up model & optimiser after out_dir so logs live with this run
     model = AE_STL(in_channels=3, width=args.width, depth=args.depth, pool_after=pool_after).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scaler = torch.cuda.amp.GradScaler(enabled=args.amp and device.type=='cuda')
 
-    out_dir = Path(args.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
+    # ------------------------------------------------------------------
+    # Logging setup: text log + per-epoch CSV (similar to ADP runners)
+    # ------------------------------------------------------------------
+    log_path = out_dir / "training_log.txt"
+    stats_path = out_dir / "training_stats.csv"
+
+    log_f = log_path.open("w", encoding="utf-8")
+    stats_f = stats_path.open("w", newline="", encoding="utf-8")
+    stats_writer = csv.writer(stats_f)
+    stats_writer.writerow(
+        ["epoch", "width", "depth", "neurons", "train_loss", "val_loss", "best_val", "best_epoch"]
+    )
 
     best_val = float('inf')
     best_epoch = -1
     epochs_no_improve = 0
     ckpt_path = out_dir / 'best.pt'
 
-    for epoch in range(1, args.epochs + 1):
-        train_loss = train_one_epoch(model, train_loader, optimizer, device, scaler if args.amp else None)
-        val_loss = eval_epoch(model, val_loader, device)
+    neurons_metric = ae_total_neurons(args.width, args.depth)
 
-        improved = val_loss < best_val - 1e-6
-        if improved:
-            best_val = val_loss
-            best_epoch = epoch
-            epochs_no_improve = 0
-            torch.save({'model': model.state_dict(), 'epoch': epoch, 'val_loss': val_loss, 'args': vars(args)}, ckpt_path)
-        else:
-            epochs_no_improve += 1
+    try:
+        for epoch in range(1, args.epochs + 1):
+            train_loss = train_one_epoch(model, train_loader, optimizer, device, scaler if args.amp else None)
+            val_loss = eval_epoch(model, val_loader, device)
 
-        print(f"Epoch {epoch:03d} | train={train_loss:.4f} | val={val_loss:.4f} | best_val={best_val:.4f} @ {best_epoch}")
+            improved = val_loss < best_val - 1e-6
+            if improved:
+                best_val = val_loss
+                best_epoch = epoch
+                epochs_no_improve = 0
+                torch.save(
+                    {
+                        'model': model.state_dict(),
+                        'epoch': epoch,
+                        'val_loss': val_loss,
+                        'args': vars(args),
+                    },
+                    ckpt_path,
+                )
+            else:
+                epochs_no_improve += 1
 
-        if epochs_no_improve >= args.patience:
-            print(f"Early stopping at epoch {epoch} (no improvement for {args.patience} epochs)")
-            break
+            msg = (
+                f"Epoch {epoch:03d} | train={train_loss:.4f} | "
+                f"val={val_loss:.4f} | best_val={best_val:.4f} @ {best_epoch}"
+            )
+            print(msg)
+            log_f.write(msg + "\n")
+
+            # Per-epoch CSV row
+            stats_writer.writerow(
+                [epoch, args.width, args.depth, neurons_metric, train_loss, val_loss, best_val, best_epoch]
+            )
+            stats_f.flush()
+
+            if epochs_no_improve >= args.patience:
+                stop_msg = f"Early stopping at epoch {epoch} (no improvement for {args.patience} epochs)"
+                print(stop_msg)
+                log_f.write(stop_msg + "\n")
+                break
+    finally:
+        log_f.flush()
+        stats_f.flush()
+
+    log_f.write("\n[TRAINING COMPLETE]\n")
+    log_f.flush()
 
     # Load best and evaluate on test
     if ckpt_path.exists():
