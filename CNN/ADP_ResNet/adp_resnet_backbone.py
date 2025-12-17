@@ -97,6 +97,7 @@ class ADPResNet(nn.Module):
         self.stage1 = self._make_stage(c1, c1, cfg.depth, stride=1, dropout=cfg.dropout)
         self.stage2 = self._make_stage(c1, c2, cfg.depth, stride=2, dropout=cfg.dropout)
         self.stage3 = self._make_stage(c2, c3, cfg.depth, stride=2, dropout=cfg.dropout)
+        self.final_channels = c3
 
         self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(c3, cfg.num_classes)
@@ -124,6 +125,19 @@ class ADPResNet(nn.Module):
         x = torch.flatten(x, 1)
         x = self.fc(x)
         return x
+
+    def forward_with_features(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Return classifier logits and the last conv feature map before pooling.
+        """
+        x = self.stem(x)
+        x = self.stage1(x)
+        x = self.stage2(x)
+        feat = self.stage3(x)
+        pooled = self.avg_pool(feat)
+        pooled = torch.flatten(pooled, 1)
+        logits = self.fc(pooled)
+        return logits, feat
 
 
 def make_adp_resnet(
@@ -154,4 +168,3 @@ def estimate_neurons(width: int, depth: int) -> int:
     remaining cheap to compute.
     """
     return int(width * (depth + 1))
-

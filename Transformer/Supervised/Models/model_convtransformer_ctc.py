@@ -16,6 +16,7 @@ class ConvFeature(nn.Module):
 class TransformerEncoder1D(nn.Module):
     def __init__(self, d_model=256, nhead=8, depth=4):
         super().__init__()
+        self.depth = depth
         enc = nn.TransformerEncoderLayer(d_model, nhead, d_model*4, 0.1, batch_first=True, norm_first=True)
         self.encoder = nn.TransformerEncoder(enc, depth)
     def forward(self, x):
@@ -23,11 +24,14 @@ class TransformerEncoder1D(nn.Module):
 
 class ConvTransformerCTC(nn.Module):
     """Single-model ASR toy: spectrogram -> conv -> sequence -> Transformer -> CTC logits."""
-    def __init__(self, vocab=30, d_model=256):
+    def __init__(self, vocab=30, d_model=256, depth=4):
         super().__init__()
+        self.vocab = vocab
+        self.d_model = d_model
+        self.depth = depth
         self.conv = ConvFeature(1, (32,64,128))
         self.proj = nn.Linear(128*4, d_model)
-        self.tr = TransformerEncoder1D(d_model, 8, 4)
+        self.tr = TransformerEncoder1D(d_model, 8, depth)
         self.head = nn.Linear(d_model, vocab)
     def forward(self, spec):
         # spec: (B,1,T,F) -> conv -> (B,C,T/8,F/8)

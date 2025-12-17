@@ -1,0 +1,249 @@
+import argparse
+import csv
+import json
+from pathlib import Path
+from typing import Tuple
+
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, random_split
+from torchvision import datasets, transforms
+
+from ..Models.dae_mae_vit_stl import MAEViT, mae_total_neurons
+
+
+def make_loaders(
+    dataset: str,
+    data_root: str,
+    batch_size: int,
+    val_split: float,
+    num_workers: int,
+) -> Tuple[DataLoader, DataLoader]:
+    ds_name = dataset.lower()
+    if ds_name == "cifar100":
+        mean, std = (0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)
+        ds_cls = datasets.CIFAR100
+    else:
+        mean, std = (0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616)
+        ds_cls = datasets.CIFAR10
+
+    tf_train = transforms.Compose(
+        [
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize(mean, std),
+        ]
+    )
+    tf_eval = transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Normalize(mean, std),
+        ]
+    )
+
+    full_train = ds_cls(root=data_root, train=True, transform=tf_train, download=True)
+    full_eval = ds_cls(root=data_root, train=True, transform=tf_eval, download=True)
+
+    n_total = len(full_train)
+    n_val = int(n_total * val_split)
+    n_train = n_total - n_val
+
+    train_ds, _ = random_split(full_train, [n_train, n_val], generator=torch.Generator().manual_seed(1337))
+    _, val_ds = random_split(full_eval, [n_train, n_val], generator=torch.Generator().manual_seed(1337))
+
+    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
+    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
+    return dl_train, dl_val
+
+
+def random_mask_patches(tokens: torch.Tensor, mask_ratio: float) -> Tuple[torch.Tensor, torch.Tensor]:
+    """
+    tokens: (B, N, D)
+    Returns:
+      visible_tokens (B, N, D)  -- we keep shape for simplicity, but mask some to zero
+      mask (B, N)               -- 1 for masked positions
+    """
+    if mask_ratio <= 0.0:
+        mask = torch.zeros(tokens.shape[:2], dtype=torch.bool, device=tokens.device)
+        return tokens, mask
+    B, N, D = tokens.shape
+    num_mask = int(N * mask_ratio)
+    if num_mask == 0:
+        mask = torch.zeros(B, N, dtype=torch.bool, device=tokens.device)
+        return tokens, mask
+
+    mask = torch.zeros(B, N, dtype=torch.bool, device=tokens.device)
+    for b in range(B):
+        idx = torch.randperm(N, device=tokens.device)[:num_mask]
+        mask[b, idx] = True
+    visible = tokens.clone()
+    visible[mask] = 0.0
+    return visible, mask
+
+
+def train_one_epoch(
+    model: MAEViT,
+    dl: DataLoader,
+    opt: torch.optim.Optimizer,
+    device: torch.device,
+    mask_ratio: float,
+) -> float:
+    model.train()
+    mse = nn.MSELoss()
+    total, n = 0.0, 0
+    for xb, _ in dl:
+        xb = xb.to(device, non_blocking=True)
+        tokens = model.encode_patches(xb)
+        tokens_masked, _ = random_mask_patches(tokens, mask_ratio)
+        opt.zero_grad(set_to_none=True)
+        xb_rec = model.decode_patches(tokens_masked)
+        loss = mse(xb_rec, xb)
+        loss.backward()
+        opt.step()
+        total += float(loss.item()) * xb.size(0)
+        n += xb.size(0)
+    return total / max(n, 1)
+
+
+def eval_epoch(
+    model: MAEViT,
+    dl: DataLoader,
+    device: torch.device,
+    mask_ratio: float,
+) -> float:
+    model.eval()
+    mse = nn.MSELoss(reduction="sum")
+    total, n = 0.0, 0
+    with torch.no_grad():
+        for xb, _ in dl:
+            xb = xb.to(device, non_blocking=True)
+            tokens = model.encode_patches(xb)
+            tokens_masked, _ = random_mask_patches(tokens, mask_ratio)
+            xb_rec = model.decode_patches(tokens_masked)
+            total += float(mse(xb_rec, xb).item())
+            n += xb.size(0)
+    return total / max(n, 1)
+
+
+def main() -> None:
+    p = argparse.ArgumentParser()
+    p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100"])
+    p.add_argument("--data-root", type=str, default="./data")
+    p.add_argument("--results-dir", type=str, default="results_dae_mae_vit_cifar")
+    p.add_argument("--embed-dim", type=int, default=192)
+    p.add_argument("--depth", type=int, default=4)
+    p.add_argument("--num-heads", type=int, default=3)
+    p.add_argument("--patch-size", type=int, default=4)
+    p.add_argument("--mask-ratio", type=float, default=0.75)
+    p.add_argument("--batch-size", type=int, default=512)
+    p.add_argument("--num-workers", type=int, default=0)
+    p.add_argument("--epochs", type=int, default=10000000000000000000)
+    p.add_argument("--patience", type=int, default=20)
+    p.add_argument("--lr", type=float, default=1e-3)
+    p.add_argument("--weight-decay", type=float, default=1e-4)
+    p.add_argument("--val-split", type=float, default=0.1)
+    p.add_argument("--seed", type=int, default=1337)
+
+    args = p.parse_args()
+
+    torch.backends.cudnn.benchmark = True
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    results_dir = Path(args.results_dir)
+    results_dir.mkdir(parents=True, exist_ok=True)
+
+    dl_train, dl_val = make_loaders(
+        dataset=args.dataset,
+        data_root=args.data_root,
+        batch_size=args.batch_size,
+        val_split=args.val_split,
+        num_workers=args.num_workers,
+    )
+
+    model = MAEViT(
+        img_size=32,
+        patch_size=args.patch_size,
+        in_chans=3,
+        embed_dim=args.embed_dim,
+        depth=args.depth,
+        num_heads=args.num_heads,
+    ).to(device)
+    opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+
+    log_path = results_dir / "training_log.txt"
+    csv_path = results_dir / "training_stats.csv"
+
+    log_f = log_path.open("w", encoding="utf-8")
+    csv_f = csv_path.open("w", newline="", encoding="utf-8")
+    writer = csv.writer(csv_f)
+    writer.writerow(
+        ["epoch", "embed_dim", "depth", "neurons", "train_loss", "val_loss", "best_val", "best_epoch"]
+    )
+
+    neurons_metric = mae_total_neurons(args.embed_dim, args.depth)
+    best_val = float("inf")
+    best_epoch = -1
+    es_counter = 0
+
+    try:
+        for epoch in range(1, args.epochs + 1):
+            train_loss = train_one_epoch(model, dl_train, opt, device, args.mask_ratio)
+            val_loss = eval_epoch(model, dl_val, device, args.mask_ratio)
+
+            improved = val_loss < best_val - 1e-6
+            if improved:
+                best_val = val_loss
+                best_epoch = epoch
+                es_counter = 0
+                torch.save(
+                    {
+                        "model": model.state_dict(),
+                        "epoch": epoch,
+                        "val_loss": val_loss,
+                        "args": vars(args),
+                    },
+                    results_dir / "best.pt",
+                )
+            else:
+                es_counter += 1
+
+            msg = (
+                f"Epoch {epoch:03d} | train={train_loss:.6f} | "
+                f"val={val_loss:.6f} | best_val={best_val:.6f} @ {best_epoch}"
+            )
+            print(msg)
+            log_f.write(msg + "\n")
+
+            writer.writerow(
+                [epoch, args.embed_dim, args.depth, neurons_metric, train_loss, val_loss, best_val, best_epoch]
+            )
+            csv_f.flush()
+
+            if es_counter >= args.patience:
+                stop_msg = f"Early stopping at epoch {epoch} (no improvement for {args.patience} epochs)"
+                print(stop_msg)
+                log_f.write(stop_msg + "\n")
+                break
+    finally:
+        log_f.flush()
+        csv_f.flush()
+
+    report = {
+        "dataset": args.dataset,
+        "embed_dim": args.embed_dim,
+        "depth": args.depth,
+        "num_heads": args.num_heads,
+        "mask_ratio": args.mask_ratio,
+        "neurons_metric": neurons_metric,
+        "best_val_loss": best_val,
+        "best_epoch": best_epoch,
+    }
+    with (results_dir / "report.json").open("w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2)
+    print(json.dumps(report, indent=2))
+
+
+if __name__ == "__main__":
+    main()
+
