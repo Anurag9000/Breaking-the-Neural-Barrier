@@ -1,0 +1,10 @@
+[2025-12-19 21:00:45] Initialized ContinuousLogger for mlp_cls_stl (Mode: grid)
+[2025-12-19 21:00:45] Logs: logs\grid_mnist_depth2_width2to20_step2_parallel10_gpu\mnist_grid_depth2_w2-20_step2_20251219_210045\training_log.txt
+[2025-12-19 21:00:45] CSV: logs\grid_mnist_depth2_width2to20_step2_parallel10_gpu\mnist_grid_depth2_w2-20_step2_20251219_210045\training_stats.csv
+[2025-12-19 21:00:45] Device (default): cuda
+[2025-12-19 21:00:45] Dataset: mnist img_size=(28, 28)
+[2025-12-19 21:00:45] Grid: depth=2 widths=[2, 4, 6, 8, 10]...[12, 14, 16, 18, 20] (n=10)
+[2025-12-19 21:00:45] Train: batch_size=512 lr=0.001 wd=0.0001 patience=10 max_epochs=100000000
+[2025-12-19 21:00:45] Parallel: workers=10 devices=['cuda']
+[2025-12-19 21:52:31] Saved summary: logs\grid_mnist_depth2_width2to20_step2_parallel10_gpu\mnist_grid_depth2_w2-20_step2_20251219_210045\grid_summary.csv
+[2025-12-19 21:52:31] Saved plots: logs\grid_mnist_depth2_width2to20_step2_parallel10_gpu\mnist_grid_depth2_w2-20_step2_20251219_210045\best_val_loss_vs_width.png and logs\grid_mnist_depth2_width2to20_step2_parallel10_gpu\mnist_grid_depth2_w2-20_step2_20251219_210045\val_acc_vs_width.png

@@ -1,6 +1,7 @@
 import copy
 import csv
 import datetime as _dt
+import os
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -139,6 +140,164 @@ def plot_grid_summary(csv_path: Path, out_dir: Path) -> None:
     plt.close()
 
 
+def _train_one_width(
+    *,
+    width: int,
+    depth: int,
+    dataset: str,
+    data_dir: str,
+    img_size: Tuple[int, int],
+    seed: int,
+    batch_size: int,
+    num_workers: int,
+    val_split: float,
+    lr: float,
+    weight_decay: float,
+    grad_clip: float,
+    max_epochs: int,
+    patience: int,
+    out_dir: Path,
+    device_str: str,
+) -> Path:
+    """
+    Train a single (depth, width) MLP classifier with early stopping and log to out_dir.
+    Returns the path to width_summary.csv.
+    """
+    torch.manual_seed(int(seed))
+    device = torch.device(device_str)
+
+    dl_train, dl_val, in_dim, num_classes = make_loaders(
+        dataset, data_dir, img_size, batch_size, val_split, seed, num_workers
+    )
+
+    models_dir = Path(__file__).resolve().parents[1] / "Models"
+    sys.path.append(str(models_dir))
+    from mlp_cls_stl import MLPClassifier  # type: ignore
+
+    hidden = [int(width)] * int(depth)
+    model = MLPClassifier(in_dim, hidden_widths=hidden, num_classes=num_classes).to(device)
+    opt = torch.optim.AdamW(model.parameters(), lr=float(lr), weight_decay=float(weight_decay))
+
+    logger = ContinuousLogger(out_dir, "mlp_cls_stl", "grid")
+    logger.log_console(f"Device: {device}")
+    logger.log_console(f"[GRID] width={width} depth={depth} hidden={hidden}")
+
+    best_val_loss = float("inf")
+    best_val_acc_at_best_loss = 0.0
+    best_epoch_loss = 0
+    best_state = None
+
+    best_val_acc_any = 0.0
+    best_epoch_acc = 0
+    es_counter = 0
+
+    try:
+        for epoch in range(1, int(max_epochs) + 1):
+            tr_loss, tr_acc = train_epoch(model, dl_train, opt, device, grad_clip=float(grad_clip))
+            va_loss, va_acc = eval_epoch(model, dl_val, device)
+
+            if va_loss < best_val_loss:
+                best_val_loss = va_loss
+                best_val_acc_at_best_loss = va_acc
+                best_epoch_loss = epoch
+                best_state = copy.deepcopy(model.state_dict())
+                es_counter = 0
+                improved = True
+            else:
+                es_counter += 1
+                improved = False
+
+            if va_acc > best_val_acc_any:
+                best_val_acc_any = va_acc
+                best_epoch_acc = epoch
+
+            logger.log_epoch_stats(
+                {
+                    "epoch": epoch,
+                    "width": int(width),
+                    "depth": int(depth),
+                    "neurons": int(sum(hidden) + num_classes),
+                    "train_loss": tr_loss,
+                    "train_acc": tr_acc,
+                    "val_loss": va_loss,
+                    "val_acc": va_acc,
+                    "best_val": best_val_loss,
+                    "es_counter": es_counter,
+                    "improved": improved,
+                    "grid": True,
+                }
+            )
+
+            if es_counter >= int(patience):
+                break
+
+        if best_state is not None:
+            model.load_state_dict(best_state)
+
+        summary_csv = out_dir / "width_summary.csv"
+        with summary_csv.open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(
+                f,
+                fieldnames=[
+                    "width",
+                    "depth",
+                    "best_val_loss",
+                    "val_acc_at_best_loss",
+                    "best_val_acc",
+                    "epoch_at_best_loss",
+                    "epoch_at_best_acc",
+                ],
+            )
+            w.writeheader()
+            w.writerow(
+                {
+                    "width": int(width),
+                    "depth": int(depth),
+                    "best_val_loss": float(best_val_loss),
+                    "val_acc_at_best_loss": float(best_val_acc_at_best_loss),
+                    "best_val_acc": float(best_val_acc_any),
+                    "epoch_at_best_loss": int(best_epoch_loss),
+                    "epoch_at_best_acc": int(best_epoch_acc),
+                }
+            )
+
+        logger.log_console(
+            f"[GRID] done width={width} best_val_loss={best_val_loss:.6f} "
+            f"val_acc@best_loss={best_val_acc_at_best_loss:.4f} best_val_acc={best_val_acc_any:.4f}"
+        )
+        return summary_csv
+    finally:
+        logger.close()
+
+
+def _merge_width_summaries(summary_paths: List[Path], out_csv: Path) -> None:
+    rows: List[Dict[str, str]] = []
+    for p in summary_paths:
+        with Path(p).open("r", newline="") as f:
+            r = csv.DictReader(f)
+            for row in r:
+                rows.append(row)
+
+    rows.sort(key=lambda r: int(r["width"]))
+    out_csv.parent.mkdir(parents=True, exist_ok=True)
+    with out_csv.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(
+            f,
+            fieldnames=[
+                "width",
+                "depth",
+                "best_val_loss",
+                "val_acc_at_best_loss",
+                "best_val_acc",
+                "epoch_at_best_loss",
+                "epoch_at_best_acc",
+            ],
+        )
+        w.writeheader()
+        for row in rows:
+            w.writerow(row)
+
+
 def main() -> None:
     import argparse
 
@@ -153,7 +312,7 @@ def main() -> None:
     p.add_argument("--width-end", type=int, default=256)
 
     p.add_argument("--seed", type=int, default=0)
-    p.add_argument("--batch-size", type=int, default=256)
+    p.add_argument("--batch-size", type=int, default=512)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--val-split", type=float, default=0.1)
 
@@ -164,25 +323,18 @@ def main() -> None:
     p.add_argument("--patience", type=int, default=10)
 
     p.add_argument("--results-dir", type=str, default="results_grid/mlp_cls")
+    p.add_argument("--parallel", type=int, default=0, help="Run widths in parallel processes (0=off, N>0=workers)")
+    p.add_argument(
+        "--devices",
+        type=str,
+        default="",
+        help="Comma-separated devices for parallel mode, e.g. 'cuda:0,cuda:1' or 'cpu'. If empty: uses single device.",
+    )
     args = p.parse_args()
 
     torch.manual_seed(int(args.seed))
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    dl_train, dl_val, in_dim, num_classes = make_loaders(
-        args.dataset,
-        args.data_dir,
-        tuple(args.img_size),
-        args.batch_size,
-        float(args.val_split),
-        int(args.seed),
-        int(args.num_workers),
-    )
-
-    # Import baseline model from the Models directory.
-    models_dir = Path(__file__).resolve().parents[1] / "Models"
-    sys.path.append(str(models_dir))
-    from mlp_cls_stl import MLPClassifier  # type: ignore
+    default_device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = torch.device(default_device)
 
     run_name = (
         f"{args.dataset}_grid_depth{args.depth}_w{args.width_start}-{args.width_end}_step{args.width_step}_"
@@ -206,90 +358,153 @@ def main() -> None:
         w.writeheader()
 
     widths = list(range(int(args.width_start), int(args.width_end) + 1, int(args.width_step)))
-    logger.log_console(f"Device: {device}")
-    logger.log_console(f"Dataset: {args.dataset} img_size={tuple(args.img_size)} in_dim={in_dim} classes={num_classes}")
+    logger.log_console(f"Device (default): {device}")
+    logger.log_console(f"Dataset: {args.dataset} img_size={tuple(args.img_size)}")
     logger.log_console(f"Grid: depth={args.depth} widths={widths[:5]}...{widths[-5:]} (n={len(widths)})")
     logger.log_console(f"Train: batch_size={args.batch_size} lr={args.lr} wd={args.weight_decay} patience={args.patience} max_epochs={args.max_epochs}")
 
     try:
-        for width in widths:
-            hidden = [int(width)] * int(args.depth)
-            model = MLPClassifier(in_dim, hidden_widths=hidden, num_classes=num_classes).to(device)
-            opt = torch.optim.AdamW(model.parameters(), lr=float(args.lr), weight_decay=float(args.weight_decay))
+        if int(args.parallel) > 0:
+            import concurrent.futures as cf
 
-            best_val_loss = float("inf")
-            best_val_acc_at_best_loss = 0.0
-            best_epoch_loss = 0
-            best_state = None
+            device_list = [d.strip() for d in str(args.devices).split(",") if d.strip()]
+            if not device_list:
+                device_list = [default_device]
+            logger.log_console(f"Parallel: workers={int(args.parallel)} devices={device_list}")
 
-            best_val_acc_any = 0.0
-            best_epoch_acc = 0
+            per_width_dirs = {w: (out_dir / f"width_{w:04d}") for w in widths}
+            for d in per_width_dirs.values():
+                d.mkdir(parents=True, exist_ok=True)
 
-            logger.log_console(f"[GRID] width={width} depth={args.depth} hidden={hidden}")
-            es_counter = 0
+            # Avoid CPU oversubscription when spawning multiple processes.
+            os.environ.setdefault("OMP_NUM_THREADS", "1")
+            os.environ.setdefault("MKL_NUM_THREADS", "1")
 
-            for epoch in range(1, int(args.max_epochs) + 1):
-                tr_loss, tr_acc = train_epoch(model, dl_train, opt, device, grad_clip=float(args.grad_clip))
-                va_loss, va_acc = eval_epoch(model, dl_val, device)
+            summary_paths: List[Path] = []
+            with cf.ProcessPoolExecutor(max_workers=int(args.parallel)) as ex:
+                futs = []
+                for i, width in enumerate(widths):
+                    device_str = device_list[i % len(device_list)]
+                    futs.append(
+                        ex.submit(
+                            _train_one_width,
+                            width=int(width),
+                            depth=int(args.depth),
+                            dataset=str(args.dataset),
+                            data_dir=str(args.data_dir),
+                            img_size=tuple(args.img_size),
+                            seed=int(args.seed),
+                            batch_size=int(args.batch_size),
+                            num_workers=int(args.num_workers),
+                            val_split=float(args.val_split),
+                            lr=float(args.lr),
+                            weight_decay=float(args.weight_decay),
+                            grad_clip=float(args.grad_clip),
+                            max_epochs=int(args.max_epochs),
+                            patience=int(args.patience),
+                            out_dir=per_width_dirs[int(width)],
+                            device_str=str(device_str),
+                        )
+                    )
 
-                # Track best-by-loss (for early stopping)
-                if va_loss < best_val_loss:
-                    best_val_loss = va_loss
-                    best_val_acc_at_best_loss = va_acc
-                    best_epoch_loss = epoch
-                    best_state = copy.deepcopy(model.state_dict())
-                    es_counter = 0
-                    improved = True
-                else:
-                    es_counter += 1
-                    improved = False
+                for fut in cf.as_completed(futs):
+                    summary_paths.append(Path(fut.result()))
 
-                # Track best-by-accuracy (for reporting)
-                if va_acc > best_val_acc_any:
-                    best_val_acc_any = va_acc
-                    best_epoch_acc = epoch
-
-                logger.log_epoch_stats(
-                    {
-                        "epoch": epoch,
-                        "width": int(width),
-                        "depth": int(args.depth),
-                        "neurons": int(sum(hidden) + num_classes),
-                        "train_loss": tr_loss,
-                        "train_acc": tr_acc,
-                        "val_loss": va_loss,
-                        "val_acc": va_acc,
-                        "best_val": best_val_loss,
-                        "es_counter": es_counter,
-                        "improved": improved,
-                        "grid": True,
-                    }
-                )
-
-                if es_counter >= int(args.patience):
-                    break
-
-            if best_state is not None:
-                model.load_state_dict(best_state)
-
-            row = {
-                "width": int(width),
-                "depth": int(args.depth),
-                "best_val_loss": float(best_val_loss),
-                "val_acc_at_best_loss": float(best_val_acc_at_best_loss),
-                "best_val_acc": float(best_val_acc_any),
-                "epoch_at_best_loss": int(best_epoch_loss),
-                "epoch_at_best_acc": int(best_epoch_acc),
-            }
-
-            with summary_csv.open("a", newline="", encoding="utf-8") as f:
-                w = csv.DictWriter(f, fieldnames=summary_fields)
-                w.writerow(row)
-
-            logger.log_console(
-                f"[GRID] done width={width} best_val_loss={best_val_loss:.6f} "
-                f"val_acc@best_loss={best_val_acc_at_best_loss:.4f} best_val_acc={best_val_acc_any:.4f}"
+            _merge_width_summaries(summary_paths, summary_csv)
+        else:
+            dl_train, dl_val, in_dim, num_classes = make_loaders(
+                args.dataset,
+                args.data_dir,
+                tuple(args.img_size),
+                int(args.batch_size),
+                float(args.val_split),
+                int(args.seed),
+                int(args.num_workers),
             )
+
+            # Import baseline model from the Models directory.
+            models_dir = Path(__file__).resolve().parents[1] / "Models"
+            sys.path.append(str(models_dir))
+            from mlp_cls_stl import MLPClassifier  # type: ignore
+
+            for width in widths:
+                hidden = [int(width)] * int(args.depth)
+                model = MLPClassifier(in_dim, hidden_widths=hidden, num_classes=num_classes).to(device)
+                opt = torch.optim.AdamW(model.parameters(), lr=float(args.lr), weight_decay=float(args.weight_decay))
+
+                best_val_loss = float("inf")
+                best_val_acc_at_best_loss = 0.0
+                best_epoch_loss = 0
+                best_state = None
+
+                best_val_acc_any = 0.0
+                best_epoch_acc = 0
+
+                logger.log_console(f"[GRID] width={width} depth={args.depth} hidden={hidden}")
+                es_counter = 0
+
+                for epoch in range(1, int(args.max_epochs) + 1):
+                    tr_loss, tr_acc = train_epoch(model, dl_train, opt, device, grad_clip=float(args.grad_clip))
+                    va_loss, va_acc = eval_epoch(model, dl_val, device)
+
+                    # Track best-by-loss (for early stopping)
+                    if va_loss < best_val_loss:
+                        best_val_loss = va_loss
+                        best_val_acc_at_best_loss = va_acc
+                        best_epoch_loss = epoch
+                        best_state = copy.deepcopy(model.state_dict())
+                        es_counter = 0
+                        improved = True
+                    else:
+                        es_counter += 1
+                        improved = False
+
+                    # Track best-by-accuracy (for reporting)
+                    if va_acc > best_val_acc_any:
+                        best_val_acc_any = va_acc
+                        best_epoch_acc = epoch
+
+                    logger.log_epoch_stats(
+                        {
+                            "epoch": epoch,
+                            "width": int(width),
+                            "depth": int(args.depth),
+                            "neurons": int(sum(hidden) + num_classes),
+                            "train_loss": tr_loss,
+                            "train_acc": tr_acc,
+                            "val_loss": va_loss,
+                            "val_acc": va_acc,
+                            "best_val": best_val_loss,
+                            "es_counter": es_counter,
+                            "improved": improved,
+                            "grid": True,
+                        }
+                    )
+
+                    if es_counter >= int(args.patience):
+                        break
+
+                if best_state is not None:
+                    model.load_state_dict(best_state)
+
+                row = {
+                    "width": int(width),
+                    "depth": int(args.depth),
+                    "best_val_loss": float(best_val_loss),
+                    "val_acc_at_best_loss": float(best_val_acc_at_best_loss),
+                    "best_val_acc": float(best_val_acc_any),
+                    "epoch_at_best_loss": int(best_epoch_loss),
+                    "epoch_at_best_acc": int(best_epoch_acc),
+                }
+
+                with summary_csv.open("a", newline="", encoding="utf-8") as f:
+                    w = csv.DictWriter(f, fieldnames=summary_fields)
+                    w.writerow(row)
+
+                logger.log_console(
+                    f"[GRID] done width={width} best_val_loss={best_val_loss:.6f} "
+                    f"val_acc@best_loss={best_val_acc_at_best_loss:.4f} best_val_acc={best_val_acc_any:.4f}"
+                )
 
         plot_grid_summary(summary_csv, out_dir)
         logger.log_console(f"Saved summary: {summary_csv}")
