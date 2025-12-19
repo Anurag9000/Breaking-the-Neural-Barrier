@@ -1,0 +1,30 @@
+[2025-12-19 17:25:10] Initialized ContinuousLogger for mlp_ae_stl (Mode: width_only)
+[2025-12-19 17:25:10] Logs: logs\_adp_smoketest\mnist_width_only_d2_w1_exk1_20251219_172510\training_log.txt
+[2025-12-19 17:25:10] CSV: logs\_adp_smoketest\mnist_width_only_d2_w1_exk1_20251219_172510\training_stats.csv
+[2025-12-19 17:25:10] Config: dataset=mnist img_size=(28, 28) hidden=[1, 1] bottleneck=2
+[2025-12-19 17:25:10] ADP: mode=width_only ex_k=1 trials_width=1 trials_depth=2 max_width=3 max_depth=10 max_neurons=10000000
+[2025-12-19 17:25:10] Train: batch_size=256 lr=1e-3 weight_decay=1e-4 es_patience=2 max_epochs=5
+[2025-12-19 17:25:10] Device: cuda
+[2025-12-19 17:26:04] Epoch 1 | train_mse=0.238833 val_mse=0.219087 best=0.219087 es=0/2
+[2025-12-19 17:26:57] Epoch 2 | train_mse=0.202329 val_mse=0.186682 best=0.186682 es=0/2
+[2025-12-19 17:27:47] Epoch 3 | train_mse=0.173880 val_mse=0.161793 best=0.161793 es=0/2
+[2025-12-19 17:28:37] Epoch 4 | train_mse=0.151772 val_mse=0.142310 best=0.142310 es=0/2
+[2025-12-19 17:29:28] Epoch 5 | train_mse=0.134463 val_mse=0.127074 best=0.127074 es=0/2
+[2025-12-19 17:30:19] Epoch 1 | train_mse=0.119050 val_mse=0.111781 best=0.111781 es=0/2
+[2025-12-19 17:31:06] Epoch 2 | train_mse=0.106087 val_mse=0.100943 best=0.100943 es=0/2
+[2025-12-19 17:31:54] Epoch 3 | train_mse=0.096844 val_mse=0.093161 best=0.093161 es=0/2
+[2025-12-19 17:32:46] Epoch 4 | train_mse=0.090161 val_mse=0.087492 best=0.087492 es=0/2
+[2025-12-19 17:33:35] Epoch 5 | train_mse=0.085255 val_mse=0.083298 best=0.083298 es=0/2
+[2025-12-19 17:34:39] Epoch 1 | train_mse=0.080828 val_mse=0.077776 best=0.077776 es=0/2
+[2025-12-19 17:35:32] Epoch 2 | train_mse=0.074924 val_mse=0.072335 best=0.072335 es=0/2
+[2025-12-19 17:36:20] Epoch 3 | train_mse=0.069887 val_mse=0.068079 best=0.068079 es=0/2
+[2025-12-19 17:37:12] Epoch 4 | train_mse=0.066753 val_mse=0.065824 best=0.065824 es=0/2
+[2025-12-19 17:37:58] Epoch 5 | train_mse=0.064801 val_mse=0.063849 best=0.063849 es=0/2
+[2025-12-19 17:37:58] [OPT][WIDTH] improvement val=0.063849 widths=[2, 2]
+[2025-12-19 17:38:46] Epoch 1 | train_mse=0.066182 val_mse=0.064040 best=0.064040 es=0/2
+[2025-12-19 17:39:34] Epoch 2 | train_mse=0.063065 val_mse=0.062007 best=0.062007 es=0/2
+[2025-12-19 17:40:18] Epoch 3 | train_mse=0.060914 val_mse=0.059664 best=0.059664 es=0/2
+[2025-12-19 17:41:08] Epoch 4 | train_mse=0.058785 val_mse=0.057916 best=0.057916 es=0/2
+[2025-12-19 17:41:55] Epoch 5 | train_mse=0.057353 val_mse=0.056596 best=0.056596 es=0/2
+[2025-12-19 17:41:55] [OPT][WIDTH] improvement val=0.056596 widths=[3, 3]
+[2025-12-19 17:41:55] [ADP MLP AE] best_val=0.056596 hidden=[3, 3] depth=2

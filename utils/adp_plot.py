@@ -194,3 +194,37 @@ def plot_best_loss_per_neurons_from_csv(
         log_scale_x=log_scale_x,
         log_scale_y=log_scale_y,
     )
+
+
+def plot_val_loss_from_csv(
+    csv_path: Path,
+    save_path: Optional[Path] = None,
+    title: str = "Validation Loss vs Step",
+    log_scale_y: bool = True,
+) -> None:
+    """
+    Plot validation loss over time from a ContinuousLogger CSV.
+
+    Uses row-order as "step" (not per-architecture epoch).
+    """
+    csv_path = Path(csv_path)
+    if save_path is None:
+        save_path = csv_path.with_name("val_loss_vs_step.png")
+
+    vals: List[float] = []
+    with csv_path.open("r", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                v = float(row["val_loss"])
+            except (KeyError, ValueError):
+                continue
+            if v <= 0:
+                continue
+            vals.append(v)
+
+    if not vals:
+        print(f"No valid rows found in {csv_path} to plot.")
+        return
+
+    plot_loss_vs_epoch(vals, save_path, title=title, log_scale=log_scale_y)
