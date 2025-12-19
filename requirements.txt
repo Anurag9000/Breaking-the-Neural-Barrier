@@ -1,5 +1,6 @@
 # requirements.txt
---index-url https://download.pytorch.org/whl/cu124
+# Keep PyPI as the main index for non-torch deps, and use the PyTorch CUDA wheel index for GPU builds.
+--extra-index-url https://download.pytorch.org/whl/cu124
 
 torch
 torchvision

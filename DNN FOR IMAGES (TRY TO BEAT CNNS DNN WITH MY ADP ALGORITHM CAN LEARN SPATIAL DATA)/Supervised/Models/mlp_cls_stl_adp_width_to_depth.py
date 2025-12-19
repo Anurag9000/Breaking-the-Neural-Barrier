@@ -299,6 +299,8 @@ def adp_search(
         return len(m.hidden_widths) + 1 <= acfg.max_depth and (total_neurons(m) + m.hidden_widths[-1]) <= acfg.max_neurons
 
     def optimize_width_at_fixed_depth(curr_model: Any) -> Tuple[Any, float, Dict[str, Any]]:
+        if logger is not None:
+            logger.log_console(f"[PHASE][WIDTH] start widths={curr_model.hidden_widths} depth={len(curr_model.hidden_widths)}")
         local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, logger=logger)
         local_best_val = local_val
         local_best_snap = snapshot_arch_and_state(curr_model, local_state)
@@ -309,10 +311,15 @@ def adp_search(
         while width_fail_limit is None or width_failure_count < width_fail_limit:
             if not can_widen(curr_model):
                 break
+            prev_widths = list(curr_model.hidden_widths)
             next_model = expand_width(curr_model, acfg.ex_k, acfg.max_width)
             if next_model is None:
                 break
             curr_model = next_model
+            if logger is not None:
+                logger.log_console(
+                    f"[EXPAND][WIDTH] {prev_widths} -> {curr_model.hidden_widths} (ex_k={acfg.ex_k})"
+                )
 
             v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, logger=logger)
             if v < local_best_val - acfg.delta:
@@ -329,9 +336,13 @@ def adp_search(
                     )
 
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
+        if logger is not None:
+            logger.log_console(f"[PHASE][WIDTH] end best_val_loss={local_best_val:.6f} best_widths={final_model.hidden_widths}")
         return final_model, local_best_val, local_best_snap
 
     def optimize_depth_at_fixed_width(curr_model: Any) -> Tuple[Any, float, Dict[str, Any]]:
+        if logger is not None:
+            logger.log_console(f"[PHASE][DEPTH] start widths={curr_model.hidden_widths} depth={len(curr_model.hidden_widths)}")
         local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, logger=logger)
         local_best_val = local_val
         local_best_snap = snapshot_arch_and_state(curr_model, local_state)
@@ -342,10 +353,13 @@ def adp_search(
         while depth_fail_limit is None or depth_failure_count < depth_fail_limit:
             if not can_deepen(curr_model):
                 break
+            prev_depth = len(curr_model.hidden_widths)
             next_model = expand_depth(curr_model, acfg.max_depth)
             if next_model is None:
                 break
             curr_model = next_model
+            if logger is not None:
+                logger.log_console(f"[EXPAND][DEPTH] depth {prev_depth} -> {len(curr_model.hidden_widths)} widths={curr_model.hidden_widths}")
 
             v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, logger=logger)
             if v < local_best_val - acfg.delta:
@@ -362,6 +376,8 @@ def adp_search(
                     )
 
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
+        if logger is not None:
+            logger.log_console(f"[PHASE][DEPTH] end best_val_loss={local_best_val:.6f} best_depth={len(final_model.hidden_widths)}")
         return final_model, local_best_val, local_best_snap
 
     mode = acfg.adp_mode
@@ -539,4 +555,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
