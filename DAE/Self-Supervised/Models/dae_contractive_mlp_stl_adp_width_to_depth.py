@@ -177,7 +177,8 @@ def train_with_early_stopping(
             opt.zero_grad(set_to_none=True)
             xb_rec, _ = model(xb_noisy)
             recon_loss = mse(xb_rec, xb)
-            c_pen = contractive_penalty(model)
+            # FAITHFULNESS FIX: Use correct input-dependent contractive penalty
+            c_pen = model.contractive_loss(xb)
             loss = recon_loss + acfg.contractive_lambda * c_pen
             loss.backward()
             if acfg.grad_clip is not None and acfg.grad_clip > 0:
@@ -197,7 +198,8 @@ def train_with_early_stopping(
                 xb_noisy = add_gaussian_noise(xb, acfg.noise_std)
                 xb_rec, _ = model(xb_noisy)
                 recon = nn.functional.mse_loss(xb_rec, xb, reduction="sum")
-                c_pen = contractive_penalty(model) * xb.size(0)
+                # FAITHFULNESS FIX: input-dependent penalty
+                c_pen = model.contractive_loss(xb) * xb.size(0) # scale to sum if mean returned
                 val_total += float(recon.item()) + float(acfg.contractive_lambda * c_pen.item())
                 val_n += xb.size(0)
 
@@ -251,12 +253,16 @@ def adp_search(
     ) -> Tuple[Dict[str, Any], float]:
         curr_snap = copy.deepcopy(snap)
         curr_best = ref_best
+        curr_model = restore_arch_and_state(curr_snap, device)
+
         fail = 0
+
         while fail < acfg.trials_width:
-            mdl = restore_arch_and_state(curr_snap, device)
-            wider = expand_width(mdl, acfg.ex_k, acfg.max_width, device)
+
+            wider = expand_width(curr_model, acfg.ex_k, acfg.max_width, device)
             if wider is None:
                 break
+            curr_model = wider
             v, s = train_with_early_stopping(wider, dl_train, dl_val, acfg, device, history, logger=logger)
             if v < curr_best - acfg.delta:
                 curr_best = v
@@ -273,12 +279,19 @@ def adp_search(
     ) -> Tuple[Dict[str, Any], float]:
         curr_snap = copy.deepcopy(snap)
         curr_best = ref_best
+        curr_model = restore_arch_and_state(curr_snap, device)
+
         fail = 0
+
         while fail < acfg.trials_depth:
-            mdl = restore_arch_and_state(curr_snap, device)
-            deeper = expand_depth(mdl, acfg.max_depth, device)
+
+            deeper = expand_depth(curr_model, acfg.max_depth, device)
+
             if deeper is None:
+
                 break
+
+            curr_model = deeper
             v, s = train_with_early_stopping(deeper, dl_train, dl_val, acfg, device, history, logger=logger)
             if v < curr_best - acfg.delta:
                 curr_best = v

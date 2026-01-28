@@ -59,6 +59,9 @@ class SupDAEContractiveMLP(nn.Module):
         # Reuse helper from backbone
         return self.dae.encoder_linears()
 
+    def contractive_loss(self, x: torch.Tensor) -> torch.Tensor:
+        return self.dae.contractive_loss(x)
+
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
         Returns:

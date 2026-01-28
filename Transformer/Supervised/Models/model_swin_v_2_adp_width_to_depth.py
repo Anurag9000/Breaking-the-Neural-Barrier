@@ -124,7 +124,7 @@ def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any
     state = state_dict if state_dict is not None else model.state_dict()
     return {
         "width": getattr(model, 'embed_dim', 0) if 'embed_dim' != 'None' else 0,
-        "depth": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "depth": getattr(model, 'depth', 0) if True else 0,
         "state": copy.deepcopy(state)
     }
 

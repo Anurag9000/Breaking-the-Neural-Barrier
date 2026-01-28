@@ -104,13 +104,13 @@ def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPC
     cur = model.dim if hasattr(model, 'dim') else cfg.max_width # fallback
     nxt = min(max_width, cur + cfg.ex_k)
     if nxt <= cur: return None
-    return rebuild_model(model, nxt, model.None, device, cfg)
+    return rebuild_model(model, nxt, model.depth, device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    cur_d = getattr(model, 'None', 1) if 'None' != 'None' else getattr(model.cfg, 'depth', 1) if hasattr(model, 'cfg') else 1
+    cur_d = getattr(model, 'depth', 1) if True else getattr(model.cfg, 'depth', 1) if hasattr(model, 'cfg') else 1
     new_d = min(cur_d + 1, max_depth)
     if new_d == cur_d: return None
-    return rebuild_model(model, getattr(model, 'dim', 64) if 'dim' != 'None' else 64, new_d, device, cfg)
+    return rebuild_model(model, getattr(model, 'dim', 64) if 'dim' != 'width' else 64, new_d, device, cfg)
 
 def total_neurons(width: int, depth: int) -> int:
     return int(width * (depth + 1))
@@ -119,7 +119,7 @@ def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any
     state = state_dict if state_dict is not None else model.state_dict()
     return {
         "width": getattr(model, 'dim', 0) if 'dim' != 'None' else 0,
-        "depth": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "depth": getattr(model, 'depth', 0) if True else 0,
         "state": copy.deepcopy(state)
     }
 

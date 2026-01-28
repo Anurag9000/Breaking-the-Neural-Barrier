@@ -121,7 +121,7 @@ def total_neurons(width: int, depth: int) -> int:
 def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
     return {
-        "width": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "width": getattr(model, 'width', 0) if True else 0,
         "depth": getattr(model, 'n_layers', 0) if 'n_layers' != 'None' else 0,
         "state": copy.deepcopy(state)
     }

@@ -9,6 +9,12 @@ class CPCTxtTransformer(nn.Module):
     """
     def __init__(self, vocab, dim=256, depth=4, heads=8, mlp_ratio=4.0, steps_ahead=3):
         super().__init__()
+        self.vocab = vocab
+        self.dim = dim
+        self.depth = depth
+        self.heads = heads
+        self.mlp_ratio = mlp_ratio
+        
         self.enc = TransformerEncoder(vocab, dim, depth, heads, mlp_ratio)
         self.predictors = nn.ModuleList([nn.Linear(dim, dim) for _ in range(steps_ahead)])
         self.steps_ahead = steps_ahead

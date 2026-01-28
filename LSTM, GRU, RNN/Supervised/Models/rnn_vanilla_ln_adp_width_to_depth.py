@@ -25,7 +25,7 @@ BASE_PATH = Path(__file__).with_name("rnn_vanilla_ln.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
 baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
-ModelClass = baseline_module.LNRNNCell
+ModelClass = baseline_module.RNN_Vanilla_LN
 
 # ADP REVIEW (BEFORE REFACTOR)
 # - This file is newly created to implement the ADP algorithms from scratch for the LNRNNCell model.
@@ -85,33 +85,52 @@ def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPCon
         return default
     try:
         kwargs = {}
-        kwargs['input_dim'] = get_attr(model, ['input_dim'], 1)
-        kwargs['hidden_size'] = get_attr(model, ['hidden_size'], 1)
-        kwargs['nonlinearity'] = get_attr(model, ['nonlinearity'], None)
+        # RNN_Vanilla_LN specific
+        # We need input_dim from somewhere. 
+        # model.layers[0].lin.in_features = input_dim + width. 
+        # So input_dim = in_features - current_width.
+        if hasattr(model, 'layers') and len(model.layers)>0:
+            cur_w = model.layers[0].lin.out_features
+            idim = model.layers[0].lin.in_features - cur_w
+        else:
+            idim = 96 # Fallback
+            
+        kwargs['input_dim'] = idim
+        kwargs['hidden_size'] = width
+        kwargs['num_layers'] = depth
+        kwargs['num_classes'] = get_attr(model, ['num_classes', 'head.out_features'], 10)
+        kwargs['dropout'] = get_attr(model, ['dropout', 'drop.p'], 0.1)
+        kwargs['nonlinearity'] = get_attr(model, ['nonlinearity', 'layers.0.nonlinearity'], 'tanh')
+
         new_model = ModelClass(**kwargs).to(device)
     except Exception as e:
         print(f'Rebuild failed: {e}')
         return None
-    merged = _merge_state(new_model.state_dict(), model.state_dict())
-    new_model.load_state_dict(merged, strict=False)
-    return new_model
         
     merged = _merge_state(new_model.state_dict(), model.state_dict())
     new_model.load_state_dict(merged, strict=False)
     return new_model
 
+def get_width(model):
+    if hasattr(model, 'layers') and len(model.layers)>0:
+        return model.layers[0].lin.out_features
+    return 0
+
+def get_depth(model):
+    if hasattr(model, 'layers'):
+        return len(model.layers)
+    return 0
+
 def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    
-    cur = model.dim if hasattr(model, 'dim') else cfg.max_width # fallback
+    cur = get_width(model)
     nxt = min(max_width, cur + cfg.ex_k)
     if nxt <= cur: return None
-    return rebuild_model(model, nxt, model.None, device, cfg)
+    return rebuild_model(model, nxt, get_depth(model), device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    cur_d = getattr(model, 'None', 1) if 'None' != 'None' else getattr(model.cfg, 'depth', 1) if hasattr(model, 'cfg') else 1
-    new_d = min(cur_d + 1, max_depth)
-    if new_d == cur_d: return None
-    return rebuild_model(model, getattr(model, 'None', 64) if 'None' != 'None' else 64, new_d, device, cfg)
+    cur = get_depth(model)
+    if cur >= max_depth: return None
+    return rebuild_model(model, get_width(model), cur + 1, device, cfg)
 
 def total_neurons(width: int, depth: int) -> int:
     return int(width * (depth + 1))
@@ -119,32 +138,13 @@ def total_neurons(width: int, depth: int) -> int:
 def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
     return {
-        "width": getattr(model, 'None', 0) if 'None' != 'None' else 0,
-        "depth": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "width": get_width(model),
+        "depth": get_depth(model),
         "state": copy.deepcopy(state)
     }
 
 def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
-    # Basic restore relying on rebuild
-    # We use CURRENT model's other params (implicitly handled by rebuild if we pass them)
-    # But restore actually needs to recreate the model strictly from snapshot metadata.
-    # Our simple rebuild might default to model attrs.
-    # For now, we reuse rebuild_model with snap width/depth.
     return rebuild_model(model, snap['width'], snap['depth'], device, None)
-
-def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
-    # Rebuild using snap params
-    # We need a way to pass 'cfg' or context. 
-    # For now we create a dummy cfg with snap values or rely on defaults from main
-    # Actually, we can just use the ModelClass constructor directly
-    try:
-        new_model = ModelClass(
-            dim=snap['width']
-        ).to(device)
-        new_model.load_state_dict(snap["state"])
-        return new_model
-    except Exception:
-        return model # Fallback
 
 def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, history: list) -> Tuple[float, Dict[str, Any]]:
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
@@ -364,25 +364,67 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     return global_best_val, model, model.dim, 0
 
+# Copy make_loaders
+def make_loaders(batch_size=128, num_workers=0):
+    from torchvision import datasets, transforms
+    from torch.utils.data import DataLoader
+    
+    transform_train = transforms.Compose([
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+    ])
+    transform_test = transforms.Compose([
+        transforms.ToTensor(),
+    ])
+    try:
+        trainset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
+        testset  = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
+    except:
+        trainset = datasets.FakeData(transform=transforms.ToTensor())
+        testset = datasets.FakeData(transform=transforms.ToTensor())
+        
+    n = len(trainset)
+    n_val = n // 10
+    n_train = n - n_val
+    trainset, valset = torch.utils.data.random_split(trainset, [n_train, n_val], generator=torch.Generator().manual_seed(42))
+
+    def collate(batch):
+        xs, ys = [], []
+        for x, y in batch:
+            if x.shape == (3, 32, 32):
+                seq = x.permute(1,2,0).reshape(32, -1)
+            else:
+                seq = x.flatten(1) 
+            xs.append(seq)
+            ys.append(y)
+        x = torch.stack(xs, 0)
+        y = torch.tensor(ys)
+        return x, y
+
+    train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=num_workers, collate_fn=collate)
+    val_loader   = DataLoader(valset,   batch_size=batch_size, shuffle=False, num_workers=num_workers, collate_fn=collate)
+    return train_loader, val_loader
+
 def main():
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("--width", type=int, default=64)
-    p.add_argument("--depth", type=int, default=4)
+    p.add_argument("--depth", type=int, default=2)
     p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
-    p.add_argument("--max-epochs", type=int, default=100000000)
+    p.add_argument("--max-epochs", type=int, default=10)
     args = p.parse_args()
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    print("Loading data...")
+    dl_train, dl_val = make_loaders(batch_size=128)
     
     try:
-        model = ModelClass(dim=args.width).to(device)
-    except:
-        print("Could not instantiate model with default args.")
+        # Instantiate initial model correct args for RNN_Vanilla_LN
+        model = ModelClass(input_dim=96, hidden_size=args.width, num_layers=args.depth, num_classes=10).to(device)
+    except Exception as e:
+        print(f"Could not instantiate model: {e}")
         return
 
     acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)

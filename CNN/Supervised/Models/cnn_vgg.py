@@ -31,6 +31,11 @@ VGG_CFGS = {
 class VGG(nn.Module):
     def __init__(self, cfg: Cfg, num_classes: int = 10, in_channels: int = 3, batch_norm: bool = False, dropout: float = 0.0):
         super().__init__()
+        self.cfg = cfg
+        self.in_channels = in_channels
+        self.batch_norm = batch_norm
+        self.dropout = dropout
+        self.num_classes = num_classes
         self.features = self._make_layers(cfg, in_channels, batch_norm)
         self.pool = nn.AdaptiveAvgPool2d((1, 1))  # 512x1x1 for CIFAR
         self.classifier = nn.Sequential(

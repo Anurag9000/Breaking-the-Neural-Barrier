@@ -277,13 +277,17 @@ def adp_search(
     logger.log_console(f"[ADP] Mode={acfg.adp_mode}")
 
     val_history: List[float] = []
+    # (neurons, val_loss)
     improvements: List[Tuple[int, float]] = []
 
+    # 1. Initial training to get a baseline
     global_best_val, global_best_state = train_with_early_stopping(
         model, dl_train, dl_val, acfg, device, val_history, logger=logger
     )
     global_best_snap = snapshot_arch_and_state(model, global_best_state)
+    logger.log_console(f"[ADP] Baseline: val={global_best_val:.6f}, w={model.width}, d={model.depth}")
 
+    # Helper predicates
     def can_widen(m: SupDAEMaskingConv) -> bool:
         return (
             sup_dae_total_neurons(m.width + acfg.ex_k, m.depth, num_classes) <= acfg.max_neurons
@@ -296,125 +300,202 @@ def adp_search(
             and m.depth < acfg.max_depth
         )
 
-    def optimize_width_at_fixed_depth(
-        snap: Dict[str, Any],
-        best_val: float,
-    ) -> Tuple[Dict[str, Any], float]:
-        local_best_val = best_val
-        local_best_snap = snap
-        fail = 0
-        while fail < acfg.trials_width:
-            curr = restore_arch_and_state(local_best_snap, device)
-            if not can_widen(curr):
-                break
-            wider = expand_width(curr, num_classes, acfg.ex_k, acfg.max_width, device)
-            if wider is None:
-                break
-            v, s = train_with_early_stopping(wider, dl_train, dl_val, acfg, device, val_history, logger=logger)
-            if v < local_best_val - acfg.delta:
-                local_best_val = v
-                local_best_snap = snapshot_arch_and_state(wider, s)
-                fail = 0
-                improvements.append((sup_dae_total_neurons(wider.width, wider.depth, num_classes), v))
-                logger.log_console(
-                    f"[WIDTH OPT] ✓ NEW BEST width={wider.width}, depth={wider.depth}, val={v:.6f}"
-                )
-            else:
-                fail += 1
-                logger.log_console("[WIDTH OPT] ✗ No improvement")
-        return local_best_snap, local_best_val
+    # --- Search Primitives (No Rollback per step) ---
 
-    def optimize_depth_at_fixed_width(
-        snap: Dict[str, Any],
-        best_val: float,
-    ) -> Tuple[Dict[str, Any], float]:
-        local_best_val = best_val
-        local_best_snap = snap
-        fail = 0
-        while fail < acfg.trials_depth:
-            curr = restore_arch_and_state(local_best_snap, device)
-            if not can_deepen(curr):
+    def optimize_width_at_fixed_depth(model_curr: SupDAEMaskingConv) -> Tuple[float, Dict[str, torch.Tensor], int]:
+        """
+        Expands width from model_curr until patience exhausted.
+        Returns (best_val, best_state, best_width) found during this local search.
+        Reverts model_curr to that local best at the end.
+        """
+        best_v, best_s = train_with_early_stopping(model_curr, dl_train, dl_val, acfg, device, val_history, logger)
+        best_w = model_curr.width
+        best_local_snap = snapshot_arch_and_state(model_curr, best_s)
+
+        fail_count = 0
+        while fail_count < acfg.trials_width:
+            if not can_widen(model_curr):
                 break
-            deeper = expand_depth(curr, num_classes, acfg.max_depth, device)
-            if deeper is None:
-                break
-            v, s = train_with_early_stopping(deeper, dl_train, dl_val, acfg, device, val_history, logger=logger)
-            if v < local_best_val - acfg.delta:
-                local_best_val = v
-                local_best_snap = snapshot_arch_and_state(deeper, s)
-                fail = 0
-                improvements.append((sup_dae_total_neurons(deeper.width, deeper.depth, num_classes), v))
-                logger.log_console(
-                    f"[DEPTH OPT] ✓ NEW BEST width={deeper.width}, depth={deeper.depth}, val={v:.6f}"
-                )
+            
+            # Always expand from CURRENT architecture (No Rollback on fail)
+            wider = expand_width(model_curr, num_classes, acfg.ex_k, acfg.max_width, device)
+            if wider is None: break
+            model_curr = wider
+            
+            val, state = train_with_early_stopping(model_curr, dl_train, dl_val, acfg, device, val_history, logger)
+            
+            if val < best_v - acfg.delta:
+                best_v = val
+                best_s = state
+                best_w = model_curr.width
+                best_local_snap = snapshot_arch_and_state(model_curr, state)
+                fail_count = 0
+                
+                neurons = sup_dae_total_neurons(model_curr.width, model_curr.depth, num_classes)
+                improvements.append((neurons, val))
+                logger.log_console(f"    [Width Inner] Improved! w={model_curr.width} val={val:.6f}")
             else:
-                fail += 1
-                logger.log_console("[DEPTH OPT] ✗ No improvement")
-        return local_best_snap, local_best_val
+                fail_count += 1
+                # logger.log_console(f"    [Width Inner] Fail {fail_count}/{acfg.trials_width} w={model_curr.width} val={val:.6f}")
+
+        restore_arch_and_state(best_local_snap, device)
+        # We must return state/val so caller can update global best if needed
+        return best_v, best_s, best_w
+
+    def optimize_depth_at_fixed_width(model_curr: SupDAEMaskingConv) -> Tuple[float, Dict[str, torch.Tensor], int]:
+        """
+        Expands depth from model_curr until patience exhausted.
+        Returns (best_val, best_state, best_depth).
+        Reverts model_curr to that local best at the end.
+        """
+        best_v, best_s = train_with_early_stopping(model_curr, dl_train, dl_val, acfg, device, val_history, logger)
+        best_d = model_curr.depth
+        best_local_snap = snapshot_arch_and_state(model_curr, best_s)
+
+        fail_count = 0
+        while fail_count < acfg.trials_depth:
+            if not can_deepen(model_curr):
+                break
+            
+            # Always expand from CURRENT architecture
+            deeper = expand_depth(model_curr, num_classes, acfg.max_depth, device)
+            if deeper is None: break
+            model_curr = deeper
+            
+            val, state = train_with_early_stopping(model_curr, dl_train, dl_val, acfg, device, val_history, logger)
+            
+            if val < best_v - acfg.delta:
+                best_v = val
+                best_s = state
+                best_d = model_curr.depth
+                best_local_snap = snapshot_arch_and_state(model_curr, state)
+                fail_count = 0
+                
+                neurons = sup_dae_total_neurons(model_curr.width, model_curr.depth, num_classes)
+                improvements.append((neurons, val))
+                logger.log_console(f"    [Depth Inner] Improved! d={model_curr.depth} val={val:.6f}")
+            else:
+                fail_count += 1
+                # logger.log_console(f"    [Depth Inner] Fail {fail_count}/{acfg.trials_depth} d={model_curr.depth} val={val:.6f}")
+
+        restore_arch_and_state(best_local_snap, device)
+        return best_v, best_s, best_d
+
+    # --- Mode Implementations ---
 
     mode = acfg.adp_mode
 
-    if mode in ["width_only", "width"]:
-        global_best_snap, global_best_val = optimize_width_at_fixed_depth(global_best_snap, global_best_val)
-    elif mode in ["depth_only", "depth"]:
-        global_best_snap, global_best_val = optimize_depth_at_fixed_width(global_best_snap, global_best_val)
-    elif mode == "width_to_depth":
-        global_best_snap, global_best_val = optimize_depth_at_fixed_width(global_best_snap, global_best_val)
-        fail = 0
-        while fail < acfg.trials_width:
-            tmp = restore_arch_and_state(global_best_snap, device)
-            if not can_widen(tmp):
-                break
-            wider = expand_width(tmp, num_classes, acfg.ex_k, acfg.max_width, device)
-            if wider is None:
-                break
-            wider_snap = snapshot_arch_and_state(wider, wider.state_dict())
-            wider_snap, val = optimize_depth_at_fixed_width(wider_snap, global_best_val)
-            if val < global_best_val - acfg.delta:
-                global_best_val = val
-                global_best_snap = wider_snap
-                fail = 0
-            else:
-                fail += 1
+    # 1. Depth Only
+    if mode in ("depth_only", "depth"):
+        # We rely on the helper which tracks best internally but walks forward
+        optimize_depth_at_fixed_width(model)
+        # The helper restores the best local model at the end, so 'model' is now best
+        global_best_val, global_best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, [], None)
+        global_best_snap = snapshot_arch_and_state(model, global_best_state)
+
+    # 2. Width Only
+    elif mode in ("width_only", "width"):
+        optimize_width_at_fixed_depth(model)
+        global_best_val, global_best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, [], None)
+        global_best_snap = snapshot_arch_and_state(model, global_best_state)
+
+    # 3. Depth-Outer / Width-Inner (Mapped from 'depth_to_width')
     elif mode == "depth_to_width":
-        global_best_snap, global_best_val = optimize_width_at_fixed_depth(global_best_snap, global_best_val)
-        fail = 0
-        while fail < acfg.trials_depth:
-            tmp = restore_arch_and_state(global_best_snap, device)
-            if not can_deepen(tmp):
-                break
-            deeper = expand_depth(tmp, num_classes, acfg.max_depth, device)
-            if deeper is None:
-                break
-            deeper_snap = snapshot_arch_and_state(deeper, deeper.state_dict())
-            deeper_snap, val = optimize_width_at_fixed_depth(deeper_snap, global_best_val)
-            if val < global_best_val - acfg.delta:
-                global_best_val = val
-                global_best_snap = deeper_snap
-                fail = 0
+        # First inner search at starting depth
+        optimize_width_at_fixed_depth(model)
+        
+        # Update global best
+        b_val, b_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, [], None)
+        if b_val < global_best_val:
+            global_best_val = b_val
+            global_best_snap = snapshot_arch_and_state(model, b_state)
+        
+        fail_count = 0
+        while fail_count < acfg.trials_depth and can_deepen(model):
+            # Outer: Expand depth
+            deeper = expand_depth(model, num_classes, acfg.max_depth, device)
+            if deeper is None: break
+            model = deeper
+            
+            # Inner: Optimize width at this new depth
+            val_d, state_d, width_d = optimize_width_at_fixed_depth(model)
+            # note: optimize_width_at_fixed_depth leaves model at best width for this depth
+            
+            if val_d < global_best_val - acfg.delta:
+                global_best_val = val_d
+                global_best_snap = snapshot_arch_and_state(model, state_d)
+                fail_count = 0
+                logger.log_console(f"[Outer Depth] New Global Best: val={val_d:.6f} d={model.depth} w={model.width}")
             else:
-                fail += 1
-    elif mode in ["alt_width", "alt_depth"]:
+                fail_count += 1
+
+    # 4. Width-Outer / Depth-Inner (Mapped from 'width_to_depth')
+    elif mode == "width_to_depth":
+        # First inner search at starting width
+        optimize_depth_at_fixed_width(model)
+        
+        b_val, b_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, [], None)
+        if b_val < global_best_val:
+            global_best_val = b_val
+            global_best_snap = snapshot_arch_and_state(model, b_state)
+
+        fail_count = 0
+        while fail_count < acfg.trials_width and can_widen(model):
+            # Outer: Expand width
+            wider = expand_width(model, num_classes, acfg.ex_k, acfg.max_width, device)
+            if wider is None: break
+            model = wider
+            
+            # Inner: Optimize depth at this new width
+            val_w, state_w, depth_w = optimize_depth_at_fixed_width(model)
+            
+            if val_w < global_best_val - acfg.delta:
+                global_best_val = val_w
+                global_best_snap = snapshot_arch_and_state(model, state_w)
+                fail_count = 0
+                logger.log_console(f"[Outer Width] New Global Best: val={val_w:.6f} w={model.width} d={model.depth}")
+            else:
+                fail_count += 1
+
+    # 5/6. Alternating Phases
+    elif mode in ("alt_width", "alt_depth"):
+        # Ensure we start from global best
+        restore_arch_and_state(global_best_snap, device)
+        
         phase = "width" if mode == "alt_width" else "depth"
-        sat_w = sat_d = False
+        sat_w, sat_d = False, False
+        
         while not (sat_w and sat_d):
-            improved = False
+            improved_in_phase = False
+            start_val = global_best_val
+            
             if phase == "width":
-                snap, val = optimize_width_at_fixed_depth(global_best_snap, global_best_val)
-                if val < global_best_val - acfg.delta:
-                    global_best_val = val
-                    global_best_snap = snap
-                    improved = True
-                sat_w = not improved
+                logger.log_console("  [Phase] Entering Width Phase")
+                optimize_width_at_fixed_depth(model)
+                # Check if we improved over start of phase
+                now_val, now_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, [], None)
+                if now_val < global_best_val - acfg.delta:
+                    global_best_val = now_val
+                    global_best_snap = snapshot_arch_and_state(model, now_state)
+                    improved_in_phase = True
+                
+                sat_w = not improved_in_phase
+                restore_arch_and_state(global_best_snap, device) # Revert to best for next phase
                 phase = "depth"
-            else:
-                snap, val = optimize_depth_at_fixed_width(global_best_snap, global_best_val)
-                if val < global_best_val - acfg.delta:
-                    global_best_val = val
-                    global_best_snap = snap
-                    improved = True
-                sat_d = not improved
+                
+            else: # depth
+                logger.log_console("  [Phase] Entering Depth Phase")
+                optimize_depth_at_fixed_width(model)
+                now_val, now_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, [], None)
+                if now_val < global_best_val - acfg.delta:
+                    global_best_val = now_val
+                    global_best_snap = snapshot_arch_and_state(model, now_state)
+                    improved_in_phase = True
+                
+                sat_d = not improved_in_phase
+                restore_arch_and_state(global_best_snap, device)
                 phase = "width"
+
     else:
         logger.log_console(f"[WARN] Unknown adp_mode={mode}, skipping search.")
 

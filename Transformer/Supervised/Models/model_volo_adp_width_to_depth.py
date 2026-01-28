@@ -94,7 +94,7 @@ def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPC
     cur = model.dim if hasattr(model, 'dim') else cfg.max_width # fallback
     nxt = min(max_width, cur + cfg.ex_k)
     if nxt <= cur: return None
-    return rebuild_model(model, nxt, model.None, device, cfg)
+    return rebuild_model(model, nxt, model.depth, device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
     return None # No depth arg detected

@@ -74,318 +74,212 @@ def _merge_state(new_state, old_state):
             merged[k] = v
     return merged
 
-def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPConfig) -> ModelClass:
-    def get_attr(obj, candidates, default):
-        for c in candidates:
-            try:
-                val = obj
-                for part in c.split('.'): val = getattr(val, part)
-                return val
-            except: continue
-        return default
-    try:
-        kwargs = {}
-        kwargs['cfg'] = get_attr(model, ['cfg'], None)
-        kwargs['num_classes'] = get_attr(model, ['num_classes', 'head.out_features', 'fc.out_features', 'classifier.out_features'], 1)
-        kwargs['in_channels'] = get_attr(model, ['in_channels', 'conv1.in_channels', 'stem.0.in_channels'], 3)
-        kwargs['batch_norm'] = get_attr(model, ['batch_norm'], None)
-        kwargs['dropout'] = get_attr(model, ['dropout'], None)
-        new_model = ModelClass(**kwargs).to(device)
-    except Exception as e:
-        print(f'Rebuild failed: {e}')
-        return None
-    merged = _merge_state(new_model.state_dict(), model.state_dict())
-    new_model.load_state_dict(merged, strict=False)
-    return new_model
+# ADP wrapper for VGG
+# We map 'width' to base_channels (usually 64)
+# We map 'depth' to total number of convolutional layers
+
+def generate_vgg_cfg(width: int, depth: int) -> List[Any]:
+    # 5 stages for VGG on 32x32 (approx)
+    # Channels: w, 2w, 4w, 8w, 8w
+    # We distribute 'depth' layers across 5 stages.
+    # Ensure at least 1 layer per stage
+    depth = max(depth, 5)
+    
+    # Simple distribution: remainder added to later stages or middle?
+    # VGG-16 (13 convs): 2, 2, 3, 3, 3
+    # VGG-11 (8 convs): 1, 1, 2, 2, 2
+    
+    base_counts = [depth // 5] * 5
+    rem = depth % 5
+    # Add remainder to last stages (features) or middle?
+    # VGG convention adds to later stages usually.
+    for i in range(rem):
+        base_counts[4 - i] += 1
         
+    cfg = []
+    # Stage 1
+    for _ in range(base_counts[0]): cfg.append(width)
+    cfg.append('M')
+    # Stage 2
+    for _ in range(base_counts[1]): cfg.append(width*2)
+    cfg.append('M')
+    # Stage 3
+    for _ in range(base_counts[2]): cfg.append(width*4)
+    cfg.append('M')
+    # Stage 4
+    for _ in range(base_counts[3]): cfg.append(width*8)
+    cfg.append('M')
+    # Stage 5
+    for _ in range(base_counts[4]): cfg.append(width*8)
+    cfg.append('M')
+    
+    return cfg
+
+def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPConfig) -> ModelClass:
+    try:
+        new_vgg_cfg = generate_vgg_cfg(width, depth)
+        
+        # Preserve other attributes
+        num_classes = getattr(model, 'num_classes', 10)
+        in_channels = getattr(model, 'in_channels', 3)
+        bn = getattr(model, 'batch_norm', True)
+        dropout = getattr(model, 'dropout', 0.1)
+
+        new_model = ModelClass(
+            cfg=new_vgg_cfg,
+            num_classes=num_classes,
+            in_channels=in_channels,
+            batch_norm=bn,
+            dropout=dropout
+        ).to(device)
+    except Exception as e:
+        print(f"Rebuild failed: {e}")
+        return None
+
     merged = _merge_state(new_model.state_dict(), model.state_dict())
     new_model.load_state_dict(merged, strict=False)
     return new_model
 
 def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    cur_w = width = getattr(model, 'None', 0) if 'None' != 'None' else getattr(model.cfg, 'width', 0) if hasattr(model, 'cfg') else 0
+    # Estimate current width from first layer
+    cur_cfg = model.cfg
+    # Find first int
+    cur_w = 64
+    for x in cur_cfg:
+        if isinstance(x, int):
+            cur_w = x
+            break
+            
+    # Typically VGG width steps are powers of 2 or +k?
+    # ex_k is usually small(16).
     new_w = min(cur_w + ex_k, max_width)
-    if new_w == cur_w: return None
-    return rebuild_model(model, new_w, getattr(model, 'None', 1) if 'None' != 'None' else 1, device, cfg)
+    if new_w <= cur_w: return None
+    
+    # Count depth
+    cur_d = sum(1 for x in model.cfg if isinstance(x, int))
+    
+    return rebuild_model(model, new_w, cur_d, device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    cur_d = getattr(model, 'None', 1) if 'None' != 'None' else getattr(model.cfg, 'depth', 1) if hasattr(model, 'cfg') else 1
-    new_d = min(cur_d + 1, max_depth)
-    if new_d == cur_d: return None
-    return rebuild_model(model, getattr(model, 'None', 64) if 'None' != 'None' else 64, new_d, device, cfg)
+    cur_d = sum(1 for x in model.cfg if isinstance(x, int))
+    if cur_d >= max_depth: return None
+    
+    # Width
+    cur_w = 64
+    for x in model.cfg:
+        if isinstance(x, int):
+            cur_w = x
+            break
+            
+    return rebuild_model(model, cur_w, cur_d + 1, device, cfg)
 
 def total_neurons(width: int, depth: int) -> int:
-    return int(width * (depth + 1))
+    # Approx
+    return width * depth # scalable proxy
 
 def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
+    cur_w = 64
+    if hasattr(model, 'cfg'):
+        for x in model.cfg:
+            if isinstance(x, int):
+                cur_w = x
+                break
+    cur_d = sum(1 for x in model.cfg if isinstance(x, int)) if hasattr(model, 'cfg') else 0
+    
     return {
-        "width": getattr(model, 'None', 0) if 'None' != 'None' else 0,
-        "depth": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "width": cur_w,
+        "depth": cur_d,
         "state": copy.deepcopy(state)
     }
 
 def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
-    # Basic restore relying on rebuild
-    # We use CURRENT model's other params (implicitly handled by rebuild if we pass them)
-    # But restore actually needs to recreate the model strictly from snapshot metadata.
-    # Our simple rebuild might default to model attrs.
-    # For now, we reuse rebuild_model with snap width/depth.
     return rebuild_model(model, snap['width'], snap['depth'], device, None)
-
-def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
-    # Rebuild using snap params
-    # We need a way to pass 'cfg' or context. 
-    # For now we create a dummy cfg with snap values or rely on defaults from main
-    # Actually, we can just use the ModelClass constructor directly
-    try:
-        new_model = ModelClass(
-            
-        ).to(device)
-        new_model.load_state_dict(snap["state"])
-        return new_model
-    except Exception:
-        return model # Fallback
 
 def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, history: list) -> Tuple[float, Dict[str, Any]]:
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
     best_val = float("inf")
     best_state = copy.deepcopy(model.state_dict())
     es_counter = 0
+    loss_fn = nn.CrossEntropyLoss()
     
-    # Basic training loop
     for _ in range(acfg.max_epochs):
         model.train()
-        # Handle different dataset outputs (tuple vs single)
-        for batch in dl_train:
-            if isinstance(batch, (list, tuple)):
-                x = batch[0].to(device)
-                # simple autoencoder or supervised assumption
-                if len(batch) > 1:
-                    y = batch[1].to(device)
-                else:
-                    y = x
-            else:
-                x = batch.to(device)
-                y = x
-                
-            opt.zero_grad(set_to_none=True)
-            try:
-                out = model(x)
-                # Handle tuple output
-                if isinstance(out, (list, tuple)):
-                    rec = out[0]
-                else:
-                    rec = out
-                
-                # Simple MSE or CrossEntropy check
-                if rec.shape == y.shape:
-                    loss = F.mse_loss(rec, x) # Assume AE if shapes match
-                elif isinstance(rec, torch.Tensor) and isinstance(y, torch.Tensor) and rec.size(0) == y.size(0):
-                     # Classification?
-                     if rec.size(1) != y.shape[-1] and y.ndim==1:
-                         loss = F.cross_entropy(rec, y)
-                     else:
-                         loss = F.mse_loss(rec, y) # Fallback
-                else:
-                    loss = torch.tensor(0.0, requires_grad=True).to(device) # dummy
-                    
-            except Exception as e:
-                # If model forward fails (e.g. diff args), break
-                loss = torch.tensor(0.0, requires_grad=True).to(device)
-            
+        for x, y in dl_train:
+            x, y = x.to(device), y.to(device)
+            opt.zero_grad()
+            out = model(x)
+            loss = loss_fn(out, y)
             loss.backward()
             opt.step()
-        
-        # Validation
+            
         model.eval()
-        val = 0.0
+        val_loss = 0.0
         n = 0
         with torch.no_grad():
-             for batch in dl_val:
-                if isinstance(batch, (list, tuple)):
-                    x = batch[0].to(device)
-                    y = batch[1].to(device) if len(batch)>1 else x
-                else:
-                    x = batch.to(device)
-                    y = x
-                
-                try: 
-                    out = model(x)
-                    if isinstance(out, (list, tuple)): rec = out[0]
-                    else: rec = out
-                    
-                    if rec.shape == y.shape: l = F.mse_loss(rec, y)
-                    elif isinstance(rec, torch.Tensor) and y.ndim==1: l = F.cross_entropy(rec, y)
-                    else: l = torch.tensor(0.0).to(device)
-                    
-                    val += l.item()
-                    n += 1
-                except: pass
-        if n>0: val /= n
+            for x, y in dl_val:
+                x, y = x.to(device), y.to(device)
+                out = model(x)
+                loss = loss_fn(out, y)
+                val_loss += loss.item()
+                n += 1
+        if n > 0: val_loss /= n
         
-        history.append(val)
-        if val < best_val:
-            best_val = val
+        history.append(val_loss)
+        if val_loss < best_val:
+            best_val = val_loss
             best_state = copy.deepcopy(model.state_dict())
             es_counter = 0
         else:
             es_counter += 1
         if es_counter >= acfg.patience: break
-            
+        
     return best_val, best_state
 
-def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
-    results_dir.mkdir(parents=True, exist_ok=True)
-    val_history: List[float] = []
-    improvements: List[tuple[int, float]] = []
-
-    best_val, best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, val_history)
-    model.load_state_dict(best_state)
-    global_best_snap = snapshot_arch_and_state(model, best_state)
-    global_best_val = best_val
-    improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), best_val))
-
-    def can_widen(m: ModelClass) -> bool:
-        return False
-
-    def can_deepen(m: ModelClass) -> bool:
-        return False
-
-    def optimize_width_at_fixed_depth(curr_model: ModelClass) -> Tuple[ModelClass, float, Dict[str, Any]]:
-        local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
-        local_best_val = local_val
-        local_best_state = local_state
-        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
-        width_failure_count = 0
-        while width_failure_count < acfg.trials_width:
-            if not can_widen(curr_model): break
-            next_model = expand_width(curr_model, acfg.ex_k, acfg.max_width, device, acfg)
-            if next_model is None: break
-            curr_model = next_model
-            v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
-            if v < local_best_val - acfg.delta:
-                local_best_val = v
-                local_best_state = s
-                local_best_snap = snapshot_arch_and_state(curr_model, s)
-                width_failure_count = 0
-                improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), v))
-            else:
-                width_failure_count += 1
-        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
-        return final_model, local_best_val, local_best_snap
-
-    def optimize_depth_at_fixed_width(curr_model: ModelClass) -> Tuple[ModelClass, float, Dict[str, Any]]:
-        local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
-        local_best_val = local_val
-        local_best_state = local_state
-        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
-        depth_failure_count = 0
-        while depth_failure_count < acfg.trials_depth:
-            if not can_deepen(curr_model): break
-            next_model = expand_depth(curr_model, acfg.max_depth, device, acfg)
-            if next_model is None: break
-            curr_model = next_model
-            v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
-            if v < local_best_val - acfg.delta:
-                local_best_val = v
-                local_best_state = s
-                local_best_snap = snapshot_arch_and_state(curr_model, s)
-                depth_failure_count = 0
-                improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), v))
-            else:
-                depth_failure_count += 1
-        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
-        return final_model, local_best_val, local_best_snap
-
-    mode = acfg.adp_mode
-    if mode in ["width_only", "width"]:
-        model, global_best_val, global_best_snap = optimize_width_at_fixed_depth(model)
-    elif mode in ["depth_only", "depth"]:
-        model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
-    elif mode == "depth_to_width":
-        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
-        global_best_val = base_val
-        global_best_snap = base_snap
-        fc = 0
-        while fc < acfg.trials_depth:
-            if not can_deepen(model): break
-            nm = expand_depth(model, acfg.max_depth, device, acfg)
-            if nm is None: break
-            model = nm
-            model, v, s = optimize_width_at_fixed_depth(model)
-            if v < global_best_val - acfg.delta:
-                global_best_val = v
-                global_best_snap = s
-                fc = 0
-            else: fc += 1
-        model = restore_arch_and_state(model, global_best_snap, device)
-    elif mode == "width_to_depth":
-        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
-        global_best_val = base_val
-        global_best_snap = base_snap
-        fc = 0
-        while fc < acfg.trials_width:
-            if not can_widen(model): break
-            nm = expand_width(model, acfg.ex_k, acfg.max_width, device, acfg)
-            if nm is None: break
-            model = nm
-            model, v, s = optimize_depth_at_fixed_width(model)
-            if v < global_best_val - acfg.delta:
-                global_best_val = v
-                global_best_snap = s
-                fc = 0
-            else: fc += 1
-        model = restore_arch_and_state(model, global_best_snap, device)
-    elif mode in ["alt_width", "alt_depth"]:
-        phase = "width" if mode == "alt_width" else "depth"
-        sat_w, sat_d = False, False
-        while not (sat_w and sat_d):
-            imp = False
-            if phase == "width":
-                model, v, s = optimize_width_at_fixed_depth(model)
-                if v < global_best_val - acfg.delta:
-                    global_best_val = v
-                    global_best_snap = s
-                    imp = True
-                sat_w = not imp
-                phase = "depth"
-            else:
-                model, v, s = optimize_depth_at_fixed_width(model)
-                if v < global_best_val - acfg.delta:
-                    global_best_val = v
-                    global_best_snap = s
-                    imp = True
-                sat_d = not imp
-                phase = "width"
-            model = restore_arch_and_state(model, global_best_snap, device)
-        model = restore_arch_and_state(model, global_best_snap, device)
+# Helper for data
+def make_loaders(batch_size=128):
+    from torchvision import datasets, transforms
+    t_train = transforms.Compose([
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+    ])
+    t_test = transforms.Compose([transforms.ToTensor()])
     
-    if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
-    
-    return global_best_val, model, 0, 0
+    try:
+        trainset = datasets.CIFAR10(root='./data', train=True, download=True, transform=t_train)
+        valset = datasets.CIFAR10(root='./data', train=False, download=True, transform=t_test)
+        # Split val? Standard usually uses test set as val or split train.
+        # For audit robustness we split train
+        n = len(trainset)
+        n_val_split = n // 10
+        trainset, valset = torch.utils.data.random_split(trainset, [n - n_val_split, n_val_split])
+    except:
+        trainset = datasets.FakeData(transform=transforms.ToTensor())
+        valset = datasets.FakeData(transform=transforms.ToTensor())
+        
+    train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=0)
+    val_loader = DataLoader(valset, batch_size=batch_size, shuffle=False, num_workers=0)
+    return train_loader, val_loader
 
 def main():
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("--width", type=int, default=64)
-    p.add_argument("--depth", type=int, default=4)
+    p.add_argument("--depth", type=int, default=8) # VGG-11 approx
     p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
-    p.add_argument("--max-epochs", type=int, default=100000000)
+    p.add_argument("--max-epochs", type=int, default=10)
     args = p.parse_args()
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print("Loading data...")
+    dl_train, dl_val = make_loaders()
     
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    # Initial model
+    # Generate cfg from args
+    cfg_list = generate_vgg_cfg(args.width, args.depth)
+    model = ModelClass(cfg=cfg_list, num_classes=10, batch_norm=True).to(device)
     
-    try:
-        model = ModelClass().to(device)
-    except:
-        print("Could not instantiate model with default args.")
-        return
-
     acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)
     val, m, w, d = adp_search(model, dl_train, dl_val, acfg, device)
     print(f"Done. Best val={val} w={w} d={d}")

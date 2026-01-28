@@ -101,7 +101,7 @@ def train_one_epoch(
         xb_rec, logits, z = model(xb_noisy)
         loss_recon = mse(xb_rec, xb)
         loss_cls = ce(logits, yb)
-        contr = contractive_penalty(model.encoder_linears()) / xb.size(0)
+        contr = model.contractive_loss(xb_noisy)
         loss = lambda_recon * loss_recon + loss_cls + lambda_contractive * contr
         loss.backward()
         opt.step()
@@ -134,7 +134,7 @@ def eval_epoch(
 
             loss_recon = mse(xb_rec, xb) / xb.size(0)
             loss_cls = ce(logits, yb) / xb.size(0)
-            contr = contractive_penalty(model.encoder_linears()) / xb.size(0)
+            contr = model.contractive_loss(xb_noisy)
             loss = lambda_recon * loss_recon + loss_cls + lambda_contractive * contr
 
             bs = xb.size(0)

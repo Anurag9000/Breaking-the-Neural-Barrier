@@ -109,7 +109,7 @@ def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPC
     cur_w = width = getattr(model, 'd_model', 0) if 'd_model' != 'None' else getattr(model.cfg, 'width', 0) if hasattr(model, 'cfg') else 0
     new_w = min(cur_w + ex_k, max_width)
     if new_w == cur_w: return None
-    return rebuild_model(model, new_w, getattr(model, 'None', 1) if 'None' != 'None' else 1, device, cfg)
+    return rebuild_model(model, new_w, getattr(model, 'depth', 1) if True else 1, device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
     
@@ -126,7 +126,7 @@ def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any
     state = state_dict if state_dict is not None else model.state_dict()
     return {
         "width": getattr(model, 'd_model', 0) if 'd_model' != 'None' else 0,
-        "depth": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "depth": getattr(model, 'depth', 0) if True else 0,
         "state": copy.deepcopy(state)
     }
 

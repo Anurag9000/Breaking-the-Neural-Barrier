@@ -21,14 +21,15 @@ except ImportError:
     def plot_loss_vs_neurons(*args, **kwargs): pass
 
 # Load baseline
+# Load baseline
 BASE_PATH = Path(__file__).with_name("model_causal_transformer.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
 baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
-ModelClass = baseline_module.SinusoidalPE
+ModelClass = baseline_module.CausalTransformer
 
 # ADP REVIEW (BEFORE REFACTOR)
-# - This file is newly created to implement the ADP algorithms from scratch for the SinusoidalPE model.
+# - This file is newly created to implement the ADP algorithms from scratch for the CausalTransformer model.
 # - It strictly follows ADP_algorithms.md: forward-only expansions, global best tracking, and context-end restoration.
 
 @dataclass
@@ -38,11 +39,11 @@ class ADPConfig:
     patience: int = 20
     trials_width: int = 2
     trials_depth: int = 2
-    ex_k: int = 16
-    max_width: int = 512
+    ex_k: int = 64 # Must be divisible by nhead (8)
+    max_width: int = 1024
     max_depth: int = 16
     max_neurons: int = 5_000_000
-    lr: float = 1e-3
+    lr: float = 1e-4
     weight_decay: float = 1e-4
     grad_clip: Optional[float] = 1.0
     max_epochs: int = 100_000_000
@@ -65,7 +66,6 @@ def _merge_state(new_state, old_state):
                 merged[k] = ov
             else:
                 # Basic resizing - for complex models (MHA) this might need more spec
-                # But for batch refactor we assume basic structure or compatible resizing
                 if v.ndim == ov.ndim:
                     merged[k] = _resize_tensor(v.shape, ov)
                 else:
@@ -75,18 +75,23 @@ def _merge_state(new_state, old_state):
     return merged
 
 def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPConfig) -> ModelClass:
-    def get_attr(obj, candidates, default):
-        for c in candidates:
-            try:
-                val = obj
-                for part in c.split('.'): val = getattr(val, part)
-                return val
-            except: continue
-        return default
     try:
         kwargs = {}
+        kwargs['vocab_size'] = model.vocab_size
+        kwargs['num_classes'] = model.num_classes
         kwargs['d_model'] = width
-        kwargs['max_len'] = get_attr(model, ['max_len'], None)
+        kwargs['nhead'] = model.nhead 
+        # Ensure divisibility
+        if width % model.nhead != 0:
+            print(f"Warning: width {width} not divisible by nhead {model.nhead}")
+            return None
+            
+        kwargs['num_layers'] = depth
+        kwargs['dim_ff'] = width * 4 # Standard definition
+        kwargs['dropout'] = model.dropout
+        kwargs['max_len'] = model.max_len
+        kwargs['pad_id'] = model.pad_id
+        
         new_model = ModelClass(**kwargs).to(device)
     except Exception as e:
         print(f'Rebuild failed: {e}')
@@ -94,142 +99,71 @@ def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPCon
     merged = _merge_state(new_model.state_dict(), model.state_dict())
     new_model.load_state_dict(merged, strict=False)
     return new_model
-        
-    merged = _merge_state(new_model.state_dict(), model.state_dict())
-    new_model.load_state_dict(merged, strict=False)
-    return new_model
 
 def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    cur_w = width = getattr(model, 'd_model', 0) if 'd_model' != 'None' else getattr(model.cfg, 'width', 0) if hasattr(model, 'cfg') else 0
+    cur_w = model.d_model
     new_w = min(cur_w + ex_k, max_width)
-    if new_w == cur_w: return None
-    return rebuild_model(model, new_w, getattr(model, 'None', 1) if 'None' != 'None' else 1, device, cfg)
+    if new_w <= cur_w: return None
+    return rebuild_model(model, new_w, model.num_layers, device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    cur_d = getattr(model, 'None', 1) if 'None' != 'None' else getattr(model.cfg, 'depth', 1) if hasattr(model, 'cfg') else 1
+    cur_d = model.num_layers
     new_d = min(cur_d + 1, max_depth)
-    if new_d == cur_d: return None
-    return rebuild_model(model, getattr(model, 'd_model', 64) if 'd_model' != 'None' else 64, new_d, device, cfg)
+    if new_d <= cur_d: return None
+    return rebuild_model(model, model.d_model, new_d, device, cfg)
 
 def total_neurons(width: int, depth: int) -> int:
-    return int(width * (depth + 1))
+    return int(width * width * 4 * depth) # Approx parameters in transformer
 
 def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
     return {
-        "width": getattr(model, 'd_model', 0) if 'd_model' != 'None' else 0,
-        "depth": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "width": model.d_model,
+        "depth": model.num_layers,
         "state": copy.deepcopy(state)
     }
 
 def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
-    # Basic restore relying on rebuild
-    # We use CURRENT model's other params (implicitly handled by rebuild if we pass them)
-    # But restore actually needs to recreate the model strictly from snapshot metadata.
-    # Our simple rebuild might default to model attrs.
-    # For now, we reuse rebuild_model with snap width/depth.
     return rebuild_model(model, snap['width'], snap['depth'], device, None)
-
-def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
-    # Rebuild using snap params
-    # We need a way to pass 'cfg' or context. 
-    # For now we create a dummy cfg with snap values or rely on defaults from main
-    # Actually, we can just use the ModelClass constructor directly
-    try:
-        new_model = ModelClass(
-            
-        ).to(device)
-        new_model.load_state_dict(snap["state"])
-        return new_model
-    except Exception:
-        return model # Fallback
 
 def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, history: list) -> Tuple[float, Dict[str, Any]]:
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
     best_val = float("inf")
     best_state = copy.deepcopy(model.state_dict())
     es_counter = 0
+    loss_fn = nn.CrossEntropyLoss()
     
-    # Basic training loop
     for _ in range(acfg.max_epochs):
         model.train()
-        # Handle different dataset outputs (tuple vs single)
-        for batch in dl_train:
-            if isinstance(batch, (list, tuple)):
-                x = batch[0].to(device)
-                # simple autoencoder or supervised assumption
-                if len(batch) > 1:
-                    y = batch[1].to(device)
-                else:
-                    y = x
-            else:
-                x = batch.to(device)
-                y = x
-                
-            opt.zero_grad(set_to_none=True)
-            try:
-                out = model(x)
-                # Handle tuple output
-                if isinstance(out, (list, tuple)):
-                    rec = out[0]
-                else:
-                    rec = out
-                
-                # Simple MSE or CrossEntropy check
-                if rec.shape == y.shape:
-                    loss = F.mse_loss(rec, x) # Assume AE if shapes match
-                elif isinstance(rec, torch.Tensor) and isinstance(y, torch.Tensor) and rec.size(0) == y.size(0):
-                     # Classification?
-                     if rec.size(1) != y.shape[-1] and y.ndim==1:
-                         loss = F.cross_entropy(rec, y)
-                     else:
-                         loss = F.mse_loss(rec, y) # Fallback
-                else:
-                    loss = torch.tensor(0.0, requires_grad=True).to(device) # dummy
-                    
-            except Exception as e:
-                # If model forward fails (e.g. diff args), break
-                loss = torch.tensor(0.0, requires_grad=True).to(device)
-            
+        for x, y in dl_train:
+            x, y = x.to(device), y.to(device)
+            opt.zero_grad()
+            out = model(x)
+            loss = loss_fn(out, y)
             loss.backward()
             opt.step()
-        
-        # Validation
+            
         model.eval()
-        val = 0.0
+        val_loss = 0.0
         n = 0
         with torch.no_grad():
-             for batch in dl_val:
-                if isinstance(batch, (list, tuple)):
-                    x = batch[0].to(device)
-                    y = batch[1].to(device) if len(batch)>1 else x
-                else:
-                    x = batch.to(device)
-                    y = x
-                
-                try: 
-                    out = model(x)
-                    if isinstance(out, (list, tuple)): rec = out[0]
-                    else: rec = out
-                    
-                    if rec.shape == y.shape: l = F.mse_loss(rec, y)
-                    elif isinstance(rec, torch.Tensor) and y.ndim==1: l = F.cross_entropy(rec, y)
-                    else: l = torch.tensor(0.0).to(device)
-                    
-                    val += l.item()
-                    n += 1
-                except: pass
-        if n>0: val /= n
+            for x, y in dl_val:
+                x, y = x.to(device), y.to(device)
+                out = model(x)
+                loss = loss_fn(out, y)
+                val_loss += loss.item()
+                n += 1
+        if n > 0: val_loss /= n
         
-        history.append(val)
-        if val < best_val:
-            best_val = val
+        history.append(val_loss)
+        if val_loss < best_val:
+            best_val = val_loss
             best_state = copy.deepcopy(model.state_dict())
             es_counter = 0
         else:
             es_counter += 1
         if es_counter >= acfg.patience: break
-            
+        
     return best_val, best_state
 
 def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
@@ -241,13 +175,13 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     model.load_state_dict(best_state)
     global_best_snap = snapshot_arch_and_state(model, best_state)
     global_best_val = best_val
-    improvements.append((total_neurons(getattr(model, "d_model", 0), getattr(model, "None", 0)), best_val))
+    improvements.append((total_neurons(model.d_model, model.num_layers), best_val))
 
     def can_widen(m: ModelClass) -> bool:
-        return False
+        return m.d_model < acfg.max_width
 
     def can_deepen(m: ModelClass) -> bool:
-        return False
+        return m.num_layers < acfg.max_depth
 
     def optimize_width_at_fixed_depth(curr_model: ModelClass) -> Tuple[ModelClass, float, Dict[str, Any]]:
         local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
@@ -266,7 +200,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 width_failure_count = 0
-                improvements.append((total_neurons(getattr(model, "d_model", 0), getattr(model, "None", 0)), v))
+                improvements.append((total_neurons(curr_model.d_model, curr_model.num_layers), v))
             else:
                 width_failure_count += 1
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
@@ -289,7 +223,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 depth_failure_count = 0
-                improvements.append((total_neurons(getattr(model, "d_model", 0), getattr(model, "None", 0)), v))
+                improvements.append((total_neurons(curr_model.d_model, curr_model.num_layers), v))
             else:
                 depth_failure_count += 1
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
@@ -360,27 +294,53 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
     
-    return global_best_val, model, 0, 0
+    return global_best_val, model, model.d_model, model.num_layers
+
+def make_loaders(batch_size=32):
+    # Synthetic Sequence Classification Data
+    class SyntheticSeqData(torch.utils.data.Dataset):
+        def __init__(self, vocab_size, num_classes, num_samples, max_len=64):
+            self.vocab_size = vocab_size
+            self.num_classes = num_classes
+            self.num_samples = num_samples
+            self.max_len = max_len
+        def __len__(self): return self.num_samples
+        def __getitem__(self, idx):
+            l = torch.randint(10, self.max_len, (1,)).item()
+            toks = torch.randint(0, self.vocab_size, (l,))
+            label = torch.randint(0, self.num_classes, (1,)).item()
+            return toks, label
+
+    trainset = SyntheticSeqData(20000, 10, 1000)
+    valset = SyntheticSeqData(20000, 10, 200)
+
+    def collate(batch):
+        toks, labels = zip(*batch)
+        pad_toks = torch.nn.utils.rnn.pad_sequence(toks, batch_first=True, padding_value=0)
+        labels = torch.tensor(labels)
+        return pad_toks, labels
+
+    train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, collate_fn=collate)
+    val_loader = DataLoader(valset, batch_size=batch_size, shuffle=False, collate_fn=collate)
+    return train_loader, val_loader
 
 def main():
     import argparse
     p = argparse.ArgumentParser()
-    p.add_argument("--width", type=int, default=64)
+    p.add_argument("--width", type=int, default=256)
     p.add_argument("--depth", type=int, default=4)
     p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
-    p.add_argument("--max-epochs", type=int, default=100000000)
+    p.add_argument("--max-epochs", type=int, default=10)
     args = p.parse_args()
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    print("Loading data...")
+    dl_train, dl_val = make_loaders(batch_size=32)
     
     try:
-        model = ModelClass().to(device)
-    except:
-        print("Could not instantiate model with default args.")
+        model = ModelClass(vocab_size=20000, num_classes=10, d_model=args.width, num_layers=args.depth).to(device)
+    except Exception as e:
+        print(f"Could not instantiate model: {e}")
         return
 
     acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)

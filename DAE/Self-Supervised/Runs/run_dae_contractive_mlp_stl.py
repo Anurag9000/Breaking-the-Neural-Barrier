@@ -99,7 +99,7 @@ def train_one_epoch(
         opt.zero_grad(set_to_none=True)
         xb_rec, _ = model(xb_noisy)
         recon_loss = mse(xb_rec, xb)
-        c_pen = contractive_penalty(model)
+        c_pen = model.contractive_loss(xb_noisy)
         loss = recon_loss + contractive_lambda * c_pen
         loss.backward()
         opt.step()
@@ -125,7 +125,7 @@ def eval_epoch(
             xb_noisy = add_gaussian_noise(xb, noise_std)
             xb_rec, _ = model(xb_noisy)
             recon = mse(xb_rec, xb)
-            c_pen = contractive_penalty(model) * xb.size(0)
+            c_pen = model.contractive_loss(xb_noisy) * xb.size(0)
             total += float(recon.item()) + float(contractive_lambda * c_pen.item())
             n += xb.size(0)
     return total / max(n, 1)

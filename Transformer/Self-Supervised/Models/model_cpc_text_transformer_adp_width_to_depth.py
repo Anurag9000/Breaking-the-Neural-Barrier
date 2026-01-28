@@ -75,22 +75,14 @@ def _merge_state(new_state, old_state):
     return merged
 
 def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPConfig) -> ModelClass:
-    def get_attr(obj, candidates, default):
-        for c in candidates:
-            try:
-                val = obj
-                for part in c.split('.'): val = getattr(val, part)
-                return val
-            except: continue
-        return default
     try:
         kwargs = {}
-        kwargs['vocab'] = get_attr(model, ['vocab'], None)
+        kwargs['vocab'] = getattr(model, 'vocab', 20000)
         kwargs['dim'] = width
         kwargs['depth'] = depth
-        kwargs['heads'] = get_attr(model, ['heads'], None)
-        kwargs['mlp_ratio'] = get_attr(model, ['mlp_ratio'], None)
-        kwargs['steps_ahead'] = get_attr(model, ['steps_ahead'], None)
+        kwargs['heads'] = getattr(model, 'heads', 8)
+        kwargs['mlp_ratio'] = getattr(model, 'mlp_ratio', 4.0)
+        kwargs['steps_ahead'] = getattr(model, 'steps_ahead', 3)
         new_model = ModelClass(**kwargs).to(device)
     except Exception as e:
         print(f'Rebuild failed: {e}')
@@ -98,23 +90,18 @@ def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPCon
     merged = _merge_state(new_model.state_dict(), model.state_dict())
     new_model.load_state_dict(merged, strict=False)
     return new_model
-        
-    merged = _merge_state(new_model.state_dict(), model.state_dict())
-    new_model.load_state_dict(merged, strict=False)
-    return new_model
 
 def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    
-    cur = model.dim if hasattr(model, 'dim') else cfg.max_width # fallback
-    nxt = min(max_width, cur + cfg.ex_k)
-    if nxt <= cur: return None
-    return rebuild_model(model, nxt, model.depth, device, cfg)
+    cur_w = model.dim
+    new_w = min(cur_w + ex_k, max_width)
+    if new_w <= cur_w: return None
+    return rebuild_model(model, new_w, model.depth, device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    
-    cur = model.depth
-    if cur >= max_depth: return None
-    return rebuild_model(model, model.dim, cur + 1, device, cfg)
+    cur_d = model.depth
+    new_d = min(cur_d + 1, max_depth)
+    if new_d <= cur_d: return None
+    return rebuild_model(model, model.dim, new_d, device, cfg)
     
 
 def total_neurons(width: int, depth: int) -> int:
@@ -368,26 +355,38 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     return global_best_val, model, model.dim, model.depth
 
+# Copy Cifar loaders NO - use synthetic text
+def make_loaders(batch_size=32):
+    # Synthetic seq data: (B, L) integers
+    vocab_size = 20000
+    class SyntheticData(torch.utils.data.Dataset):
+        def __init__(self, N, L=64):
+            self.data = torch.randint(0, vocab_size, (N, L))
+        def __len__(self): return len(self.data)
+        def __getitem__(self, i): return self.data[i]
+    
+    dl_train = DataLoader(SyntheticData(1000), batch_size=batch_size, shuffle=True)
+    dl_val = DataLoader(SyntheticData(200), batch_size=batch_size, shuffle=False)
+    return dl_train, dl_val, vocab_size
+
 def main():
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("--width", type=int, default=64)
     p.add_argument("--depth", type=int, default=4)
     p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
-    p.add_argument("--max-epochs", type=int, default=100000000)
+    p.add_argument("--max-epochs", type=int, default=10)
     args = p.parse_args()
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    print("Loading data...")
+    dl_train, dl_val, vocab_size = make_loaders(batch_size=32)
     
     try:
-        model = ModelClass(dim=args.width, depth=args.depth).to(device)
-    except:
-        print("Could not instantiate model with default args.")
-        return
+        model = ModelClass(vocab=vocab_size, dim=args.width, depth=args.depth).to(device)
+    except Exception as e:
+        print(f"Could not instantiate model: {e}")
+        model = ModelClass(vocab=vocab_size, dim=args.width, depth=args.depth).to(device) # Retry?
 
     acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)
     val, m, w, d = adp_search(model, dl_train, dl_val, acfg, device)

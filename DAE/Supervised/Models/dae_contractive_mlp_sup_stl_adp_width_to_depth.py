@@ -154,7 +154,7 @@ def train_with_early_stopping(
             xb_rec, logits, z = model(xb_noisy)
             loss_recon = mse(xb_rec, xb)
             loss_cls = ce(logits, yb)
-            contr = contractive_penalty(model.encoder_linears()) / xb.size(0)
+            contr = model.contractive_loss(xb_noisy)
             loss = acfg.lambda_recon * loss_recon + loss_cls + acfg.lambda_contractive * contr
             loss.backward()
 
@@ -181,7 +181,7 @@ def train_with_early_stopping(
 
                 loss_recon = mse(xb_rec, xb)
                 loss_cls = ce(logits, yb)
-                contr = contractive_penalty(model.encoder_linears()) / xb.size(0)
+                contr = model.contractive_loss(xb_noisy)
                 loss = acfg.lambda_recon * loss_recon + loss_cls + acfg.lambda_contractive * contr
 
                 bs = xb.size(0)

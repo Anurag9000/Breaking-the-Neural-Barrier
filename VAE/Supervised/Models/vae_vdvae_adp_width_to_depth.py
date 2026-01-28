@@ -99,16 +99,16 @@ def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPCon
     return new_model
 
 def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    cur_w = width = getattr(model, 'None', 0) if 'None' != 'None' else getattr(model.cfg, 'width', 0) if hasattr(model, 'cfg') else 0
+    cur_w = width = getattr(model, 'width', 0) if True else getattr(model.cfg, 'width', 0) if hasattr(model, 'cfg') else 0
     new_w = min(cur_w + ex_k, max_width)
     if new_w == cur_w: return None
-    return rebuild_model(model, new_w, getattr(model, 'None', 1) if 'None' != 'None' else 1, device, cfg)
+    return rebuild_model(model, new_w, getattr(model, 'depth', 1) if True else 1, device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    cur_d = getattr(model, 'None', 1) if 'None' != 'None' else getattr(model.cfg, 'depth', 1) if hasattr(model, 'cfg') else 1
+    cur_d = getattr(model, 'depth', 1) if True else getattr(model.cfg, 'depth', 1) if hasattr(model, 'cfg') else 1
     new_d = min(cur_d + 1, max_depth)
     if new_d == cur_d: return None
-    return rebuild_model(model, getattr(model, 'None', 64) if 'None' != 'None' else 64, new_d, device, cfg)
+    return rebuild_model(model, getattr(model, 'width', 64) if True else 64, new_d, device, cfg)
 
 def total_neurons(width: int, depth: int) -> int:
     return int(width * (depth + 1))
@@ -116,8 +116,8 @@ def total_neurons(width: int, depth: int) -> int:
 def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
     return {
-        "width": getattr(model, 'None', 0) if 'None' != 'None' else 0,
-        "depth": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "width": getattr(model, 'width', 0) if True else 0,
+        "depth": getattr(model, 'depth', 0) if True else 0,
         "state": copy.deepcopy(state)
     }
 
@@ -240,7 +240,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     model.load_state_dict(best_state)
     global_best_snap = snapshot_arch_and_state(model, best_state)
     global_best_val = best_val
-    improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), best_val))
+    improvements.append((total_neurons(getattr(model, 'width', 0), getattr(model, 'depth', 0)), best_val))
 
     def can_widen(m: ModelClass) -> bool:
         return False
@@ -265,7 +265,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 width_failure_count = 0
-                improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), v))
+                improvements.append((total_neurons(getattr(model, 'width', 0), getattr(model, 'depth', 0)), v))
             else:
                 width_failure_count += 1
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
@@ -288,7 +288,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 depth_failure_count = 0
-                improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), v))
+                improvements.append((total_neurons(getattr(model, 'width', 0), getattr(model, 'depth', 0)), v))
             else:
                 depth_failure_count += 1
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)

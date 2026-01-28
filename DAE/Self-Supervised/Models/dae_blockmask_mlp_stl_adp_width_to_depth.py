@@ -250,12 +250,16 @@ def adp_search(
     ) -> Tuple[Dict[str, Any], float]:
         curr_snap = copy.deepcopy(snap)
         curr_best = ref_best
+        curr_model = restore_arch_and_state(curr_snap, device)
+
         fail = 0
+
         while fail < acfg.trials_width:
-            mdl = restore_arch_and_state(curr_snap, device)
-            wider = expand_width(mdl, acfg.ex_k, acfg.max_width, device)
+
+            wider = expand_width(curr_model, acfg.ex_k, acfg.max_width, device)
             if wider is None:
                 break
+            curr_model = wider
             v, s = train_with_early_stopping(wider, dl_train, dl_val, acfg, device, history, logger=logger)
             if v < curr_best - acfg.delta:
                 curr_best = v
@@ -272,12 +276,19 @@ def adp_search(
     ) -> Tuple[Dict[str, Any], float]:
         curr_snap = copy.deepcopy(snap)
         curr_best = ref_best
+        curr_model = restore_arch_and_state(curr_snap, device)
+
         fail = 0
+
         while fail < acfg.trials_depth:
-            mdl = restore_arch_and_state(curr_snap, device)
-            deeper = expand_depth(mdl, acfg.max_depth, device)
+
+            deeper = expand_depth(curr_model, acfg.max_depth, device)
+
             if deeper is None:
+
                 break
+
+            curr_model = deeper
             v, s = train_with_early_stopping(deeper, dl_train, dl_val, acfg, device, history, logger=logger)
             if v < curr_best - acfg.delta:
                 curr_best = v
