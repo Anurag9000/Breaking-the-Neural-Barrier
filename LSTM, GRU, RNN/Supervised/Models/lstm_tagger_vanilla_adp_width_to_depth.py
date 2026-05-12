@@ -20,6 +20,8 @@ except ImportError:
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
 
+from utils.adp_introspect import infer_adp_depth, infer_adp_shape, infer_adp_width, can_expand_depth, can_expand_width
+
 # Load baseline
 BASE_PATH = Path(__file__).with_name("lstm_tagger_vanilla.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
@@ -174,10 +176,10 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), best_val))
 
     def can_widen(m: ModelClass) -> bool:
-        return False
+        return can_expand_width(m, acfg)
 
     def can_deepen(m: ModelClass) -> bool:
-        return False
+        return can_expand_depth(m, acfg)
 
     def optimize_width_at_fixed_depth(curr_model: ModelClass) -> Tuple[ModelClass, float, Dict[str, Any]]:
         local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
@@ -231,7 +233,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     elif mode in ["depth_only", "depth"]:
         model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
     elif mode == "depth_to_width":
-        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
+        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0
@@ -248,7 +250,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
             else: fc += 1
         model = restore_arch_and_state(model, global_best_snap, device)
     elif mode == "width_to_depth":
-        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
+        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0
@@ -290,80 +292,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
     
-    return global_best_val, model, 0, 0
-
-# Sequence Tagging Data Logic
-def make_loaders(batch_size=32):
-    class SyntheticTaggerData(torch.utils.data.Dataset):
-        def __init__(self, vocab_size, num_tags, num_samples):
-            self.vocab_size = vocab_size
-            self.num_tags = num_tags
-            self.num_samples = num_samples
-        def __len__(self): return self.num_samples
-        def __getitem__(self, idx):
-            l = torch.randint(10, 50, (1,)).item()
-            toks = torch.randint(0, self.vocab_size, (l,))
-            tags = torch.randint(0, self.num_tags, (l,)) # Tag per token
-            return toks, tags
-
-    trainset = SyntheticTaggerData(20000, 10, 1000)
-    valset = SyntheticTaggerData(20000, 10, 200)
-
-    def collate(batch):
-        batch.sort(key=lambda x: len(x[0]), reverse=True)
-        toks, tags = zip(*batch)
-        lengths = torch.tensor([len(t) for t in toks])
-        pad_toks = torch.nn.utils.rnn.pad_sequence(toks, batch_first=True, padding_value=0)
-        pad_tags = torch.nn.utils.rnn.pad_sequence(tags, batch_first=True, padding_value=-1) # -1 for ignore
-        return pad_toks, lengths, pad_tags
-
-    train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, collate_fn=collate)
-    val_loader = DataLoader(valset, batch_size=batch_size, shuffle=False, collate_fn=collate)
-    return train_loader, val_loader
-
-def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, history: list) -> Tuple[float, Dict[str, Any]]:
-    opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
-    best_val = float("inf")
-    best_state = copy.deepcopy(model.state_dict())
-    es_counter = 0
-    
-    criterion = nn.CrossEntropyLoss(ignore_index=-1) # Ignore padding labels
-
-    for _ in range(acfg.max_epochs):
-        model.train()
-        for batch in dl_train:
-            x, l, y = batch
-            x, l, y = x.to(device), l.to(device), y.to(device)
-            opt.zero_grad()
-            logits = model(x, l) # (B, T, C)
-            # Flatten for CE
-            loss = criterion(logits.view(-1, logits.size(-1)), y.view(-1))
-            loss.backward()
-            opt.step()
-        
-        model.eval()
-        val_loss = 0.0
-        n = 0
-        with torch.no_grad():
-             for batch in dl_val:
-                x, l, y = batch
-                x, l, y = x.to(device), l.to(device), y.to(device)
-                logits = model(x, l)
-                loss = criterion(logits.view(-1, logits.size(-1)), y.view(-1))
-                val_loss += loss.item()
-                n += 1
-        if n>0: val_loss /= n
-        
-        history.append(val_loss)
-        if val_loss < best_val:
-            best_val = val_loss
-            best_state = copy.deepcopy(model.state_dict())
-            es_counter = 0
-        else:
-            es_counter += 1
-        if es_counter >= acfg.patience: break
-            
-    return best_val, best_state
+    return global_best_val, model, *infer_adp_shape(model)
 
 # Sequence Tagging Data Logic
 def make_loaders(batch_size=32):

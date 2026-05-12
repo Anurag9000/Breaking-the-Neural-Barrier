@@ -7,4 +7,3 @@ from .dae_gaussian_conv_stl import DAEGaussianConv as ModelClass  # noqa: F401
 
 # Alias of the Gaussian Conv DAE ADP machinery, but used with very small
 # noise_std to realise the score-matching / small-noise DAE setting.
-

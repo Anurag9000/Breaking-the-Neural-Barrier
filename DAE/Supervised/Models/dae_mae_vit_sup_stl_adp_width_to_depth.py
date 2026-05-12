@@ -1,15 +1,23 @@
-from DAE.Self-Supervised.Models.dae_mae_vit_stl_adp_width_to_depth import (  # type: ignore
-    ADPConfig,
-    adp_search,
-    make_loaders,
-)
-from DAE.Self-Supervised.Models.dae_mae_vit_stl import MAEViT  # type: ignore
+from __future__ import annotations
 
-# Supervised MAE-ViT classifier reuses the unsupervised MAE ADP search:
-# - same backbone MAEViT.
-# - ADP controls embed_dim ("width") and depth exactly as in the self-supervised
-#   setting. Here we alias the symbols so DAE/Supervised can invoke identical
-#   width/depth expansion logic.
+import importlib.util
+from pathlib import Path
 
-ModelClass = MAEViT
 
+BASE_PATH = Path(__file__).resolve().parents[2] / "Self-Supervised" / "Models" / "dae_mae_vit_stl_adp_width_to_depth.py"
+_spec = importlib.util.spec_from_file_location("dae_mae_vit_stl_adp_width_to_depth", BASE_PATH)
+assert _spec is not None and _spec.loader is not None
+_module = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_module)
+
+ADPConfig = _module.ADPConfig
+adp_search = _module.adp_search
+make_loaders = _module.make_loaders
+
+BASE_MODEL_PATH = Path(__file__).resolve().parents[2] / "Self-Supervised" / "Models" / "dae_mae_vit_stl.py"
+_base_spec = importlib.util.spec_from_file_location("dae_mae_vit_stl", BASE_MODEL_PATH)
+assert _base_spec is not None and _base_spec.loader is not None
+_base_module = importlib.util.module_from_spec(_base_spec)
+_base_spec.loader.exec_module(_base_module)
+
+ModelClass = _base_module.MAEViT

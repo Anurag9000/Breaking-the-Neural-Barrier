@@ -20,6 +20,8 @@ except ImportError:
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
 
+from utils.adp_introspect import infer_adp_depth, infer_adp_shape, infer_adp_width, can_expand_depth, can_expand_width
+
 # Load baseline
 BASE_PATH = Path(__file__).with_name("i_sds_image.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
@@ -220,10 +222,10 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     improvements.append((total_neurons(0, 0), best_val))
 
     def can_widen(m: ModelClass) -> bool:
-        return False
+        return can_expand_width(m, acfg)
 
     def can_deepen(m: ModelClass) -> bool:
-        return False
+        return can_expand_depth(m, acfg)
 
     def optimize_width_at_fixed_depth(curr_model: ModelClass) -> Tuple[ModelClass, float, Dict[str, Any]]:
         local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
@@ -277,7 +279,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     elif mode in ["depth_only", "depth"]:
         model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
     elif mode == "depth_to_width":
-        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
+        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0
@@ -294,7 +296,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
             else: fc += 1
         model = restore_arch_and_state(model, global_best_snap, device)
     elif mode == "width_to_depth":
-        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
+        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0
@@ -336,7 +338,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
     
-    return global_best_val, model, 0, 0
+    return global_best_val, model, *infer_adp_shape(model)
 
 def main():
     import argparse
