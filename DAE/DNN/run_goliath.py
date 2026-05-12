@@ -24,6 +24,8 @@ from DAE.DNN.train_utils import eval_epoch, train_epoch, unpack_batch
 from utils.adp_logging import ContinuousLogger
 from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_from_csv
 
+DEFAULT_MAX_EPOCHS = 99999999999999999999999999999999999999999999999999999999999999999999999
+
 
 @dataclass
 class RunConfig:
@@ -1048,7 +1050,7 @@ def main() -> None:
     p.add_argument("--alt-start-depth", type=int, default=2)
     p.add_argument("--patience", type=int, default=5)
     p.add_argument("--delta", type=float, default=1e-4)
-    p.add_argument("--max-epochs", type=int, default=100)
+    p.add_argument("--max-epochs", type=int, default=DEFAULT_MAX_EPOCHS)
     p.add_argument("--lr", type=float, default=1e-3)
     p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--grad-clip", type=float, default=1.0)
