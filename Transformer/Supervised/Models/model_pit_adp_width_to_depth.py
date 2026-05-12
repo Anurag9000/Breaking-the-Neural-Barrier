@@ -10,6 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
+from utils.adp_introspect import can_expand_depth, can_expand_width, infer_adp_depth, infer_adp_width
 
 # Add root to sys.path for utils
 sys.path.append(str(Path(__file__).resolve().parents[3]))
@@ -110,7 +111,7 @@ def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPC
     return rebuild_model(model, nxt, model.depth, device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    cur_d = getattr(model, 'depth', 1) if True else getattr(model.cfg, 'depth', 1) if hasattr(model, 'cfg') else 1
+    cur_d = getattr(model, 'depth', 1)
     new_d = min(cur_d + 1, max_depth)
     if new_d == cur_d: return None
     return rebuild_model(model, getattr(model, 'dim', 64) if 'dim' != 'width' else 64, new_d, device, cfg)
@@ -122,7 +123,7 @@ def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any
     state = state_dict if state_dict is not None else model.state_dict()
     return {
         "width": getattr(model, 'dim', 0) if 'dim' != 'None' else 0,
-        "depth": getattr(model, 'depth', 0) if True else 0,
+        "depth": getattr(model, 'depth', 0),
         "state": copy.deepcopy(state)
     }
 
@@ -133,20 +134,6 @@ def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> M
     # Our simple rebuild might default to model attrs.
     # For now, we reuse rebuild_model with snap width/depth.
     return rebuild_model(model, snap['width'], snap['depth'], device, None)
-
-def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
-    # Rebuild using snap params
-    # We need a way to pass 'cfg' or context. 
-    # For now we create a dummy cfg with snap values or rely on defaults from main
-    # Actually, we can just use the ModelClass constructor directly
-    try:
-        new_model = ModelClass(
-            dim=snap['width']
-        ).to(device)
-        new_model.load_state_dict(snap["state"])
-        return new_model
-    except Exception:
-        return model # Fallback
 
 def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, history: list) -> Tuple[float, Dict[str, Any]]:
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
@@ -251,7 +238,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
         return m.dim < acfg.max_width
 
     def can_deepen(m: ModelClass) -> bool:
-        return False
+        return can_expand_depth(m, acfg)
 
     def optimize_width_at_fixed_depth(curr_model: ModelClass) -> Tuple[ModelClass, float, Dict[str, Any]]:
         local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
@@ -305,7 +292,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     elif mode in ["depth_only", "depth"]:
         model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
     elif mode == "depth_to_width":
-        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
+        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0
@@ -322,7 +309,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
             else: fc += 1
         model = restore_arch_and_state(model, global_best_snap, device)
     elif mode == "width_to_depth":
-        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
+        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0

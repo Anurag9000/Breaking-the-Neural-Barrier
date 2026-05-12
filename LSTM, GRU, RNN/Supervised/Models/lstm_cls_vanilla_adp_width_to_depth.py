@@ -20,6 +20,8 @@ except ImportError:
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
 
+from utils.adp_introspect import infer_adp_depth, infer_adp_shape, infer_adp_width, can_expand_depth, can_expand_width
+
 # Load baseline
 BASE_PATH = Path(__file__).with_name("lstm_cls_vanilla.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
@@ -221,10 +223,10 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), best_val))
 
     def can_widen(m: ModelClass) -> bool:
-        return False
+        return can_expand_width(m, acfg)
 
     def can_deepen(m: ModelClass) -> bool:
-        return False
+        return can_expand_depth(m, acfg)
 
     def optimize_width_at_fixed_depth(curr_model: ModelClass) -> Tuple[ModelClass, float, Dict[str, Any]]:
         local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
@@ -278,7 +280,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     elif mode in ["depth_only", "depth"]:
         model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
     elif mode == "depth_to_width":
-        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
+        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0
@@ -295,7 +297,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
             else: fc += 1
         model = restore_arch_and_state(model, global_best_snap, device)
     elif mode == "width_to_depth":
-        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
+        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0
@@ -337,7 +339,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
     
-    return global_best_val, model, 0, 0
+    return global_best_val, model, *infer_adp_shape(model)
 
 # Copy make_loaders but adapted for text/LSTM?
 # LSTMClassifier expects (tokens, lengths)
@@ -391,52 +393,6 @@ def make_loaders(batch_size=128, num_workers=0):
     return train_loader, val_loader
 
 # Update train loop to handle (toks, lens, y) tuple
-def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, history: list) -> Tuple[float, Dict[str, Any]]:
-    opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
-    best_val = float("inf")
-    best_state = copy.deepcopy(model.state_dict())
-    es_counter = 0
-    
-    criterion = nn.CrossEntropyLoss()
-
-    for _ in range(acfg.max_epochs):
-        model.train()
-        for batch in dl_train:
-            # batch is (toks, lengths, labels)
-            x, l, y = batch
-            x, l, y = x.to(device), l.to(device), y.to(device)
-            
-            opt.zero_grad()
-            out = model(x, l)
-            loss = criterion(out, y)
-            loss.backward()
-            opt.step()
-        
-        # Validation
-        model.eval()
-        val_loss = 0.0
-        n = 0
-        with torch.no_grad():
-             for batch in dl_val:
-                x, l, y = batch
-                x, l, y = x.to(device), l.to(device), y.to(device)
-                out = model(x, l)
-                loss = criterion(out, y)
-                val_loss += loss.item()
-                n += 1
-        if n>0: val_loss /= n
-        
-        history.append(val_loss)
-        if val_loss < best_val:
-            best_val = val_loss
-            best_state = copy.deepcopy(model.state_dict())
-            es_counter = 0
-        else:
-            es_counter += 1
-        if es_counter >= acfg.patience: break
-            
-    return best_val, best_state
-
 def main():
     import argparse
     p = argparse.ArgumentParser()

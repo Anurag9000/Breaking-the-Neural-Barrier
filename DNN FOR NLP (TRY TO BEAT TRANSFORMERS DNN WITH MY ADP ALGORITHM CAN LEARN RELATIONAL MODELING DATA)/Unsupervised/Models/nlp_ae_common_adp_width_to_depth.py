@@ -296,7 +296,7 @@ def adp_search(model: TextAE, data, acfg: ADPConfig, device):
         model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
         
     elif mode == "depth_to_width":
-        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
+        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
         global_best_val = base_val
         global_best_snap = base_snap
         
@@ -322,7 +322,7 @@ def adp_search(model: TextAE, data, acfg: ADPConfig, device):
         model = restore_arch_and_state(model, global_best_snap, device)
 
     elif mode == "width_to_depth":
-        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
+        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
         global_best_val = base_val
         global_best_snap = base_snap
         

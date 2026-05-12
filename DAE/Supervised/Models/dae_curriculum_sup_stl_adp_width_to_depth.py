@@ -240,4 +240,3 @@ def adp_search(
     
     return bv, model, model.width, model.depth
 
-

@@ -328,7 +328,7 @@ def adp_search(model: AE_STL, dl_train, dl_val, acfg: ADPConfig, device, logger:
         
     elif mode == "depth_to_width": # ADP_DEPTH_OUTER_WIDTH_INNER
         # First, optimise width at starting depth
-        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
+        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
         
         global_best_val = base_val
         global_best_snap = base_snap
@@ -363,7 +363,7 @@ def adp_search(model: AE_STL, dl_train, dl_val, acfg: ADPConfig, device, logger:
 
     elif mode == "width_to_depth": # ADP_WIDTH_OUTER_DEPTH_INNER
         # First, optimise depth at starting width
-        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
+        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
         
         global_best_val = base_val
         global_best_snap = base_snap

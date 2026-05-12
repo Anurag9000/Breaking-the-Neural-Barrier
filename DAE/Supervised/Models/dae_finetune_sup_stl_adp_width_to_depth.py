@@ -6,4 +6,3 @@ Reuses the ADPResNet ADP runner for width/depth expansion.
 
 from CNN.ADP_ResNet.run_adp_resnet import ADPConfig, adp_search  # type: ignore # noqa: F401
 from CNN.ADP_ResNet.adp_resnet_backbone import ADPResNet as ModelClass  # noqa: F401
-
