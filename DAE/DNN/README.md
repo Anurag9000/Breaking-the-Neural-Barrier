@@ -74,7 +74,7 @@ source .venv/bin/activate
 ```
 Then launch the full sequential experiment:
 ```
-python DAE/DNN/run_goliath.py --tasks all --data-dir ./data --results-dir DAE/DNN/results --batch-size 256 --stl-width 128 --stl-depth 2 --alt-start-width 2 --alt-start-depth 2 --patience 5 --seed 0
+python DAE/DNN/run_goliath.py --tasks all --data-dir ./data --results-dir DAE/DNN/results --stl-width 128 --stl-depth 2 --alt-start-width 2 --alt-start-depth 2 --patience 5 --seed 0
 ```
 
 Common flags

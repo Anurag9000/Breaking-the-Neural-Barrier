@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import gc
 import copy
 import csv
 import datetime as _dt
@@ -25,6 +26,7 @@ from utils.adp_logging import ContinuousLogger
 from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_from_csv
 
 DEFAULT_MAX_EPOCHS = 99999999999999999999999999999999999999999999999999999999999999999999999
+DEFAULT_VRAM_BUDGET_GB = 5.5
 
 
 @dataclass
@@ -134,6 +136,105 @@ def make_reconstruction_model(task: Task, hidden_widths: Sequence[int], use_bn: 
 
 def make_stl_model(task: Task, hidden_widths: Sequence[int], use_bn: bool) -> MLP:
     return make_model(task.in_dim, hidden_widths, task.out_dim, use_bn)
+
+
+def _repeat_batch(x: torch.Tensor, batch_size: int) -> torch.Tensor:
+    shape = (int(batch_size),) + (1,) * (x.ndim - 1)
+    return x.repeat(shape)
+
+
+def _batch_fits_cuda(
+    *,
+    task: Task,
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    batch_size: int,
+    budget_bytes: int,
+    device,
+) -> bool:
+    if not torch.cuda.is_available():
+        return True
+
+    sample_batch = next(iter(task.train_loader))
+    x, y, _ = unpack_batch(sample_batch)
+    x = x.to(device)
+    y = y.to(device) if isinstance(y, torch.Tensor) else y
+
+    x_big = _repeat_batch(x, batch_size)
+    if isinstance(y, torch.Tensor):
+        y_big = _repeat_batch(y, batch_size) if y.ndim > 0 else y.repeat(int(batch_size))
+    else:
+        y_big = y
+
+    try:
+        torch.cuda.empty_cache()
+        gc.collect()
+        optimizer.zero_grad(set_to_none=True)
+        model.zero_grad(set_to_none=True)
+        torch.cuda.reset_peak_memory_stats(device)
+        out = model(x_big)
+        loss = task.loss_fn(out, y_big)
+        loss.backward()
+        optimizer.step()
+        torch.cuda.synchronize(device)
+        peak = torch.cuda.max_memory_allocated(device)
+        return int(peak) <= int(budget_bytes)
+    except RuntimeError as exc:
+        if "out of memory" in str(exc).lower():
+            torch.cuda.empty_cache()
+            return False
+        raise
+
+
+def auto_select_batch_size(
+    *,
+    task_name: str,
+    cfg_data_dir: str,
+    num_workers: int,
+    seed: int,
+    hidden_widths: Sequence[int],
+    use_bn: bool,
+    device,
+    budget_gb: float = DEFAULT_VRAM_BUDGET_GB,
+) -> int:
+    if not torch.cuda.is_available():
+        return 64
+
+    probe_task = build_task(task_name, cfg_data_dir, 1, num_workers, seed)
+    probe_model = make_stl_model(probe_task, hidden_widths, use_bn).to(device)
+    probe_optimizer = torch.optim.AdamW(probe_model.parameters(), lr=1e-3, weight_decay=1e-4)
+    base_model_state = copy.deepcopy(probe_model.state_dict())
+    base_optim_state = copy.deepcopy(probe_optimizer.state_dict())
+    budget_bytes = int(float(budget_gb) * (1024**3))
+
+    low = 2
+    high = 2
+    probe_model.load_state_dict(base_model_state)
+    probe_optimizer.load_state_dict(base_optim_state)
+    best = 2 if _batch_fits_cuda(task=probe_task, model=probe_model, optimizer=probe_optimizer, batch_size=2, budget_bytes=budget_bytes, device=device) else 2
+
+    while True:
+        probe_model.load_state_dict(base_model_state)
+        probe_optimizer.load_state_dict(base_optim_state)
+        if not _batch_fits_cuda(task=probe_task, model=probe_model, optimizer=probe_optimizer, batch_size=high, budget_bytes=budget_bytes, device=device):
+            break
+        best = high
+        low = high
+        high *= 2
+        if high > 1 << 18:
+            break
+
+    while low + 1 < high:
+        mid = (low + high) // 2
+        probe_model.load_state_dict(base_model_state)
+        probe_optimizer.load_state_dict(base_optim_state)
+        if _batch_fits_cuda(task=probe_task, model=probe_model, optimizer=probe_optimizer, batch_size=mid, budget_bytes=budget_bytes, device=device):
+            best = mid
+            low = mid
+        else:
+            high = mid
+
+    return max(2, best // 2)
 
 
 def base_stl_hidden(task: Task, cfg: RunConfig) -> List[int]:
@@ -1041,7 +1142,8 @@ def main() -> None:
     p.add_argument("--run-root", type=str, default=None)
     p.add_argument("--tasks", type=str, nargs="+", default=["all"])
     p.add_argument("--phases", type=str, nargs="+", default=["stl", "ae_alt_width", "ae_width_only", "ae_depth_only"])
-    p.add_argument("--batch-size", type=int, default=256)
+    p.add_argument("--batch-size", type=int, default=0, help="Use 0 to auto-tune from a CUDA probe and then halve the max safe batch size.")
+    p.add_argument("--batch-probe-task", type=str, default="classification", help="Task used for automatic batch-size probing.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--stl-width", type=int, default=128)
@@ -1070,13 +1172,32 @@ def main() -> None:
         if args.patience > 1:
             args.patience = 1
 
+    base_hidden = [int(args.stl_width) for _ in range(max(1, int(args.stl_depth)))]
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    resolved_batch_size = int(args.batch_size)
+    if resolved_batch_size <= 0:
+        probe_task = args.batch_probe_task
+        if probe_task.lower() not in {t.lower() for t in tasks} and probe_task.lower() not in {t.lower() for t in task_names()}:
+            probe_task = "classification" if "classification" in task_names() else tasks[0]
+        resolved_batch_size = auto_select_batch_size(
+            task_name=probe_task,
+            cfg_data_dir=args.data_dir,
+            num_workers=args.num_workers,
+            seed=args.seed,
+            hidden_widths=base_hidden,
+            use_bn=not args.no_bn,
+            device=device,
+            budget_gb=DEFAULT_VRAM_BUDGET_GB,
+        )
+        print(f"Auto-selected batch size: {resolved_batch_size} (half of max safe batch under {DEFAULT_VRAM_BUDGET_GB} GiB)")
+
     cfg = RunConfig(
         data_dir=args.data_dir,
         results_dir=args.results_dir,
         run_root=args.run_root,
         tasks=tasks,
         phases=args.phases,
-        batch_size=args.batch_size,
+        batch_size=resolved_batch_size,
         num_workers=args.num_workers,
         seed=args.seed,
         stl_width=args.stl_width,
@@ -1097,7 +1218,6 @@ def main() -> None:
     )
 
     seed_everything(cfg.seed)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     run_root = build_run_root(cfg)
     run_root.mkdir(parents=True, exist_ok=True)
     write_json(
