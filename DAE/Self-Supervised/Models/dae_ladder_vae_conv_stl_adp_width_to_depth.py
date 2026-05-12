@@ -8,4 +8,3 @@ from .dae_ladder_vae_conv_stl import DAELadderVAEConv as ModelClass  # noqa: F40
 # This file re-exports the ADPConfig/make_loaders/adp_search used for the
 # plain DAEVAEConv but is logically separated so that ladder-specific
 # extensions can be added later without changing call sites.
-

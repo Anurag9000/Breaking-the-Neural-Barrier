@@ -12,4 +12,3 @@ from CNN.ADP_ResNet.adp_resnet_backbone import ADPResNet  # type: ignore
 # supervised namespace can invoke the same ADP logic.
 
 ModelClass = ADPResNet
-

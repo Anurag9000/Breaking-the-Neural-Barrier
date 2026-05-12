@@ -384,7 +384,8 @@ def adp_search(
             global_best_snap = snapshot_arch_and_state(model, b_state)
         
         fail_count = 0
-        while fail_count < acfg.trials_depth and output_model_depth := can_deepen(model):
+        output_model_depth = can_deepen(model)
+        while fail_count < acfg.trials_depth and output_model_depth:
             # Outer: Expand depth
             deeper = expand_depth(model, num_classes, acfg.max_depth, device)
             if deeper is None: break
@@ -586,4 +587,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -9,4 +9,3 @@ from .dae_resnet_reg_sup_stl_adp_width_to_depth import (  # noqa: F401
     adp_search,
 )
 from CNN.ADP_ResNet.adp_resnet_backbone import ADPResNet as ModelClass  # noqa: F401
-

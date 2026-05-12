@@ -148,7 +148,7 @@ def train_with_early_stopping(model: AE_MASK_STL, dl_train, dl_val, acfg: ADPCon
     return best, best_state
 
 
-def adp_search(model: AE_MASK_STL, dl_train, dl_val, acfg: ADPConfig, device, logger: ContinuousLogger, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path(\"results_adp\")):
+def adp_search(model: AE_MASK_STL, dl_train, dl_val, acfg: ADPConfig, device, logger: ContinuousLogger, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
     results_dir.mkdir(parents=True, exist_ok=True)
     val_history = []
     improvements: List[tuple] = []
@@ -187,7 +187,7 @@ def adp_search(model: AE_MASK_STL, dl_train, dl_val, acfg: ADPConfig, device, lo
                 width_failure_count = 0
                 if log_improvement:
                     improvements.append((total_neurons(local_model), local_best_val))
-                    logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: New best: {val:.6f}")
+                    logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: New best: {cand_val:.6f}")
                     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
                     if log_neurons: plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
             else:
@@ -212,7 +212,7 @@ def adp_search(model: AE_MASK_STL, dl_train, dl_val, acfg: ADPConfig, device, lo
                 depth_failure_count = 0
                 if log_improvement:
                     improvements.append((total_neurons(local_model), local_best_val))
-                    logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: New best: {val:.6f}")
+                    logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: New best: {cand_val:.6f}")
                     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
                     if log_neurons: plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
             else:

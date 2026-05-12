@@ -240,9 +240,9 @@ def train_with_early_stopping(
 
         if es >= cfg.patience:
             if logger:
-                logger.log_console(f\"  Early stopping at epoch {epoch}\")
+                logger.log_console(f"  Early stopping at epoch {epoch}")
             else:
-                print(f\"  Early stopping at epoch {epoch}\")
+                print(f"  Early stopping at epoch {epoch}")
             break
 
     return best_val, best_state
@@ -428,4 +428,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

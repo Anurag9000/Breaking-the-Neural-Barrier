@@ -24,6 +24,8 @@ except ImportError:
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
 
+from utils.adp_introspect import infer_adp_depth, infer_adp_shape, infer_adp_width
+
 # Load baseline
 BASE_PATH = Path(__file__).with_name("gat_graphcl.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
@@ -127,8 +129,8 @@ def total_neurons(width: int, depth: int) -> int:
 def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
     return {
-        "width": getattr(model, 'None', 0) if 'None' != 'None' else 0,
-        "depth": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "width": infer_adp_width(model),
+        "depth": infer_adp_depth(model),
         "state": copy.deepcopy(state)
     }
 
@@ -139,20 +141,6 @@ def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> M
     # Our simple rebuild might default to model attrs.
     # For now, we reuse rebuild_model with snap width/depth.
     return rebuild_model(model, snap['width'], snap['depth'], device, None)
-
-def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
-    # Rebuild using snap params
-    # We need a way to pass 'cfg' or context. 
-    # For now we create a dummy cfg with snap values or rely on defaults from main
-    # Actually, we can just use the ModelClass constructor directly
-    try:
-        new_model = ModelClass(
-            dim=snap['width'], layers=snap['depth']
-        ).to(device)
-        new_model.load_state_dict(snap["state"])
-        return new_model
-    except Exception:
-        return model # Fallback
 
 def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, history: list) -> Tuple[float, Dict[str, Any]]:
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
@@ -332,7 +320,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     elif mode in ["depth_only", "depth"]:
         model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
     elif mode == "depth_to_width":
-        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
+        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0
@@ -349,7 +337,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
             else: fc += 1
         model = restore_arch_and_state(model, global_best_snap, device)
     elif mode == "width_to_depth":
-        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
+        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0
