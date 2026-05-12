@@ -151,9 +151,9 @@ def _batch_fits_cuda(
     batch_size: int,
     budget_bytes: int,
     device,
-) -> bool:
+) -> Tuple[bool, Optional[int], Optional[int]]:
     if not torch.cuda.is_available():
-        return True
+        return True, None, None
 
     sample_batch = next(iter(task.train_loader))
     x, y, _ = unpack_batch(sample_batch)
@@ -177,12 +177,13 @@ def _batch_fits_cuda(
         loss.backward()
         optimizer.step()
         torch.cuda.synchronize(device)
-        peak = torch.cuda.max_memory_allocated(device)
-        return int(peak) <= int(budget_bytes)
+        peak_alloc = int(torch.cuda.max_memory_allocated(device))
+        peak_reserved = int(torch.cuda.max_memory_reserved(device))
+        return int(peak_alloc) <= int(budget_bytes), peak_alloc, peak_reserved
     except RuntimeError as exc:
         if "out of memory" in str(exc).lower():
             torch.cuda.empty_cache()
-            return False
+            return False, None, None
         raise
 
 
@@ -209,16 +210,36 @@ def auto_select_batch_size(
 
     low = 2
     high = 2
+    best_alloc = None
+    best_reserved = None
     probe_model.load_state_dict(base_model_state)
     probe_optimizer.load_state_dict(base_optim_state)
-    best = 2 if _batch_fits_cuda(task=probe_task, model=probe_model, optimizer=probe_optimizer, batch_size=2, budget_bytes=budget_bytes, device=device) else 2
+    fits, best_alloc, best_reserved = _batch_fits_cuda(
+        task=probe_task,
+        model=probe_model,
+        optimizer=probe_optimizer,
+        batch_size=2,
+        budget_bytes=budget_bytes,
+        device=device,
+    )
+    best = 2 if fits else 2
 
     while True:
         probe_model.load_state_dict(base_model_state)
         probe_optimizer.load_state_dict(base_optim_state)
-        if not _batch_fits_cuda(task=probe_task, model=probe_model, optimizer=probe_optimizer, batch_size=high, budget_bytes=budget_bytes, device=device):
+        fits, alloc, reserved = _batch_fits_cuda(
+            task=probe_task,
+            model=probe_model,
+            optimizer=probe_optimizer,
+            batch_size=high,
+            budget_bytes=budget_bytes,
+            device=device,
+        )
+        if not fits:
             break
         best = high
+        best_alloc = alloc
+        best_reserved = reserved
         low = high
         high *= 2
         if high > 1 << 18:
@@ -228,13 +249,29 @@ def auto_select_batch_size(
         mid = (low + high) // 2
         probe_model.load_state_dict(base_model_state)
         probe_optimizer.load_state_dict(base_optim_state)
-        if _batch_fits_cuda(task=probe_task, model=probe_model, optimizer=probe_optimizer, batch_size=mid, budget_bytes=budget_bytes, device=device):
+        fits, alloc, reserved = _batch_fits_cuda(
+            task=probe_task,
+            model=probe_model,
+            optimizer=probe_optimizer,
+            batch_size=mid,
+            budget_bytes=budget_bytes,
+            device=device,
+        )
+        if fits:
             best = mid
+            best_alloc = alloc
+            best_reserved = reserved
             low = mid
         else:
             high = mid
 
-    return max(2, best // 2)
+    auto_selected = max(2, best // 2)
+    print(
+        f"Batch probe for {task_name}: best_safe={best}, half_default={auto_selected}, "
+        f"peak_allocated={best_alloc if best_alloc is not None else 'na'} bytes, "
+        f"peak_reserved={best_reserved if best_reserved is not None else 'na'} bytes"
+    )
+    return auto_selected
 
 
 def base_stl_hidden(task: Task, cfg: RunConfig) -> List[int]:
@@ -1229,6 +1266,9 @@ def main() -> None:
             "tasks": tasks,
             "available_tasks": task_names(),
             "timestamp": now_stamp(),
+            "batch_size_selected": int(cfg.batch_size),
+            "batch_probe_task": args.batch_probe_task,
+            "batch_probe_budget_gb": DEFAULT_VRAM_BUDGET_GB,
         },
     )
 
