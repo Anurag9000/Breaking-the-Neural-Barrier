@@ -74,6 +74,33 @@ def _merge_state(new_state, old_state):
             merged[k] = v
     return merged
 
+def _model_width(model, default=0):
+    for obj in (model, getattr(model, "cfg", None)):
+        if obj is None:
+            continue
+        for key in ("width", "channels", "out_ch", "out_channels", "planes"):
+            if hasattr(obj, key):
+                val = getattr(obj, key)
+                if val is not None:
+                    return val
+    return default
+
+
+def _model_depth(model, default=1):
+    for obj in (model, getattr(model, "cfg", None)):
+        if obj is None:
+            continue
+        for key in ("depth", "layers"):
+            if hasattr(obj, key):
+                val = getattr(obj, key)
+                if val is not None:
+                    return val
+    return default
+
+
+def _model_neurons(model):
+    return total_neurons(_model_width(model), _model_depth(model))
+
 def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPConfig) -> ModelClass:
     def get_attr(obj, candidates, default):
         for c in candidates:
@@ -90,29 +117,39 @@ def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPCon
         kwargs['k'] = get_attr(model, ['k'], None)
         kwargs['s'] = get_attr(model, ['s'], None)
         kwargs['p'] = get_attr(model, ['p'], None)
+        for _k in ("width", "channels", "out_ch", "out_channels", "planes", "hidden_dim"):
+            if _k in kwargs and kwargs[_k] is not None:
+                kwargs[_k] = width
+        for _k in ("depth", "layers"):
+            if _k in kwargs and kwargs[_k] is not None:
+                kwargs[_k] = depth
         new_model = ModelClass(**kwargs).to(device)
     except Exception as e:
         print(f'Rebuild failed: {e}')
         return None
     merged = _merge_state(new_model.state_dict(), model.state_dict())
     new_model.load_state_dict(merged, strict=False)
+    new_model.width = width
+    new_model.depth = depth
     return new_model
         
     merged = _merge_state(new_model.state_dict(), model.state_dict())
     new_model.load_state_dict(merged, strict=False)
+    new_model.width = width
+    new_model.depth = depth
     return new_model
 
 def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    cur_w = width = getattr(model, 'None', 0) if 'None' != 'None' else getattr(model.cfg, 'width', 0) if hasattr(model, 'cfg') else 0
+    cur_w = width = _model_width(model)
     new_w = min(cur_w + ex_k, max_width)
     if new_w == cur_w: return None
-    return rebuild_model(model, new_w, getattr(model, 'None', 1) if 'None' != 'None' else 1, device, cfg)
+    return rebuild_model(model, new_w, _model_depth(model, 1), device, cfg)
 
 def expand_depth(model: ModelClass, max_depth: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
-    cur_d = getattr(model, 'None', 1) if 'None' != 'None' else getattr(model.cfg, 'depth', 1) if hasattr(model, 'cfg') else 1
+    cur_d = _model_depth(model)
     new_d = min(cur_d + 1, max_depth)
     if new_d == cur_d: return None
-    return rebuild_model(model, getattr(model, 'None', 64) if 'None' != 'None' else 64, new_d, device, cfg)
+    return rebuild_model(model, _model_width(model, 64), new_d, device, cfg)
 
 def total_neurons(width: int, depth: int) -> int:
     return int(width * (depth + 1))
@@ -120,32 +157,20 @@ def total_neurons(width: int, depth: int) -> int:
 def snapshot_arch_and_state(model: ModelClass, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
     return {
-        "width": getattr(model, 'None', 0) if 'None' != 'None' else 0,
-        "depth": getattr(model, 'None', 0) if 'None' != 'None' else 0,
+        "width": _model_width(model),
+        "depth": _model_depth(model),
         "state": copy.deepcopy(state)
     }
 
 def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
-    # Basic restore relying on rebuild
-    # We use CURRENT model's other params (implicitly handled by rebuild if we pass them)
-    # But restore actually needs to recreate the model strictly from snapshot metadata.
-    # Our simple rebuild might default to model attrs.
-    # For now, we reuse rebuild_model with snap width/depth.
-    return rebuild_model(model, snap['width'], snap['depth'], device, None)
-
-def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> ModelClass:
-    # Rebuild using snap params
-    # We need a way to pass 'cfg' or context. 
-    # For now we create a dummy cfg with snap values or rely on defaults from main
-    # Actually, we can just use the ModelClass constructor directly
-    try:
-        new_model = ModelClass(
-            
-        ).to(device)
-        new_model.load_state_dict(snap["state"])
-        return new_model
-    except Exception:
-        return model # Fallback
+    # Basic restore relying on rebuild.
+    rebuilt = rebuild_model(model, snap["width"], snap["depth"], device, None)
+    if rebuilt is None:
+        return model
+    rebuilt.load_state_dict(snap["state"], strict=False)
+    rebuilt.width = snap.get("width", getattr(rebuilt, "width", 0))
+    rebuilt.depth = snap.get("depth", getattr(rebuilt, "depth", 1))
+    return rebuilt
 
 def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, history: list) -> Tuple[float, Dict[str, Any]]:
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
@@ -244,13 +269,13 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     model.load_state_dict(best_state)
     global_best_snap = snapshot_arch_and_state(model, best_state)
     global_best_val = best_val
-    improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), best_val))
+    improvements.append((_model_neurons(model), best_val))
 
     def can_widen(m: ModelClass) -> bool:
-        return False
+        return _model_width(m) < acfg.max_width
 
     def can_deepen(m: ModelClass) -> bool:
-        return False
+        return _model_depth(m) < acfg.max_depth
 
     def optimize_width_at_fixed_depth(curr_model: ModelClass) -> Tuple[ModelClass, float, Dict[str, Any]]:
         local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
@@ -269,7 +294,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 width_failure_count = 0
-                improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), v))
+                improvements.append((_model_neurons(model), v))
             else:
                 width_failure_count += 1
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
@@ -292,7 +317,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 depth_failure_count = 0
-                improvements.append((total_neurons(getattr(model, "None", 0), getattr(model, "None", 0)), v))
+                improvements.append((_model_neurons(model), v))
             else:
                 depth_failure_count += 1
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
@@ -304,7 +329,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     elif mode in ["depth_only", "depth"]:
         model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
     elif mode == "depth_to_width":
-        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
+        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0
@@ -321,7 +346,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
             else: fc += 1
         model = restore_arch_and_state(model, global_best_snap, device)
     elif mode == "width_to_depth":
-        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
+        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
         global_best_val = base_val
         global_best_snap = base_snap
         fc = 0
@@ -363,7 +388,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
     
-    return global_best_val, model, 0, 0
+    return global_best_val, model, _model_width(model), _model_depth(model)
 
 def main():
     import argparse
@@ -382,6 +407,10 @@ def main():
     
     try:
         model = ModelClass().to(device)
+        if not hasattr(model, "width"):
+            model.width = getattr(args, "width", _model_width(model))
+        if not hasattr(model, "depth"):
+            model.depth = getattr(args, "depth", _model_depth(model))
     except:
         print("Could not instantiate model with default args.")
         return

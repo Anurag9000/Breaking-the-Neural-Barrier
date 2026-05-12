@@ -8,17 +8,20 @@ from typing import List, Optional, Tuple, Dict, Any
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, random_split, Subset
 from torchvision import datasets, transforms
 
 # Add root to sys.path for utils
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 try:
     from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons
+    from utils.adp_state import merge_state_preserving_init
 except ImportError:
     # Fallback if utils not found or different structure
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
+    def merge_state_preserving_init(new_state, old_state):
+        return new_state
 
 # Load baseline
 BASE_PATH = Path(__file__).with_name("cnn_vgg.py").resolve()
@@ -57,22 +60,7 @@ def _resize_tensor(to_shape: torch.Size, src: torch.Tensor) -> torch.Tensor:
     return tgt
 
 def _merge_state(new_state, old_state):
-    merged = {}
-    for k, v in new_state.items():
-        if k in old_state:
-            ov = old_state[k]
-            if ov.shape == v.shape:
-                merged[k] = ov
-            else:
-                # Basic resizing - for complex models (MHA) this might need more spec
-                # But for batch refactor we assume basic structure or compatible resizing
-                if v.ndim == ov.ndim:
-                    merged[k] = _resize_tensor(v.shape, ov)
-                else:
-                    merged[k] = v # mismatch dim, reset
-        else:
-            merged[k] = v
-    return merged
+    return merge_state_preserving_init(new_state, old_state)
 
 # ADP wrapper for VGG
 # We map 'width' to base_channels (usually 64)
@@ -92,7 +80,7 @@ def generate_vgg_cfg(width: int, depth: int) -> List[Any]:
     base_counts = [depth // 5] * 5
     rem = depth % 5
     # Add remainder to last stages (features) or middle?
-    # VGG convention adds to later stages usually.
+    # VGG convention adds remainder to later stages.
     for i in range(rem):
         base_counts[4 - i] += 1
         
@@ -115,6 +103,33 @@ def generate_vgg_cfg(width: int, depth: int) -> List[Any]:
     
     return cfg
 
+def _model_width(model, default=0):
+    for obj in (model, getattr(model, "cfg", None)):
+        if obj is None:
+            continue
+        for key in ("width", "channels", "out_ch", "out_channels", "planes"):
+            if hasattr(obj, key):
+                val = getattr(obj, key)
+                if val is not None:
+                    return val
+    return default
+
+
+def _model_depth(model, default=1):
+    for obj in (model, getattr(model, "cfg", None)):
+        if obj is None:
+            continue
+        for key in ("depth", "layers"):
+            if hasattr(obj, key):
+                val = getattr(obj, key)
+                if val is not None:
+                    return val
+    return default
+
+
+def _model_neurons(model):
+    return total_neurons(_model_width(model), _model_depth(model))
+
 def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPConfig) -> ModelClass:
     try:
         new_vgg_cfg = generate_vgg_cfg(width, depth)
@@ -132,12 +147,16 @@ def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPCon
             batch_norm=bn,
             dropout=dropout
         ).to(device)
+        new_model.width = width
+        new_model.depth = depth
     except Exception as e:
         print(f"Rebuild failed: {e}")
         return None
 
     merged = _merge_state(new_model.state_dict(), model.state_dict())
     new_model.load_state_dict(merged, strict=False)
+    new_model.width = width
+    new_model.depth = depth
     return new_model
 
 def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
@@ -226,7 +245,7 @@ def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConf
         if n > 0: val_loss /= n
         
         history.append(val_loss)
-        if val_loss < best_val:
+        if val_loss < best_val - acfg.delta:
             best_val = val_loss
             best_state = copy.deepcopy(model.state_dict())
             es_counter = 0
@@ -248,12 +267,16 @@ def make_loaders(batch_size=128):
     
     try:
         trainset = datasets.CIFAR10(root='./data', train=True, download=True, transform=t_train)
-        valset = datasets.CIFAR10(root='./data', train=False, download=True, transform=t_test)
-        # Split val? Standard usually uses test set as val or split train.
-        # For audit robustness we split train
+        evalset = datasets.CIFAR10(root='./data', train=True, download=False, transform=t_test)
+        # Split train deterministically and keep validation on the eval transform.
         n = len(trainset)
         n_val_split = n // 10
-        trainset, valset = torch.utils.data.random_split(trainset, [n - n_val_split, n_val_split])
+        g = torch.Generator().manual_seed(42)
+        indices = torch.randperm(n, generator=g).tolist()
+        train_idx = indices[: n - n_val_split]
+        val_idx = indices[n - n_val_split :]
+        trainset = Subset(trainset, train_idx)
+        valset = Subset(evalset, val_idx)
     except:
         trainset = datasets.FakeData(transform=transforms.ToTensor())
         valset = datasets.FakeData(transform=transforms.ToTensor())
@@ -261,6 +284,128 @@ def make_loaders(batch_size=128):
     train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=0)
     val_loader = DataLoader(valset, batch_size=batch_size, shuffle=False, num_workers=0)
     return train_loader, val_loader
+
+def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
+    results_dir.mkdir(parents=True, exist_ok=True)
+    val_history: List[float] = []
+    improvements: List[tuple[int, float]] = []
+
+    best_val, best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, val_history)
+    model.load_state_dict(best_state)
+    global_best_snap = snapshot_arch_and_state(model, best_state)
+    global_best_val = best_val
+    improvements.append((total_neurons(model.width, model.depth), best_val))
+
+    def can_widen(m: ModelClass) -> bool:
+        return (m.width + acfg.ex_k <= acfg.max_width) and (total_neurons(m.width + acfg.ex_k, m.depth) <= acfg.max_neurons)
+
+    def can_deepen(m: ModelClass) -> bool:
+        return (m.depth + 1 <= acfg.max_depth) and (total_neurons(m.width, m.depth + 1) <= acfg.max_neurons)
+
+    def optimize_width_at_fixed_depth(curr_model: ModelClass):
+        local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
+        local_best_val = local_val
+        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
+        failure_count = 0
+        while failure_count < acfg.trials_width:
+            if not can_widen(curr_model):
+                break
+            next_model = expand_width(curr_model, acfg.ex_k, acfg.max_width, device, acfg)
+            if next_model is None:
+                break
+            curr_model = next_model
+            v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
+            if v < local_best_val - acfg.delta:
+                local_best_val = v
+                local_best_snap = snapshot_arch_and_state(curr_model, s)
+                failure_count = 0
+                improvements.append((total_neurons(curr_model.width, curr_model.depth), v))
+            else:
+                failure_count += 1
+        return restore_arch_and_state(curr_model, local_best_snap, device), local_best_val, local_best_snap
+
+    def optimize_depth_at_fixed_width(curr_model: ModelClass):
+        local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
+        local_best_val = local_val
+        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
+        failure_count = 0
+        while failure_count < acfg.trials_depth:
+            if not can_deepen(curr_model):
+                break
+            next_model = expand_depth(curr_model, acfg.max_depth, device, acfg)
+            if next_model is None:
+                break
+            curr_model = next_model
+            v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, val_history)
+            if v < local_best_val - acfg.delta:
+                local_best_val = v
+                local_best_snap = snapshot_arch_and_state(curr_model, s)
+                failure_count = 0
+                improvements.append((total_neurons(curr_model.width, curr_model.depth), v))
+            else:
+                failure_count += 1
+        return restore_arch_and_state(curr_model, local_best_snap, device), local_best_val, local_best_snap
+
+    mode = acfg.adp_mode
+    if mode in ["width_only", "width"]:
+        model, global_best_val, global_best_snap = optimize_width_at_fixed_depth(model)
+    elif mode in ["depth_only", "depth"]:
+        model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
+    elif mode == "width_to_depth":
+        model, global_best_val, global_best_snap = optimize_width_at_fixed_depth(model)
+        fail = 0
+        while fail < acfg.trials_depth:
+            if not can_deepen(model):
+                break
+            deeper = expand_depth(model, acfg.max_depth, device, acfg)
+            if deeper is None:
+                break
+            model, v, global_best_snap = optimize_depth_at_fixed_width(deeper)
+            if v < global_best_val - acfg.delta:
+                global_best_val = v
+                fail = 0
+            else:
+                fail += 1
+    elif mode == "depth_to_width":
+        model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
+        fail = 0
+        while fail < acfg.trials_width:
+            if not can_widen(model):
+                break
+            wider = expand_width(model, acfg.ex_k, acfg.max_width, device, acfg)
+            if wider is None:
+                break
+            model, v, global_best_snap = optimize_width_at_fixed_depth(wider)
+            if v < global_best_val - acfg.delta:
+                global_best_val = v
+                fail = 0
+            else:
+                fail += 1
+    elif mode in ["alt_width", "alt_depth"]:
+        phase = "width" if mode == "alt_width" else "depth"
+        sat_w, sat_d = False, False
+        while not (sat_w and sat_d):
+            improved = False
+            if phase == "width":
+                model, v, global_best_snap = optimize_width_at_fixed_depth(model)
+                if v < global_best_val - acfg.delta:
+                    global_best_val = v
+                    improved = True
+                sat_w = not improved
+                phase = "depth"
+            else:
+                model, v, global_best_snap = optimize_depth_at_fixed_width(model)
+                if v < global_best_val - acfg.delta:
+                    global_best_val = v
+                    improved = True
+                sat_d = not improved
+                phase = "width"
+    final_model = restore_arch_and_state(model, global_best_snap, device)
+    if log_loss:
+        plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"VGG ({mode})")
+    if log_neurons and improvements:
+        plot_loss_vs_neurons([n for n, _ in improvements], [v for _, v in improvements], results_dir / "loss_vs_neurons.png", title=f"VGG ({mode})")
+    return global_best_val, final_model, final_model.width, final_model.depth
 
 def main():
     import argparse
@@ -279,6 +424,8 @@ def main():
     # Generate cfg from args
     cfg_list = generate_vgg_cfg(args.width, args.depth)
     model = ModelClass(cfg=cfg_list, num_classes=10, batch_norm=True).to(device)
+    model.width = args.width
+    model.depth = sum(1 for x in cfg_list if isinstance(x, int))
     
     acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)
     val, m, w, d = adp_search(model, dl_train, dl_val, acfg, device)
