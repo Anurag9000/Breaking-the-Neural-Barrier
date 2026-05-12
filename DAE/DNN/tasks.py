@@ -42,7 +42,7 @@ def _make_mnist(base_dir: str, train: bool, img_size: Tuple[int, int] = (28, 28)
 
 
 def _make_loaders(ds: Dataset, batch_size: int, num_workers: int, shuffle: bool = True):
-    return DataLoader(ds, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers, pin_memory=True)
+    return DataLoader(ds, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers, pin_memory=torch.cuda.is_available())
 
 
 def _knn_accuracy(embeddings: np.ndarray, labels: np.ndarray, k: int = 5) -> float:
