@@ -16,7 +16,9 @@ from utils.cnn_data import make_cifar_transforms
 import matplotlib.pyplot as plt
 
 # Import the STL CNN + neuron counter
-from CNN_STL import ConvNetSTL, stl_total_neurons
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[3]))
+from CNN.Supervised.Models.CNN_STL import ConvNetSTL, stl_total_neurons
 
 # -------------------- CIFAR stats --------------------
 CIFAR10_MEAN, CIFAR10_STD   = (0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616)

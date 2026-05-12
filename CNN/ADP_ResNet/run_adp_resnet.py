@@ -34,6 +34,7 @@ from CNN.ADP_ResNet.adp_resnet_backbone import ADPResNet, ADPResNetConfig, make_
 from utils.cnn_data import make_cifar_transforms
 from utils.adp_logging import ContinuousLogger
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons
+from utils.adp_state import merge_state_preserving_init
 from utils.cutmix import cutmix_batch
 
 
@@ -67,20 +68,7 @@ def _resize_tensor(to_shape: torch.Size, src: torch.Tensor) -> torch.Tensor:
 
 
 def _merge_state(new_state: Dict[str, torch.Tensor], old_state: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
-    merged: Dict[str, torch.Tensor] = {}
-    for k, v in new_state.items():
-        if k in old_state:
-            ov = old_state[k]
-            if ov.shape == v.shape:
-                merged[k] = ov
-            else:
-                if ov.ndim == v.ndim:
-                    merged[k] = _resize_tensor(v.shape, ov)
-                else:
-                    merged[k] = v
-        else:
-            merged[k] = v
-    return merged
+    return merge_state_preserving_init(new_state, old_state)
 
 
 def rebuild_model(model: ADPResNet, width: int, depth: int, device: torch.device) -> ADPResNet:
@@ -178,8 +166,12 @@ def make_loaders(
     n_val = int(n_total * val_split)
     n_train = n_total - n_val
 
-    train_ds, _ = random_split(full_train, [n_train, n_val], generator=torch.Generator().manual_seed(42))
-    _, val_ds = random_split(full_train_eval, [n_train, n_val], generator=torch.Generator().manual_seed(42))
+    generator = torch.Generator().manual_seed(42)
+    indices = torch.randperm(n_total, generator=generator).tolist()
+    train_idx = indices[:n_train]
+    val_idx = indices[n_train:]
+    train_ds = Subset(full_train, train_idx)
+    val_ds = Subset(full_train_eval, val_idx)
 
     dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
     dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
@@ -342,7 +334,7 @@ def adp_search(
                 improvements.append((estimate_neurons(curr_model.width, curr_model.depth), v))
                 logger.log_console(f"[WIDTH OPT] ✓ IMPROVEMENT: New best: {v:.6f}")
                 if log_loss:
-                    plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title="ADPResNet (width_only)")
+                    plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"ADPResNet ({acfg.adp_mode})")
                 if log_neurons:
                     n_list = [n for n, _ in improvements]
                     l_list = [vv for _, vv in improvements]
@@ -378,7 +370,7 @@ def adp_search(
                 improvements.append((estimate_neurons(curr_model.width, curr_model.depth), v))
                 logger.log_console(f"[DEPTH OPT] ✓ IMPROVEMENT: New best: {v:.6f}")
                 if log_loss:
-                    plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title="ADPResNet (depth_only)")
+                    plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"ADPResNet ({acfg.adp_mode})")
                 if log_neurons:
                     n_list = [n for n, _ in improvements]
                     l_list = [vv for _, vv in improvements]
@@ -397,8 +389,8 @@ def adp_search(
         global_best_snap, global_best_val = optimize_width_at_fixed_depth(global_best_snap, global_best_val)
     elif mode in ["depth_only", "depth"]:
         global_best_snap, global_best_val = optimize_depth_at_fixed_width(global_best_snap, global_best_val)
-    elif mode == "depth_to_width":
-        # Depth then width refinement after each depth step
+    elif mode == "width_to_depth":
+        # Width then depth refinement after each width step
         global_best_snap, global_best_val = optimize_width_at_fixed_depth(global_best_snap, global_best_val)
         fail = 0
         while fail < acfg.trials_depth:
@@ -416,8 +408,8 @@ def adp_search(
                 fail = 0
             else:
                 fail += 1
-    elif mode == "width_to_depth":
-        # Width then depth refinement after each width step
+    elif mode == "depth_to_width":
+        # Depth then width refinement after each depth step
         global_best_snap, global_best_val = optimize_depth_at_fixed_width(global_best_snap, global_best_val)
         fail = 0
         while fail < acfg.trials_width:
@@ -593,4 +585,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

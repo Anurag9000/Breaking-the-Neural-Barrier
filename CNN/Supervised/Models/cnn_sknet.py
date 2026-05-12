@@ -118,7 +118,7 @@ class SKBottleneck(nn.Module):
                  groups: int = 1, downsample: nn.Module | None = None):
         super().__init__()
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=1, bias=False)
-        self.bn1   = nn.BatchNum2d = nn.BatchNorm2d(planes)
+        self.bn1   = nn.BatchNorm2d(planes)
         self.sk    = SKConv(planes, groups=groups, reduction=reduction, stride=stride)
         self.bn2   = nn.BatchNorm2d(planes)
         self.conv3 = nn.Conv2d(planes, planes * self.expansion, kernel_size=1, bias=False)

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import importlib.util
 
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, random_split, Subset
 import torch
 import sys
 from pathlib import Path
@@ -20,10 +20,13 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 try:
     from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons
+    from utils.adp_state import merge_state_preserving_init
 except ImportError:
     # Fallback if utils not found or different structure
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
+    def merge_state_preserving_init(new_state, old_state):
+        return new_state
 from utils.adp_logging import ContinuousLogger
 
 # Load baseline
@@ -63,22 +66,34 @@ def _resize_tensor(to_shape: torch.Size, src: torch.Tensor) -> torch.Tensor:
     return tgt
 
 def _merge_state(new_state, old_state):
-    merged = {}
-    for k, v in new_state.items():
-        if k in old_state:
-            ov = old_state[k]
-            if ov.shape == v.shape:
-                merged[k] = ov
-            else:
-                # Basic resizing - for complex models (MHA) this might need more spec
-                # But for batch refactor we assume basic structure or compatible resizing
-                if v.ndim == ov.ndim:
-                    merged[k] = _resize_tensor(v.shape, ov)
-                else:
-                    merged[k] = v # mismatch dim, reset
-        else:
-            merged[k] = v
-    return merged
+    return merge_state_preserving_init(new_state, old_state)
+
+def _model_width(model, default=0):
+    for obj in (model, getattr(model, "cfg", None)):
+        if obj is None:
+            continue
+        for key in ("width", "channels", "out_ch", "out_channels", "planes"):
+            if hasattr(obj, key):
+                val = getattr(obj, key)
+                if val is not None:
+                    return val
+    return default
+
+
+def _model_depth(model, default=1):
+    for obj in (model, getattr(model, "cfg", None)):
+        if obj is None:
+            continue
+        for key in ("depth", "layers"):
+            if hasattr(obj, key):
+                val = getattr(obj, key)
+                if val is not None:
+                    return val
+    return default
+
+
+def _model_neurons(model):
+    return total_neurons(_model_width(model), _model_depth(model))
 
 def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPConfig) -> ModelClass:
     try:
@@ -95,6 +110,8 @@ def rebuild_model(model: ModelClass, width: int, depth: int, device, cfg: ADPCon
         
     merged = _merge_state(new_model.state_dict(), model.state_dict())
     new_model.load_state_dict(merged, strict=False)
+    new_model.width = width
+    new_model.depth = depth
     return new_model
 
 def expand_width(model: ModelClass, ex_k: int, max_width: int, device, cfg: ADPConfig) -> Optional[ModelClass]:
@@ -132,6 +149,8 @@ def restore_arch_and_state(model: ModelClass, snap: Dict[str, Any], device) -> M
             pooling_indices=snap.get("pooling_indices", ())
         ).to(device)
         new_model.load_state_dict(snap["state"])
+        new_model.width = snap.get("width", getattr(new_model, "width", 0))
+        new_model.depth = snap.get("depth", getattr(new_model, "depth", 1))
         return new_model
     except Exception:
         return model
@@ -168,21 +187,9 @@ def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConf
                 else:
                     rec = out
                 
-                # Simple MSE or CrossEntropy check
-                if rec.shape == y.shape:
-                    loss = F.mse_loss(rec, x) # Assume AE if shapes match
-                elif isinstance(rec, torch.Tensor) and isinstance(y, torch.Tensor) and rec.size(0) == y.size(0):
-                     # Classification?
-                     if rec.size(1) != y.shape[-1] and y.ndim==1:
-                         loss = F.cross_entropy(rec, y)
-                     else:
-                         loss = F.mse_loss(rec, y) # Fallback
-                else:
-                    loss = torch.tensor(0.0, requires_grad=True).to(device) # dummy
-                    
-            except Exception as e:
-                # If model forward fails (e.g. diff args), break
-                loss = torch.tensor(0.0, requires_grad=True).to(device)
+                loss = F.cross_entropy(rec, y)
+            except Exception:
+                raise
             
             loss.backward()
             opt.step()
@@ -205,9 +212,7 @@ def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConf
                     if isinstance(out, (list, tuple)): rec = out[0]
                     else: rec = out
                     
-                    if rec.shape == y.shape: l = F.mse_loss(rec, y)
-                    elif isinstance(rec, torch.Tensor) and y.ndim==1: l = F.cross_entropy(rec, y)
-                    else: l = torch.tensor(0.0).to(device)
+                    l = F.cross_entropy(rec, y)
                     
                     val += l.item()
                     n += 1
@@ -215,7 +220,7 @@ def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConf
         if n>0: val /= n
         
         history.append(val)
-        if val < best_val:
+        if val < best_val - acfg.delta:
             best_val = val
             best_state = copy.deepcopy(model.state_dict())
             es_counter = 0
@@ -314,7 +319,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 local_best_state = s
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
                 depth_failure_count = 0
-                improvements.append((total_neurons(0, 0), v))
+                improvements.append((total_neurons(curr_model.width, curr_model.depth), v))
                 logger.log_console(f"[DEPTH OPT] ✓ IMPROVEMENT: New best: {v:.6f}")
                 if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
                 if log_neurons: plot_loss_vs_neurons([n for n,_ in improvements], [v for _,v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
@@ -329,7 +334,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
         model, global_best_val, global_best_snap = optimize_width_at_fixed_depth(model)
     elif mode in ["depth_only", "depth"]:
         model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
-    elif mode == "depth_to_width":
+    elif mode == "width_to_depth":
         model, base_val, base_snap = optimize_width_at_fixed_depth(model)
         global_best_val = base_val
         global_best_snap = base_snap
@@ -346,7 +351,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
                 fc = 0
             else: fc += 1
         model = restore_arch_and_state(model, global_best_snap, device)
-    elif mode == "width_to_depth":
+    elif mode == "depth_to_width":
         model, base_val, base_snap = optimize_depth_at_fixed_width(model)
         global_best_val = base_val
         global_best_snap = base_snap
@@ -388,11 +393,8 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
         model = restore_arch_and_state(model, global_best_snap, device)
     
     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
-    
-    
-    if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
-    
-    return global_best_val, model, 0, 0
+
+    return global_best_val, model, model.width, model.depth
 
 def make_loaders(
     batch_size: int = 128,
@@ -418,7 +420,12 @@ def make_loaders(
 
     n_val = int(len(ds_train) * val_split)
     n_train = len(ds_train) - n_val
-    train_ds, val_ds = random_split(ds_train, [n_train, n_val])
+    generator = torch.Generator().manual_seed(42)
+    indices = torch.randperm(len(ds_train), generator=generator).tolist()
+    train_idx = indices[:n_train]
+    val_idx = indices[n_train:]
+    train_ds = Subset(ds_train, train_idx)
+    val_ds = Subset(ds_eval, val_idx)
 
     dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers)
     dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers)
