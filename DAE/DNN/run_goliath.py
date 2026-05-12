@@ -1,0 +1,1139 @@
+from __future__ import annotations
+
+import argparse
+import copy
+import csv
+import datetime as _dt
+import json
+import random
+import subprocess
+import sys
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Sequence, Tuple
+
+import torch
+import torch.nn.functional as F
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from DAE.DNN.adp_search import expand_depth, expand_width, model_depth, model_width
+from DAE.DNN.mlp import MLP
+from DAE.DNN.tasks import Task, build_task, task_names
+from DAE.DNN.train_utils import eval_epoch, train_epoch, unpack_batch
+from utils.adp_logging import ContinuousLogger
+from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_from_csv
+
+
+@dataclass
+class RunConfig:
+    data_dir: str
+    results_dir: str
+    run_root: Optional[str]
+    tasks: List[str]
+    phases: List[str]
+    batch_size: int
+    num_workers: int
+    seed: int
+    stl_width: int
+    stl_depth: int
+    alt_start_width: int
+    alt_start_depth: int
+    patience: int
+    delta: float
+    max_epochs: int
+    lr: float
+    weight_decay: float
+    grad_clip: float
+    max_width: int
+    max_depth: int
+    max_neurons: int
+    use_bn: bool
+    demo: bool
+
+
+@dataclass
+class CandidateResult:
+    best_val: float
+    best_epoch: int
+    final_epoch: int
+    best_checkpoint: Path
+    last_checkpoint: Path
+    candidate_dir: Path
+    architecture: List[int]
+
+
+def seed_everything(seed: int) -> None:
+    random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+
+def git_commit() -> str:
+    try:
+        return (
+            subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=Path(__file__).resolve().parents[2])
+            .decode("utf-8")
+            .strip()
+        )
+    except Exception:
+        return "unknown"
+
+
+def now_stamp() -> str:
+    return _dt.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+
+def slug(text: str) -> str:
+    out = []
+    for ch in text.lower():
+        out.append(ch if ch.isalnum() else "_")
+    return "".join(out).strip("_")
+
+
+def write_json(path: Path, payload: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, sort_keys=True)
+
+
+def read_json(path: Path) -> Dict[str, Any]:
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def append_csv_row(path: Path, row: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    exists = path.exists() and path.stat().st_size > 0
+    with path.open("a", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=list(row.keys()))
+        if not exists:
+            writer.writeheader()
+        writer.writerow(row)
+
+
+def model_signature(model: MLP) -> Dict[str, Any]:
+    return {
+        "in_dim": int(model.in_dim),
+        "hidden_widths": [int(w) for w in model.hidden_widths],
+        "out_dim": int(model.out_dim),
+        "use_bn": bool(model.use_bn),
+    }
+
+
+def make_model(in_dim: int, hidden_widths: Sequence[int], out_dim: int, use_bn: bool) -> MLP:
+    return MLP(in_dim=int(in_dim), hidden_widths=[int(w) for w in hidden_widths], out_dim=int(out_dim), use_bn=bool(use_bn))
+
+
+def make_reconstruction_model(task: Task, hidden_widths: Sequence[int], use_bn: bool) -> MLP:
+    return make_model(task.in_dim, hidden_widths, task.in_dim, use_bn)
+
+
+def make_stl_model(task: Task, hidden_widths: Sequence[int], use_bn: bool) -> MLP:
+    return make_model(task.in_dim, hidden_widths, task.out_dim, use_bn)
+
+
+def base_stl_hidden(task: Task, cfg: RunConfig) -> List[int]:
+    width = int(cfg.stl_width)
+    if "max_width" in task.extra:
+        width = min(width, int(task.extra["max_width"]))
+    width = max(2, width)
+    depth = max(1, int(cfg.stl_depth))
+    return [width for _ in range(depth)]
+
+
+def alt_start_hidden(cfg: RunConfig) -> List[int]:
+    depth = max(1, int(cfg.alt_start_depth))
+    width = max(2, int(cfg.alt_start_width))
+    return [width for _ in range(depth)]
+
+
+def candidate_slug(candidate_index: int, hidden_widths: Sequence[int]) -> str:
+    depth = len(hidden_widths)
+    width = max(hidden_widths) if hidden_widths else 0
+    return f"cand_{candidate_index:03d}_d{depth}_w{width}"
+
+
+def phase_root_for(task_root: Path, phase_name: str) -> Path:
+    return task_root / phase_name
+
+
+def candidate_root_for(phase_root: Path, candidate_index: int, hidden_widths: Sequence[int]) -> Path:
+    return phase_root / candidate_slug(candidate_index, hidden_widths)
+
+
+def reconstruction_train_epoch(
+    model: torch.nn.Module,
+    loader: torch.utils.data.DataLoader,
+    loss_fn,
+    optimizer,
+    device,
+    grad_clip: float = 0.0,
+) -> float:
+    model.train()
+    total_loss = 0.0
+    total = 0
+    for batch in loader:
+        x, _, _ = unpack_batch(batch)
+        x = x.to(device)
+        optimizer.zero_grad(set_to_none=True)
+        out = model(x)
+        loss = loss_fn(out, x)
+        loss.backward()
+        if grad_clip and grad_clip > 0:
+            torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
+        optimizer.step()
+        total_loss += loss.item() * x.size(0)
+        total += x.size(0)
+    return float(total_loss / max(total, 1))
+
+
+@torch.no_grad()
+def reconstruction_eval_epoch(
+    model: torch.nn.Module,
+    loader: torch.utils.data.DataLoader,
+    loss_fn,
+    device,
+    measure_throughput: bool = False,
+):
+    import time
+
+    model.eval()
+    total_loss = 0.0
+    total = 0
+    start = time.time()
+    for batch in loader:
+        x, _, _ = unpack_batch(batch)
+        x = x.to(device)
+        out = model(x)
+        loss = loss_fn(out, x)
+        total_loss += loss.item() * x.size(0)
+        total += x.size(0)
+    end = time.time()
+    throughput = None
+    if measure_throughput and total > 0:
+        throughput = float(total / max(end - start, 1e-6))
+    return float(total_loss / max(total, 1)), None, throughput
+
+
+def save_checkpoint(
+    path: Path,
+    *,
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    epoch: int,
+    best_val: float,
+    best_state: Dict[str, torch.Tensor],
+    best_epoch: int,
+    es_counter: int,
+    metadata: Dict[str, Any],
+) -> None:
+    payload = {
+        "epoch": int(epoch),
+        "model_state": copy.deepcopy(model.state_dict()),
+        "optimizer_state": optimizer.state_dict(),
+        "best_val": float(best_val),
+        "best_state": copy.deepcopy(best_state),
+        "best_epoch": int(best_epoch),
+        "es_counter": int(es_counter),
+        "metadata": metadata,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(payload, path)
+
+
+def load_checkpoint(path: Path, device) -> Dict[str, Any]:
+    return torch.load(path, map_location=device)
+
+
+def phase_metadata(
+    *,
+    task: Task,
+    phase_name: str,
+    phase_kind: str,
+    reconstruct: bool,
+    model: MLP,
+    cfg: RunConfig,
+    candidate_index: int,
+    extra: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    payload = {
+        "task": task.name,
+        "phase_name": phase_name,
+        "phase_kind": phase_kind,
+        "reconstruct": reconstruct,
+        "candidate_index": int(candidate_index),
+        "model": model_signature(model),
+        "task_type": task.task_type,
+        "task_extra": task.extra,
+        "config": asdict(cfg),
+        "git_commit": git_commit(),
+        "dataset_sizes": {
+            "train": len(task.train_loader.dataset) if hasattr(task.train_loader, "dataset") else None,
+            "val": len(task.val_loader.dataset) if hasattr(task.val_loader, "dataset") else None,
+            "test": len(task.test_loader.dataset) if hasattr(task.test_loader, "dataset") else None,
+        },
+    }
+    if extra:
+        payload.update(extra)
+    return payload
+
+
+def checkpoint_resume_ready(candidate_dir: Path) -> bool:
+    state_path = candidate_dir / "candidate_state.json"
+    ckpt = candidate_dir / "checkpoint_last.pt"
+    return state_path.exists() and ckpt.exists() and read_json(state_path).get("completed", False) is False
+
+
+def candidate_completed(candidate_dir: Path) -> bool:
+    state_path = candidate_dir / "candidate_state.json"
+    return state_path.exists() and read_json(state_path).get("completed", False) is True
+
+
+def load_candidate_model(candidate_dir: Path, device) -> Tuple[MLP, Dict[str, Any], Dict[str, Any]]:
+    meta = read_json(candidate_dir / "metadata.json")
+    ckpt = load_checkpoint(candidate_dir / "checkpoint_best.pt", device)
+    model = make_model(meta["model"]["in_dim"], meta["model"]["hidden_widths"], meta["model"]["out_dim"], meta["model"]["use_bn"]).to(device)
+    model.load_state_dict(ckpt["best_state"])
+    return model, meta, ckpt
+
+
+def resolve_candidate_dir(phase_root: Path, candidate_ref: Optional[str]) -> Optional[Path]:
+    if not candidate_ref:
+        return None
+    path = Path(candidate_ref)
+    if path.exists():
+        return path
+    return phase_root / candidate_ref
+
+
+def training_loop(
+    *,
+    task: Task,
+    model: MLP,
+    candidate_dir: Path,
+    cfg: RunConfig,
+    device,
+    logger: ContinuousLogger,
+    reconstruct: bool,
+    resume: bool = True,
+) -> CandidateResult:
+    candidate_dir.mkdir(parents=True, exist_ok=True)
+    metadata_path = candidate_dir / "metadata.json"
+    candidate_state_path = candidate_dir / "candidate_state.json"
+    last_ckpt = candidate_dir / "checkpoint_last.pt"
+    best_ckpt = candidate_dir / "checkpoint_best.pt"
+
+    optimizer = torch.optim.AdamW(model.parameters(), lr=float(cfg.lr), weight_decay=float(cfg.weight_decay))
+
+    start_epoch = 1
+    best_val = float("inf")
+    best_state = copy.deepcopy(model.state_dict())
+    best_epoch = 0
+    es_counter = 0
+    metric_keys: List[str] = []
+
+    if resume and last_ckpt.exists():
+        ckpt = load_checkpoint(last_ckpt, device)
+        model.load_state_dict(ckpt["model_state"])
+        optimizer.load_state_dict(ckpt["optimizer_state"])
+        start_epoch = int(ckpt["epoch"]) + 1
+        best_val = float(ckpt["best_val"])
+        best_state = copy.deepcopy(ckpt["best_state"])
+        best_epoch = int(ckpt["best_epoch"])
+        es_counter = int(ckpt["es_counter"])
+
+    if not metadata_path.exists():
+        write_json(metadata_path, phase_metadata(task=task, phase_name=candidate_dir.parent.name, phase_kind="candidate", reconstruct=reconstruct, model=model, cfg=cfg, candidate_index=int(candidate_dir.name.split("_")[1])))
+
+    if start_epoch > int(cfg.max_epochs):
+        model.load_state_dict(best_state)
+        write_json(
+            candidate_state_path,
+            {
+                "completed": True,
+                "best_val": best_val,
+                "best_epoch": best_epoch,
+                "final_epoch": start_epoch - 1,
+                "candidate_dir": str(candidate_dir),
+                "checkpoint_best": str(best_ckpt),
+                "checkpoint_last": str(last_ckpt),
+                "architecture": [int(w) for w in model.hidden_widths],
+                "reconstruct": reconstruct,
+            },
+        )
+        return CandidateResult(best_val, best_epoch, start_epoch - 1, best_ckpt, last_ckpt, candidate_dir, [int(w) for w in model.hidden_widths])
+
+    for epoch in range(start_epoch, int(cfg.max_epochs) + 1):
+        if reconstruct:
+            tr_loss = reconstruction_train_epoch(model, task.train_loader, F.mse_loss, optimizer, device, grad_clip=float(cfg.grad_clip))
+            val_loss, val_acc, throughput = reconstruction_eval_epoch(
+                model, task.val_loader, F.mse_loss, device, measure_throughput=False
+            )
+            tr_acc = None
+        else:
+            tr_loss, tr_acc = train_epoch(model, task.train_loader, task.loss_fn, optimizer, device, task.task_type, float(cfg.grad_clip))
+            val_loss, val_acc, throughput = eval_epoch(model, task.val_loader, task.loss_fn, device, task.task_type, measure_throughput=False)
+
+        metrics: Dict[str, Any] = {}
+        if not reconstruct and task.metrics_fn is not None and (epoch == 1 or epoch % 5 == 0):
+            metrics = task.metrics_fn(model, task, device) or {}
+            if not metric_keys:
+                metric_keys = list(metrics.keys())
+
+        improved = val_loss < (best_val - float(cfg.delta))
+        if improved:
+            best_val = val_loss
+            best_state = copy.deepcopy(model.state_dict())
+            best_epoch = epoch
+            es_counter = 0
+            save_checkpoint(
+                best_ckpt,
+                model=model,
+                optimizer=optimizer,
+                epoch=epoch,
+                best_val=best_val,
+                best_state=best_state,
+                best_epoch=best_epoch,
+                es_counter=es_counter,
+                metadata={
+                    "task": task.name,
+                    "phase": candidate_dir.parent.name,
+                    "candidate_dir": str(candidate_dir),
+                    "reconstruct": reconstruct,
+                },
+            )
+        else:
+            es_counter += 1
+
+        save_checkpoint(
+            last_ckpt,
+            model=model,
+            optimizer=optimizer,
+            epoch=epoch,
+            best_val=best_val,
+            best_state=best_state,
+            best_epoch=best_epoch,
+            es_counter=es_counter,
+            metadata={
+                "task": task.name,
+                "phase": candidate_dir.parent.name,
+                "candidate_dir": str(candidate_dir),
+                "reconstruct": reconstruct,
+            },
+        )
+
+        row: Dict[str, Any] = {
+            "task": task.name,
+            "phase": candidate_dir.parent.name,
+            "candidate_dir": candidate_dir.name,
+            "epoch": epoch,
+            "width": model_width(model),
+            "depth": model_depth(model),
+            "neurons": int(sum(model.hidden_widths) + model.out_dim),
+            "train_loss": tr_loss,
+            "val_loss": val_loss,
+            "best_val": best_val,
+            "best_epoch": best_epoch,
+            "es_counter": es_counter,
+            "improved": improved,
+            "train_acc": tr_acc,
+            "val_acc": val_acc,
+            "throughput": throughput,
+        }
+        for key in metric_keys:
+            row[key] = metrics.get(key)
+        logger.log_epoch_stats(row)
+        logger.log_console(
+            f"[{task.name}][{candidate_dir.parent.name}][{candidate_dir.name}] epoch={epoch} train_loss={tr_loss:.6f} val_loss={val_loss:.6f} best={best_val:.6f} es={es_counter}/{cfg.patience}"
+        )
+
+        write_json(
+            candidate_state_path,
+            {
+                "completed": False,
+                "task": task.name,
+                "phase": candidate_dir.parent.name,
+                "candidate_dir": str(candidate_dir),
+                "epoch": epoch,
+                "best_val": best_val,
+                "best_epoch": best_epoch,
+                "final_epoch": epoch,
+                "es_counter": es_counter,
+                "architecture": [int(w) for w in model.hidden_widths],
+                "reconstruct": reconstruct,
+                "checkpoint_best": str(best_ckpt),
+                "checkpoint_last": str(last_ckpt),
+            },
+        )
+
+        if es_counter >= int(cfg.patience):
+            break
+
+    model.load_state_dict(best_state)
+    save_checkpoint(
+        best_ckpt,
+        model=model,
+        optimizer=optimizer,
+        epoch=best_epoch,
+        best_val=best_val,
+        best_state=best_state,
+        best_epoch=best_epoch,
+        es_counter=0,
+        metadata={"task": task.name, "phase": candidate_dir.parent.name, "candidate_dir": str(candidate_dir), "reconstruct": reconstruct},
+    )
+    write_json(
+        candidate_state_path,
+        {
+            "completed": True,
+            "task": task.name,
+            "phase": candidate_dir.parent.name,
+            "candidate_dir": str(candidate_dir),
+            "best_val": best_val,
+            "best_epoch": best_epoch,
+            "final_epoch": epoch,
+            "architecture": [int(w) for w in model.hidden_widths],
+            "reconstruct": reconstruct,
+            "checkpoint_best": str(best_ckpt),
+            "checkpoint_last": str(last_ckpt),
+        },
+    )
+
+    return CandidateResult(best_val, best_epoch, epoch, best_ckpt, last_ckpt, candidate_dir, [int(w) for w in model.hidden_widths])
+
+
+def phase_progress_header() -> List[str]:
+    return [
+        "task",
+        "phase",
+        "candidate_index",
+        "candidate_dir",
+        "architecture",
+        "best_val",
+        "best_epoch",
+        "final_epoch",
+        "best_checkpoint",
+        "last_checkpoint",
+        "improved_over_global",
+        "search_phase",
+        "width_fail",
+        "depth_fail",
+    ]
+
+
+def log_phase_progress(path: Path, row: Dict[str, Any]) -> None:
+    append_csv_row(path, row)
+
+
+def eval_final(model: MLP, task: Task, device, reconstruct: bool) -> Dict[str, Any]:
+    if reconstruct:
+        val_loss, _, _ = reconstruction_eval_epoch(model, task.test_loader, F.mse_loss, device, measure_throughput=False)
+        return {"test_loss": val_loss}
+    val_loss, val_acc, _ = eval_epoch(model, task.test_loader, task.loss_fn, device, task.task_type, measure_throughput=False)
+    out = {"test_loss": val_loss}
+    if val_acc is not None:
+        out["test_acc"] = val_acc
+    if task.metrics_fn is not None:
+        metrics = task.metrics_fn(model, task, device) or {}
+        out.update(metrics)
+    return out
+
+
+def latest_completed_candidate(phase_root: Path) -> Optional[Path]:
+    candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+    for cand in reversed(candidate_dirs):
+        state_path = cand / "candidate_state.json"
+        if state_path.exists() and read_json(state_path).get("completed", False):
+            return cand
+    return None
+
+
+def incomplete_candidate(phase_root: Path) -> Optional[Path]:
+    candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+    for cand in reversed(candidate_dirs):
+        state_path = cand / "candidate_state.json"
+        if state_path.exists() and not read_json(state_path).get("completed", False):
+            return cand
+    return None
+
+
+def ensure_phase_state(phase_root: Path, mode: str) -> Dict[str, Any]:
+    state_path = phase_root / "search_state.json"
+    if state_path.exists():
+        return read_json(state_path)
+    state = {
+        "mode": mode,
+        "current_phase": "width" if mode in ["width_only", "alt_width"] else "depth",
+        "width_fail": 0,
+        "depth_fail": 0,
+        "best_val": 1e30,
+        "candidate_index": 0,
+        "completed": False,
+        "best_candidate_dir": None,
+        "best_checkpoint": None,
+    }
+    write_json(state_path, state)
+    return state
+
+
+def save_phase_state(phase_root: Path, state: Dict[str, Any]) -> None:
+    write_json(phase_root / "search_state.json", state)
+
+
+def can_widen(model: MLP, cfg: RunConfig) -> bool:
+    if not model.hidden_widths:
+        return False
+    return model_width(model) + 1 <= int(cfg.max_width) and int(sum(model.hidden_widths) + model.out_dim) < int(cfg.max_neurons)
+
+
+def can_deepen(model: MLP, cfg: RunConfig) -> bool:
+    if not model.hidden_widths:
+        return False
+    return len(model.hidden_widths) + 1 <= int(cfg.max_depth) and int(sum(model.hidden_widths) + model.hidden_widths[-1] + model.out_dim) <= int(cfg.max_neurons)
+
+
+def infer_hidden_from_checkpoint(candidate_dir: Path) -> List[int]:
+    meta = read_json(candidate_dir / "metadata.json")
+    return [int(w) for w in meta["model"]["hidden_widths"]]
+
+
+def run_stl_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_hidden: List[int]) -> Dict[str, Any]:
+    phase_name = "stl"
+    phase_root = phase_root_for(task_root, phase_name)
+    phase_root.mkdir(parents=True, exist_ok=True)
+    progress_path = phase_root / "phase_progress.csv"
+    state = ensure_phase_state(phase_root, phase_name)
+    summary_path = phase_root / "phase_summary.json"
+
+    if state.get("completed", False) and summary_path.exists():
+        return read_json(summary_path)
+
+    candidate_idx = int(state.get("candidate_index", 0))
+    candidate_dir = candidate_root_for(phase_root, candidate_idx, base_hidden)
+    candidate_dir.mkdir(parents=True, exist_ok=True)
+
+    model = make_stl_model(task, base_hidden, cfg.use_bn).to(device)
+    logger = ContinuousLogger(candidate_dir, f"{task.name}_{phase_name}", phase_name)
+    write_json(
+        phase_root / "phase_metadata.json",
+        phase_metadata(task=task, phase_name=phase_name, phase_kind="stl", reconstruct=False, model=model, cfg=cfg, candidate_index=candidate_idx, extra={"hidden_widths": base_hidden}),
+    )
+
+    if candidate_completed(candidate_dir):
+        model, meta, ckpt = load_candidate_model(candidate_dir, device)
+        test_metrics = eval_final(model, task, device, reconstruct=False)
+        summary = {
+            "task": task.name,
+            "phase": phase_name,
+            "candidate_dir": candidate_dir.name,
+            "architecture": base_hidden,
+            "best_val": float(ckpt["best_val"]),
+            "best_epoch": int(ckpt["best_epoch"]),
+            "test_metrics": test_metrics,
+            "checkpoint_best": str(candidate_dir / "checkpoint_best.pt"),
+            "checkpoint_last": str(candidate_dir / "checkpoint_last.pt"),
+            "resumed": True,
+        }
+        write_json(summary_path, summary)
+        log_phase_progress(
+            progress_path,
+            {
+                "task": task.name,
+                "phase": phase_name,
+                "candidate_index": candidate_idx,
+                "candidate_dir": candidate_dir.name,
+                "architecture": str(base_hidden),
+                "best_val": float(ckpt["best_val"]),
+                "best_epoch": int(ckpt["best_epoch"]),
+                "final_epoch": int(ckpt["epoch"]) if "epoch" in ckpt else int(ckpt["best_epoch"]),
+                "best_checkpoint": str(candidate_dir / "checkpoint_best.pt"),
+                "last_checkpoint": str(candidate_dir / "checkpoint_last.pt"),
+                "improved_over_global": True,
+                "search_phase": phase_name,
+                "width_fail": 0,
+                "depth_fail": 0,
+            },
+        )
+        logger.close()
+        return summary
+
+    result = training_loop(task=task, model=model, candidate_dir=candidate_dir, cfg=cfg, device=device, logger=logger, reconstruct=False, resume=True)
+    logger.close()
+    test_metrics = eval_final(model, task, device, reconstruct=False)
+    summary = {
+        "task": task.name,
+        "phase": phase_name,
+        "candidate_dir": candidate_dir.name,
+        "architecture": base_hidden,
+        "best_val": float(result.best_val),
+        "best_epoch": int(result.best_epoch),
+        "final_epoch": int(result.final_epoch),
+        "test_metrics": test_metrics,
+        "checkpoint_best": str(result.best_checkpoint),
+        "checkpoint_last": str(result.last_checkpoint),
+        "resumed": False,
+    }
+    write_json(summary_path, summary)
+    log_phase_progress(
+        progress_path,
+        {
+            "task": task.name,
+            "phase": phase_name,
+            "candidate_index": candidate_idx,
+            "candidate_dir": candidate_dir.name,
+            "architecture": str(base_hidden),
+            "best_val": float(result.best_val),
+            "best_epoch": int(result.best_epoch),
+            "final_epoch": int(result.final_epoch),
+            "best_checkpoint": str(result.best_checkpoint),
+            "last_checkpoint": str(result.last_checkpoint),
+            "improved_over_global": True,
+            "search_phase": phase_name,
+            "width_fail": 0,
+            "depth_fail": 0,
+        },
+    )
+    plot_val_loss_from_csv(candidate_dir / "training_stats.csv", candidate_dir / "val_loss_vs_step.png", title=f"{task.name} {phase_name} val_loss")
+    plot_best_loss_per_neurons_from_csv(
+        candidate_dir / "training_stats.csv", candidate_dir / "loss_vs_neurons_best.png", title=f"{task.name} {phase_name} best val_loss per neurons"
+    )
+    state.update({"candidate_index": candidate_idx, "completed": True, "best_val": float(result.best_val), "best_candidate_dir": candidate_dir.name, "best_checkpoint": str(result.best_checkpoint)})
+    save_phase_state(phase_root, state)
+    return summary
+
+
+def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_hidden: List[int], phase_name: str, mode: str, reconstruct: bool) -> Dict[str, Any]:
+    phase_root = phase_root_for(task_root, phase_name)
+    phase_root.mkdir(parents=True, exist_ok=True)
+    progress_path = phase_root / "phase_progress.csv"
+    summary_path = phase_root / "phase_summary.json"
+    state_file = phase_root / "search_state.json"
+    had_state = state_file.exists()
+    state = ensure_phase_state(phase_root, mode)
+
+    if state.get("completed", False) and summary_path.exists():
+        return read_json(summary_path)
+
+    candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+    if not had_state and candidate_dirs:
+        next_candidate_index = max(int(p.name.split("_")[1]) for p in candidate_dirs) + 1
+    else:
+        next_candidate_index = int(state.get("candidate_index", 0))
+    current_phase = state.get("current_phase", "width" if mode == "alt_width" else mode.split("_")[0])
+    global_best_val = float(state.get("best_val", 1e30))
+    width_fail = int(state.get("width_fail", 0))
+    depth_fail = int(state.get("depth_fail", 0))
+    global_best_candidate_dir = resolve_candidate_dir(phase_root, state.get("best_candidate_dir"))
+    global_best_checkpoint = Path(state["best_checkpoint"]) if state.get("best_checkpoint") else None
+
+    if global_best_candidate_dir is None:
+        completed_dirs = [p for p in candidate_dirs if candidate_completed(p)]
+        if completed_dirs:
+            scored: List[Tuple[float, Path]] = []
+            for cand in completed_dirs:
+                cand_state = read_json(cand / "candidate_state.json")
+                scored.append((float(cand_state.get("best_val", 1e30)), cand))
+            scored.sort(key=lambda item: item[0])
+            global_best_val, global_best_candidate_dir = scored[0]
+            global_best_checkpoint = global_best_candidate_dir / "checkpoint_best.pt"
+
+    def current_base_model() -> MLP:
+        latest = latest_completed_candidate(phase_root)
+        if latest is not None:
+            meta = read_json(latest / "metadata.json")
+            base = make_model(meta["model"]["in_dim"], meta["model"]["hidden_widths"], meta["model"]["out_dim"], meta["model"]["use_bn"]).to(device)
+            ckpt = load_checkpoint(latest / "checkpoint_best.pt", device)
+            base.load_state_dict(ckpt["best_state"])
+            return base
+        return make_reconstruction_model(task, base_hidden, cfg.use_bn).to(device) if reconstruct else make_stl_model(task, base_hidden, cfg.use_bn).to(device)
+
+    # Resume an incomplete candidate first.
+    incomplete = incomplete_candidate(phase_root)
+    if incomplete is not None:
+        candidate_idx = int(incomplete.name.split("_")[1])
+        candidate_model, meta, ckpt = load_candidate_model(incomplete, device)
+        logger = ContinuousLogger(incomplete, f"{task.name}_{phase_name}", phase_name)
+        result = training_loop(task=task, model=candidate_model, candidate_dir=incomplete, cfg=cfg, device=device, logger=logger, reconstruct=reconstruct, resume=True)
+        logger.close()
+        state["candidate_index"] = candidate_idx + 1
+        if result.best_val < (global_best_val - float(cfg.delta)):
+            global_best_val = float(result.best_val)
+            global_best_candidate_dir = incomplete
+            global_best_checkpoint = incomplete / "checkpoint_best.pt"
+        state["best_candidate_dir"] = global_best_candidate_dir.name if global_best_candidate_dir is not None else None
+        state["best_checkpoint"] = str(global_best_checkpoint) if global_best_checkpoint is not None else None
+        state["best_val"] = global_best_val
+        state["current_phase"] = current_phase
+        save_phase_state(phase_root, state)
+        candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+
+    # Recompute after any resumed candidate.
+    while True:
+        completed_dirs = [p for p in candidate_dirs if candidate_completed(p)]
+        if completed_dirs:
+            latest = completed_dirs[-1]
+            latest_model, latest_meta, latest_ckpt = load_candidate_model(latest, device)
+            current_base = latest_model
+        else:
+            current_base = current_base_model()
+
+        if next_candidate_index == 0:
+            next_model = current_base
+            next_arch = [int(w) for w in next_model.hidden_widths]
+        else:
+            if mode == "width_only":
+                if not can_widen(current_base, cfg) or width_fail >= int(cfg.patience):
+                    break
+                next_model = expand_width(current_base, 1, int(cfg.max_width))
+                if next_model is None:
+                    break
+                next_arch = [int(w) for w in next_model.hidden_widths]
+            elif mode == "depth_only":
+                if not can_deepen(current_base, cfg) or depth_fail >= int(cfg.patience):
+                    break
+                next_model = expand_depth(current_base, int(cfg.max_depth))
+                if next_model is None:
+                    break
+                next_arch = [int(w) for w in next_model.hidden_widths]
+            elif mode == "alt_width":
+                if current_phase == "width":
+                    if not can_widen(current_base, cfg):
+                        width_fail = int(cfg.patience)
+                        state.update({"width_fail": width_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "depth"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_model = expand_width(current_base, 1, int(cfg.max_width))
+                    if next_model is None:
+                        width_fail = int(cfg.patience)
+                        state.update({"width_fail": width_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "depth"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_arch = [int(w) for w in next_model.hidden_widths]
+                else:
+                    if not can_deepen(current_base, cfg):
+                        depth_fail = int(cfg.patience)
+                        state.update({"depth_fail": depth_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "width"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_model = expand_depth(current_base, int(cfg.max_depth))
+                    if next_model is None:
+                        depth_fail = int(cfg.patience)
+                        state.update({"depth_fail": depth_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "width"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_arch = [int(w) for w in next_model.hidden_widths]
+            else:
+                raise ValueError(f"Unknown mode: {mode}")
+
+        candidate_idx = next_candidate_index
+        candidate_dir = candidate_root_for(phase_root, candidate_idx, next_arch)
+        logger = ContinuousLogger(candidate_dir, f"{task.name}_{phase_name}", phase_name)
+        write_json(
+            candidate_dir / "metadata.json",
+            phase_metadata(
+                task=task,
+                phase_name=phase_name,
+                phase_kind=mode,
+                reconstruct=reconstruct,
+                model=next_model,
+                cfg=cfg,
+                candidate_index=candidate_idx,
+                extra={"hidden_widths": next_arch, "search_phase": current_phase},
+            ),
+        )
+        result = training_loop(task=task, model=next_model.to(device), candidate_dir=candidate_dir, cfg=cfg, device=device, logger=logger, reconstruct=reconstruct, resume=True)
+        logger.close()
+
+        improved = result.best_val < (global_best_val - float(cfg.delta))
+        if improved:
+            global_best_val = float(result.best_val)
+            global_best_candidate_dir = candidate_dir
+            global_best_checkpoint = candidate_dir / "checkpoint_best.pt"
+            if mode == "width_only":
+                width_fail = 0
+            elif mode == "depth_only":
+                depth_fail = 0
+            else:
+                if current_phase == "width":
+                    width_fail = 0
+                else:
+                    depth_fail = 0
+        else:
+            if mode == "width_only":
+                width_fail += 1
+            elif mode == "depth_only":
+                depth_fail += 1
+            else:
+                if current_phase == "width":
+                    width_fail += 1
+                else:
+                    depth_fail += 1
+
+        log_phase_progress(
+            progress_path,
+            {
+                "task": task.name,
+                "phase": phase_name,
+                "candidate_index": candidate_idx,
+                "candidate_dir": candidate_dir.name,
+                "architecture": str(next_arch),
+                "best_val": float(result.best_val),
+                "best_epoch": int(result.best_epoch),
+                "final_epoch": int(result.final_epoch),
+                "best_checkpoint": str(result.best_checkpoint),
+                "last_checkpoint": str(result.last_checkpoint),
+                "improved_over_global": improved,
+                "search_phase": current_phase,
+                "width_fail": width_fail,
+                "depth_fail": depth_fail,
+            },
+        )
+
+        next_candidate_index += 1
+
+        if mode == "alt_width":
+            current_phase = "depth" if current_phase == "width" else "width"
+
+        state.update(
+            {
+                "mode": mode,
+                "current_phase": current_phase,
+                "width_fail": width_fail,
+                "depth_fail": depth_fail,
+                "best_val": global_best_val,
+                "candidate_index": next_candidate_index,
+                "completed": False,
+                "best_candidate_dir": global_best_candidate_dir.name if global_best_candidate_dir is not None else None,
+                "best_checkpoint": str(global_best_checkpoint) if global_best_checkpoint is not None else None,
+            }
+        )
+        save_phase_state(phase_root, state)
+
+        if mode == "width_only" and width_fail >= int(cfg.patience):
+            break
+        if mode == "depth_only" and depth_fail >= int(cfg.patience):
+            break
+        if mode == "alt_width" and width_fail >= int(cfg.patience) and depth_fail >= int(cfg.patience):
+            break
+
+        candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+
+    final_model = current_base_model()
+    if global_best_candidate_dir is not None and global_best_checkpoint is not None and Path(global_best_checkpoint).exists():
+        meta = read_json(Path(global_best_candidate_dir) / "metadata.json")
+        final_model = make_model(meta["model"]["in_dim"], meta["model"]["hidden_widths"], meta["model"]["out_dim"], meta["model"]["use_bn"]).to(device)
+        final_model.load_state_dict(load_checkpoint(Path(global_best_checkpoint), device)["best_state"])
+
+    test_metrics = eval_final(final_model, task, device, reconstruct=reconstruct)
+    summary = {
+        "task": task.name,
+        "phase": phase_name,
+        "mode": mode,
+        "architecture": model_signature(final_model),
+        "best_val": float(global_best_val),
+        "test_metrics": test_metrics,
+        "best_candidate_dir": str(global_best_candidate_dir) if global_best_candidate_dir is not None else None,
+        "best_checkpoint": str(global_best_checkpoint) if global_best_checkpoint is not None else None,
+        "width_fail": width_fail,
+        "depth_fail": depth_fail,
+        "completed": True,
+    }
+    write_json(summary_path, summary)
+    state.update({"completed": True})
+    save_phase_state(phase_root, state)
+    return summary
+
+
+def run_task_pipeline(task_name: str, cfg: RunConfig, run_root: Path, device) -> Dict[str, Any]:
+    task = build_task(task_name, cfg.data_dir, cfg.batch_size, cfg.num_workers, cfg.seed)
+    task_root = run_root / f"{task_name}"
+    task_root.mkdir(parents=True, exist_ok=True)
+    write_json(
+        task_root / "task_metadata.json",
+        {
+            "task": task.name,
+            "in_dim": task.in_dim,
+            "out_dim": task.out_dim,
+            "task_type": task.task_type,
+            "extra": task.extra,
+            "config": asdict(cfg),
+        },
+    )
+
+    task_summary: Dict[str, Any] = {"task": task.name, "phases": []}
+    base_hidden = base_stl_hidden(task, cfg)
+    alt_hidden = alt_start_hidden(cfg)
+
+    if "stl" in cfg.phases:
+        task_summary["phases"].append(run_stl_phase(task, task_root, cfg, device, base_hidden))
+
+    if "ae_alt_width" in cfg.phases:
+        task_summary["phases"].append(
+            run_growth_phase(
+                task,
+                task_root,
+                cfg,
+                device,
+                alt_hidden,
+                "ae_alt_width",
+                "alt_width",
+                reconstruct=True,
+            )
+        )
+
+    if "ae_width_only" in cfg.phases:
+        task_summary["phases"].append(
+            run_growth_phase(
+                task,
+                task_root,
+                cfg,
+                device,
+                base_hidden,
+                "ae_width_only",
+                "width_only",
+                reconstruct=True,
+            )
+        )
+
+    if "ae_depth_only" in cfg.phases:
+        task_summary["phases"].append(
+            run_growth_phase(
+                task,
+                task_root,
+                cfg,
+                device,
+                base_hidden,
+                "ae_depth_only",
+                "depth_only",
+                reconstruct=True,
+            )
+        )
+
+    write_json(task_root / "task_summary.json", task_summary)
+    return task_summary
+
+
+def build_run_root(cfg: RunConfig) -> Path:
+    if cfg.run_root:
+        return Path(cfg.run_root)
+    return Path(cfg.results_dir) / f"goliath_{now_stamp()}"
+
+
+def main() -> None:
+    p = argparse.ArgumentParser(description="Sequential STL + AE goliath runner for DAE/DNN tasks")
+    p.add_argument("--data-dir", type=str, default="./data")
+    p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
+    p.add_argument("--run-root", type=str, default=None)
+    p.add_argument("--tasks", type=str, nargs="+", default=["all"])
+    p.add_argument("--phases", type=str, nargs="+", default=["stl", "ae_alt_width", "ae_width_only", "ae_depth_only"])
+    p.add_argument("--batch-size", type=int, default=256)
+    p.add_argument("--num-workers", type=int, default=0)
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--stl-width", type=int, default=128)
+    p.add_argument("--stl-depth", type=int, default=2)
+    p.add_argument("--alt-start-width", type=int, default=2)
+    p.add_argument("--alt-start-depth", type=int, default=2)
+    p.add_argument("--patience", type=int, default=5)
+    p.add_argument("--delta", type=float, default=1e-4)
+    p.add_argument("--max-epochs", type=int, default=100)
+    p.add_argument("--lr", type=float, default=1e-3)
+    p.add_argument("--weight-decay", type=float, default=1e-4)
+    p.add_argument("--grad-clip", type=float, default=1.0)
+    p.add_argument("--max-width", type=int, default=512)
+    p.add_argument("--max-depth", type=int, default=10)
+    p.add_argument("--max-neurons", type=int, default=10_000_000)
+    p.add_argument("--no-bn", action="store_true")
+    p.add_argument("--demo", action="store_true")
+    p.add_argument("--demo-tasks", type=int, default=1)
+    args = p.parse_args()
+
+    tasks = task_names() if "all" in [t.lower() for t in args.tasks] else args.tasks
+    if args.demo:
+        tasks = tasks[: max(1, int(args.demo_tasks))]
+        if args.max_epochs > 1:
+            args.max_epochs = 1
+        if args.patience > 1:
+            args.patience = 1
+
+    cfg = RunConfig(
+        data_dir=args.data_dir,
+        results_dir=args.results_dir,
+        run_root=args.run_root,
+        tasks=tasks,
+        phases=args.phases,
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
+        seed=args.seed,
+        stl_width=args.stl_width,
+        stl_depth=args.stl_depth,
+        alt_start_width=args.alt_start_width,
+        alt_start_depth=args.alt_start_depth,
+        patience=args.patience,
+        delta=args.delta,
+        max_epochs=args.max_epochs,
+        lr=args.lr,
+        weight_decay=args.weight_decay,
+        grad_clip=args.grad_clip,
+        max_width=args.max_width,
+        max_depth=args.max_depth,
+        max_neurons=args.max_neurons,
+        use_bn=not args.no_bn,
+        demo=args.demo,
+    )
+
+    seed_everything(cfg.seed)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    run_root = build_run_root(cfg)
+    run_root.mkdir(parents=True, exist_ok=True)
+    write_json(
+        run_root / "run_metadata.json",
+        {
+            "config": asdict(cfg),
+            "git_commit": git_commit(),
+            "device": str(device),
+            "tasks": tasks,
+            "available_tasks": task_names(),
+            "timestamp": now_stamp(),
+        },
+    )
+
+    progress_path = run_root / "run_progress.csv"
+    log = ContinuousLogger(run_root, "goliath", "sequential")
+    log.log_console(f"Run root: {run_root}")
+    log.log_console(f"Tasks: {tasks}")
+    log.log_console(f"Phases: {cfg.phases}")
+    log.log_console(f"Device: {device}")
+    log.log_console(f"Git commit: {git_commit()}")
+
+    try:
+        for task_name in tasks:
+            log.log_console(f"=== Task start: {task_name} ===")
+            task_summary = run_task_pipeline(task_name, cfg, run_root, device)
+            append_csv_row(
+                progress_path,
+                {
+                    "task": task_name,
+                    "stl": json.dumps(task_summary["phases"][0] if task_summary["phases"] else {}),
+                    "phases": json.dumps(task_summary["phases"]),
+                },
+            )
+            log.log_console(f"=== Task done: {task_name} ===")
+    finally:
+        log.close()
+
+
+if __name__ == "__main__":
+    main()

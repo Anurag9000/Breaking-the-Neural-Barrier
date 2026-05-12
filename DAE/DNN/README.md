@@ -10,6 +10,7 @@ Files
 - `adp_search.py`: ADP search (width/depth expansions)
 - `run_task.py`: run one task (STL or ADP)
 - `run_all.py`: run STL + all 6 ADP modes for all tasks
+- `run_goliath.py`: sequential STL + AE experiment runner with resumable checkpoints
 
 Tasks and default datasets
 - prediction: synthetic regression (20-d -> 1-d)
@@ -78,3 +79,8 @@ Common flags
 Where results go
 - Per run folder: `DAE/DNN/results/<task>_<mode>_<adp_mode>_d<d>_w<w>_exk<k>_<timestamp>/`
 - Files: `training_log.txt`, `training_stats.csv`, `val_loss_vs_step.png`, `loss_vs_neurons_best.png`
+
+`run_goliath.py` adds a deeper hierarchy:
+- `results/goliath_<timestamp>/<task>/<phase>/cand_###_d##_w##/`
+- Each candidate dir stores `metadata.json`, `candidate_state.json`, `checkpoint_last.pt`, `checkpoint_best.pt`, `training_log.txt`, `training_stats.csv`
+- Phase roots store `search_state.json`, `phase_summary.json`, and `phase_progress.csv`
