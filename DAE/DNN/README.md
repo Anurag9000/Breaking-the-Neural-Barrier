@@ -67,6 +67,16 @@ Run all tasks (STL + 6 ADP modes)
 python DAE/DNN/run_all.py --data-dir .\data --results-dir DAE/DNN/results --hidden 50 50
 ```
 
+Linux CUDA setup
+```
+bash scripts/setup_cuda_venv.sh
+source .venv/bin/activate
+```
+Then launch the full sequential experiment:
+```
+python DAE/DNN/run_goliath.py --tasks all --data-dir ./data --results-dir DAE/DNN/results --batch-size 256 --stl-width 128 --stl-depth 2 --alt-start-width 2 --alt-start-depth 2 --patience 5 --seed 0
+```
+
 Common flags
 - `--hidden`: starting widths (length = starting depth)
 - `--ex-k`: width expansion step
