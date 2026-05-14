@@ -12,7 +12,7 @@ def main() -> None:
     p = argparse.ArgumentParser(description="Run STL + 6 ADP modes for all DNN tasks")
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
-    p.add_argument("--batch-size", type=int, default=256)
+    p.add_argument("--batch-size", type=int, default=448)
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
     p.add_argument("--ex-k", type=int, default=1)
@@ -28,8 +28,8 @@ def main() -> None:
     tasks = task_names() if "all" in [t.lower() for t in args.tasks] else args.tasks
     adp_modes = ["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth"]
 
-    for task in tasks:
-        for mode in ["stl"] + adp_modes:
+    for mode in ["stl"] + adp_modes:
+        for task in tasks:
             cmd = [
                 sys.executable,
                 str(Path("DAE/DNN/run_task.py")),

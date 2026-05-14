@@ -1166,6 +1166,48 @@ def run_task_pipeline(task_name: str, cfg: RunConfig, run_root: Path, device) ->
     return task_summary
 
 
+def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phase_name: str) -> Dict[str, Any]:
+    base_hidden = base_stl_hidden(task, cfg)
+    alt_hidden = alt_start_hidden(cfg)
+
+    if phase_name == "stl":
+        return run_stl_phase(task, task_root, cfg, device, base_hidden)
+    if phase_name == "ae_alt_width":
+        return run_growth_phase(
+            task,
+            task_root,
+            cfg,
+            device,
+            alt_hidden,
+            "ae_alt_width",
+            "alt_width",
+            reconstruct=True,
+        )
+    if phase_name == "ae_width_only":
+        return run_growth_phase(
+            task,
+            task_root,
+            cfg,
+            device,
+            base_hidden,
+            "ae_width_only",
+            "width_only",
+            reconstruct=True,
+        )
+    if phase_name == "ae_depth_only":
+        return run_growth_phase(
+            task,
+            task_root,
+            cfg,
+            device,
+            base_hidden,
+            "ae_depth_only",
+            "depth_only",
+            reconstruct=True,
+        )
+    raise ValueError(f"Unknown phase: {phase_name}")
+
+
 def build_run_root(cfg: RunConfig) -> Path:
     if cfg.run_root:
         return Path(cfg.run_root)
@@ -1179,7 +1221,7 @@ def main() -> None:
     p.add_argument("--run-root", type=str, default=None)
     p.add_argument("--tasks", type=str, nargs="+", default=["all"])
     p.add_argument("--phases", type=str, nargs="+", default=["stl", "ae_alt_width", "ae_width_only", "ae_depth_only"])
-    p.add_argument("--batch-size", type=int, default=0, help="Use 0 to auto-tune from a CUDA probe and then halve the max safe batch size.")
+    p.add_argument("--batch-size", type=int, default=448, help="Batch size to use. Set to 0 to auto-tune from a CUDA probe and then halve the max safe batch size.")
     p.add_argument("--batch-probe-task", type=str, default="classification", help="Task used for automatic batch-size probing.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
@@ -1280,19 +1322,58 @@ def main() -> None:
     log.log_console(f"Device: {device}")
     log.log_console(f"Git commit: {git_commit()}")
 
+    task_objects: Dict[str, Task] = {}
+    task_roots: Dict[str, Path] = {}
+    task_summaries: Dict[str, Dict[str, Any]] = {}
+
+    for task_name in tasks:
+        task = build_task(task_name, cfg.data_dir, cfg.batch_size, cfg.num_workers, cfg.seed)
+        task_objects[task_name] = task
+        task_root = run_root / task_name
+        task_root.mkdir(parents=True, exist_ok=True)
+        task_roots[task_name] = task_root
+        write_json(
+            task_root / "task_metadata.json",
+            {
+                "task": task.name,
+                "in_dim": task.in_dim,
+                "out_dim": task.out_dim,
+                "task_type": task.task_type,
+                "extra": task.extra,
+                "config": asdict(cfg),
+            },
+        )
+        task_summaries[task_name] = {"task": task.name, "phases": []}
+
+    phase_order = [phase for phase in ["stl", "ae_alt_width", "ae_width_only", "ae_depth_only"] if phase in cfg.phases]
+
     try:
-        for task_name in tasks:
-            log.log_console(f"=== Task start: {task_name} ===")
-            task_summary = run_task_pipeline(task_name, cfg, run_root, device)
-            append_csv_row(
-                progress_path,
-                {
-                    "task": task_name,
-                    "stl": json.dumps(task_summary["phases"][0] if task_summary["phases"] else {}),
-                    "phases": json.dumps(task_summary["phases"]),
-                },
-            )
-            log.log_console(f"=== Task done: {task_name} ===")
+        for phase_name in phase_order:
+            log.log_console(f"=== Phase start: {phase_name} ===")
+            for task_name in tasks:
+                task = task_objects[task_name]
+                task_root = task_roots[task_name]
+                log.log_console(f"--- Task start: {task_name} ---")
+                phase_summary = run_phase_for_task(task, task_root, cfg, device, phase_name)
+                task_summaries[task_name]["phases"].append(phase_summary)
+                write_json(task_root / "task_summary.json", task_summaries[task_name])
+                append_csv_row(
+                    progress_path,
+                    {
+                        "task": task_name,
+                        "phase": phase_name,
+                        "phase_type": phase_summary.get("mode", "stl"),
+                        "best_val": phase_summary.get("best_val"),
+                        "best_epoch": phase_summary.get("best_epoch"),
+                        "final_epoch": phase_summary.get("final_epoch", phase_summary.get("best_epoch")),
+                        "test_loss": (phase_summary.get("test_metrics") or {}).get("test_loss"),
+                        "test_acc": (phase_summary.get("test_metrics") or {}).get("test_acc"),
+                        "best_checkpoint": phase_summary.get("checkpoint_best", phase_summary.get("best_checkpoint")),
+                        "candidate_dir": phase_summary.get("candidate_dir", phase_summary.get("best_candidate_dir")),
+                    },
+                )
+                log.log_console(f"--- Task done: {task_name} ---")
+            log.log_console(f"=== Phase done: {phase_name} ===")
     finally:
         log.close()
 
