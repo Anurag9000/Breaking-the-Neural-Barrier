@@ -710,6 +710,20 @@ def log_phase_progress(path: Path, row: Dict[str, Any]) -> None:
     append_csv_row(path, row)
 
 
+def plot_candidate_stats(candidate_dir: Path, title_prefix: str) -> None:
+    csv_path = candidate_dir / "training_stats.csv"
+    if not csv_path.exists():
+        print(f"Skipping plots for {candidate_dir}: missing {csv_path}")
+        return
+    try:
+        plot_val_loss_from_csv(csv_path, candidate_dir / "val_loss_vs_step.png", title=f"{title_prefix} val_loss")
+        plot_best_loss_per_neurons_from_csv(
+            csv_path, candidate_dir / "loss_vs_neurons_best.png", title=f"{title_prefix} best val_loss per neurons"
+        )
+    except FileNotFoundError:
+        print(f"Skipping plots for {candidate_dir}: could not read {csv_path}")
+
+
 def eval_final(model: MLP, task: Task, device, reconstruct: bool) -> Dict[str, Any]:
     if reconstruct:
         val_loss, _, _ = reconstruction_eval_epoch(model, task.test_loader, F.mse_loss, device, measure_throughput=False)
@@ -895,10 +909,7 @@ def run_stl_phase(
             "depth_fail": 0,
         },
     )
-    plot_val_loss_from_csv(candidate_dir / "training_stats.csv", candidate_dir / "val_loss_vs_step.png", title=f"{task.name} {phase_name} val_loss")
-    plot_best_loss_per_neurons_from_csv(
-        candidate_dir / "training_stats.csv", candidate_dir / "loss_vs_neurons_best.png", title=f"{task.name} {phase_name} best val_loss per neurons"
-    )
+    plot_candidate_stats(candidate_dir, f"{task.name} {phase_name}")
     state.update({"candidate_index": candidate_idx, "completed": True, "best_val": float(result.best_val), "best_candidate_dir": candidate_dir.name, "best_checkpoint": str(result.best_checkpoint)})
     save_phase_state(phase_root, state)
     return summary
