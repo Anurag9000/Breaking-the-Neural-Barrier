@@ -11,8 +11,9 @@ from utils.adp_logging import ContinuousLogger
 from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_from_csv
 
 from DAE.DNN.mlp import MLP
-from DAE.DNN.tasks import build_task
+from DAE.DNN.tasks import build_task, refresh_task_loaders
 from DAE.DNN.adp_search import ADPConfig, adp_search, train_with_early_stopping
+from DAE.DNN.train_utils import AdaptiveBatchController
 from DAE.DNN.train_utils import eval_epoch
 
 
@@ -27,7 +28,7 @@ def main() -> None:
         choices=["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth", "width", "depth"],
     )
     p.add_argument("--hidden", type=int, nargs="+", default=[50, 50])
-    p.add_argument("--batch-size", type=int, default=448)
+    p.add_argument("--batch-size", type=int, default=2048)
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
     p.add_argument("--trials-width", type=int, default=0)
@@ -72,6 +73,16 @@ def main() -> None:
     )
     logger.log_console(f"Device: {device}")
 
+    batch_state_path = Path(args.results_dir) / "_batch_size_state.json"
+    batch_controller = AdaptiveBatchController(
+        args.batch_size,
+        threshold_gb=5.5,
+        poll_interval_sec=30.0,
+        shrink_factor=0.75,
+        state_path=batch_state_path,
+    )
+    batch_controller.start()
+
     cfg = ADPConfig(
         adp_mode=args.adp_mode,
         delta=1e-4,
@@ -87,12 +98,17 @@ def main() -> None:
     )
 
     try:
+        refresh_task_loaders(task, batch_controller.current_batch_size)
         if args.mode == "stl":
-            best_val, best_state, _ = train_with_early_stopping(model.to(device), task, cfg, device, logger)
+            best_val, best_state, _ = train_with_early_stopping(
+                model.to(device), task, cfg, device, logger, batch_controller=batch_controller
+            )
             model.load_state_dict(best_state)
             logger.log_console(f"[STL] best_val_loss={best_val:.6f} hidden={model.hidden_widths}")
         else:
-            best_val, model = adp_search(model.to(device), task, cfg, device, logger)
+            best_val, model = adp_search(
+                model.to(device), task, cfg, device, logger, batch_controller=batch_controller
+            )
             logger.log_console(f"[ADP] best_val_loss={best_val:.6f} hidden={model.hidden_widths}")
 
         val_loss, val_acc, throughput = eval_epoch(model, task.val_loader, task.loss_fn, device, task.task_type, measure_throughput=(task.name == "edge"))
@@ -117,6 +133,7 @@ def main() -> None:
             logger.csv_file, results_dir / "loss_vs_neurons_best.png", title=f"{run_name} - best val_loss per neurons"
         )
     finally:
+        batch_controller.stop()
         logger.close()
 
 
