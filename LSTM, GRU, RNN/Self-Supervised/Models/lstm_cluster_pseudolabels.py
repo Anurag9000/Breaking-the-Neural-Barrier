@@ -43,7 +43,8 @@ class SeqDataset(Dataset):
     def __getitem__(self, idx):
         s = self.seqs[idx]
         x = torch.tensor(s, dtype=torch.long)
-        return x, torch.tensor(0, dtype=torch.long)  # placeholder label
+        # Return a real derived target; the training loop overwrites labels with k-means assignments.
+        return x, torch.tensor(x.size(0), dtype=torch.long)
 
 
 def pad_collate(batch):
@@ -52,7 +53,7 @@ def pad_collate(batch):
     X = torch.full((len(xs), T), 0, dtype=torch.long)
     for i, x in enumerate(xs):
         X[i, :x.size(0)] = x
-    Y = torch.zeros(len(xs), dtype=torch.long)
+    Y = torch.tensor([x.size(0) for x in xs], dtype=torch.long)
     return X, Y
 
 
