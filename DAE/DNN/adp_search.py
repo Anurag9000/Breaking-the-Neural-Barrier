@@ -9,6 +9,7 @@ import torch.nn as nn
 
 from DAE.DNN.mlp import MLP
 from DAE.DNN.train_utils import eval_epoch, train_epoch
+from DAE.DNN.tasks import refresh_task_loaders
 from utils.adp_logging import ContinuousLogger
 from utils.adp_state import merge_state_preserving_init
 
@@ -126,14 +127,29 @@ def train_with_early_stopping(
     device,
     logger: Optional[ContinuousLogger] = None,
     measure_throughput: bool = False,
+    batch_controller=None,
 ):
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     best_val = float("inf")
     best_state = copy.deepcopy(model.state_dict())
     best_metrics: Dict[str, float] = {}
     es_counter = 0
+    current_batch_size = int(getattr(task.train_loader, "batch_size", 0) or 0)
+
+    if batch_controller is not None:
+        refreshed = int(batch_controller.current_batch_size)
+        if refreshed > 0 and refreshed != current_batch_size:
+            refresh_task_loaders(task, refreshed)
+            current_batch_size = refreshed
 
     for epoch in range(1, int(cfg.max_epochs) + 1):
+        if batch_controller is not None:
+            batch_controller.maybe_poll()
+            refreshed = int(batch_controller.current_batch_size)
+            if refreshed > 0 and refreshed != current_batch_size:
+                refresh_task_loaders(task, refreshed)
+                current_batch_size = refreshed
+
         tr_loss, tr_acc = train_epoch(model, task.train_loader, task.loss_fn, optimizer, device, task.task_type, cfg.grad_clip)
         val_loss, val_acc, throughput = eval_epoch(
             model, task.val_loader, task.loss_fn, device, task.task_type, measure_throughput=measure_throughput
@@ -193,8 +209,11 @@ def adp_search(
     device,
     logger: Optional[ContinuousLogger] = None,
     measure_throughput: bool = False,
+    batch_controller=None,
 ):
-    best_val, best_state, _ = train_with_early_stopping(model, task, cfg, device, logger, measure_throughput)
+    best_val, best_state, _ = train_with_early_stopping(
+        model, task, cfg, device, logger, measure_throughput, batch_controller=batch_controller
+    )
     model.load_state_dict(best_state)
 
     global_best_val = best_val
@@ -214,7 +233,9 @@ def adp_search(
         if logger is not None:
             logger.log_console(f"[PHASE][WIDTH] start widths={curr_model.hidden_widths}")
 
-        local_val, local_state, _ = train_with_early_stopping(curr_model, task, cfg, device, logger, measure_throughput)
+        local_val, local_state, _ = train_with_early_stopping(
+            curr_model, task, cfg, device, logger, measure_throughput, batch_controller=batch_controller
+        )
         local_best_val = local_val
         local_best_snap = snapshot_arch_and_state(curr_model, local_state)
 
@@ -232,7 +253,9 @@ def adp_search(
             if logger is not None:
                 logger.log_console(f"[EXPAND][WIDTH] {prev_widths} -> {curr_model.hidden_widths}")
 
-            v, s, _ = train_with_early_stopping(curr_model, task, cfg, device, logger, measure_throughput)
+            v, s, _ = train_with_early_stopping(
+                curr_model, task, cfg, device, logger, measure_throughput, batch_controller=batch_controller
+            )
             if v < local_best_val - cfg.delta:
                 local_best_val = v
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
@@ -253,7 +276,9 @@ def adp_search(
         if logger is not None:
             logger.log_console(f"[PHASE][DEPTH] start widths={curr_model.hidden_widths}")
 
-        local_val, local_state, _ = train_with_early_stopping(curr_model, task, cfg, device, logger, measure_throughput)
+        local_val, local_state, _ = train_with_early_stopping(
+            curr_model, task, cfg, device, logger, measure_throughput, batch_controller=batch_controller
+        )
         local_best_val = local_val
         local_best_snap = snapshot_arch_and_state(curr_model, local_state)
 
@@ -271,7 +296,9 @@ def adp_search(
             if logger is not None:
                 logger.log_console(f"[EXPAND][DEPTH] depth {prev_depth} -> {len(curr_model.hidden_widths)}")
 
-            v, s, _ = train_with_early_stopping(curr_model, task, cfg, device, logger, measure_throughput)
+            v, s, _ = train_with_early_stopping(
+                curr_model, task, cfg, device, logger, measure_throughput, batch_controller=batch_controller
+            )
             if v < local_best_val - cfg.delta:
                 local_best_val = v
                 local_best_snap = snapshot_arch_and_state(curr_model, s)

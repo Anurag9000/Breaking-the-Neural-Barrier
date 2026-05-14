@@ -20,8 +20,9 @@ sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from DAE.DNN.adp_search import expand_depth, expand_width, model_depth, model_width
 from DAE.DNN.mlp import MLP
-from DAE.DNN.tasks import Task, build_task, task_names
+from DAE.DNN.tasks import Task, build_task, refresh_task_loaders, task_names
 from DAE.DNN.train_utils import eval_epoch, train_epoch, unpack_batch
+from DAE.DNN.train_utils import AdaptiveBatchController
 from utils.adp_logging import ContinuousLogger
 from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_from_csv
 
@@ -458,6 +459,7 @@ def training_loop(
     logger: ContinuousLogger,
     reconstruct: bool,
     resume: bool = True,
+    batch_controller: Optional[AdaptiveBatchController] = None,
 ) -> CandidateResult:
     candidate_dir.mkdir(parents=True, exist_ok=True)
     metadata_path = candidate_dir / "metadata.json"
@@ -473,6 +475,12 @@ def training_loop(
     best_epoch = 0
     es_counter = 0
     metric_keys: List[str] = []
+    current_batch_size = int(getattr(task.train_loader, "batch_size", 0) or 0)
+    if batch_controller is not None:
+        refreshed = int(batch_controller.current_batch_size)
+        if refreshed > 0 and refreshed != current_batch_size:
+            refresh_task_loaders(task, refreshed)
+            current_batch_size = refreshed
 
     if resume and last_ckpt.exists():
         ckpt = load_checkpoint(last_ckpt, device)
@@ -506,6 +514,13 @@ def training_loop(
         return CandidateResult(best_val, best_epoch, start_epoch - 1, best_ckpt, last_ckpt, candidate_dir, [int(w) for w in model.hidden_widths])
 
     for epoch in range(start_epoch, int(cfg.max_epochs) + 1):
+        if batch_controller is not None:
+            batch_controller.maybe_poll()
+            refreshed = int(batch_controller.current_batch_size)
+            if refreshed > 0 and refreshed != current_batch_size:
+                refresh_task_loaders(task, refreshed)
+                current_batch_size = refreshed
+
         if reconstruct:
             tr_loss = reconstruction_train_epoch(model, task.train_loader, F.mse_loss, optimizer, device, grad_clip=float(cfg.grad_clip))
             val_loss, val_acc, throughput = reconstruction_eval_epoch(
@@ -738,7 +753,14 @@ def infer_hidden_from_checkpoint(candidate_dir: Path) -> List[int]:
     return [int(w) for w in meta["model"]["hidden_widths"]]
 
 
-def run_stl_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_hidden: List[int]) -> Dict[str, Any]:
+def run_stl_phase(
+    task: Task,
+    task_root: Path,
+    cfg: RunConfig,
+    device,
+    base_hidden: List[int],
+    batch_controller: Optional[AdaptiveBatchController] = None,
+) -> Dict[str, Any]:
     phase_name = "stl"
     phase_root = phase_root_for(task_root, phase_name)
     phase_root.mkdir(parents=True, exist_ok=True)
@@ -798,7 +820,17 @@ def run_stl_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_hidd
         logger.close()
         return summary
 
-    result = training_loop(task=task, model=model, candidate_dir=candidate_dir, cfg=cfg, device=device, logger=logger, reconstruct=False, resume=True)
+    result = training_loop(
+        task=task,
+        model=model,
+        candidate_dir=candidate_dir,
+        cfg=cfg,
+        device=device,
+        logger=logger,
+        reconstruct=False,
+        resume=True,
+        batch_controller=batch_controller,
+    )
     logger.close()
     test_metrics = eval_final(model, task, device, reconstruct=False)
     summary = {
@@ -843,7 +875,7 @@ def run_stl_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_hidd
     return summary
 
 
-def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_hidden: List[int], phase_name: str, mode: str, reconstruct: bool) -> Dict[str, Any]:
+def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_hidden: List[int], phase_name: str, mode: str, reconstruct: bool, batch_controller: Optional[AdaptiveBatchController] = None) -> Dict[str, Any]:
     phase_root = phase_root_for(task_root, phase_name)
     phase_root.mkdir(parents=True, exist_ok=True)
     progress_path = phase_root / "phase_progress.csv"
@@ -894,7 +926,17 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
         candidate_idx = int(incomplete.name.split("_")[1])
         candidate_model, meta, ckpt = load_candidate_model(incomplete, device)
         logger = ContinuousLogger(incomplete, f"{task.name}_{phase_name}", phase_name)
-        result = training_loop(task=task, model=candidate_model, candidate_dir=incomplete, cfg=cfg, device=device, logger=logger, reconstruct=reconstruct, resume=True)
+        result = training_loop(
+            task=task,
+            model=candidate_model,
+            candidate_dir=incomplete,
+            cfg=cfg,
+            device=device,
+            logger=logger,
+            reconstruct=reconstruct,
+            resume=True,
+            batch_controller=batch_controller,
+        )
         logger.close()
         state["candidate_index"] = candidate_idx + 1
         if result.best_val < (global_best_val - float(cfg.delta)):
@@ -994,7 +1036,17 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 extra={"hidden_widths": next_arch, "search_phase": current_phase},
             ),
         )
-        result = training_loop(task=task, model=next_model.to(device), candidate_dir=candidate_dir, cfg=cfg, device=device, logger=logger, reconstruct=reconstruct, resume=True)
+        result = training_loop(
+            task=task,
+            model=next_model.to(device),
+            candidate_dir=candidate_dir,
+            cfg=cfg,
+            device=device,
+            logger=logger,
+            reconstruct=reconstruct,
+            resume=True,
+            batch_controller=batch_controller,
+        )
         logger.close()
 
         improved = result.best_val < (global_best_val - float(cfg.delta))
@@ -1166,12 +1218,12 @@ def run_task_pipeline(task_name: str, cfg: RunConfig, run_root: Path, device) ->
     return task_summary
 
 
-def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phase_name: str) -> Dict[str, Any]:
+def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phase_name: str, batch_controller: Optional[AdaptiveBatchController] = None) -> Dict[str, Any]:
     base_hidden = base_stl_hidden(task, cfg)
     alt_hidden = alt_start_hidden(cfg)
 
     if phase_name == "stl":
-        return run_stl_phase(task, task_root, cfg, device, base_hidden)
+        return run_stl_phase(task, task_root, cfg, device, base_hidden, batch_controller=batch_controller)
     if phase_name == "ae_alt_width":
         return run_growth_phase(
             task,
@@ -1182,7 +1234,7 @@ def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phas
             "ae_alt_width",
             "alt_width",
             reconstruct=True,
-        )
+            )
     if phase_name == "ae_width_only":
         return run_growth_phase(
             task,
@@ -1193,7 +1245,7 @@ def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phas
             "ae_width_only",
             "width_only",
             reconstruct=True,
-        )
+            )
     if phase_name == "ae_depth_only":
         return run_growth_phase(
             task,
@@ -1204,7 +1256,7 @@ def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phas
             "ae_depth_only",
             "depth_only",
             reconstruct=True,
-        )
+            )
     raise ValueError(f"Unknown phase: {phase_name}")
 
 
@@ -1221,7 +1273,7 @@ def main() -> None:
     p.add_argument("--run-root", type=str, default=None)
     p.add_argument("--tasks", type=str, nargs="+", default=["all"])
     p.add_argument("--phases", type=str, nargs="+", default=["stl", "ae_alt_width", "ae_width_only", "ae_depth_only"])
-    p.add_argument("--batch-size", type=int, default=448, help="Batch size to use. Set to 0 to auto-tune from a CUDA probe and then halve the max safe batch size.")
+    p.add_argument("--batch-size", type=int, default=2048, help="Batch size to use. Set to 0 to auto-tune from a CUDA probe and then halve the max safe batch size.")
     p.add_argument("--batch-probe-task", type=str, default="classification", help="Task used for automatic batch-size probing.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
@@ -1322,12 +1374,23 @@ def main() -> None:
     log.log_console(f"Device: {device}")
     log.log_console(f"Git commit: {git_commit()}")
 
+    batch_state_path = Path(args.results_dir) / "_batch_size_state.json"
+    batch_controller = AdaptiveBatchController(
+        args.batch_size,
+        threshold_gb=5.5,
+        poll_interval_sec=30.0,
+        shrink_factor=0.75,
+        state_path=batch_state_path,
+    )
+    batch_controller.start()
+
     task_objects: Dict[str, Task] = {}
     task_roots: Dict[str, Path] = {}
     task_summaries: Dict[str, Dict[str, Any]] = {}
 
     for task_name in tasks:
         task = build_task(task_name, cfg.data_dir, cfg.batch_size, cfg.num_workers, cfg.seed)
+        refresh_task_loaders(task, batch_controller.current_batch_size)
         task_objects[task_name] = task
         task_root = run_root / task_name
         task_root.mkdir(parents=True, exist_ok=True)
@@ -1354,7 +1417,21 @@ def main() -> None:
                 task = task_objects[task_name]
                 task_root = task_roots[task_name]
                 log.log_console(f"--- Task start: {task_name} ---")
-                phase_summary = run_phase_for_task(task, task_root, cfg, device, phase_name)
+                refresh_task_loaders(task, batch_controller.current_batch_size)
+                if phase_name == "stl":
+                    phase_summary = run_phase_for_task(task, task_root, cfg, device, phase_name, batch_controller=batch_controller)
+                else:
+                    phase_summary = run_growth_phase(
+                        task,
+                        task_root,
+                        cfg,
+                        device,
+                        alt_start_hidden(cfg) if phase_name == "ae_alt_width" else base_stl_hidden(task, cfg),
+                        phase_name,
+                        "alt_width" if phase_name == "ae_alt_width" else ("width_only" if phase_name == "ae_width_only" else "depth_only"),
+                        reconstruct=True,
+                        batch_controller=batch_controller,
+                    )
                 task_summaries[task_name]["phases"].append(phase_summary)
                 write_json(task_root / "task_summary.json", task_summaries[task_name])
                 append_csv_row(
@@ -1375,6 +1452,7 @@ def main() -> None:
                 log.log_console(f"--- Task done: {task_name} ---")
             log.log_console(f"=== Phase done: {phase_name} ===")
     finally:
+        batch_controller.stop()
         log.close()
 
 
