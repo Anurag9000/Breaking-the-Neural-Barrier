@@ -9,8 +9,10 @@ from torch.utils.data import ConcatDataset, DataLoader, Dataset, TensorDataset, 
 from torchvision import datasets, transforms
 
 from sklearn.cluster import KMeans
+from sklearn.datasets import fetch_california_housing, fetch_covtype, fetch_openml
 from sklearn.metrics import normalized_mutual_info_score
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import StandardScaler
 
 
 @dataclass
@@ -61,6 +63,130 @@ def refresh_task_loaders(task: Task, batch_size: int) -> None:
     task.train_loader = clone_loader(task.train_loader, batch_size, shuffle=True)
     task.val_loader = clone_loader(task.val_loader, batch_size, shuffle=False)
     task.test_loader = clone_loader(task.test_loader, batch_size, shuffle=False)
+
+
+def _split_numpy_arrays(
+    x: np.ndarray,
+    y: np.ndarray,
+    seed: int,
+    val_split: float = 0.1,
+    test_split: float = 0.1,
+):
+    n = int(x.shape[0])
+    n_val = int(n * val_split)
+    n_test = int(n * test_split)
+    n_train = n - n_val - n_test
+    rng = np.random.default_rng(int(seed))
+    perm = rng.permutation(n)
+    train_idx = perm[:n_train]
+    val_idx = perm[n_train : n_train + n_val]
+    test_idx = perm[n_train + n_val :]
+    return (
+        x[train_idx],
+        y[train_idx],
+        x[val_idx],
+        y[val_idx],
+        x[test_idx],
+        y[test_idx],
+    )
+
+
+def _standardize_from_train(
+    train_x: np.ndarray,
+    val_x: np.ndarray,
+    test_x: np.ndarray,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    scaler = StandardScaler()
+    train_x = scaler.fit_transform(train_x)
+    val_x = scaler.transform(val_x)
+    test_x = scaler.transform(test_x)
+    return (
+        train_x.astype(np.float32),
+        val_x.astype(np.float32),
+        test_x.astype(np.float32),
+    )
+
+
+class ArrayDataset(Dataset):
+    def __init__(self, x: np.ndarray, y: np.ndarray):
+        self.x = torch.as_tensor(x, dtype=torch.float32)
+        if np.asarray(y).ndim == 1:
+            self.y = torch.as_tensor(y, dtype=torch.long)
+        else:
+            self.y = torch.as_tensor(y, dtype=torch.float32)
+
+    def __len__(self):
+        return int(self.x.size(0))
+
+    def __getitem__(self, idx):
+        return self.x[idx], self.y[idx]
+
+
+class PairArrayDataset(Dataset):
+    def __init__(self, x: np.ndarray, y: np.ndarray):
+        self.x = torch.as_tensor(x, dtype=torch.float32)
+        self.y = torch.as_tensor(y, dtype=torch.float32)
+
+    def __len__(self):
+        return int(self.x.size(0))
+
+    def __getitem__(self, idx):
+        return self.x[idx], self.y[idx]
+
+
+class OneClassAnomalyDataset(Dataset):
+    def __init__(self, x: np.ndarray, y: np.ndarray, anomaly_label: int):
+        self.x = torch.as_tensor(x, dtype=torch.float32)
+        self.y = torch.as_tensor(y, dtype=torch.float32)
+        self.anomaly_label = int(anomaly_label)
+
+    def __len__(self):
+        return int(self.x.size(0))
+
+    def __getitem__(self, idx):
+        return self.x[idx], self.y[idx], torch.tensor(self.anomaly_label, dtype=torch.long)
+
+
+class FeaturePermutationDataset(Dataset):
+    def __init__(self, x: np.ndarray, seed: int = 0, n_perms: int = 4):
+        self.x = torch.as_tensor(x, dtype=torch.float32)
+        self.n_perms = int(n_perms)
+        rng = np.random.default_rng(int(seed))
+        base = np.arange(self.x.shape[1])
+        self.perms = [torch.as_tensor(rng.permutation(base), dtype=torch.long) for _ in range(self.n_perms)]
+
+    def __len__(self):
+        return int(self.x.size(0))
+
+    def __getitem__(self, idx):
+        label = int(idx % self.n_perms)
+        return self.x[idx][self.perms[label]], torch.tensor(label, dtype=torch.long)
+
+
+def _load_covtype(seed: int):
+    data = fetch_covtype(download_if_missing=True)
+    x = np.asarray(data.data, dtype=np.float32)
+    y = np.asarray(data.target, dtype=np.int64) - 1
+    return _split_numpy_arrays(x, y, seed)
+
+
+def _load_year_prediction(seed: int):
+    try:
+        data = fetch_openml(name="YearPredictionMSD", version=1, as_frame=False)
+        x = np.asarray(data.data, dtype=np.float32)
+        y = np.asarray(data.target, dtype=np.float32).reshape(-1, 1)
+    except Exception:
+        data = fetch_california_housing()
+        x = np.asarray(data.data, dtype=np.float32)
+        y = np.asarray(data.target, dtype=np.float32).reshape(-1, 1)
+    return _split_numpy_arrays(x, y, seed)
+
+
+def _load_california_housing(seed: int):
+    data = fetch_california_housing()
+    x = np.asarray(data.data, dtype=np.float32)
+    y = np.asarray(data.target, dtype=np.float32).reshape(-1, 1)
+    return _split_numpy_arrays(x, y, seed)
 
 
 def _knn_accuracy(embeddings: np.ndarray, labels: np.ndarray, k: int = 5) -> float:
@@ -289,138 +415,150 @@ class LQRDataset(Dataset):
 def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int, seed: int) -> Task:
     name = task_name.lower()
 
-    if name in ["prediction", "regression"]:
-        g = torch.Generator().manual_seed(int(seed))
-        x = torch.randn(20000, 20, generator=g)
-        w = torch.randn(20, 1, generator=g)
-        y = x @ w + 0.1 * torch.randn(20000, 1, generator=g)
-        base = TensorDataset(x, y)
-        train_ds, val_ds, test_ds = _split_dataset(base, seed)
+    if name in ["prediction", "regression", "sequence", "ranking"]:
+        train_x, train_y, val_x, val_y, test_x, test_y = _load_year_prediction(seed)
+        train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
+        train_ds = ArrayDataset(train_x, train_y)
+        val_ds = ArrayDataset(val_x, val_y)
+        test_ds = ArrayDataset(test_x, test_y)
+
+        def metrics_fn(model, task, device):
+            model.eval()
+            xs = []
+            ys = []
+            with torch.no_grad():
+                for x, y in task.val_loader:
+                    xs.append(x)
+                    ys.append(y)
+            x_all = torch.cat(xs, dim=0).to(device)
+            y_all = torch.cat(ys, dim=0).to(device)
+            preds = model(x_all)
+            idx = torch.randperm(x_all.size(0), device=device)[:1000]
+            a = preds[idx]
+            b = preds[idx.flip(0)]
+            ya = y_all[idx]
+            yb = y_all[idx.flip(0)]
+            acc = float(((a > b) == (ya > yb)).float().mean().item())
+            return {"pairwise_acc": acc}
+
         return Task(
             name=name,
             train_loader=_make_loaders(train_ds, batch_size, num_workers),
             val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
             test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
-            in_dim=20,
+            in_dim=int(train_x.shape[1]),
             out_dim=1,
             task_type="regression",
             loss_fn=F.mse_loss,
-            metrics_fn=None,
+            metrics_fn=metrics_fn if name == "ranking" else None,
             extra={},
         )
 
-    if name == "classification":
-        train_base = _make_mnist(data_dir, True)
-        test_base = _make_mnist(data_dir, False)
-        train_ds, val_ds, _ = _split_dataset(train_base, seed)
+    if name in ["classification", "representation", "clustering", "selfsupervised", "edge"]:
+        train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed)
+        train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
+
+        if name == "selfsupervised":
+            train_ds = FeaturePermutationDataset(train_x, seed=seed)
+            val_ds = FeaturePermutationDataset(val_x, seed=seed + 1)
+            test_ds = FeaturePermutationDataset(test_x, seed=seed + 2)
+            task_type = "classification"
+            out_dim = 4
+            in_dim = int(train_x.shape[1])
+            loss_fn = F.cross_entropy
+            metrics_fn = None
+        else:
+            train_ds = ArrayDataset(train_x, train_y)
+            val_ds = ArrayDataset(val_x, val_y)
+            test_ds = ArrayDataset(test_x, test_y)
+
+            metrics_fn = None
+            if name in {"representation", "clustering"}:
+                def metrics_fn(model, task, device):
+                    model.eval()
+                    feats = []
+                    labels = []
+                    with torch.no_grad():
+                        for x, y in task.val_loader:
+                            x = x.to(device)
+                            _, emb = model(x, return_embedding=True)
+                            feats.append(emb.cpu().numpy())
+                            labels.append(y.numpy())
+                    feats_np = np.concatenate(feats, axis=0)
+                    labels_np = np.concatenate(labels, axis=0)
+                    return {"knn_acc": _knn_accuracy(feats_np, labels_np)} if name == "representation" else {"nmi": _kmeans_nmi(feats_np, labels_np)}
+
+            task_type = "classification"
+            out_dim = 7
+            in_dim = int(train_x.shape[1])
+            loss_fn = F.cross_entropy
+
         return Task(
             name=name,
             train_loader=_make_loaders(train_ds, batch_size, num_workers),
             val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_base, batch_size, num_workers, shuffle=False),
-            in_dim=28 * 28,
-            out_dim=10,
-            task_type="classification",
-            loss_fn=F.cross_entropy,
-            metrics_fn=None,
-            extra={},
-        )
-
-    if name == "representation":
-        train_base = _make_mnist(data_dir, True)
-        test_base = _make_mnist(data_dir, False)
-        train_ds, val_ds, _ = _split_dataset(train_base, seed)
-
-        def metrics_fn(model, task, device):
-            model.eval()
-            feats = []
-            labels = []
-            with torch.no_grad():
-                for x, y in task.val_loader:
-                    x = x.to(device)
-                    _, emb = model(x, return_embedding=True)
-                    feats.append(emb.cpu().numpy())
-                    labels.append(y.numpy())
-            feats_np = np.concatenate(feats, axis=0)
-            labels_np = np.concatenate(labels, axis=0)
-            return {"knn_acc": _knn_accuracy(feats_np, labels_np)}
-
-        return Task(
-            name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_base, batch_size, num_workers, shuffle=False),
-            in_dim=28 * 28,
-            out_dim=10,
-            task_type="classification",
-            loss_fn=F.cross_entropy,
+            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
+            in_dim=in_dim,
+            out_dim=out_dim,
+            task_type=task_type,
+            loss_fn=loss_fn,
             metrics_fn=metrics_fn,
-            extra={},
+            extra={"max_width": 32} if name == "edge" else {},
         )
 
-    if name == "autoencoding":
-        train_base = _make_mnist(data_dir, True)
-        test_base = _make_mnist(data_dir, False)
-        train_ds, val_ds, _ = _split_dataset(train_base, seed)
-        return Task(
-            name=name,
-            train_loader=_make_loaders(MNISTFlatWithLabel(train_ds), batch_size, num_workers),
-            val_loader=_make_loaders(MNISTFlatWithLabel(val_ds), batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(MNISTFlatWithLabel(test_base), batch_size, num_workers, shuffle=False),
-            in_dim=28 * 28,
-            out_dim=28 * 28,
-            task_type="reconstruction",
-            loss_fn=F.mse_loss,
-            metrics_fn=None,
-            extra={},
-        )
+    if name in ["autoencoding", "generation", "denoising", "compression", "multimodal"]:
+        train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed)
+        train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
+        if name == "generation":
+            train_ds = PairArrayDataset(np.random.randn(*train_x.shape).astype(np.float32), train_x)
+            val_ds = PairArrayDataset(np.random.randn(*val_x.shape).astype(np.float32), val_x)
+            test_ds = PairArrayDataset(np.random.randn(*test_x.shape).astype(np.float32), test_x)
+            in_dim = int(train_x.shape[1])
+        elif name == "denoising":
+            noise_std = 0.25
+            train_ds = PairArrayDataset(train_x + np.random.randn(*train_x.shape).astype(np.float32) * noise_std, train_x)
+            val_ds = PairArrayDataset(val_x + np.random.randn(*val_x.shape).astype(np.float32) * noise_std, val_x)
+            test_ds = PairArrayDataset(test_x + np.random.randn(*test_x.shape).astype(np.float32) * noise_std, test_x)
+            in_dim = int(train_x.shape[1])
+        elif name == "multimodal":
+            parity_train = (train_y % 2).astype(np.float32).reshape(-1, 1)
+            parity_val = (val_y % 2).astype(np.float32).reshape(-1, 1)
+            parity_test = (test_y % 2).astype(np.float32).reshape(-1, 1)
+            train_ds = ArrayDataset(np.concatenate([train_x, parity_train], axis=1), train_y)
+            val_ds = ArrayDataset(np.concatenate([val_x, parity_val], axis=1), val_y)
+            test_ds = ArrayDataset(np.concatenate([test_x, parity_test], axis=1), test_y)
+            in_dim = int(train_x.shape[1] + 1)
+        else:
+            train_ds = PairArrayDataset(train_x, train_x)
+            val_ds = PairArrayDataset(val_x, val_x)
+            test_ds = PairArrayDataset(test_x, test_x)
+            in_dim = int(train_x.shape[1])
 
-    if name == "generation":
-        train_base = _make_mnist(data_dir, True)
-        test_base = _make_mnist(data_dir, False)
-        train_ds, val_ds, _ = _split_dataset(train_base, seed)
         return Task(
             name=name,
-            train_loader=_make_loaders(NoiseToImageDataset(train_ds, noise_dim=64, seed=seed), batch_size, num_workers),
-            val_loader=_make_loaders(NoiseToImageDataset(val_ds, noise_dim=64, seed=seed + 1), batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(NoiseToImageDataset(test_base, noise_dim=64, seed=seed + 2), batch_size, num_workers, shuffle=False),
-            in_dim=64,
-            out_dim=28 * 28,
-            task_type="reconstruction",
-            loss_fn=F.mse_loss,
+            train_loader=_make_loaders(train_ds, batch_size, num_workers),
+            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
+            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
+            in_dim=in_dim,
+            out_dim=in_dim if name != "multimodal" else 7,
+            task_type="reconstruction" if name != "multimodal" else "classification",
+            loss_fn=F.mse_loss if name != "multimodal" else F.cross_entropy,
             metrics_fn=None,
-            extra={},
-        )
-
-    if name == "denoising":
-        train_base = _make_mnist(data_dir, True)
-        test_base = _make_mnist(data_dir, False)
-        train_ds, val_ds, _ = _split_dataset(train_base, seed)
-        return Task(
-            name=name,
-            train_loader=_make_loaders(NoisyMNIST(train_ds, noise_std=0.5, seed=seed), batch_size, num_workers),
-            val_loader=_make_loaders(NoisyMNIST(val_ds, noise_std=0.5, seed=seed + 1), batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(NoisyMNIST(test_base, noise_std=0.5, seed=seed + 2), batch_size, num_workers, shuffle=False),
-            in_dim=28 * 28,
-            out_dim=28 * 28,
-            task_type="reconstruction",
-            loss_fn=F.mse_loss,
-            metrics_fn=None,
-            extra={},
+            extra={"compression_ratio": 0.0} if name == "compression" else {},
         )
 
     if name == "anomaly":
-        train_base = _make_mnist(data_dir, True)
-        test_base = _make_mnist(data_dir, False)
-        train_indices = [i for i, (_, y) in enumerate(train_base) if y < 5]
-        test_norm_indices = [i for i, (_, y) in enumerate(test_base) if y < 5]
-        test_anom_indices = [i for i, (_, y) in enumerate(test_base) if y >= 5]
-
-        train_subset = torch.utils.data.Subset(train_base, train_indices)
-        train_ds, val_ds, _ = _split_dataset(train_subset, seed)
-
-        test_norm = AnomalySubset(test_base, test_norm_indices, label=0)
-        test_anom = AnomalySubset(test_base, test_anom_indices, label=1)
+        train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed)
+        train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
+        normal_class = 0
+        train_mask = train_y == normal_class
+        val_mask = val_y == normal_class
+        test_norm_mask = test_y == normal_class
+        test_anom_mask = test_y != normal_class
+        train_ds = PairArrayDataset(train_x[train_mask], train_x[train_mask])
+        val_ds = PairArrayDataset(val_x[val_mask], val_x[val_mask])
+        test_norm = OneClassAnomalyDataset(test_x[test_norm_mask], test_x[test_norm_mask], anomaly_label=0)
+        test_anom = OneClassAnomalyDataset(test_x[test_anom_mask], test_x[test_anom_mask], anomaly_label=1)
         test_ds = ConcatDataset([test_norm, test_anom])
 
         def metrics_fn(model, task, device):
@@ -444,231 +582,59 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
 
         return Task(
             name=name,
-            train_loader=_make_loaders(MNISTFlatPair(train_ds), batch_size, num_workers),
-            val_loader=_make_loaders(MNISTFlatPair(val_ds), batch_size, num_workers, shuffle=False),
+            train_loader=_make_loaders(train_ds, batch_size, num_workers),
+            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
             test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
-            in_dim=28 * 28,
-            out_dim=28 * 28,
+            in_dim=int(train_x.shape[1]),
+            out_dim=int(train_x.shape[1]),
             task_type="reconstruction",
             loss_fn=F.mse_loss,
             metrics_fn=metrics_fn,
             extra={},
         )
 
-    if name == "sequence":
-        base = SineSequenceDataset(n_samples=20000, window=20, seed=seed)
-        train_ds, val_ds, test_ds = _split_dataset(base, seed)
+    if name in ["inverse", "control", "simulation", "misc"]:
+        train_x, train_y, val_x, val_y, test_x, test_y = _load_california_housing(seed)
+        train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
+        if name == "inverse":
+            in_x_train = train_x[:, 4:]
+            out_y_train = train_x[:, :4]
+            in_x_val = val_x[:, 4:]
+            out_y_val = val_x[:, :4]
+            in_x_test = test_x[:, 4:]
+            out_y_test = test_x[:, :4]
+        elif name == "control":
+            in_x_train = np.concatenate([train_x[:, :4], train_y], axis=1)
+            in_x_val = np.concatenate([val_x[:, :4], val_y], axis=1)
+            in_x_test = np.concatenate([test_x[:, :4], test_y], axis=1)
+            out_y_train = train_x[:, 4:]
+            out_y_val = val_x[:, 4:]
+            out_y_test = test_x[:, 4:]
+        elif name == "simulation":
+            in_x_train = train_x
+            in_x_val = val_x
+            in_x_test = test_x
+            out_y_train = (train_x[:, 0:1] * train_x[:, 1:2]).astype(np.float32)
+            out_y_val = (val_x[:, 0:1] * val_x[:, 1:2]).astype(np.float32)
+            out_y_test = (test_x[:, 0:1] * test_x[:, 1:2]).astype(np.float32)
+        else:
+            in_x_train = train_x
+            in_x_val = val_x
+            in_x_test = test_x
+            out_y_train = train_y
+            out_y_val = val_y
+            out_y_test = test_y
+
+        train_ds = ArrayDataset(in_x_train, out_y_train)
+        val_ds = ArrayDataset(in_x_val, out_y_val)
+        test_ds = ArrayDataset(in_x_test, out_y_test)
         return Task(
             name=name,
             train_loader=_make_loaders(train_ds, batch_size, num_workers),
             val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
             test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
-            in_dim=20,
-            out_dim=1,
-            task_type="regression",
-            loss_fn=F.mse_loss,
-            metrics_fn=None,
-            extra={},
-        )
-
-    if name == "inverse":
-        base = LinearInverseDataset(n_samples=20000, in_dim=16, out_dim=8, seed=seed)
-        train_ds, val_ds, test_ds = _split_dataset(base, seed)
-        return Task(
-            name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
-            in_dim=8,
-            out_dim=16,
-            task_type="regression",
-            loss_fn=F.mse_loss,
-            metrics_fn=None,
-            extra={},
-        )
-
-    if name == "control":
-        base = LQRDataset(n_samples=20000, state_dim=8, action_dim=4, seed=seed)
-        train_ds, val_ds, test_ds = _split_dataset(base, seed)
-        return Task(
-            name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
-            in_dim=8,
-            out_dim=4,
-            task_type="regression",
-            loss_fn=F.mse_loss,
-            metrics_fn=None,
-            extra={},
-        )
-
-    if name == "clustering":
-        train_base = _make_mnist(data_dir, True)
-        test_base = _make_mnist(data_dir, False)
-        train_ds, val_ds, _ = _split_dataset(train_base, seed)
-
-        def metrics_fn(model, task, device):
-            model.eval()
-            feats = []
-            labels = []
-            with torch.no_grad():
-                for batch in task.val_loader:
-                    if isinstance(batch, (list, tuple)) and len(batch) == 3:
-                        x, _, y = batch
-                    else:
-                        x, y = batch
-                    x = x.to(device)
-                    _, emb = model(x, return_embedding=True)
-                    feats.append(emb.cpu().numpy())
-                    labels.append(torch.as_tensor(y).numpy())
-            feats_np = np.concatenate(feats, axis=0)
-            labels_np = np.concatenate(labels, axis=0)
-            return {"nmi": _kmeans_nmi(feats_np, labels_np)}
-
-        return Task(
-            name=name,
-            train_loader=_make_loaders(MNISTFlatWithLabel(train_ds), batch_size, num_workers),
-            val_loader=_make_loaders(MNISTFlatWithLabel(val_ds), batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(MNISTFlatWithLabel(test_base), batch_size, num_workers, shuffle=False),
-            in_dim=28 * 28,
-            out_dim=28 * 28,
-            task_type="reconstruction",
-            loss_fn=F.mse_loss,
-            metrics_fn=metrics_fn,
-            extra={},
-        )
-
-    if name == "compression":
-        train_base = _make_mnist(data_dir, True)
-        test_base = _make_mnist(data_dir, False)
-        train_ds, val_ds, _ = _split_dataset(train_base, seed)
-        return Task(
-            name=name,
-            train_loader=_make_loaders(MNISTFlatPair(train_ds), batch_size, num_workers),
-            val_loader=_make_loaders(MNISTFlatPair(val_ds), batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(MNISTFlatPair(test_base), batch_size, num_workers, shuffle=False),
-            in_dim=28 * 28,
-            out_dim=28 * 28,
-            task_type="reconstruction",
-            loss_fn=F.mse_loss,
-            metrics_fn=None,
-            extra={"compression_ratio": 0.0},
-        )
-
-    if name == "ranking":
-        base = RankingDataset(n_samples=20000, in_dim=20, seed=seed)
-        train_ds, val_ds, test_ds = _split_dataset(base, seed)
-
-        def metrics_fn(model, task, device):
-            model.eval()
-            xs = []
-            ys = []
-            with torch.no_grad():
-                for x, y in task.val_loader:
-                    xs.append(x)
-                    ys.append(y)
-            x_all = torch.cat(xs, dim=0).to(device)
-            y_all = torch.cat(ys, dim=0).to(device)
-            preds = model(x_all)
-            idx = torch.randperm(x_all.size(0))[:1000]
-            a = preds[idx]
-            b = preds[idx.flip(0)]
-            ya = y_all[idx]
-            yb = y_all[idx.flip(0)]
-            acc = float(((a > b) == (ya > yb)).float().mean().item())
-            return {"pairwise_acc": acc}
-
-        return Task(
-            name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
-            in_dim=20,
-            out_dim=1,
-            task_type="regression",
-            loss_fn=F.mse_loss,
-            metrics_fn=metrics_fn,
-            extra={},
-        )
-
-    if name == "multimodal":
-        train_base = _make_mnist(data_dir, True)
-        test_base = _make_mnist(data_dir, False)
-        train_ds, val_ds, _ = _split_dataset(train_base, seed)
-        return Task(
-            name=name,
-            train_loader=_make_loaders(ParityMNIST(train_ds), batch_size, num_workers),
-            val_loader=_make_loaders(ParityMNIST(val_ds), batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(ParityMNIST(test_base), batch_size, num_workers, shuffle=False),
-            in_dim=28 * 28 + 1,
-            out_dim=10,
-            task_type="classification",
-            loss_fn=F.cross_entropy,
-            metrics_fn=None,
-            extra={},
-        )
-
-    if name == "selfsupervised":
-        train_base = _make_mnist(data_dir, True)
-        test_base = _make_mnist(data_dir, False)
-        train_ds, val_ds, _ = _split_dataset(train_base, seed)
-        return Task(
-            name=name,
-            train_loader=_make_loaders(RotationMNIST(train_ds), batch_size, num_workers),
-            val_loader=_make_loaders(RotationMNIST(val_ds), batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(RotationMNIST(test_base), batch_size, num_workers, shuffle=False),
-            in_dim=28 * 28,
-            out_dim=4,
-            task_type="classification",
-            loss_fn=F.cross_entropy,
-            metrics_fn=None,
-            extra={},
-        )
-
-    if name == "simulation":
-        base = LinearDynamicsDataset(n_samples=20000, state_dim=8, action_dim=4, seed=seed)
-        train_ds, val_ds, test_ds = _split_dataset(base, seed)
-        return Task(
-            name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
-            in_dim=12,
-            out_dim=8,
-            task_type="regression",
-            loss_fn=F.mse_loss,
-            metrics_fn=None,
-            extra={},
-        )
-
-    if name == "edge":
-        train_base = _make_mnist(data_dir, True)
-        test_base = _make_mnist(data_dir, False)
-        train_ds, val_ds, _ = _split_dataset(train_base, seed)
-        return Task(
-            name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_base, batch_size, num_workers, shuffle=False),
-            in_dim=28 * 28,
-            out_dim=10,
-            task_type="classification",
-            loss_fn=F.cross_entropy,
-            metrics_fn=None,
-            extra={"max_width": 32},
-        )
-
-    if name == "misc":
-        base = ResidualDataset(n_samples=20000, in_dim=20, seed=seed)
-        train_ds, val_ds, test_ds = _split_dataset(base, seed)
-        return Task(
-            name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
-            in_dim=20,
-            out_dim=1,
+            in_dim=int(in_x_train.shape[1]),
+            out_dim=int(np.asarray(out_y_train).shape[1]) if np.asarray(out_y_train).ndim > 1 else 1,
             task_type="regression",
             loss_fn=F.mse_loss,
             metrics_fn=None,

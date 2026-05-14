@@ -38,6 +38,19 @@ fi
 "${VENV_PYTHON}" -m pip install --upgrade pip setuptools wheel
 "${VENV_PYTHON}" -m pip install -r requirements.txt
 
+repo_root="$(pwd -P)"
+site_packages="$("${VENV_PYTHON}" - <<'PY'
+import sysconfig
+print(sysconfig.get_paths()["purelib"])
+PY
+)"
+printf '%s\n' "${repo_root}" > "${site_packages}/breaking_the_neural_barrier_repo.pth"
+cp sitecustomize.py "${site_packages}/sitecustomize.py"
+cp sitecustomize.py "${site_packages}/usercustomize.py"
+cat > "${site_packages}/breaking_the_neural_barrier_bootstrap.pth" <<PY
+import importlib.util, pathlib; _p = pathlib.Path(r"${repo_root}") / "sitecustomize.py"; _s = importlib.util.spec_from_file_location("bbnb_sitecustomize", _p); _m = importlib.util.module_from_spec(_s); _s.loader.exec_module(_m)
+PY
+
 "${VENV_PYTHON}" - <<'PY'
 import torch
 print("torch:", torch.__version__)
