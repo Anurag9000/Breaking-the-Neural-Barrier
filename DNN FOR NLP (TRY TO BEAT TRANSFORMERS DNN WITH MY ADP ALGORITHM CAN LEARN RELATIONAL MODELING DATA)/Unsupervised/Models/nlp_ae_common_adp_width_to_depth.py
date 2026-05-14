@@ -1,5 +1,6 @@
 import copy
 from dataclasses import dataclass
+import csv
 from pathlib import Path
 import importlib.util
 from typing import List, Tuple, Dict, Any, Optional
@@ -11,6 +12,7 @@ import sys
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
 from utils.adp_logging import ContinuousLogger
+from utils.text_benchmarks import load_ag_news_samples
 
 # Load baseline utils
 BASE_PATH = Path(__file__).with_name("nlp_ae_common.py").resolve()
@@ -146,8 +148,33 @@ def restore_arch_and_state(model: TextAE, snap: Dict[str, Any], device) -> TextA
     return new_model
 
 
-def train_with_early_stopping(model: TextAE, data, acfg: ADPConfig, device) -> Tuple[float, Dict[str, Any]]:
-    (train_ids, train_lens, train_targets), (val_ids, val_lens, val_targets) = data
+def make_loaders(batch_size: int, max_len: int, max_vocab: int, seed: int = 0, num_workers: int = 0):
+    train_samples, val_samples, _ = load_ag_news_samples(seed=seed)
+    cache_dir = Path("results_dnn_nlp_ae_cache")
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    train_csv = cache_dir / "train.csv"
+    val_csv = cache_dir / "val.csv"
+
+    def write_csv(path: Path, samples):
+        with path.open("w", encoding="utf-8", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=["text"])
+            writer.writeheader()
+            for _, text in samples:
+                writer.writerow({"text": text})
+
+    write_csv(train_csv, train_samples)
+    write_csv(val_csv, val_samples)
+
+    vocab = baseline_module.build_vocab_from_csv(str(train_csv), min_freq=2, max_size=max_vocab)
+    train_ds = baseline_module.TextOnlyCSV(str(train_csv))
+    val_ds = baseline_module.TextOnlyCSV(str(val_csv))
+    collate = lambda batch: baseline_module.collate_unsup(batch, vocab, max_len=max_len, view_word_dropout=0.1)
+    train_loader = torch.utils.data.DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, collate_fn=collate)
+    val_loader = torch.utils.data.DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, collate_fn=lambda batch: baseline_module.collate_unsup(batch, vocab, max_len=max_len, view_word_dropout=0.0))
+    return train_loader, val_loader, len(vocab)
+
+
+def train_with_early_stopping(model: TextAE, dl_train, dl_val, acfg: ADPConfig, device) -> Tuple[float, Dict[str, Any]]:
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
     best_val = float("inf")
     best_state = copy.deepcopy(model.state_dict())
@@ -155,20 +182,36 @@ def train_with_early_stopping(model: TextAE, data, acfg: ADPConfig, device) -> T
     
     for _ in range(acfg.max_epochs):
         model.train()
-        opt.zero_grad(set_to_none=True)
-        logits = model((train_ids.to(device), train_lens.to(device)))
-        targets = train_targets.to(device)
-        loss = soft_ce_loss(logits, targets)
-        loss.backward()
-        if acfg.grad_clip is not None:
-            nn.utils.clip_grad_norm_(model.parameters(), acfg.grad_clip)
-        opt.step()
+        total = 0.0
+        n = 0
+        for (tok, lens), targets in dl_train:
+            tok = tok.to(device)
+            lens = lens.to(device)
+            targets = targets.to(device)
+            opt.zero_grad(set_to_none=True)
+            logits = model((tok, lens))
+            loss = soft_ce_loss(logits, targets)
+            loss.backward()
+            if acfg.grad_clip is not None:
+                nn.utils.clip_grad_norm_(model.parameters(), acfg.grad_clip)
+            opt.step()
+            total += float(loss.item()) * tok.size(0)
+            n += tok.size(0)
+        train_loss = total / max(n, 1)
 
         model.eval()
+        total = 0.0
+        n = 0
         with torch.no_grad():
-            v_logits = model((val_ids.to(device), val_lens.to(device)))
-            v_t = val_targets.to(device)
-            val = soft_ce_loss(v_logits, v_t).item()
+            for (tok, lens), targets in dl_val:
+                tok = tok.to(device)
+                lens = lens.to(device)
+                targets = targets.to(device)
+                v_logits = model((tok, lens))
+                v = soft_ce_loss(v_logits, targets).item()
+                total += float(v) * tok.size(0)
+                n += tok.size(0)
+        val = total / max(n, 1)
             
         if val < best_val:
             best_val = val
@@ -179,24 +222,7 @@ def train_with_early_stopping(model: TextAE, data, acfg: ADPConfig, device) -> T
             es_counter += 1
             improved = False
 
-        # Log
-        msg = f"  Epoch {_+1}/{max_epochs} | Val Loss: {val:.6f} | Best: {best_val:.6f} | ES: {es_counter}/{patience}"
-        if verbose and logger:
-            logger.log_console(msg)
-        elif verbose:
-             pass # print(msg)
-        
-        if logger:
-             logger.log_epoch_stats({
-                "epoch": _,
-                "width": getattr(model, 'width', 0) if hasattr(model, 'width') else (getattr(model.in_lin, 'out_features', 0) if hasattr(model, 'in_lin') else 0),
-                "depth": getattr(model, 'depth', 0),
-                "neurons": total_neurons(model) if 'total_neurons' in globals() else 0,
-                "val_loss": val,
-                "best_val": best_val,
-                "es_counter": es_counter,
-                "improved": improved
-             })
+        print(f"  Epoch {_+1}/{acfg.max_epochs} | Train Loss: {train_loss:.6f} | Val Loss: {val:.6f} | Best: {best_val:.6f} | ES: {es_counter}/{acfg.patience}")
             
         if es_counter >= acfg.patience:
             break
@@ -204,26 +230,70 @@ def train_with_early_stopping(model: TextAE, data, acfg: ADPConfig, device) -> T
     return best_val, best_state
 
 
-def adp_search(model: TextAE, data, acfg: ADPConfig, device):
-    
-    # Initial training
-    from utils.adp_contract import run_module_adp
-    from utils.adp_introspect import infer_adp_shape
+def adp_search(model: TextAE, dl_train, dl_val, acfg: ADPConfig, device):
+    best_val, best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device)
+    model.load_state_dict(best_state)
+    best_snap = snapshot_arch_and_state(model, best_state)
+    global_best_val = best_val
 
-    best_val, model = run_module_adp(
-        globals(),
-        model,
-        dl_train,
-        dl_val,
-        acfg,
-        device,
-        log_loss=locals().get("log_loss", False),
-        log_neurons=locals().get("log_neurons", False),
-        results_dir=locals().get("results_dir"),
-        logger=locals().get("logger"),
-    )
+    def try_width_only(snap: Dict[str, Any], best_so_far: float) -> Tuple[Dict[str, Any], float]:
+        curr = snap
+        fail = 0
+        while fail < acfg.trials_width:
+            m = restore_arch_and_state(model, curr, device)
+            widened = expand_width(m, acfg.ex_k, acfg.max_width)
+            if widened is None:
+                break
+            v, s = train_with_early_stopping(widened, dl_train, dl_val, acfg, device)
+            if v < best_so_far - acfg.delta:
+                best_so_far = v
+                curr = snapshot_arch_and_state(widened, s)
+                fail = 0
+            else:
+                fail += 1
+        return curr, best_so_far
 
-    return best_val, model
+    def try_depth_only(snap: Dict[str, Any], best_so_far: float) -> Tuple[Dict[str, Any], float]:
+        curr = snap
+        fail = 0
+        while fail < acfg.trials_depth:
+            m = restore_arch_and_state(model, curr, device)
+            deeper = expand_depth(m, acfg.max_depth)
+            if deeper is None:
+                break
+            v, s = train_with_early_stopping(deeper, dl_train, dl_val, acfg, device)
+            if v < best_so_far - acfg.delta:
+                best_so_far = v
+                curr = snapshot_arch_and_state(deeper, s)
+                fail = 0
+            else:
+                fail += 1
+        return curr, best_so_far
+
+    mode = acfg.adp_mode.lower()
+    if mode in ["width_only", "width"]:
+        best_snap, global_best_val = try_width_only(best_snap, global_best_val)
+    elif mode in ["depth_only", "depth"]:
+        best_snap, global_best_val = try_depth_only(best_snap, global_best_val)
+    elif mode == "width_to_depth":
+        best_snap, global_best_val = try_width_only(best_snap, global_best_val)
+        best_snap, global_best_val = try_depth_only(best_snap, global_best_val)
+    elif mode == "depth_to_width":
+        best_snap, global_best_val = try_depth_only(best_snap, global_best_val)
+        best_snap, global_best_val = try_width_only(best_snap, global_best_val)
+    elif mode == "alt_width":
+        for _ in range(max(acfg.trials_width, acfg.trials_depth)):
+            best_snap, global_best_val = try_width_only(best_snap, global_best_val)
+            best_snap, global_best_val = try_depth_only(best_snap, global_best_val)
+    elif mode == "alt_depth":
+        for _ in range(max(acfg.trials_width, acfg.trials_depth)):
+            best_snap, global_best_val = try_depth_only(best_snap, global_best_val)
+            best_snap, global_best_val = try_width_only(best_snap, global_best_val)
+    else:
+        raise ValueError(f"Unknown adp_mode={acfg.adp_mode}")
+
+    final_model = restore_arch_and_state(model, best_snap, device)
+    return global_best_val, final_model
 
 
 def main():
@@ -244,21 +314,16 @@ def main():
     p.add_argument("--max-depth", type=int, default=12)
     p.add_argument("--max-neurons", type=int, default=5_000_000)
     p.add_argument("--max-epochs", type=int, default=100000000)
+    p.add_argument("--batch-size", type=int, default=64)
     args = p.parse_args()
 
-    # Synthetic placeholder data (replace with real text pipeline)
-    B, L = 16, 12
-    tok = torch.randint(1, args.vocab_size, (B, L))
-    lens = torch.full((B,), L, dtype=torch.long)
-    targets = F.one_hot(torch.randint(0, args.out_dim, (B,)), num_classes=args.out_dim).float()
-    data = ((tok, lens, targets), (tok, lens, targets))
-
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = TextAE(vocab_size=args.vocab_size, emb_dim=args.emb_dim, hidden=args.hidden, out_dim=args.out_dim).to(device)
+    dl_train, dl_val, vocab_size = make_loaders(batch_size=args.batch_size, max_len=128, max_vocab=args.vocab_size)
+    model = TextAE(vocab_size=vocab_size, emb_dim=args.emb_dim, hidden=args.hidden, out_dim=vocab_size).to(device)
     acfg = ADPConfig(adp_mode=args.adp_mode, delta=args.delta, patience=args.patience, trials_width=args.trials_width,
                      trials_depth=args.trials_depth, ex_k=args.ex_k, max_width=args.max_width, max_depth=args.max_depth,
-                     max_neurons=args.max_neurons, max_epochs=args.max_epochs)
-    best, model = adp_search(model, data, acfg, device)
+                     max_neurons=args.max_neurons, max_epochs=args.max_epochs, vocab_size=vocab_size)
+    best, model = adp_search(model, dl_train, dl_val, acfg, device)
     print(f"[ADP NLP AE] mode={args.adp_mode} best_val={best:.6f} hidden={model.hidden} depth={len(model.hidden)+1}")
 
 

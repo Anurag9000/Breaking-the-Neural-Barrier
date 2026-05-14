@@ -9,12 +9,13 @@ import copy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.data import DataLoader, random_split, Dataset
-from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 
 sys.path.append(str(Path(__file__).resolve().parents[3]))
+sys.path.append(str(Path(__file__).resolve().parents[1] / "Runs"))
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
 from utils.adp_logging import ContinuousLogger
+from _common_real_image import make_real_image_loaders
 
 class ConvBNReLU(nn.Module):
     def __init__(self, in_ch, out_ch, k=3, s=1, p=None, bias=True):
@@ -160,44 +161,21 @@ def _resize_linear_(fc, in_f, out_f):
         nn.init.uniform_(fc.bias, -bound, bound)
         if old_b is not None: _overlap_copy_(fc.bias.data, old_b)
 
-class TwoViewCIFAR10(Dataset):
-    def __init__(self, root, train, t1, t2, download):
-        self.base = datasets.CIFAR10(root=root, train=train, transform=None, download=download)
-        self.t1, self.t2 = t1, t2
-    def __len__(self): return len(self.base)
-    def __getitem__(self, idx):
-        img, _ = self.base[idx]
-        return self.t1(img), self.t2(img)
-
-def make_cifar10_ssl_loaders(data_root, batch_size, num_workers=4, val_split=0.1, download=True, seed=0, two_views=True):
-    mean = (0.4914, 0.4822, 0.4465); std = (0.2470, 0.2435, 0.2616)
-    aug = transforms.Compose([transforms.RandomResizedCrop(32, scale=(0.6,1.0)),
-                              transforms.RandomHorizontalFlip(),
-                              transforms.ColorJitter(0.2,0.2,0.2,0.1),
-                              transforms.ToTensor(), transforms.Normalize(mean, std)])
-    eval_tf = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean, std)])
+def make_real_ssl_loaders(data_root, batch_size, num_workers=4, val_split=0.1, seed=0, two_views=True):
+    dl_train, dl_val, dl_test = make_real_image_loaders(
+        data_root=data_root,
+        batch_size=batch_size,
+        val_ratio=val_split,
+        num_workers=num_workers,
+        image_size=32,
+    )
     if two_views:
-        ds_full = TwoViewCIFAR10(root=data_root, train=True, t1=aug, t2=aug, download=download)
-        n_val = int(len(ds_full)*val_split); n_train = len(ds_full)-n_val
-        g = torch.Generator().manual_seed(seed)
-        ds_train, ds_val = random_split(ds_full, [n_train, n_val], generator=g)
-        ds_test = datasets.CIFAR10(root=data_root, train=False, transform=eval_tf, download=download)
         def collate(batch):
             x1 = torch.stack([b[0] for b in batch], 0)
-            x2 = torch.stack([b[1] for b in batch], 0)
+            x2 = torch.stack([b[0] for b in batch], 0)
             return (x1, x2)
-        dl_train = DataLoader(ds_train, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True, collate_fn=collate)
-        dl_val = DataLoader(ds_val, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True, collate_fn=collate)
-        dl_test = DataLoader(ds_test, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
-    else:
-        ds_full = datasets.CIFAR10(root=data_root, train=True, transform=aug, download=download)
-        n_val = int(len(ds_full)*val_split); n_train = len(ds_full)-n_val
-        g = torch.Generator().manual_seed(seed)
-        ds_train, ds_val = random_split(ds_full, [n_train, n_val], generator=g)
-        ds_test = datasets.CIFAR10(root=data_root, train=False, transform=eval_tf, download=download)
-        dl_train = DataLoader(ds_train, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
-        dl_val = DataLoader(ds_val, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
-        dl_test = DataLoader(ds_test, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
+        dl_train = DataLoader(dl_train.dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True, collate_fn=collate)
+        dl_val = DataLoader(dl_val.dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True, collate_fn=collate)
     return dl_train, dl_val, dl_test
 
 @dataclass

@@ -5,45 +5,16 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader, Dataset, random_split
+from torch.utils.data import DataLoader
 
 from utils.adp_logging import ContinuousLogger  # type: ignore
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
+from utils.audio_benchmarks import make_speechcommands_loaders
 
 from DAE.Supervised.Models.dae_speech_spec_sup_stl import (
     SupDAESpeechSpec,
     sup_dae_speech_total_neurons,
 )
-
-
-class ToySpeechDataset(Dataset):
-    def __init__(self, n: int, time: int, freq: int, vocab: int, max_len: int, seed: int):
-        g = torch.Generator().manual_seed(seed)
-        self.spec = torch.randn(n, 1, freq, time, generator=g)
-        lengths = torch.randint(low=max_len // 2, high=max_len, size=(n,), generator=g)
-        labels = []
-        for L in lengths:
-            seq = torch.randint(1, vocab, size=(L,), generator=g)
-            labels.append(seq)
-        self.labels = labels
-        self.vocab = vocab
-
-    def __len__(self) -> int:
-        return len(self.spec)
-
-    def __getitem__(self, idx: int):
-        return self.spec[idx], self.labels[idx]
-
-
-def collate_batch(batch):
-    specs, labels = zip(*batch)
-    specs = torch.stack(specs, dim=0)
-    lengths = torch.tensor([len(l) for l in labels], dtype=torch.long)
-    max_len = int(lengths.max())
-    lab_padded = torch.zeros(len(labels), max_len, dtype=torch.long)
-    for i, l in enumerate(labels):
-        lab_padded[i, : len(l)] = l
-    return specs, lab_padded, lengths
 
 
 @dataclass
@@ -140,19 +111,32 @@ def make_loaders(
     cfg: ADPConfig,
     batch_size: int,
     num_workers: int,
-) -> Tuple[DataLoader, DataLoader]:
-    ds = ToySpeechDataset(n=2000, time=128, freq=64, vocab=cfg.vocab_size, max_len=32, seed=cfg.seed)
-    n_val = int(len(ds) * 0.1)
-    n_train = len(ds) - n_val
-    g = torch.Generator().manual_seed(cfg.seed)
-    ds_train, ds_val = random_split(ds, [n_train, n_val], generator=g)
+) -> Tuple[DataLoader, DataLoader, int]:
+    train_loader, val_loader, _, num_labels = make_speechcommands_loaders(
+        root=Path("./data/SpeechCommands"),
+        batch_size=batch_size,
+        download=True,
+        num_workers=num_workers,
+    )
+
+    def collate_batch(batch):
+        specs, labels = zip(*batch)
+        max_t = max(spec.size(0) for spec in specs)
+        feat_dim = specs[0].size(1)
+        specs_padded = torch.zeros(len(specs), 1, max_t, feat_dim, dtype=specs[0].dtype)
+        for i, spec in enumerate(specs):
+            specs_padded[i, 0, : spec.size(0), :] = spec
+        lab_padded = torch.tensor([[int(label) + 1] for label in labels], dtype=torch.long)
+        lab_len = torch.ones(len(labels), dtype=torch.long)
+        return specs_padded, lab_padded, lab_len
+
     dl_train = DataLoader(
-        ds_train, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True, collate_fn=collate_batch
+        train_loader.dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True, collate_fn=collate_batch
     )
     dl_val = DataLoader(
-        ds_val, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True, collate_fn=collate_batch
+        val_loader.dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True, collate_fn=collate_batch
     )
-    return dl_train, dl_val
+    return dl_train, dl_val, num_labels + 1
 
 
 def train_with_early_stopping(
@@ -255,9 +239,10 @@ def adp_search(
     batch_size: int,
     num_workers: int,
 ) -> Tuple[float, SupDAESpeechSpec]:
-    dl_train, dl_val = make_loaders(cfg, batch_size, num_workers)
+    dl_train, dl_val, vocab_size = make_loaders(cfg, batch_size, num_workers)
     history: List[float] = []
 
+    cfg.vocab_size = vocab_size
     start_model = SupDAESpeechSpec(vocab_size=cfg.vocab_size, base=logger.width, depth=logger.depth).to(device)
     neurons = sup_dae_speech_total_neurons(logger.width, logger.depth, cfg.vocab_size)
     logger.log_architecture(logger.width, logger.depth, neurons)

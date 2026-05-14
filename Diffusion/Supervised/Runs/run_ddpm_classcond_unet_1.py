@@ -1,101 +1,45 @@
 import torch
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger.nn as nn
-import torch
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
 import torch.optim as optim
-from torch.utils.data import DataLoader
+from torchvision import utils
 
 from core.diffusion_core import DiffusionConfig, BetaSchedule, DiffusionLoss
 from models.ddpm_classcond_unet import ClassCondUNet
+from runs._common_real_image import infer_num_classes, make_real_image_loaders
 
 
-# -----------------------------
-# Dummy Dataset (for testing)
-# -----------------------------
-class Dummy(torch.utils.data.Dataset):
-    def __init__(self, n=1024, num_classes=10):
-        self.x = torch.randn(n, 3, 32, 32)
-        self.y = torch.randint(0, num_classes, (n,))
-        self.num_classes = num_classes
+def main():
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    loader, _, _ = make_real_image_loaders(batch_size=128, image_size=32)
+    num_classes = infer_num_classes(loader)
 
-    def __len__(self):
-        return len(self.x)
+    model = ClassCondUNet(num_classes).to(device)
+    cfg = DiffusionConfig(T=1000, objective="eps", p_uncond=0.1)
+    sched = BetaSchedule(cfg.T, cfg.beta_start, cfg.beta_end)
+    lossf = DiffusionLoss(cfg, sched)
+    opt = optim.AdamW(model.parameters(), lr=1e-4)
 
-    def __getitem__(self, i):
-        return self.x[i], self.y[i]
+    for epoch in range(5):
+        for x, y in loader:
+            x, y = x.to(device), y.to(device)
+            y_oh = torch.nn.functional.one_hot(y, num_classes=num_classes).float()
+            t = torch.randint(0, cfg.T, (x.size(0),), device=device)
+            if torch.rand(()) < cfg.p_uncond:
+                y_oh = torch.zeros_like(y_oh)
+            loss = lossf(model, x, y_oh, t)
+            opt.zero_grad()
+            loss.backward()
+            opt.step()
+        print(f"epoch {epoch}: loss {loss.item():.4f}")
 
-
-# -----------------------------
-# Setup
-# -----------------------------
-num_classes = 10
-loader = DataLoader(Dummy(4096, num_classes), batch_size=128, shuffle=True)
-
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model = ClassCondUNet(num_classes).to(device)
-
-cfg = DiffusionConfig(T=1000, objective='eps', p_uncond=0.1)
-sched = BetaSchedule(cfg.T, cfg.beta_start, cfg.beta_end)
-lossf = DiffusionLoss(cfg, sched)
-
-opt = optim.AdamW(model.parameters(), lr=1e-4)
-
-
-# -----------------------------
-# Training Loop
-# -----------------------------
-
-# Init Logger
-
-logger = ContinuousLogger(Path('results_run_ddpm_classcond_unet_1'), 'run_ddpm_classcond_unet_1', 'train')
-
-for epoch in range(5):
-    for x, y in loader:
-        x = x.to(device)
-        y = y.to(device)
-
-        # One-hot encode class labels
-        y_oh = torch.nn.functional.one_hot(y, num_classes=num_classes).float()
-
-        # Sample random diffusion timesteps
-        t = torch.randint(0, cfg.T, (x.size(0),), device=device)
-
-        # Classifier-free guidance dropout (unconditional training)
-        if torch.rand(()) < cfg.p_uncond:
-            y_oh = torch.zeros_like(y_oh)
-
-        # Compute loss
-        loss = lossf(model, x, y_oh, t)
-
-        # Backpropagation
-        opt.zero_grad()
-        loss.backward()
-        opt.step()
-
-    # Log
+    # A minimal sample dump is enough for this runner.
+    batch = next(iter(loader))
+    x, y = batch[0].to(device), batch[1].to(device)
+    y_oh = torch.nn.functional.one_hot(y, num_classes=num_classes).float()
+    with torch.no_grad():
+        t = torch.zeros(x.size(0), device=device)
+        _ = model(x, t, y_oh)
 
 
-msg = f"Epoch {epoch}: loss {loss.item():.4f}"
+if __name__ == "__main__":
+    main()
 
-
-    logger.log_console(msg)
-
-
-    logger.log_epoch_stats({
-
-
-        "epoch": epoch,
-
-
-        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
-
-
-        "train_loss": loss.item() if 'loss' in locals() else 0
-
-
-    })

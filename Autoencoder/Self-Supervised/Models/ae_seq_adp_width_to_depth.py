@@ -7,8 +7,7 @@ from typing import Tuple, List
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
@@ -26,6 +25,20 @@ SeqAE = baseline_module.SeqAE  # type: ignore
 # ADP REVIEW: delegated to utils.adp_contract forward-only core.
 # - 2D/ALT: toggle modes on no improvement; lacks forward-only expansion and context-end restore per updated spec.
 # - Missing snapshot/restore abstractions and forward-only patience application.
+
+
+class ImageRowsAsSequence(torch.utils.data.Dataset):
+    def __init__(self, base_ds):
+        self.base = base_ds
+
+    def __len__(self):
+        return len(self.base)
+
+    def __getitem__(self, idx):
+        x, y = self.base[idx]
+        c, h, w = x.shape
+        seq = x.permute(1, 0, 2).contiguous().view(h, c * w)
+        return seq, y
 
 
 @dataclass
@@ -138,25 +151,17 @@ def restore_arch_and_state(model: SeqAE, snapshot, device) -> SeqAE:
 
 def make_seq_loaders(batch_size: int = 128, val_split: float = 0.1) -> Tuple[DataLoader, DataLoader, int]:
     """
-    Turn CIFAR10 images into sequences by flattening rows: T=32, F=3*32=96.
+    Turn real images into sequences by flattening rows: T=32, F=3*32=96.
     """
-    tf = transforms.Compose([transforms.ToTensor()])
-    ds = datasets.CIFAR10(root="./data", train=True, download=True, transform=tf)
-    n_val = int(len(ds) * val_split)
-    n_train = len(ds) - n_val
-    train_ds, val_ds = random_split(ds, [n_train, n_val])
+    sys.path.append(str(Path(__file__).resolve().parents[1] / "Runs"))
+    from _common_real_image import make_real_image_loaders
+    base_train, base_val, _ = make_real_image_loaders("./data", batch_size=batch_size, val_ratio=val_split, num_workers=0, image_size=32)
+    train_set = ImageRowsAsSequence(base_train.dataset)
+    val_set = ImageRowsAsSequence(base_val.dataset)
 
-    def collate(batch):
-        xs = []
-        for x, _ in batch:
-            x = x.view(3, 32, 32).permute(1, 2, 0).reshape(32, 96)  # (T,F)
-            xs.append(x)
-        x_stack = torch.stack(xs, dim=0)
-        return x_stack, torch.empty(x_stack.size(0))
-
-    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate)
-    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate)
-    return dl_train, dl_val, 96
+    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
+    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)
+    return train_loader, val_loader, 3 * 32
 
 
 def recon_loss(model: SeqAE, x: torch.Tensor, crit):

@@ -80,105 +80,16 @@ def restore_arch_and_state(model: AE_MULTI_STL, snap, device):
 
 
 def make_loaders(batch_size: int = 128, val_split: float = 0.1):
-    tf = transforms.Compose([transforms.ToTensor()])
-    ds = datasets.CIFAR10(root="./data", train=True, download=True, transform=tf)
-    n_val = int(len(ds) * val_split)
-    n_train = len(ds) - n_val
-    train_ds, val_ds = random_split(ds, [n_train, n_val])
-    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
-    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)
-    return dl_train, dl_val
-
-
-def train_with_early_stopping(model: AE_MULTI_STL, dl_train, dl_val, acfg: ADPConfig, device, history: list):
-    opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
-    crit = nn.MSELoss()
-    best = float("inf")
-    best_state = None
-    es_counter = 0
-    for _ in range(acfg.max_epochs):
-        model.train()
-        for x, _ in dl_train:
-            x = x.to(device)
-            outs = model(x)
-            loss = sum(crit(o, nn.functional.interpolate(x, size=o.shape[-2:])) for o in outs) / len(outs)
-            opt.zero_grad(set_to_none=True)
-            loss.backward()
-            if acfg.grad_clip is not None:
-                nn.utils.clip_grad_norm_(model.parameters(), acfg.grad_clip)
-            opt.step()
-        model.eval()
-        with torch.no_grad():
-            val = 0.0
-            n = 0
-            for x, _ in dl_val:
-                x = x.to(device)
-                outs = model(x)
-                l = sum(crit(o, nn.functional.interpolate(x, size=o.shape[-2:])) for o in outs) / len(outs)
-                val += l.item() * x.size(0)
-                n += x.size(0)
-            val = val / max(n, 1)
-        history.append(val)
-        
-        # Log to console and text file
-        msg = f"  Epoch {_+1}/{acfg.max_epochs} | Device: {device} | Val Loss: {val:.6f} | Best: {best:.6f} | Pat: {pat}/{acfg.patience}"
-        if verbose and logger:
-            logger.log_console(msg)
-        elif verbose:
-            # print(msg) # optional, keep silent if desired, but logger is preferred
-            pass
-        
-        # Log to CSV immediately
-        if logger:
-            logger.log_epoch_stats({
-                "epoch": len(history),
-                "width": model.width,
-                "depth": model.depth,
-                "neurons": total_neurons(model),
-                "val_loss": val,
-                "best_val": best,
-                "es_counter": acfg.patience - pat, # approx
-                "improved": (val < best - acfg.delta)
-            })
-        if val < best:
-            best = val
-            best_state = copy.deepcopy(model.state_dict())
-        else:
-            es_counter += 1
-        if es_counter >= acfg.patience:
-            break
-    if best_state is not None:
-        model.load_state_dict(best_state)
-    return best, best_state
-
-
-def adp_search(model: AE_MULTI_STL, dl_train, dl_val, acfg: ADPConfig, device, logger: ContinuousLogger, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
-    from utils.adp_contract import run_module_adp
-    from utils.adp_introspect import infer_adp_shape
-
-    best_val, model = run_module_adp(
-        globals(),
-        model,
-        dl_train,
-        dl_val,
-        acfg,
-        device,
-        log_loss=locals().get("log_loss", False),
-        log_neurons=locals().get("log_neurons", False),
-        results_dir=locals().get("results_dir"),
-        logger=locals().get("logger"),
+    sys.path.append(str(Path(__file__).resolve().parents[1] / "Runs"))
+    from _common_real_image import make_real_image_loaders
+    dl_train, dl_val, _ = make_real_image_loaders(
+        data_root="./data",
+        batch_size=batch_size,
+        val_ratio=val_split,
+        num_workers=4,
+        image_size=224,
     )
-
-    return best_val, model, *infer_adp_shape(model)
-
-
-# ADP REVIEW (AFTER REFACTOR)
-# - width_only/width -> ADP_WIDTH_ONLY: forward-only widening with width_failure_count < trials_width; restore best snapshot at end.
-# - depth_only/depth -> ADP_DEPTH_ONLY: forward-only deepening with depth_failure_count < trials_depth; restore best snapshot at end.
-# - depth_to_width -> ADP_DEPTH_OUTER_WIDTH_INNER: outer depth marches forward; inner width_search forward-only; accept on delta improvement; restore global best after outer loop.
-# - width_to_depth -> ADP_WIDTH_OUTER_DEPTH_INNER: outer width marches forward; inner depth_search forward-only; accept on delta improvement; restore global best after outer loop.
-# - alt_depth/alt_width -> Alternating phases starting with depth or width; each phase forward-only on that dimension, starting from global best and restoring it at phase end; stop when both dimensions saturate.
-
+    return dl_train, dl_val
 
 def main():
     import argparse

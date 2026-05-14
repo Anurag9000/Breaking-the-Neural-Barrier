@@ -14,6 +14,7 @@ from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ign
 from utils.adp_logging import ContinuousLogger
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
+from Graph._common_real_graph import make_real_graph_loaders
 
 # Add root to sys.path for utils
 sys.path.append(str(Path(__file__).resolve().parents[3]))
@@ -390,9 +391,8 @@ def main():
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    from Graph._common_real_graph import make_real_graph_loaders
+    dl_train, dl_val, dl_test, _ = make_real_graph_loaders(batch_size=8)
     
     try:
         model = ModelClass(dim=args.width, layers=args.depth).to(device)

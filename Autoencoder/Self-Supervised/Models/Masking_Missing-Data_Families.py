@@ -1,9 +1,7 @@
 # run_adp_ae_ssl.py
 # Runner for the unified Single-Model Self-Supervised AE core (non-VAE).
-# Usage examples:
-#   python run_adp_ae_ssl.py --algo masked --dataset cifar10 --epochs 60
-#   python run_adp_ae_ssl.py --algo rotation --dataset stl10 --batch-size 256
-#   python run_adp_ae_ssl.py --algo colorize --dataset imagefolder --data-root /path/to/images
+# Usage example:
+#   python run_adp_ae_ssl.py --algo masked --dataset imagefolder --data-root /path/to/images
 
 import os
 import math
@@ -18,11 +16,10 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 
-import torchvision
-import torchvision.transforms as T
 from torchvision.utils import save_image, make_grid
 
 from adp_ae_ssl_core import AEConfig, build_model, SUPPORTED_ALGOS
+from _common_real_image import make_real_image_loaders
 
 # -----------------------
 # Utils
@@ -53,61 +50,16 @@ def ensure_dir(p: str):
 # Data
 # -----------------------
 
-def build_transforms(img_size: int, train: bool):
-    # Keep inputs in [0,1] to make recon losses straightforward.
-    if train:
-        return T.Compose([
-            T.Resize(img_size),
-            T.RandomCrop(img_size, padding=4),
-            T.RandomHorizontalFlip(),
-            T.ToTensor(),
-        ])
-    else:
-        return T.Compose([
-            T.Resize(img_size),
-            T.CenterCrop(img_size),
-            T.ToTensor(),
-        ])
-
 def load_dataset(name: str, data_root: str, img_size: int, val_split: float, download: bool, seed: int):
-    name = name.lower()
-    tr = build_transforms(img_size, True)
-    te = build_transforms(img_size, False)
-
-    if name == "cifar10":
-        full_train = torchvision.datasets.CIFAR10(root=data_root, train=True, download=download, transform=tr)
-        test_set  = torchvision.datasets.CIFAR10(root=data_root, train=False, download=download, transform=te)
-    elif name == "stl10":
-        # Use STL10 "train+unlabeled" for self-supervised pretext if desired. Here: train only.
-        full_train = torchvision.datasets.STL10(root=data_root, split='train', download=download, transform=tr)
-        test_set  = torchvision.datasets.STL10(root=data_root, split='test', download=download, transform=te)
-    elif name == "imagefolder":
-        # Expect data_root/{train,test} or a single folder (we'll split)
-        # If `train` and `test` exist, use them. Else, split a single folder.
-        train_dir = os.path.join(data_root, "train")
-        test_dir  = os.path.join(data_root, "test")
-        if os.path.isdir(train_dir) and os.path.isdir(test_dir):
-            full_train = torchvision.datasets.ImageFolder(train_dir, transform=tr)
-            test_set   = torchvision.datasets.ImageFolder(test_dir, transform=te)
-        else:
-            whole = torchvision.datasets.ImageFolder(data_root, transform=tr)
-            n = len(whole)
-            n_train = int(0.9 * n)
-            n_val = n - n_train
-            # We'll split later; here we return whole as "train" and copy te for test
-            full_train = whole
-            test_set = torchvision.datasets.ImageFolder(data_root, transform=te)
-    else:
-        raise ValueError(f"Unknown dataset: {name}")
-
-    # Split train -> train/val
-    n_total = len(full_train)
-    n_val = max(1, int(val_split * n_total))
-    n_train = n_total - n_val
-    gen = torch.Generator().manual_seed(seed)
-    train_set, val_set = random_split(full_train, [n_train, n_val], generator=gen)
-
-    return train_set, val_set, test_set
+    del name, download, seed
+    train_loader, val_loader, test_loader = make_real_image_loaders(
+        data_root=data_root,
+        batch_size=1,
+        val_ratio=val_split,
+        num_workers=0,
+        image_size=img_size,
+    )
+    return train_loader.dataset, val_loader.dataset, test_loader.dataset
 
 # -----------------------
 # Training / Eval
@@ -189,7 +141,7 @@ def evaluate(model, loader, device, algo, save_preview_dir=None, preview_tag="va
 def main():
     p = argparse.ArgumentParser(description="Unified runner for single-model self-supervised AEs (non-VAE)")
     # Data
-    p.add_argument("--dataset", type=str, default="imagefolder", choices=["cifar10","stl10","imagefolder"])
+    p.add_argument("--dataset", type=str, default="imagefolder", choices=["imagefolder"])
     p.add_argument("--data-root", type=str, default="./data")
     p.add_argument("--img-size", type=int, default=128)
     p.add_argument("--val-split", type=float, default=0.1)

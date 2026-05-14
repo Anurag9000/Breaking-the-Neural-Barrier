@@ -8,8 +8,7 @@ from typing import List, Optional, Tuple, Dict, Any
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 
 # Add root to sys.path for utils
 sys.path.append(str(Path(__file__).resolve().parents[3]))
@@ -19,6 +18,7 @@ except ImportError:
     # Fallback if utils not found or different structure
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
+from utils.text_benchmarks import make_ag_news_classification_loaders
 
 # Load baseline
 # Load baseline
@@ -297,32 +297,15 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     return global_best_val, model, model.d_model, model.num_layers
 
 def make_loaders(batch_size=32):
-    # Synthetic Sequence Classification Data
-    class SyntheticSeqData(torch.utils.data.Dataset):
-        def __init__(self, vocab_size, num_classes, num_samples, max_len=64):
-            self.vocab_size = vocab_size
-            self.num_classes = num_classes
-            self.num_samples = num_samples
-            self.max_len = max_len
-        def __len__(self): return self.num_samples
-        def __getitem__(self, idx):
-            l = torch.randint(10, self.max_len, (1,)).item()
-            toks = torch.randint(0, self.vocab_size, (l,))
-            label = torch.randint(0, self.num_classes, (1,)).item()
-            return toks, label
-
-    trainset = SyntheticSeqData(20000, 10, 1000)
-    valset = SyntheticSeqData(20000, 10, 200)
-
-    def collate(batch):
-        toks, labels = zip(*batch)
-        pad_toks = torch.nn.utils.rnn.pad_sequence(toks, batch_first=True, padding_value=0)
-        labels = torch.tensor(labels)
-        return pad_toks, labels
-
-    train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, collate_fn=collate)
-    val_loader = DataLoader(valset, batch_size=batch_size, shuffle=False, collate_fn=collate)
-    return train_loader, val_loader
+    train_loader, val_loader, _, vocab, _ = make_ag_news_classification_loaders(
+        batch_size=batch_size,
+        max_len=256,
+        seed=0,
+        val_fraction=0.1,
+        min_freq=2,
+        max_vocab=50000,
+    )
+    return train_loader, val_loader, vocab
 
 def main():
     import argparse
@@ -335,10 +318,10 @@ def main():
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Loading data...")
-    dl_train, dl_val = make_loaders(batch_size=32)
+    dl_train, dl_val, vocab = make_loaders(batch_size=32)
     
     try:
-        model = ModelClass(vocab_size=20000, num_classes=10, d_model=args.width, num_layers=args.depth).to(device)
+        model = ModelClass(vocab_size=len(vocab), num_classes=4, d_model=args.width, num_layers=args.depth).to(device)
     except Exception as e:
         print(f"Could not instantiate model: {e}")
         return

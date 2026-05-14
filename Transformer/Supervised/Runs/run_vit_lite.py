@@ -2,8 +2,8 @@ import argparse, os, random
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+from _common_real_image import infer_num_classes, make_real_image_loaders
 from model_vit_lite import ViT_Lite
 
 
@@ -13,21 +13,7 @@ def set_seed(seed=42):
 
 
 def get_loaders(dataset, data_root, img_size, batch, workers, seed=42):
-    norm = transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225])
-    tr = transforms.Compose([transforms.Resize((img_size,img_size)),
-                             transforms.RandomCrop(img_size, padding=4),
-                             transforms.RandomHorizontalFlip(),
-                             transforms.ToTensor(), norm])
-    ev = transforms.Compose([transforms.Resize((img_size,img_size)), transforms.ToTensor(), norm])
-    ds = datasets.CIFAR10 if dataset=="cifar10" else datasets.CIFAR100
-    a = ds(root=data_root, train=True, download=True, transform=tr)
-    b = ds(root=data_root, train=True, download=True, transform=ev)
-    t = ds(root=data_root, train=False, download=True, transform=ev)
-    n_tr = int(0.9*len(a)); n_v = len(a)-n_tr; g = torch.Generator().manual_seed(seed)
-    tr_set,_ = random_split(a,[n_tr,n_v],generator=g); _,va_set = random_split(b,[n_tr,n_v],generator=g)
-    return (DataLoader(tr_set,batch,True,num_workers=workers,pin_memory=True),
-            DataLoader(va_set,batch,False,num_workers=workers,pin_memory=True),
-            DataLoader(t,batch,False,num_workers=workers,pin_memory=True))
+    return make_real_image_loaders(data_root, batch_size=batch, num_workers=workers, image_size=img_size)
 
 
 def train_ep(m, dl, dev, crit, opt):
@@ -49,7 +35,7 @@ def eval_ep(m, dl, dev, crit):
 
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument('--dataset',default='cifar10',choices=['cifar10','cifar100'])
+    p.add_argument('--dataset',default='imagefolder',choices=['imagefolder'])
     p.add_argument('--data-root',default='./data')
     p.add_argument('--img-size',type=int,default=160)
     p.add_argument('--patch',type=int,default=8)
@@ -69,7 +55,7 @@ def main():
 
     set_seed(a.seed); dev=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     tl,vl,te=get_loaders(a.dataset,a.data_root,a.img_size,a.batch_size,a.workers,a.seed)
-    nc=10 if a.dataset=='cifar10' else 100
+    nc=infer_num_classes(tl)
     m=ViT_Lite(img_size=a.img_size,patch_size=a.patch,num_classes=nc,embed_dim=a.embed,depth=a.depth,num_heads=a.heads,mlp_ratio=a.mlp_ratio).to(dev)
     crit=nn.CrossEntropyLoss(); opt=optim.AdamW(m.parameters(),lr=a.lr,weight_decay=a.wd)
     sch=optim.lr_scheduler.CosineAnnealingLR(opt,T_max=a.epochs)

@@ -3,21 +3,11 @@ import random
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader
+
+from utils.time_series_benchmarks import make_forda_sequence_loaders
 
 from rnn_tid import TIDGRU
-
-class ToyTID(Dataset):
-    def __init__(self, n=20000, T=64, D=16, seed=42):
-        rng=np.random.RandomState(seed)
-        self.X=[]
-        for _ in range(n):
-            x=rng.randn(T,D).astype(np.float32)
-            x=np.cumsum(x,axis=0)*0.05
-            self.X.append(x)
-        self.X=np.stack(self.X,0)
-    def __len__(self): return self.X.shape[0]
-    def __getitem__(self,i): return torch.from_numpy(self.X[i]), torch.tensor(i, dtype=torch.long)
 
 class EarlyStopper:
     def __init__(self, patience=10, min_delta=0.0):
@@ -48,16 +38,11 @@ def main():
 
     random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
 
-    ds=ToyTID(args.n,args.T,args.D,args.seed)
-    n_val=int(len(ds)*args.val_split); n_tr=len(ds)-n_val
-    tr_ds,va_ds=random_split(ds,[n_tr,n_val],generator=torch.Generator().manual_seed(args.seed))
-
-    tr=DataLoader(tr_ds,batch_size=args.batch,shuffle=True,drop_last=True)
-    va=DataLoader(va_ds,batch_size=args.batch,shuffle=False,drop_last=False)
+    tr, va, _, _ = make_forda_sequence_loaders(batch_size=args.batch, seed=args.seed, return_index=True)
 
     dev=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    n_classes=len(tr_ds)
-    net=TIDGRU(args.D,args.hidden,args.proj,args.layers,n_classes=min(n_classes,args.subclasses)).to(dev)
+    n_classes=min(len(tr.dataset), args.subclasses)
+    net=TIDGRU(1,args.hidden,args.proj,args.layers,n_classes=n_classes).to(dev)
 
     opt=torch.optim.AdamW(net.parameters(),lr=args.lr)
     es=EarlyStopper(args.patience,1e-4)
@@ -66,7 +51,7 @@ def main():
     for ep in range(1,args.epochs+1):
         net.train(); trl=0.0
         for x,idx in tr:
-            x=x.to(dev); y=(idx % net.cls.out_features).to(dev)
+            x=x.transpose(1, 2).to(dev); y=(idx % net.cls.out_features).to(dev)
             logit=net(x)
             loss=F.cross_entropy(logit,y)
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(net.parameters(),1.0); opt.step()
@@ -76,7 +61,7 @@ def main():
         net.eval(); val=0.0
         with torch.no_grad():
             for x,idx in va:
-                x=x.to(dev); y=(idx % net.cls.out_features).to(dev)
+                x=x.transpose(1, 2).to(dev); y=(idx % net.cls.out_features).to(dev)
                 logit=net(x)
                 loss=F.cross_entropy(logit,y)
                 val+=loss.item()*x.size(0)
