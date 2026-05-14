@@ -1,4 +1,5 @@
 ﻿import argparse
+import json
 import datetime as _dt
 import sys
 from pathlib import Path
@@ -47,7 +48,16 @@ def main() -> None:
     torch.manual_seed(int(args.seed))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    task = build_task(args.task, args.data_dir, args.batch_size, args.num_workers, args.seed)
+    batch_state_path = Path(args.results_dir) / "_batch_size_state.json"
+    initial_batch_size = int(args.batch_size)
+    if batch_state_path.exists():
+        try:
+            payload = json.loads(batch_state_path.read_text(encoding="utf-8"))
+            initial_batch_size = min(initial_batch_size, int(payload.get("batch_size", initial_batch_size)))
+        except Exception:
+            pass
+
+    task = build_task(args.task, args.data_dir, initial_batch_size, args.num_workers, args.seed)
 
     max_width = args.max_width
     if "max_width" in task.extra:
@@ -73,9 +83,8 @@ def main() -> None:
     )
     logger.log_console(f"Device: {device}")
 
-    batch_state_path = Path(args.results_dir) / "_batch_size_state.json"
     batch_controller = AdaptiveBatchController(
-        args.batch_size,
+        initial_batch_size,
         threshold_gb=5.5,
         poll_interval_sec=30.0,
         shrink_factor=0.75,
