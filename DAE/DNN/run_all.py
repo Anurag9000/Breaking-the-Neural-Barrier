@@ -1,4 +1,5 @@
 ﻿import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -12,7 +13,7 @@ def main() -> None:
     p = argparse.ArgumentParser(description="Run STL + 6 ADP modes for all DNN tasks")
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
-    p.add_argument("--batch-size", type=int, default=448)
+    p.add_argument("--batch-size", type=int, default=2048)
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
     p.add_argument("--ex-k", type=int, default=1)
@@ -27,6 +28,18 @@ def main() -> None:
 
     tasks = task_names() if "all" in [t.lower() for t in args.tasks] else args.tasks
     adp_modes = ["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth"]
+    shared_batch_state = Path(args.results_dir) / "_batch_size_state.json"
+
+    def current_batch_size() -> int:
+        if shared_batch_state.exists():
+            try:
+                payload = json.loads(shared_batch_state.read_text(encoding="utf-8"))
+                batch_size = int(payload.get("batch_size", args.batch_size))
+                if batch_size > 0:
+                    return batch_size
+            except Exception:
+                pass
+        return int(args.batch_size)
 
     for mode in ["stl"] + adp_modes:
         for task in tasks:
@@ -44,7 +57,7 @@ def main() -> None:
                 "--results-dir",
                 args.results_dir,
                 "--batch-size",
-                str(args.batch_size),
+                str(current_batch_size()),
                 "--max-epochs",
                 str(args.max_epochs),
                 "--patience",

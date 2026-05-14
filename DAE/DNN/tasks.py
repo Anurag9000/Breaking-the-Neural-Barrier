@@ -45,6 +45,24 @@ def _make_loaders(ds: Dataset, batch_size: int, num_workers: int, shuffle: bool 
     return DataLoader(ds, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers, pin_memory=torch.cuda.is_available())
 
 
+def clone_loader(loader: DataLoader, batch_size: int, shuffle: bool) -> DataLoader:
+    return DataLoader(
+        loader.dataset,
+        batch_size=int(batch_size),
+        shuffle=shuffle,
+        num_workers=int(loader.num_workers),
+        pin_memory=bool(getattr(loader, "pin_memory", False)),
+        drop_last=bool(getattr(loader, "drop_last", False)),
+        collate_fn=getattr(loader, "collate_fn", None),
+    )
+
+
+def refresh_task_loaders(task: Task, batch_size: int) -> None:
+    task.train_loader = clone_loader(task.train_loader, batch_size, shuffle=True)
+    task.val_loader = clone_loader(task.val_loader, batch_size, shuffle=False)
+    task.test_loader = clone_loader(task.test_loader, batch_size, shuffle=False)
+
+
 def _knn_accuracy(embeddings: np.ndarray, labels: np.ndarray, k: int = 5) -> float:
     knn = KNeighborsClassifier(n_neighbors=k)
     knn.fit(embeddings, labels)
