@@ -44,7 +44,7 @@ def get_args():
     p = argparse.ArgumentParser()
     # Data
     p.add_argument('--data', type=str, default='./data')
-    p.add_argument('--dataset', type=str, default='cifar10', choices=['cifar10', 'cifar100', 'imagenet_subset'])
+    p.add_argument('--dataset', type=str, default='imagefolder', choices=['cifar10', 'cifar100', 'imagefolder'])
     p.add_argument('--img_size', type=int, default=224)
     p.add_argument('--batch_size', type=int, default=128)
     p.add_argument('--workers', type=int, default=4)
@@ -126,8 +126,17 @@ def build_dataloaders(args):
             'mean': mean, 'std': std,
         })
         test_tf = build_test_transforms(args.img_size, mean, std)
-        train_ds = datasets.CIFAR10(args.data, train=True, download=True, transform=train_tf)
+        train_full = datasets.CIFAR10(args.data, train=True, download=True, transform=train_tf)
+        train_eval = datasets.CIFAR10(args.data, train=True, download=True, transform=test_tf)
         test_ds = datasets.CIFAR10(args.data, train=False, download=True, transform=test_tf)
+        n_train = int(0.9 * len(train_full))
+        n_val = len(train_full) - n_train
+        gen = torch.Generator().manual_seed(int(args.seed))
+        perm = torch.randperm(len(train_full), generator=gen)
+        train_idx = perm[:n_train].tolist()
+        val_idx = perm[n_train:].tolist()
+        train_ds = torch.utils.data.Subset(train_full, train_idx)
+        val_ds = torch.utils.data.Subset(train_eval, val_idx)
     elif args.dataset == 'cifar100':
         num_classes = 100
         mean = (0.5071, 0.4867, 0.4408)
@@ -140,14 +149,56 @@ def build_dataloaders(args):
             'mean': mean, 'std': std,
         })
         test_tf = build_test_transforms(args.img_size, mean, std)
-        train_ds = datasets.CIFAR100(args.data, train=True, download=True, transform=train_tf)
+        train_full = datasets.CIFAR100(args.data, train=True, download=True, transform=train_tf)
+        train_eval = datasets.CIFAR100(args.data, train=True, download=True, transform=test_tf)
         test_ds = datasets.CIFAR100(args.data, train=False, download=True, transform=test_tf)
+        n_train = int(0.9 * len(train_full))
+        n_val = len(train_full) - n_train
+        gen = torch.Generator().manual_seed(int(args.seed))
+        perm = torch.randperm(len(train_full), generator=gen)
+        train_idx = perm[:n_train].tolist()
+        val_idx = perm[n_train:].tolist()
+        train_ds = torch.utils.data.Subset(train_full, train_idx)
+        val_ds = torch.utils.data.Subset(train_eval, val_idx)
+    elif args.dataset == 'imagefolder':
+        train_dir = os.path.join(args.data, 'train')
+        val_dir = os.path.join(args.data, 'val')
+        test_dir = os.path.join(args.data, 'test')
+        if not (os.path.isdir(train_dir) and os.path.isdir(val_dir) and os.path.isdir(test_dir)):
+            raise FileNotFoundError(
+                'imagefolder expects data/train, data/val, and data/test class folders'
+            )
+        mean = (0.485, 0.456, 0.406)
+        std = (0.229, 0.224, 0.225)
+        train_tf = build_train_transforms(args.img_size, {
+            'random_crop': bool(args.random_crop),
+            'hflip': bool(args.hflip),
+            'vflip': bool(args.vflip),
+            'color_jitter': bool(args.color_jitter),
+            'randaugment': bool(args.randaugment),
+            'trivialaugment': bool(args.trivialaugment),
+            'cutout': bool(args.cutout),
+            'cutout_holes': args.cutout_holes,
+            'cutout_length': args.cutout_length,
+            'mean': mean,
+            'std': std,
+        })
+        test_tf = build_test_transforms(args.img_size, mean, std)
+        train_ds = datasets.ImageFolder(train_dir, transform=train_tf)
+        val_ds = datasets.ImageFolder(val_dir, transform=test_tf)
+        test_ds = datasets.ImageFolder(test_dir, transform=test_tf)
+        num_classes = len(train_ds.classes)
+        train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=True)
+        val_loader = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, num_workers=args.workers, pin_memory=True)
+        test_loader = DataLoader(test_ds, batch_size=args.batch_size, shuffle=False, num_workers=args.workers, pin_memory=True)
+        return train_loader, val_loader, test_loader, num_classes
     else:
-        raise NotImplementedError('Only CIFAR10/100 provided as example datasets here')
+        raise NotImplementedError('Dataset must be cifar10, cifar100, or imagefolder')
 
     train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=True)
+    val_loader = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, num_workers=args.workers, pin_memory=True)
     test_loader = DataLoader(test_ds, batch_size=args.batch_size, shuffle=False, num_workers=args.workers, pin_memory=True)
-    return train_loader, test_loader, num_classes
+    return train_loader, val_loader, test_loader, num_classes
 
 
 def get_class_counts(loader) -> List[int]:
@@ -169,7 +220,7 @@ def main():
     set_seed(args.seed)
     device = torch.device(args.device)
 
-    train_loader, val_loader, num_classes = build_dataloaders(args)
+    train_loader, val_loader, test_loader, num_classes = build_dataloaders(args)
     class_counts = get_class_counts(train_loader)
 
     # Model
