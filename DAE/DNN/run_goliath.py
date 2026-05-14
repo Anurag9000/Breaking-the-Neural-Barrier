@@ -1234,6 +1234,7 @@ def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phas
             "ae_alt_width",
             "alt_width",
             reconstruct=True,
+            batch_controller=batch_controller,
             )
     if phase_name == "ae_width_only":
         return run_growth_phase(
@@ -1245,6 +1246,7 @@ def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phas
             "ae_width_only",
             "width_only",
             reconstruct=True,
+            batch_controller=batch_controller,
             )
     if phase_name == "ae_depth_only":
         return run_growth_phase(
@@ -1256,6 +1258,7 @@ def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phas
             "ae_depth_only",
             "depth_only",
             reconstruct=True,
+            batch_controller=batch_controller,
             )
     raise ValueError(f"Unknown phase: {phase_name}")
 
@@ -1322,6 +1325,14 @@ def main() -> None:
         )
         print(f"Auto-selected batch size: {resolved_batch_size} (half of max safe batch under {DEFAULT_VRAM_BUDGET_GB} GiB)")
 
+    shared_batch_state = Path(args.results_dir) / "_batch_size_state.json"
+    if shared_batch_state.exists():
+        try:
+            payload = json.loads(shared_batch_state.read_text(encoding="utf-8"))
+            resolved_batch_size = min(resolved_batch_size, int(payload.get("batch_size", resolved_batch_size)))
+        except Exception:
+            pass
+
     cfg = RunConfig(
         data_dir=args.data_dir,
         results_dir=args.results_dir,
@@ -1376,7 +1387,7 @@ def main() -> None:
 
     batch_state_path = Path(args.results_dir) / "_batch_size_state.json"
     batch_controller = AdaptiveBatchController(
-        args.batch_size,
+        resolved_batch_size,
         threshold_gb=5.5,
         poll_interval_sec=30.0,
         shrink_factor=0.75,
