@@ -189,7 +189,7 @@ def evaluate(model, loader, device, algo, save_preview_dir=None, preview_tag="va
 def main():
     p = argparse.ArgumentParser(description="Unified runner for single-model self-supervised AEs (non-VAE)")
     # Data
-    p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10","stl10","imagefolder"])
+    p.add_argument("--dataset", type=str, default="imagefolder", choices=["cifar10","stl10","imagefolder"])
     p.add_argument("--data-root", type=str, default="./data")
     p.add_argument("--img-size", type=int, default=128)
     p.add_argument("--val-split", type=float, default=0.1)

@@ -1,19 +1,18 @@
 import argparse
 import math
-import random
 from pathlib import Path
-from typing import List, Tuple
+from typing import List
 
-import torch
 import sys
-from pathlib import Path
+import torch
+import torch.nn as nn
+
 sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger.nn as nn
+from utils.adp_logging import ContinuousLogger
 from torch.utils.data import Dataset, DataLoader
 
 from model_transformer_seq2seq import TransformerSeq2Seq
 
-# --- Tiny in-file dataset: supervised seq2seq pairs from a TSV file or synthetic toy ---
 class TSVSeq2Seq(Dataset):
     def __init__(self, path: Path, src_vocab: dict, tgt_vocab: dict, max_len: int = 128):
         self.pairs = []
@@ -98,8 +97,8 @@ def evaluate(model, loader, criterion, device, tgt_pad_id: int):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--train_tsv', type=str, required=False, help='TSV with "src\tgt" per line')
-    p.add_argument('--val_tsv', type=str, required=False)
+    p.add_argument('--train_tsv', type=str, required=True, help='TSV with "src\tgt" per line')
+    p.add_argument('--val_tsv', type=str, required=True)
     p.add_argument('--d_model', type=int, default=256)
     p.add_argument('--nhead', type=int, default=8)
     p.add_argument('--enc_layers', type=int, default=4)
@@ -114,50 +113,30 @@ def main():
     p.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu')
     args = p.parse_args()
 
-    # Build tiny vocabularies from the provided TSVs (or synthesize).
+    train_path = Path(args.train_tsv)
+    val_path = Path(args.val_tsv)
+    if not train_path.exists():
+        raise FileNotFoundError(f"train_tsv not found: {train_path}")
+    if not val_path.exists():
+        raise FileNotFoundError(f"val_tsv not found: {val_path}")
+
     train_lines, val_lines = [], []
-    if args.train_tsv and Path(args.train_tsv).exists():
-        with open(args.train_tsv, 'r', encoding='utf-8') as f:
-            for line in f:
-                s = line.strip().split('\t')
-                if len(s) == 2:
-                    train_lines.extend([s[0], s[1]])
-    else:
-        # Synthetic toy: identity mapping on numbers
-        train_lines = ["one two three", "eins zwei drei", "uno dos tres"] * 200
-    if args.val_tsv and Path(args.val_tsv).exists():
-        with open(args.val_tsv, 'r', encoding='utf-8') as f:
-            for line in f:
-                s = line.strip().split('\t')
-                if len(s) == 2:
-                    val_lines.extend([s[0], s[1]])
-    else:
-        val_lines = ["one two", "eins zwei", "uno dos"] * 50
+    with open(train_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            s = line.strip().split('\t')
+            if len(s) == 2:
+                train_lines.extend([s[0], s[1]])
+    with open(val_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            s = line.strip().split('\t')
+            if len(s) == 2:
+                val_lines.extend([s[0], s[1]])
 
     src_vocab = build_vocab([l for i, l in enumerate(train_lines) if i % 2 == 0])
     tgt_vocab = build_vocab([l for i, l in enumerate(train_lines) if i % 2 == 1])
 
-    # Build datasets
-    if args.train_tsv and Path(args.train_tsv).exists():
-        train_ds = TSVSeq2Seq(Path(args.train_tsv), src_vocab, tgt_vocab, args.max_len)
-    else:
-        # synthesize TSV pairs
-        pairs = [("one two three", "uno dos tres"), ("one two", "uno dos"), ("eins zwei", "uno dos")]
-        tmp = Path('train_tmp.tsv')
-        with open(tmp, 'w', encoding='utf-8') as f:
-            for _ in range(600):
-                s, t = random.choice(pairs)
-                f.write(f"{s}\t{t}\n")
-        train_ds = TSVSeq2Seq(tmp, src_vocab, tgt_vocab, args.max_len)
-
-    if args.val_tsv and Path(args.val_tsv).exists():
-        val_ds = TSVSeq2Seq(Path(args.val_tsv), src_vocab, tgt_vocab, args.max_len)
-    else:
-        tmpv = Path('val_tmp.tsv')
-        with open(tmpv, 'w', encoding='utf-8') as f:
-            for _ in range(150):
-                f.write("one two\tuno dos\n")
-        val_ds = TSVSeq2Seq(tmpv, src_vocab, tgt_vocab, args.max_len)
+    train_ds = TSVSeq2Seq(train_path, src_vocab, tgt_vocab, args.max_len)
+    val_ds = TSVSeq2Seq(val_path, src_vocab, tgt_vocab, args.max_len)
 
     coll = lambda batch: collate(batch, src_vocab, tgt_vocab, args.max_len)
     train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, collate_fn=coll)
