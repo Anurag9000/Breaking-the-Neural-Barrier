@@ -10,6 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
+from Transformer._common_real_benchmark import make_real_transformer_smoke_loaders
 from utils.adp_introspect import can_expand_depth, can_expand_width, infer_adp_depth, infer_adp_width
 
 # Add root to sys.path for utils
@@ -362,9 +363,8 @@ def main():
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    from Transformer._common_real_benchmark import make_real_transformer_smoke_loaders
+    dl_train, dl_val, dl_test, _ = make_real_transformer_smoke_loaders(batch_size=8)
     
     try:
         model = ModelClass(embed_dim=args.width).to(device)

@@ -1,73 +1,44 @@
 import torch
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger
+import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.data import DataLoader
+
 from core.diffusion_core import DiffusionConfig, BetaSchedule, DiffusionLoss
 from models.ddpm_ctrl_sketch_unet import CtrlSketchUNet
+from runs._common_real_image import make_real_image_loaders
 
 
-# ====== Dummy Sketch Dataset ======
-class DummySketch(torch.utils.data.Dataset):
-    def __init__(self, n=2048):
-        self.rgb = torch.randn(n, 3, 64, 64)
-        self.sk = (torch.randn(n, 1, 64, 64) > 0).float()
-
-    def __len__(self):
-        return len(self.rgb)
-
-    def __getitem__(self, i):
-        return self.rgb[i], self.sk[i]
+def sketch_from_rgb(rgb):
+    gray = rgb.mean(dim=1, keepdim=True)
+    sobel_x = torch.tensor([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], device=rgb.device, dtype=rgb.dtype).view(1, 1, 3, 3)
+    sobel_y = sobel_x.transpose(-1, -2)
+    gx = F.conv2d(gray, sobel_x, padding=1)
+    gy = F.conv2d(gray, sobel_y, padding=1)
+    mag = torch.sqrt(gx.pow(2) + gy.pow(2) + 1e-8)
+    return (mag > mag.mean(dim=(2, 3), keepdim=True)).float()
 
 
-# ====== Setup ======
-loader = DataLoader(DummySketch(), batch_size=64, shuffle=True)
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+def main():
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    loader, _, _ = make_real_image_loaders(batch_size=64, image_size=64)
 
-model = CtrlSketchUNet().to(device)
-cfg = DiffusionConfig(T=1000, objective='eps')
-sched = BetaSchedule(cfg.T, cfg.beta_start, cfg.beta_end)
-lossf = DiffusionLoss(cfg, sched)
-opt = optim.AdamW(model.parameters(), lr=2e-4)
+    model = CtrlSketchUNet().to(device)
+    cfg = DiffusionConfig(T=1000, objective="eps")
+    sched = BetaSchedule(cfg.T, cfg.beta_start, cfg.beta_end)
+    lossf = DiffusionLoss(cfg, sched)
+    opt = optim.AdamW(model.parameters(), lr=2e-4)
 
-
-# ====== Training Loop ======
-
-# Init Logger
-
-logger = ContinuousLogger(Path('results_run_ddpm_ctrl_sketch_unet'), 'run_ddpm_ctrl_sketch_unet', 'train')
-
-for epoch in range(3):
-    for rgb, sk in loader:
-        rgb, sk = rgb.to(device), sk.to(device)
-        t = torch.randint(0, cfg.T, (rgb.size(0),), device=device)
-
-        loss = lossf(model, rgb, sk, t)
-        opt.zero_grad()
-        loss.backward()
-        opt.step()
-
-    # Log
+    for epoch in range(3):
+        for rgb, _ in loader:
+            rgb = rgb.to(device)
+            sk = sketch_from_rgb(rgb)
+            t = torch.randint(0, cfg.T, (rgb.size(0),), device=device)
+            loss = lossf(model, rgb, sk, t)
+            opt.zero_grad()
+            loss.backward()
+            opt.step()
+        print(f"epoch {epoch}: loss {loss.item():.4f}")
 
 
-msg = f"Epoch {epoch}: loss {loss.item():.4f}"
+if __name__ == "__main__":
+    main()
 
-
-    logger.log_console(msg)
-
-
-    logger.log_epoch_stats({
-
-
-        "epoch": epoch,
-
-
-        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
-
-
-        "train_loss": loss.item() if 'loss' in locals() else 0
-
-
-    })

@@ -10,6 +10,7 @@ import torchvision as tv
 import torchvision.transforms as T
 
 from ae_jigsaw import JigsawModel, JigsawTrainer
+from _common_real_image import make_real_image_loaders
 
 # -----------------------------
 # Jigsaw dataset wrapper
@@ -111,39 +112,15 @@ def set_all_seeds(seed: int):
 
 
 def make_dataloaders(dc: DataConfig, mc: ModelConfig):
-    mean = (0.4914, 0.4822, 0.4465)
-    std = (0.2470, 0.2435, 0.2616)
-
-    train_tf = T.Compose([
-        T.RandomCrop(32, padding=4),
-        T.RandomHorizontalFlip(),
-        T.ToTensor(),
-        T.Normalize(mean, std),
-    ])
-
-    eval_tf = T.Compose([
-        T.ToTensor(),
-        T.Normalize(mean, std),
-    ])
-
-    full_train = tv.datasets.CIFAR10(root=dc.root, train=True, download=True, transform=train_tf)
-    N = len(full_train)
-    val_n = int(N * dc.val_split)
-    train_n = N - val_n
-
-    g = torch.Generator().manual_seed(dc.seed)
-    train_base, val_base = random_split(full_train, [train_n, val_n], generator=g)
-
-    test_base = tv.datasets.CIFAR10(root=dc.root, train=False, download=True, transform=eval_tf)
-
-    train_set = JigsawDataset(train_base, grid_size=mc.grid_size, perm_set_size=mc.num_permutations, seed=dc.seed)
-    val_set = JigsawDataset(val_base, grid_size=mc.grid_size, perm_set_size=mc.num_permutations, seed=dc.seed+1)
-    test_set = JigsawDataset(test_base, grid_size=mc.grid_size, perm_set_size=mc.num_permutations, seed=dc.seed+2)
-
+    train_loader, val_loader, test_loader = make_real_image_loaders(
+        dc.root, dc.batch_size, val_ratio=dc.val_split, num_workers=dc.num_workers, image_size=32
+    )
+    train_set = JigsawDataset(train_loader.dataset, grid_size=mc.grid_size, perm_set_size=mc.num_permutations, seed=dc.seed)
+    val_set = JigsawDataset(val_loader.dataset, grid_size=mc.grid_size, perm_set_size=mc.num_permutations, seed=dc.seed + 1)
+    test_set = JigsawDataset(test_loader.dataset, grid_size=mc.grid_size, perm_set_size=mc.num_permutations, seed=dc.seed + 2)
     train_loader = DataLoader(train_set, batch_size=dc.batch_size, shuffle=True, num_workers=dc.num_workers, pin_memory=True)
     val_loader = DataLoader(val_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=True)
     test_loader = DataLoader(test_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=True)
-
     return train_loader, val_loader, test_loader
 
 # -----------------------------

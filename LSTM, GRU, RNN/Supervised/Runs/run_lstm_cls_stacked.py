@@ -1,195 +1,104 @@
+from __future__ import annotations
+
 import argparse
 import os
-import random
+
 import torch
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger.nn as nn
-from torch.utils.data import DataLoader, Dataset
-from typing import List, Tuple
+import torch.nn as nn
 
 from lstm_cls_stacked import StackedLSTMClassifier, StackedLSTMConfig
+from _common_real_text import make_20newsgroups_loaders
 
 
-class SyntheticTextCls(Dataset):
-    def __init__(self, n: int, vocab_size: int, min_len: int, max_len: int, pad_idx: int = 0):
-        rng = random.Random(2024)
-        self.samples = []
-        for _ in range(n):
-            L = rng.randint(min_len, max_len)
-            x = [rng.randint(1, vocab_size - 1) for _ in range(L)]
-            y = int(sum(x) % 2 == 0)
-            self.samples.append((x, y))
-        self.pad_idx = pad_idx
-
-    def __len__(self):
-        return len(self.samples)
-
-    def __getitem__(self, idx):
-        return self.samples[idx]
-
-
-def collate_pad(batch: List[Tuple[List[int], int]], pad_idx: int):
-    lengths = torch.tensor([len(x) for x, _ in batch], dtype=torch.long)
-    max_len = int(lengths.max())
-    tokens = torch.full((len(batch), max_len), pad_idx, dtype=torch.long)
-    labels = torch.tensor([y for _, y in batch], dtype=torch.long)
-    for i, (x, y) in enumerate(batch):
-        tokens[i, : len(x)] = torch.tensor(x, dtype=torch.long)
-    return tokens, lengths, labels
-
-
-class EarlyStopper:
-    def __init__(self, patience: int):
-        self.patience = patience
-        self.best = float("inf")
-        self.bad = 0
-        self.best_state = None
-
-    def step(self, val_loss: float, model: nn.Module):
-        if val_loss < self.best - 1e-7:
-            self.best = val_loss
-            self.bad = 0
-            self.best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
-        else:
-            self.bad += 1
-        return self.bad >= self.patience
-
-    def restore_best(self, model: nn.Module):
-        if self.best_state is not None:
-            model.load_state_dict(self.best_state)
-
-
-def train_epoch(model, loader, opt, crit, device):
+def train_epoch(model, loader, optimizer, criterion, device):
     model.train()
     total = 0.0
-    n = 0
+    count = 0
     for tokens, lengths, labels in loader:
         tokens, lengths, labels = tokens.to(device), lengths.to(device), labels.to(device)
-        opt.zero_grad(set_to_none=True)
+        optimizer.zero_grad(set_to_none=True)
         logits = model(tokens, lengths)
-        loss = crit(logits, labels)
+        loss = criterion(logits, labels)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-        opt.step()
+        optimizer.step()
         total += float(loss.item()) * labels.size(0)
-        n += labels.size(0)
-    return total / max(1, n)
+        count += labels.size(0)
+    return total / max(1, count)
 
 
-def eval_epoch(model, loader, crit, device):
+def evaluate(model, loader, criterion, device):
     model.eval()
     total = 0.0
-    n = 0
-    corr = 0
+    count = 0
+    correct = 0
     with torch.no_grad():
         for tokens, lengths, labels in loader:
             tokens, lengths, labels = tokens.to(device), lengths.to(device), labels.to(device)
             logits = model(tokens, lengths)
-            loss = crit(logits, labels)
+            loss = criterion(logits, labels)
             total += float(loss.item()) * labels.size(0)
-            n += labels.size(0)
-            preds = logits.argmax(dim=-1)
-            corr += int((preds == labels).sum().item())
-    return total / max(1, n), corr / max(1, n)
+            count += labels.size(0)
+            correct += int((logits.argmax(dim=-1) == labels).sum().item())
+    return total / max(1, count), correct / max(1, count)
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--vocab-size", type=int, default=20000)
-    ap.add_argument("--min-len", type=int, default=20)
-    ap.add_argument("--max-len", type=int, default=80)
-    ap.add_argument("--train-n", type=int, default=8000)
-    ap.add_argument("--val-n", type=int, default=1000)
-    ap.add_argument("--test-n", type=int, default=1000)
+    p = argparse.ArgumentParser()
+    p.add_argument("--vocab-size", type=int, default=20000)
+    p.add_argument("--emb-dim", type=int, default=128)
+    p.add_argument("--hidden-dim", type=int, default=256)
+    p.add_argument("--num-layers", type=int, default=2)
+    p.add_argument("--dropout", type=float, default=0.2)
+    p.add_argument("--pad-idx", type=int, default=0)
+    p.add_argument("--lr", type=float, default=1e-3)
+    p.add_argument("--weight-decay", type=float, default=1e-2)
+    p.add_argument("--batch-size", type=int, default=64)
+    p.add_argument("--max-epochs", type=int, default=15)
+    p.add_argument("--patience", type=int, default=5)
+    p.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
+    p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--outdir", type=str, default="results_lstm")
+    args = p.parse_args()
 
-    ap.add_argument("--emb-dim", type=int, default=128)
-    ap.add_argument("--hidden-dim", type=int, default=256)
-    ap.add_argument("--num-layers", type=int, default=2)
-    ap.add_argument("--dropout", type=float, default=0.2)
-    ap.add_argument("--num-classes", type=int, default=2)
-    ap.add_argument("--pad-idx", type=int, default=0)
-
-    ap.add_argument("--lr", type=float, default=1e-3)
-    ap.add_argument("--weight-decay", type=float, default=1e-2)
-    ap.add_argument("--batch-size", type=int, default=64)
-    ap.add_argument("--max-epochs", type=int, default=30)
-    ap.add_argument("--patience", type=int, default=5)
-    ap.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
-
-    ap.add_argument("--outdir", type=str, default="results_lstm")
-    args = ap.parse_args()
-
-    random.seed(2024)
-    torch.manual_seed(2024)
-
+    torch.manual_seed(args.seed)
     os.makedirs(args.outdir, exist_ok=True)
-
-    train_ds = SyntheticTextCls(args.train_n, args.vocab_size, args.min_len, args.max_len, pad_idx=args.pad_idx)
-    val_ds = SyntheticTextCls(args.val_n, args.vocab_size, args.min_len, args.max_len, pad_idx=args.pad_idx)
-    test_ds = SyntheticTextCls(args.test_n, args.vocab_size, args.min_len, args.max_len, pad_idx=args.pad_idx)
-
-    collate = lambda batch: collate_pad(batch, pad_idx=args.pad_idx)
-    train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, collate_fn=collate)
-    val_loader = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, collate_fn=collate)
-    test_loader = DataLoader(test_ds, batch_size=args.batch_size, shuffle=False, collate_fn=collate)
-
+    train_loader, val_loader, test_loader, vocab_size, num_classes = make_20newsgroups_loaders(
+        batch_size=args.batch_size, vocab_size=args.vocab_size, seed=args.seed
+    )
     cfg = StackedLSTMConfig(
-        vocab_size=args.vocab_size,
+        vocab_size=vocab_size,
         emb_dim=args.emb_dim,
         hidden_dim=args.hidden_dim,
         num_layers=args.num_layers,
         dropout=args.dropout,
-        num_classes=args.num_classes,
+        num_classes=num_classes,
         pad_idx=args.pad_idx,
     )
     model = StackedLSTMClassifier(cfg).to(args.device)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    criterion = nn.CrossEntropyLoss()
 
-    opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    crit = nn.CrossEntropyLoss()
-    es = EarlyStopper(args.patience)
-
-
-    # Init Logger
-
-
-    logger = ContinuousLogger(Path('results_run_lstm_cls_stacked'), 'run_lstm_cls_stacked', 'train')
-
-
+    best_val = float("inf")
+    best_state = None
+    bad_epochs = 0
     for epoch in range(1, args.max_epochs + 1):
-        tr = train_epoch(model, train_loader, opt, crit, args.device)
-        vl, vacc = eval_epoch(model, val_loader, crit, args.device)
-        stop = es.step(vl, model)
-        # Log
+        train_loss = train_epoch(model, train_loader, optimizer, criterion, args.device)
+        val_loss, val_acc = evaluate(model, val_loader, criterion, args.device)
+        print(f"Epoch {epoch:03d} | train_loss={train_loss:.4f} | val_loss={val_loss:.4f} | val_acc={val_acc:.4f}")
+        if val_loss < best_val - 1e-4:
+            best_val = val_loss
+            best_state = {k: v.cpu() for k, v in model.state_dict().items()}
+            bad_epochs = 0
+        else:
+            bad_epochs += 1
+            if bad_epochs >= args.patience:
+                break
 
-        msg = f"Epoch {epoch:03d} | train_loss={tr:.4f} | val_loss={vl:.4f} | val_acc={vacc:.4f}"
-
-        logger.log_console(msg)
-
-        logger.log_epoch_stats({
-
-            "epoch": epoch,
-
-            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
-
-            "train_loss": loss.item() if 'loss' in locals() else 0
-
-        })
-        if stop:
-            print("Early stopping.")
-            break
-
-    es.restore_best(model)
-    tl, ta = eval_epoch(model, test_loader, crit, args.device)
-    print(f"TEST | loss={tl:.4f} | acc={ta:.4f}")
-
-    torch.save({
-        "model_state": model.state_dict(),
-        "config": cfg.__dict__,
-        "test_loss": tl,
-        "test_acc": ta,
-    }, os.path.join(args.outdir, "lstm_cls_stacked.pt"))
+    if best_state is not None:
+        model.load_state_dict(best_state)
+    test_loss, test_acc = evaluate(model, test_loader, criterion, args.device)
+    print(f"TEST | loss={test_loss:.4f} | acc={test_acc:.4f}")
 
 
 if __name__ == "__main__":

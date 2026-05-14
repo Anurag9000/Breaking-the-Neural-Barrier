@@ -4,18 +4,18 @@ import torch
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[3]))
+sys.path.append(str(Path(__file__).resolve().parent))
 from utils.adp_logging import ContinuousLogger
 import torch.optim as optim
-from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
 from model_simsiam_vit import SimSiamViT
+from _common_real_image import make_two_crops_loaders
 
 @dataclass
 class Config:
     data_root: str = './data'
-    dataset: str = 'CIFAR10'
+    dataset: str = 'imagefolder'
     img_size: int = 224
     patch_size: int = 16
     embed_dim: int = 384
@@ -42,40 +42,8 @@ def set_seed(seed):
     torch.backends.cudnn.benchmark = False
 
 
-def make_views(size):
-    return transforms.Compose([
-        transforms.RandomResizedCrop(size, scale=(0.2,1.0)),
-        transforms.RandomHorizontalFlip(),
-        transforms.ColorJitter(0.4,0.4,0.4,0.1),
-        transforms.RandomGrayscale(p=0.2),
-        transforms.ToTensor(),
-    ])
-
-
 def make_loaders(cfg: Config):
-    aug = make_views(cfg.img_size)
-    eval_tf = transforms.Compose([
-        transforms.Resize(cfg.img_size),
-        transforms.CenterCrop(cfg.img_size),
-        transforms.ToTensor(),
-    ])
-    if cfg.dataset == 'CIFAR10':
-        full = datasets.CIFAR10(cfg.data_root, train=True, download=True, transform=aug)
-        test = datasets.CIFAR10(cfg.data_root, train=False, download=True, transform=eval_tf)
-    else:
-        full = datasets.CIFAR100(cfg.data_root, train=True, download=True, transform=aug)
-        test = datasets.CIFAR100(cfg.data_root, train=False, download=True, transform=eval_tf)
-
-    n_val = int(0.1 * len(full))
-    n_train = len(full) - n_val
-    g = torch.Generator().manual_seed(cfg.seed)
-    train, val = random_split(full, [n_train, n_val], generator=g)
-    val.dataset.transform = eval_tf
-    return (
-        DataLoader(train, batch_size=cfg.batch_size, shuffle=True, num_workers=4, pin_memory=True),
-        DataLoader(val, batch_size=cfg.batch_size, shuffle=False, num_workers=4, pin_memory=True),
-        DataLoader(test, batch_size=cfg.batch_size, shuffle=False, num_workers=4, pin_memory=True),
-    )
+    return make_two_crops_loaders(cfg.data_root, cfg.batch_size, image_size=cfg.img_size, num_workers=4)
 
 
 def save_plot(curve, title, path, semilogy=False):
@@ -162,7 +130,7 @@ def train(cfg: Config):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
-    p.add_argument('--dataset', type=str, default='CIFAR10')
+    p.add_argument('--dataset', type=str, default='imagefolder')
     p.add_argument('--img_size', type=int, default=224)
     p.add_argument('--patch_size', type=int, default=16)
     p.add_argument('--embed_dim', type=int, default=384)

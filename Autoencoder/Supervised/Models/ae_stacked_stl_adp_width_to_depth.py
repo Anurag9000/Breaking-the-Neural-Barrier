@@ -194,15 +194,16 @@ def adp_search(model: AE_STACKED_STL, dl_train, dl_val, acfg: ADPConfig, device,
 
 
 def make_loaders(batch_size: int = 128, val_split: float = 0.1):
-    tf = transforms.Compose([transforms.ToTensor()])
-    ds = datasets.CIFAR10(root="./data", train=True, download=True, transform=tf)
-    n_val = int(len(ds) * val_split)
-    n_train = len(ds) - n_val
-    train_ds, val_ds = random_split(ds, [n_train, n_val])
-    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
-    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)
+    sys.path.append(str(Path(__file__).resolve().parents[1] / "Runs"))
+    from _common_real_image import make_real_image_loaders
+    dl_train, dl_val, _ = make_real_image_loaders(
+        data_root="./data",
+        batch_size=batch_size,
+        val_ratio=val_split,
+        num_workers=4,
+        image_size=224,
+    )
     return dl_train, dl_val
-
 
 def main():
     import argparse

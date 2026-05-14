@@ -1,12 +1,10 @@
-﻿import math
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch.utils.data import ConcatDataset, DataLoader, Dataset, TensorDataset, random_split
-from torchvision import datasets, transforms
+from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
 
 from sklearn.cluster import KMeans
 from sklearn.datasets import fetch_california_housing, fetch_covtype, fetch_openml
@@ -36,11 +34,6 @@ def _split_dataset(ds: Dataset, seed: int, val_split: float = 0.1, test_split: f
     n_train = n - n_val - n_test
     g = torch.Generator().manual_seed(int(seed))
     return random_split(ds, [n_train, n_val, n_test], generator=g)
-
-
-def _make_mnist(base_dir: str, train: bool, img_size: Tuple[int, int] = (28, 28)):
-    tf = transforms.Compose([transforms.Resize(img_size), transforms.ToTensor()])
-    return datasets.MNIST(root=base_dir, train=train, download=True, transform=tf)
 
 
 def _make_loaders(ds: Dataset, batch_size: int, num_workers: int, shuffle: bool = True):
@@ -200,216 +193,6 @@ def _kmeans_nmi(embeddings: np.ndarray, labels: np.ndarray, n_clusters: int = 10
     km = KMeans(n_clusters=n_clusters, n_init=10, random_state=0)
     clusters = km.fit_predict(embeddings)
     return float(normalized_mutual_info_score(labels, clusters))
-
-
-class MNISTFlatPair(Dataset):
-    def __init__(self, base_ds: Dataset):
-        self.base_ds = base_ds
-
-    def __len__(self):
-        return len(self.base_ds)
-
-    def __getitem__(self, idx):
-        x, _ = self.base_ds[idx]
-        x_flat = x.view(-1)
-        return x_flat, x_flat
-
-
-class MNISTFlatWithLabel(Dataset):
-    def __init__(self, base_ds: Dataset):
-        self.base_ds = base_ds
-
-    def __len__(self):
-        return len(self.base_ds)
-
-    def __getitem__(self, idx):
-        x, label = self.base_ds[idx]
-        x_flat = x.view(-1)
-        return x_flat, x_flat, label
-
-
-class NoisyMNIST(Dataset):
-    def __init__(self, base_ds: Dataset, noise_std: float = 0.5, seed: int = 0):
-        self.base_ds = base_ds
-        self.noise_std = float(noise_std)
-        self.rng = torch.Generator().manual_seed(int(seed))
-
-    def __len__(self):
-        return len(self.base_ds)
-
-    def __getitem__(self, idx):
-        x, _ = self.base_ds[idx]
-        noise = torch.randn(x.shape, generator=self.rng) * self.noise_std
-        noisy = torch.clamp(x + noise, 0.0, 1.0)
-        return noisy.view(-1), x.view(-1)
-
-
-class NoiseToImageDataset(Dataset):
-    def __init__(self, base_ds: Dataset, noise_dim: int = 64, seed: int = 0):
-        self.base_ds = base_ds
-        g = torch.Generator().manual_seed(int(seed))
-        self.noise = torch.randn(len(base_ds), noise_dim, generator=g)
-
-    def __len__(self):
-        return len(self.base_ds)
-
-    def __getitem__(self, idx):
-        img, _ = self.base_ds[idx]
-        return self.noise[idx], img.view(-1)
-
-
-class RotationMNIST(Dataset):
-    def __init__(self, base_ds: Dataset):
-        self.base_ds = base_ds
-        self.angles = [0, 90, 180, 270]
-
-    def __len__(self):
-        return len(self.base_ds)
-
-    def __getitem__(self, idx):
-        img, _ = self.base_ds[idx]
-        label = idx % 4
-        angle = self.angles[label]
-        if angle == 90:
-            img = torch.rot90(img, 1, [1, 2])
-        elif angle == 180:
-            img = torch.rot90(img, 2, [1, 2])
-        elif angle == 270:
-            img = torch.rot90(img, 3, [1, 2])
-        return img, label
-
-
-class ParityMNIST(Dataset):
-    def __init__(self, base_ds: Dataset):
-        self.base_ds = base_ds
-
-    def __len__(self):
-        return len(self.base_ds)
-
-    def __getitem__(self, idx):
-        img, label = self.base_ds[idx]
-        parity = float(label % 2)
-        x = torch.cat([img.view(-1), torch.tensor([parity])], dim=0)
-        return x, label
-
-
-class AnomalySubset(Dataset):
-    def __init__(self, base_ds: Dataset, indices: List[int], label: int):
-        self.base_ds = base_ds
-        self.indices = indices
-        self.label = int(label)
-
-    def __len__(self):
-        return len(self.indices)
-
-    def __getitem__(self, idx):
-        img, _ = self.base_ds[self.indices[idx]]
-        x_flat = img.view(-1)
-        return x_flat, x_flat, self.label
-
-
-class SineSequenceDataset(Dataset):
-    def __init__(self, n_samples: int = 20000, window: int = 20, seed: int = 0):
-        g = torch.Generator().manual_seed(int(seed))
-        self.window = int(window)
-        t = torch.linspace(0, 200 * math.pi, steps=n_samples + window + 1)
-        noise = torch.randn(len(t), generator=g) * 0.1
-        signal = torch.sin(t) + noise
-        self.data = signal
-        self.n = n_samples
-
-    def __len__(self):
-        return self.n
-
-    def __getitem__(self, idx):
-        x = self.data[idx : idx + self.window]
-        y = self.data[idx + self.window]
-        return x, y.unsqueeze(0)
-
-
-class LinearInverseDataset(Dataset):
-    def __init__(self, n_samples: int = 20000, in_dim: int = 16, out_dim: int = 8, seed: int = 0):
-        g = torch.Generator().manual_seed(int(seed))
-        self.A = torch.randn(out_dim, in_dim, generator=g)
-        x = torch.randn(n_samples, in_dim, generator=g)
-        y = x @ self.A.t() + 0.05 * torch.randn(n_samples, out_dim, generator=g)
-        self.inputs = y
-        self.targets = x
-
-    def __len__(self):
-        return self.inputs.size(0)
-
-    def __getitem__(self, idx):
-        return self.inputs[idx], self.targets[idx]
-
-
-class LinearDynamicsDataset(Dataset):
-    def __init__(self, n_samples: int = 20000, state_dim: int = 8, action_dim: int = 4, seed: int = 0):
-        g = torch.Generator().manual_seed(int(seed))
-        self.A = torch.randn(state_dim, state_dim, generator=g) * 0.3
-        self.B = torch.randn(state_dim, action_dim, generator=g) * 0.3
-        x = torch.randn(n_samples, state_dim, generator=g)
-        u = torch.randn(n_samples, action_dim, generator=g)
-        x_next = x @ self.A.t() + u @ self.B.t()
-        self.inputs = torch.cat([x, u], dim=1)
-        self.targets = x_next
-
-    def __len__(self):
-        return self.inputs.size(0)
-
-    def __getitem__(self, idx):
-        return self.inputs[idx], self.targets[idx]
-
-
-class RankingDataset(Dataset):
-    def __init__(self, n_samples: int = 20000, in_dim: int = 20, seed: int = 0):
-        g = torch.Generator().manual_seed(int(seed))
-        w = torch.randn(in_dim, generator=g)
-        x = torch.randn(n_samples, in_dim, generator=g)
-        scores = x @ w + 0.1 * torch.randn(n_samples, generator=g)
-        self.inputs = x
-        self.targets = scores.unsqueeze(1)
-
-    def __len__(self):
-        return self.inputs.size(0)
-
-    def __getitem__(self, idx):
-        return self.inputs[idx], self.targets[idx]
-
-
-class ResidualDataset(Dataset):
-    def __init__(self, n_samples: int = 20000, in_dim: int = 20, seed: int = 0):
-        g = torch.Generator().manual_seed(int(seed))
-        w = torch.randn(in_dim, generator=g)
-        bias = torch.randn(1, generator=g) * 0.5
-        x = torch.randn(n_samples, in_dim, generator=g)
-        y = x @ w + bias + 0.1 * torch.randn(n_samples, generator=g)
-        baseline = x @ w
-        residual = (y - baseline).unsqueeze(1)
-        self.inputs = x
-        self.targets = residual
-
-    def __len__(self):
-        return self.inputs.size(0)
-
-    def __getitem__(self, idx):
-        return self.inputs[idx], self.targets[idx]
-
-
-class LQRDataset(Dataset):
-    def __init__(self, n_samples: int = 20000, state_dim: int = 8, action_dim: int = 4, seed: int = 0):
-        g = torch.Generator().manual_seed(int(seed))
-        K = torch.randn(action_dim, state_dim, generator=g) * 0.5
-        x = torch.randn(n_samples, state_dim, generator=g)
-        u = -x @ K.t()
-        self.inputs = x
-        self.targets = u
-
-    def __len__(self):
-        return self.inputs.size(0)
-
-    def __getitem__(self, idx):
-        return self.inputs[idx], self.targets[idx]
 
 
 def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int, seed: int) -> Task:
@@ -647,13 +430,11 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
 def task_names() -> List[str]:
     return [
         "prediction",
-        "classification",
         "representation",
         "autoencoding",
         "generation",
         "denoising",
         "anomaly",
-        "sequence",
         "inverse",
         "control",
         "clustering",
@@ -662,6 +443,5 @@ def task_names() -> List[str]:
         "multimodal",
         "selfsupervised",
         "simulation",
-        "edge",
         "misc",
     ]

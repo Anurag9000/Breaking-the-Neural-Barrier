@@ -29,6 +29,24 @@ from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_fr
 DEFAULT_MAX_EPOCHS = 99999999999999999999999999999999999999999999999999999999999999999999999
 DEFAULT_VRAM_BUDGET_GB = 5.5
 
+PER_TASK_BATCH_SIZES = {
+    "prediction": 2048,
+    "ranking": 2048,
+    "representation": 1024,
+    "autoencoding": 1024,
+    "generation": 1024,
+    "denoising": 1024,
+    "anomaly": 1024,
+    "clustering": 1024,
+    "compression": 1024,
+    "multimodal": 1024,
+    "selfsupervised": 1024,
+    "inverse": 512,
+    "control": 512,
+    "simulation": 512,
+    "misc": 512,
+}
+
 
 @dataclass
 class RunConfig:
@@ -288,6 +306,17 @@ def alt_start_hidden(cfg: RunConfig) -> List[int]:
     depth = max(1, int(cfg.alt_start_depth))
     width = max(2, int(cfg.alt_start_width))
     return [width for _ in range(depth)]
+
+
+def default_batch_size_for_task(task_name: str) -> int:
+    return int(PER_TASK_BATCH_SIZES.get(task_name.lower(), 1024))
+
+
+def batch_size_for_task(task_name: str, override: int) -> int:
+    override = int(override)
+    if override > 0:
+        return override
+    return default_batch_size_for_task(task_name)
 
 
 def candidate_slug(candidate_index: int, hidden_widths: Sequence[int]) -> str:
@@ -1150,7 +1179,8 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
 
 
 def run_task_pipeline(task_name: str, cfg: RunConfig, run_root: Path, device) -> Dict[str, Any]:
-    task = build_task(task_name, cfg.data_dir, cfg.batch_size, cfg.num_workers, cfg.seed)
+    task_batch_size = batch_size_for_task(task_name, cfg.batch_size)
+    task = build_task(task_name, cfg.data_dir, task_batch_size, cfg.num_workers, cfg.seed)
     task_root = run_root / f"{task_name}"
     task_root.mkdir(parents=True, exist_ok=True)
     write_json(
@@ -1162,6 +1192,8 @@ def run_task_pipeline(task_name: str, cfg: RunConfig, run_root: Path, device) ->
             "task_type": task.task_type,
             "extra": task.extra,
             "config": asdict(cfg),
+            "batch_size": int(task_batch_size),
+            "batch_size_policy": "override" if int(cfg.batch_size) > 0 else "per_task_default",
         },
     )
 
@@ -1276,8 +1308,7 @@ def main() -> None:
     p.add_argument("--run-root", type=str, default=None)
     p.add_argument("--tasks", type=str, nargs="+", default=["all"])
     p.add_argument("--phases", type=str, nargs="+", default=["stl", "ae_alt_width", "ae_width_only", "ae_depth_only"])
-    p.add_argument("--batch-size", type=int, default=2048, help="Batch size to use. Set to 0 to auto-tune from a CUDA probe and then halve the max safe batch size.")
-    p.add_argument("--batch-probe-task", type=str, default="classification", help="Task used for automatic batch-size probing.")
+    p.add_argument("--batch-size", type=int, default=0, help="Global batch-size override. Leave at 0 to use per-task defaults tuned for each benchmark family.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--stl-width", type=int, default=128)
@@ -1306,40 +1337,14 @@ def main() -> None:
         if args.patience > 1:
             args.patience = 1
 
-    base_hidden = [int(args.stl_width) for _ in range(max(1, int(args.stl_depth)))]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    resolved_batch_size = int(args.batch_size)
-    if resolved_batch_size <= 0:
-        probe_task = args.batch_probe_task
-        if probe_task.lower() not in {t.lower() for t in tasks} and probe_task.lower() not in {t.lower() for t in task_names()}:
-            probe_task = "classification" if "classification" in task_names() else tasks[0]
-        resolved_batch_size = auto_select_batch_size(
-            task_name=probe_task,
-            cfg_data_dir=args.data_dir,
-            num_workers=args.num_workers,
-            seed=args.seed,
-            hidden_widths=base_hidden,
-            use_bn=not args.no_bn,
-            device=device,
-            budget_gb=DEFAULT_VRAM_BUDGET_GB,
-        )
-        print(f"Auto-selected batch size: {resolved_batch_size} (half of max safe batch under {DEFAULT_VRAM_BUDGET_GB} GiB)")
-
-    shared_batch_state = Path(args.results_dir) / "_batch_size_state.json"
-    if shared_batch_state.exists():
-        try:
-            payload = json.loads(shared_batch_state.read_text(encoding="utf-8"))
-            resolved_batch_size = min(resolved_batch_size, int(payload.get("batch_size", resolved_batch_size)))
-        except Exception:
-            pass
-
     cfg = RunConfig(
         data_dir=args.data_dir,
         results_dir=args.results_dir,
         run_root=args.run_root,
         tasks=tasks,
         phases=args.phases,
-        batch_size=resolved_batch_size,
+        batch_size=int(args.batch_size),
         num_workers=args.num_workers,
         seed=args.seed,
         stl_width=args.stl_width,
@@ -1371,9 +1376,9 @@ def main() -> None:
             "tasks": tasks,
             "available_tasks": task_names(),
             "timestamp": now_stamp(),
-            "batch_size_selected": int(cfg.batch_size),
-            "batch_probe_task": args.batch_probe_task,
-            "batch_probe_budget_gb": DEFAULT_VRAM_BUDGET_GB,
+            "batch_size_override": int(cfg.batch_size),
+            "batch_size_policy": "override" if int(cfg.batch_size) > 0 else "per_task_default",
+            "default_batch_sizes": {task_name: default_batch_size_for_task(task_name) for task_name in tasks},
         },
     )
 
@@ -1385,27 +1390,28 @@ def main() -> None:
     log.log_console(f"Device: {device}")
     log.log_console(f"Git commit: {git_commit()}")
 
-    batch_state_path = Path(args.results_dir) / "_batch_size_state.json"
-    batch_controller = AdaptiveBatchController(
-        resolved_batch_size,
-        threshold_gb=5.5,
-        poll_interval_sec=30.0,
-        shrink_factor=0.75,
-        state_path=batch_state_path,
-    )
-    batch_controller.start()
-
     task_objects: Dict[str, Task] = {}
     task_roots: Dict[str, Path] = {}
+    task_batch_controllers: Dict[str, AdaptiveBatchController] = {}
     task_summaries: Dict[str, Dict[str, Any]] = {}
 
     for task_name in tasks:
-        task = build_task(task_name, cfg.data_dir, cfg.batch_size, cfg.num_workers, cfg.seed)
-        refresh_task_loaders(task, batch_controller.current_batch_size)
+        task_batch_size = batch_size_for_task(task_name, cfg.batch_size)
+        task = build_task(task_name, cfg.data_dir, task_batch_size, cfg.num_workers, cfg.seed)
+        refresh_task_loaders(task, task_batch_size)
         task_objects[task_name] = task
         task_root = run_root / task_name
         task_root.mkdir(parents=True, exist_ok=True)
         task_roots[task_name] = task_root
+        batch_controller = AdaptiveBatchController(
+            task_batch_size,
+            threshold_gb=DEFAULT_VRAM_BUDGET_GB,
+            poll_interval_sec=30.0,
+            shrink_factor=0.75,
+            state_path=task_root / "_batch_size_state.json",
+        )
+        batch_controller.start()
+        task_batch_controllers[task_name] = batch_controller
         write_json(
             task_root / "task_metadata.json",
             {
@@ -1415,6 +1421,8 @@ def main() -> None:
                 "task_type": task.task_type,
                 "extra": task.extra,
                 "config": asdict(cfg),
+                "batch_size": int(task_batch_size),
+                "batch_size_policy": "override" if int(cfg.batch_size) > 0 else "per_task_default",
             },
         )
         task_summaries[task_name] = {"task": task.name, "phases": []}
@@ -1427,6 +1435,7 @@ def main() -> None:
             for task_name in tasks:
                 task = task_objects[task_name]
                 task_root = task_roots[task_name]
+                batch_controller = task_batch_controllers[task_name]
                 log.log_console(f"--- Task start: {task_name} ---")
                 refresh_task_loaders(task, batch_controller.current_batch_size)
                 if phase_name == "stl":
@@ -1463,7 +1472,8 @@ def main() -> None:
                 log.log_console(f"--- Task done: {task_name} ---")
             log.log_console(f"=== Phase done: {phase_name} ===")
     finally:
-        batch_controller.stop()
+        for controller in task_batch_controllers.values():
+            controller.stop()
         log.close()
 
 

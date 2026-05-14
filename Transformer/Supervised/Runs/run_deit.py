@@ -6,14 +6,12 @@ import torch
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger.nn as nn
-import torch
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
+import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+
+from _common_real_image import infer_num_classes, make_real_image_loaders
 
 from model_deit import DeiT
 
@@ -33,36 +31,12 @@ def set_seed(seed: int = 42):
 
 
 def get_loaders(dataset: str, data_root: str, img_size: int, batch_size: int, workers: int, seed: int = 42):
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    train_tf = transforms.Compose([
-        transforms.Resize((img_size, img_size)),
-        transforms.RandomResizedCrop(img_size, scale=(0.8, 1.0)),
-        transforms.RandomHorizontalFlip(),
-        transforms.AutoAugment(transforms.AutoAugmentPolicy.IMAGENET),
-        transforms.ToTensor(),
-        normalize,
-    ])
-    eval_tf = transforms.Compose([
-        transforms.Resize((img_size, img_size)),
-        transforms.ToTensor(),
-        normalize,
-    ])
-
-    ds_cls = datasets.CIFAR10 if dataset.lower() == "cifar10" else datasets.CIFAR100
-    full_train = ds_cls(root=data_root, train=True, download=True, transform=train_tf)
-    full_eval = ds_cls(root=data_root, train=True, download=True, transform=eval_tf)
-    test_set = ds_cls(root=data_root, train=False, download=True, transform=eval_tf)
-
-    n_train = int(0.9 * len(full_train))
-    n_val = len(full_train) - n_train
-    gen = torch.Generator().manual_seed(seed)
-    train_set, _ = random_split(full_train, [n_train, n_val], generator=gen)
-    _, val_set = random_split(full_eval, [n_train, n_val], generator=gen)
-
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=workers, pin_memory=True)
-    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=workers, pin_memory=True)
-    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False, num_workers=workers, pin_memory=True)
-    return train_loader, val_loader, test_loader
+    return make_real_image_loaders(
+        data_root=data_root,
+        batch_size=batch_size,
+        num_workers=workers,
+        image_size=img_size,
+    )
 
 
 class LabelSmoothingCE(nn.Module):
@@ -144,7 +118,7 @@ def evaluate(model, loader, device, criterion):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100"])
+    p.add_argument("--dataset", type=str, default="imagefolder", choices=["imagefolder"])
     p.add_argument("--data-root", type=str, default="./data")
     p.add_argument("--img-size", type=int, default=224)
     p.add_argument("--patch", type=int, default=16)
@@ -170,7 +144,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     tl, vl, te = get_loaders(args.dataset, args.data_root, args.img_size, args.batch_size, args.workers, args.seed)
-    num_classes = 10 if args.dataset == "cifar10" else 100
+    num_classes = infer_num_classes(tl)
 
     model = DeiT(
         img_size=args.img_size,

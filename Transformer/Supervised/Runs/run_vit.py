@@ -8,19 +8,17 @@ import torch
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger.nn as nn
-import torch
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
+from utils.adp_logging import ContinuousLogger
+import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+
+from _common_real_image import infer_num_classes, make_real_image_loaders
 
 from model_vit import VisionTransformer
 
 # ------------------------------
-# Supervised training harness (CIFAR-10/100) matching your style:
+# Supervised training harness on folder-backed real image datasets:
 # - Seeded splits (90/10 train/val)
 # - Early stopping on val loss with patience
 # - AdamW + cosine lr
@@ -35,35 +33,12 @@ def set_seed(seed: int = 42):
 
 
 def get_loaders(dataset: str, data_root: str, img_size: int, batch_size: int, workers: int, seed: int = 42):
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    train_tf = transforms.Compose([
-        transforms.Resize((img_size, img_size)),
-        transforms.RandomCrop(img_size, padding=4),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        normalize,
-    ])
-    eval_tf = transforms.Compose([
-        transforms.Resize((img_size, img_size)),
-        transforms.ToTensor(),
-        normalize,
-    ])
-
-    ds_cls = datasets.CIFAR10 if dataset.lower() == "cifar10" else datasets.CIFAR100
-    full_train = ds_cls(root=data_root, train=True, download=True, transform=train_tf)
-    full_eval = ds_cls(root=data_root, train=True, download=True, transform=eval_tf)
-    test_set = ds_cls(root=data_root, train=False, download=True, transform=eval_tf)
-
-    n_train = int(0.9 * len(full_train))
-    n_val = len(full_train) - n_train
-    gen = torch.Generator().manual_seed(seed)
-    train_set, _ = random_split(full_train, [n_train, n_val], generator=gen)
-    _, val_set = random_split(full_eval, [n_train, n_val], generator=gen)
-
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=workers, pin_memory=True)
-    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=workers, pin_memory=True)
-    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False, num_workers=workers, pin_memory=True)
-    return train_loader, val_loader, test_loader
+    return make_real_image_loaders(
+        data_root=data_root,
+        batch_size=batch_size,
+        num_workers=workers,
+        image_size=img_size,
+    )
 
 
 def train_one_epoch(model, loader, device, criterion, optimizer):
@@ -97,7 +72,7 @@ def evaluate(model, loader, device, criterion):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100"])
+    parser.add_argument("--dataset", type=str, default="imagefolder", choices=["imagefolder"])
     parser.add_argument("--data-root", type=str, default="./data")
     parser.add_argument("--img-size", type=int, default=224)
     parser.add_argument("--patch", type=int, default=16)
@@ -122,7 +97,7 @@ def main():
         args.dataset, args.data_root, args.img_size, args.batch_size, args.workers, args.seed
     )
 
-    num_classes = 10 if args.dataset == "cifar10" else 100
+    num_classes = infer_num_classes(train_loader)
     model = VisionTransformer(
         img_size=args.img_size,
         patch_size=args.patch,

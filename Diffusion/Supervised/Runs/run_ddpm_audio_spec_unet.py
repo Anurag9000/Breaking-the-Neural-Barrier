@@ -1,85 +1,41 @@
-import torch
-import sys
+from __future__ import annotations
+
+import os
 from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger
+
+import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from core.diffusion_core import DiffusionConfig, BetaSchedule, DiffusionLoss
+
+from core.diffusion_core import BetaSchedule, DiffusionConfig, DiffusionLoss
 from models.ddpm_audio_spec_unet import AudioSpecUNet
+from runs._common_public_benchmarks import LibriSpeechSpecDataset
 
 
-# -----------------------------
-# Dummy Dataset for Spectrograms
-# -----------------------------
-class Dummy(torch.utils.data.Dataset):
-    def __init__(self, n=2048):
-        # Simulate audio spectrograms: (batch, channels, freq_bins, time_steps)
-        self.s = torch.randn(n, 1, 128, 256)
+def main() -> None:
+    root = Path(os.environ.get("BBNB_LIBRISPEECH_ROOT", "./data/LibriSpeech"))
+    dataset = LibriSpeechSpecDataset(root=root, url=os.environ.get("BBNB_LIBRISPEECH_URL", "train-clean-100"), segment_seconds=3.0, sample_rate=16000, n_mels=128, train=True)
+    loader = DataLoader(dataset, batch_size=32, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
 
-    def __len__(self):
-        return len(self.s)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = AudioSpecUNet().to(device)
+    cfg = DiffusionConfig(T=1000, objective="eps")
+    sched = BetaSchedule(cfg.T, cfg.beta_start, cfg.beta_end)
+    lossf = DiffusionLoss(cfg, sched)
+    opt = optim.AdamW(model.parameters(), lr=1e-4)
 
-    def __getitem__(self, i):
-        return self.s[i]
-
-
-# -----------------------------
-# Setup
-# -----------------------------
-loader = DataLoader(Dummy(), batch_size=32, shuffle=True)
-
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model = AudioSpecUNet().to(device)
-
-cfg = DiffusionConfig(T=1000, objective='eps')
-sched = BetaSchedule(cfg.T, cfg.beta_start, cfg.beta_end)
-lossf = DiffusionLoss(cfg, sched)
-opt = optim.AdamW(model.parameters(), lr=1e-4)
+    for epoch in range(3):
+        last_loss = None
+        for spec, _transcript in loader:
+            spec = spec.to(device)
+            t = torch.randint(0, cfg.T, (spec.size(0),), device=device)
+            loss = lossf(model, spec, None, t)
+            opt.zero_grad()
+            loss.backward()
+            opt.step()
+            last_loss = loss.item()
+        print(f"epoch {epoch}: loss {last_loss:.4f}")
 
 
-# -----------------------------
-# Training Loop
-# -----------------------------
-
-# Init Logger
-
-logger = ContinuousLogger(Path('results_run_ddpm_audio_spec_unet'), 'run_ddpm_audio_spec_unet', 'train')
-
-for epoch in range(3):
-    for s in loader:
-        s = s.to(device)
-
-        # Random diffusion timesteps
-        t = torch.randint(0, cfg.T, (s.size(0),), device=device)
-
-        # Compute diffusion loss
-        loss = lossf(model, s, None, t)
-
-        # Backpropagation
-        opt.zero_grad()
-        loss.backward()
-        opt.step()
-
-    # Log
-
-
-msg = f"Epoch {epoch}: loss = {loss.item():.4f}"
-
-
-    logger.log_console(msg)
-
-
-    logger.log_epoch_stats({
-
-
-        "epoch": epoch,
-
-
-        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
-
-
-        "train_loss": loss.item() if 'loss' in locals() else 0
-
-
-    })
+if __name__ == "__main__":
+    main()

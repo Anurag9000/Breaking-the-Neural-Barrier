@@ -8,8 +8,7 @@ from typing import List, Optional, Tuple, Dict, Any
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 
 # Add root to sys.path for utils
 sys.path.append(str(Path(__file__).resolve().parents[3]))
@@ -19,6 +18,7 @@ except ImportError:
     # Fallback if utils not found or different structure
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
+from utils.text_benchmarks import TextClassificationDataset, build_vocab_from_texts, load_ag_news_samples, simple_tokenize
 
 # Load baseline
 BASE_PATH = Path(__file__).with_name("model_cpc_text_transformer.py").resolve()
@@ -341,19 +341,21 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     return global_best_val, model, model.dim, model.depth
 
-# Copy Cifar loaders NO - use synthetic text
-def make_loaders(batch_size=32):
-    # Synthetic seq data: (B, L) integers
-    vocab_size = 20000
-    class SyntheticData(torch.utils.data.Dataset):
-        def __init__(self, N, L=64):
-            self.data = torch.randint(0, vocab_size, (N, L))
-        def __len__(self): return len(self.data)
-        def __getitem__(self, i): return self.data[i]
-    
-    dl_train = DataLoader(SyntheticData(1000), batch_size=batch_size, shuffle=True)
-    dl_val = DataLoader(SyntheticData(200), batch_size=batch_size, shuffle=False)
-    return dl_train, dl_val, vocab_size
+def make_loaders(batch_size=32, max_len=128, seed=0, min_freq=2, max_vocab=50000):
+    train_samples, val_samples, _ = load_ag_news_samples(seed=seed)
+    vocab = build_vocab_from_texts((text for _, text in train_samples), min_freq=min_freq, max_size=max_vocab)
+
+    def collate(batch):
+        tokens = []
+        for _, text in batch:
+            toks = simple_tokenize(text)
+            ids = vocab.encode_ids(toks, max_len)
+            tokens.append(ids)
+        return torch.nn.utils.rnn.pad_sequence(tokens, batch_first=True, padding_value=vocab.pad_idx())
+
+    dl_train = DataLoader(TextClassificationDataset(train_samples), batch_size=batch_size, shuffle=True, collate_fn=collate)
+    dl_val = DataLoader(TextClassificationDataset(val_samples), batch_size=batch_size, shuffle=False, collate_fn=collate)
+    return dl_train, dl_val, len(vocab)
 
 def main():
     import argparse

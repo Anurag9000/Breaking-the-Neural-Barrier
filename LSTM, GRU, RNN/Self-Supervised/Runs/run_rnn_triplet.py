@@ -3,30 +3,10 @@ import random
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader
 
 from rnn_triplet import TripletGRU
-
-class ToyAug(Dataset):
-    def __init__(self, n=30000, T=64, D=16, seed=42):
-        rng=np.random.RandomState(seed)
-        self.X=[]
-        for _ in range(n):
-            x=rng.randn(T,D).astype(np.float32)
-            x=np.cumsum(x,axis=0)*0.05
-            self.X.append(x)
-        self.X=np.stack(self.X,0)
-    def __len__(self): return self.X.shape[0]
-    def __getitem__(self,i): return torch.from_numpy(self.X[i])
-
-def augment(x,noise_std=0.05,drop_prob=0.1):
-    x1=x+noise_std*torch.randn_like(x)
-    x2=x+noise_std*torch.randn_like(x)
-    if drop_prob>0:
-        m1=(torch.rand_like(x1[...,:1])>drop_prob).float()
-        m2=(torch.rand_like(x2[...,:1])>drop_prob).float()
-        x1*=m1; x2*=m2
-    return x1,x2
+from _common_forda import augment_sequence, make_forda_sequence_loaders
 
 class EarlyStopper:
     def __init__(self, patience=10, min_delta=0.0):
@@ -57,15 +37,10 @@ def main():
 
     random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
 
-    ds=ToyAug(args.n,args.T,args.D,args.seed)
-    n_val=int(len(ds)*args.val_split); n_tr=len(ds)-n_val
-    tr_ds,va_ds=random_split(ds,[n_tr,n_val],generator=torch.Generator().manual_seed(args.seed))
-
-    tr=DataLoader(tr_ds,batch_size=args.batch,shuffle=True,drop_last=True)
-    va=DataLoader(va_ds,batch_size=args.batch,shuffle=False,drop_last=False)
+    tr, va, _, _ = make_forda_sequence_loaders(batch_size=args.batch, seed=args.seed, return_index=False)
 
     dev=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    net=TripletGRU(args.D,args.hidden,args.proj,args.layers).to(dev)
+    net=TripletGRU(1,args.hidden,args.proj,args.layers).to(dev)
 
     opt=torch.optim.AdamW(net.parameters(),lr=args.lr)
     es=EarlyStopper(args.patience,1e-4)
@@ -79,8 +54,8 @@ def main():
     for ep in range(1,args.epochs+1):
         net.train(); trl=0.0
         for x in tr:
-            x=x.to(dev)
-            x_pos,x_neg=augment(x)
+            x=x.transpose(1, 2).to(dev)
+            x_pos,x_neg=augment_sequence(x)
             a=net.encode(x)
             p=net.encode(x_pos)
             n=net.encode(x_neg)
@@ -92,8 +67,8 @@ def main():
         net.eval(); val=0.0
         with torch.no_grad():
             for x in va:
-                x=x.to(dev)
-                x_pos,x_neg=augment(x)
+                x=x.transpose(1, 2).to(dev)
+                x_pos,x_neg=augment_sequence(x)
                 a=net.encode(x); p=net.encode(x_pos); n=net.encode(x_neg)
                 loss=triplet_loss(None,a,p,n,args.margin)
                 val+=loss.item()*x.size(0)

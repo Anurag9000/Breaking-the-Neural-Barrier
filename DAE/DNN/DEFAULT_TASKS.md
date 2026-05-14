@@ -8,110 +8,91 @@ comparative behavior rather than SOTA.
 Default task mapping (datasets, I/O, losses, metrics)
 
 1) Prediction / regression
-   - Dataset: synthetic regression (sklearn.make_regression)
-   - Input: 20-d float vector -> Output: 1-d float
+   - Dataset: YearPredictionMSD with California Housing fallback
+   - Input: 90-d float vector -> Output: 1-d float
    - Loss: MSE
-   - Metric: MSE, MAE
+   - Metric: MSE, pairwise accuracy
 
-2) Classification / decision
-   - Dataset: MNIST
-   - Input: 1x28x28 -> Output: 10-class logits
-   - Loss: cross-entropy
-   - Metric: accuracy
-
-3) Representation / embeddings
-   - Dataset: MNIST
-   - Input: 1x28x28 -> Output: 10-class logits + embeddings
+2) Representation / embeddings
+   - Dataset: Covertype
+   - Input: 54-d feature vector -> Output: 7-class logits + embeddings
    - Loss: cross-entropy
    - Metric: kNN accuracy on embeddings (k=5)
 
-4) Autoencoding / reconstruction
-   - Dataset: MNIST
-   - Input: 1x28x28 -> Output: 1x28x28
+3) Autoencoding / reconstruction
+   - Dataset: Covertype
+   - Input: 54-d feature vector -> Output: 54-d reconstruction
    - Loss: MSE
    - Metric: MSE
 
-5) Generation (single-model)
-   - Dataset: MNIST
-   - Input: fixed noise vector (z=64) paired with each image -> Output: 1x28x28
+4) Generation (single-model)
+   - Dataset: Covertype
+   - Input: fixed noise vector paired with each feature vector -> Output: 54-d reconstruction
    - Loss: MSE
    - Metric: MSE
 
-6) Denoising / restoration
-   - Dataset: MNIST
-   - Input: noisy image -> Output: clean image
+5) Denoising / restoration
+   - Dataset: Covertype
+   - Input: noisy features -> Output: clean features
    - Loss: MSE
    - Metric: MSE
 
-7) Anomaly / novelty detection
-   - Dataset: MNIST (train: digits 0-4, test: digits 5-9)
-   - Input: 1x28x28 -> Output: reconstruction
+6) Anomaly / novelty detection
+   - Dataset: Covertype (normal class vs other classes)
+   - Input: 54-d feature vector -> Output: reconstruction
    - Loss: MSE
    - Metric: AUROC based on reconstruction error
 
-8) Sequence / temporal modeling
-   - Dataset: synthetic sine wave
-   - Input: window of 20 values -> Output: next value
+7) Inverse problems / scientific modeling
+   - Dataset: California Housing
+   - Input: observed features -> Output: held-out features
    - Loss: MSE
    - Metric: MSE
 
-9) Inverse problems / scientific modeling
-   - Dataset: synthetic linear system y = A x + noise
-   - Input: y -> Output: x
-   - Loss: MSE
-   - Metric: MSE
-
-10) Control / optimization approximation
-    - Dataset: synthetic LQR mapping u = -K x
-    - Input: state x -> Output: action u
+8) Control / optimization approximation
+    - Dataset: California Housing
+    - Input: conditioned features -> Output: target-side features
     - Loss: MSE
     - Metric: MSE
 
-11) Clustering / similarity
-    - Dataset: MNIST
-    - Input: 1x28x28 -> Output: embedding
+9) Clustering / similarity
+    - Dataset: Covertype
+    - Input: 54-d feature vector -> Output: embedding
     - Loss: reconstruction MSE (autoencoder)
     - Metric: k-means NMI on embeddings
 
-12) Compression / encoding
-    - Dataset: MNIST
-    - Input: 1x28x28 -> Output: reconstruction
+10) Compression / encoding
+    - Dataset: Covertype
+    - Input: 54-d feature vector -> Output: reconstruction
     - Loss: MSE
     - Metric: MSE, compression ratio (latent/in_dim)
 
-13) Ranking / scoring
-    - Dataset: synthetic scoring (score = w dot x + noise)
+11) Ranking / scoring
+    - Dataset: YearPredictionMSD with California Housing fallback
     - Input: x -> Output: score
     - Loss: MSE
     - Metric: pairwise ranking accuracy
 
-14) Multimodal mapping / fusion
-    - Dataset: MNIST + scalar metadata (digit parity)
-    - Input: [flattened image ; parity scalar] -> Output: 10-class logits
+12) Multimodal mapping / fusion
+    - Dataset: Covertype + scalar metadata (class parity)
+    - Input: [feature vector ; parity scalar] -> Output: 7-class logits
     - Loss: cross-entropy
     - Metric: accuracy
 
-15) Self-supervised / weakly-supervised pretext
-    - Dataset: MNIST rotations (0/90/180/270)
-    - Input: rotated image -> Output: 4-class rotation label
+13) Self-supervised / weakly-supervised pretext
+    - Dataset: Covertype feature permutation prediction
+    - Input: permuted feature vector -> Output: permutation ID
     - Loss: cross-entropy
     - Metric: accuracy
 
-16) Simulation / digital twin
-    - Dataset: linear dynamical system x_{t+1} = A x_t + B u_t
-    - Input: [x_t ; u_t] -> Output: x_{t+1}
+14) Simulation / digital twin
+    - Dataset: California Housing derived transform
+    - Input: feature vector -> Output: synthetic target transform
     - Loss: MSE
     - Metric: MSE
 
-17) Edge / real-time inference
-    - Dataset: MNIST
-    - Input: 1x28x28 -> Output: 10-class logits
-    - Loss: cross-entropy
-    - Metric: accuracy + throughput (samples/sec) in val
-    - Constraint: default max_width=32 for ADP
-
-18) Misc modeling (noise, error, residual, bias, normalization, transfer)
-    - Dataset: synthetic regression with bias
+15) Misc modeling (noise, error, residual, bias, normalization, transfer)
+    - Dataset: California Housing
     - Input: x -> Output: residual (y - baseline linear)
     - Loss: MSE
     - Metric: MSE

@@ -19,6 +19,7 @@ except ImportError:
     # Fallback if utils not found or different structure
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
+from utils.time_series_benchmarks import make_forda_loaders
 
 from utils.adp_introspect import infer_adp_depth, infer_adp_shape, infer_adp_width, can_expand_depth, can_expand_width
 
@@ -362,10 +363,7 @@ def main():
     args = p.parse_args()
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    dl_train, dl_val, dl_test, num_classes = make_forda_loaders(batch_size=32, seed=0)
     
     try:
         model = ModelClass().to(device)

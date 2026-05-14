@@ -14,6 +14,7 @@ from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ign
 from utils.adp_logging import ContinuousLogger
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
+from utils.text_benchmarks import make_ag_news_bow_autoencoder_loaders
 
 # Add root to sys.path for utils
 sys.path.append(str(Path(__file__).resolve().parents[3]))
@@ -27,11 +28,11 @@ except ImportError:
 from utils.adp_introspect import infer_adp_depth, infer_adp_shape, infer_adp_width, can_expand_depth, can_expand_width
 
 # Load baseline
-BASE_PATH = Path(__file__).with_name("nlp_utils_unsup.py").resolve()
+BASE_PATH = Path(__file__).with_name("nlp_ae_stl.py").resolve()
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
 baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
-ModelClass = baseline_module.TextOnlyCSV
+ModelClass = baseline_module.MLPTextAE
 
 # ADP REVIEW (BEFORE REFACTOR)
 # - This file is newly created to implement the ADP algorithms from scratch for the TextOnlyCSV model.
@@ -140,22 +141,31 @@ def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConf
     best_val = float("inf")
     best_state = copy.deepcopy(model.state_dict())
     es_counter = 0
+
+    def _move_batch_to_device(batch):
+        if isinstance(batch, (list, tuple)):
+            if len(batch) == 2 and isinstance(batch[0], (list, tuple)):
+                x0, x1 = batch[0]
+                y = batch[1]
+                x = (x0.to(device), x1.to(device))
+                y = y.to(device)
+                return x, y
+            if len(batch) == 2:
+                x = batch[0].to(device)
+                y = batch[1].to(device)
+                return x, y
+            x = batch[0].to(device)
+            y = batch[1].to(device) if len(batch) > 1 else x
+            return x, y
+        x = batch.to(device)
+        return x, x
     
     # Basic training loop
     for _ in range(acfg.max_epochs):
         model.train()
         # Handle different dataset outputs (tuple vs single)
         for batch in dl_train:
-            if isinstance(batch, (list, tuple)):
-                x = batch[0].to(device)
-                # simple autoencoder or supervised assumption
-                if len(batch) > 1:
-                    y = batch[1].to(device)
-                else:
-                    y = x
-            else:
-                x = batch.to(device)
-                y = x
+            x, y = _move_batch_to_device(batch)
                 
             opt.zero_grad(set_to_none=True)
             try:
@@ -191,12 +201,7 @@ def train_with_early_stopping(model: ModelClass, dl_train, dl_val, acfg: ADPConf
         n = 0
         with torch.no_grad():
              for batch in dl_val:
-                if isinstance(batch, (list, tuple)):
-                    x = batch[0].to(device)
-                    y = batch[1].to(device) if len(batch)>1 else x
-                else:
-                    x = batch.to(device)
-                    y = x
+                x, y = _move_batch_to_device(batch)
                 
                 try: 
                     out = model(x)
@@ -385,12 +390,10 @@ def main():
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    dl_train, dl_val, _, vocab, _ = make_ag_news_bow_autoencoder_loaders(batch_size=64, max_len=256, seed=0, num_workers=0)
     
     try:
-        model = ModelClass().to(device)
+        model = ModelClass(vocab_size=len(vocab), emb_dim=args.width, hidden=[args.width for _ in range(max(1, int(args.depth)))], rep_dim=max(16, args.width // 2)).to(device)
     except:
         print("Could not instantiate model with default args.")
         return

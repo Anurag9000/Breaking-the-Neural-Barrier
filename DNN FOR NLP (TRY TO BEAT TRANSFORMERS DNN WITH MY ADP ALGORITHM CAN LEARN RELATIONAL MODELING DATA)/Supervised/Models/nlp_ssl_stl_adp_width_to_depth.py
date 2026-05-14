@@ -11,6 +11,7 @@ import sys
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
 from utils.adp_logging import ContinuousLogger
+from utils.text_benchmarks import make_ag_news_ssl_loaders
 
 # Load baseline
 BASE_PATH = Path(__file__).with_name("nlp_ssl_stl.py").resolve()
@@ -136,8 +137,14 @@ def restore_arch_and_state(model: MLPTextSSL, snap: Dict[str, Any], device) -> M
     return new_model
 
 
-def train_with_early_stopping(model: MLPTextSSL, data, acfg: ADPConfig, device) -> Tuple[float, Dict[str, Any]]:
-    (train_v1, train_v2), (val_v1, val_v2) = data
+def train_with_early_stopping(
+    model: MLPTextSSL,
+    dl_train,
+    dl_val,
+    acfg: ADPConfig,
+    device,
+    history,
+) -> Tuple[float, Dict[str, Any]]:
     opt = torch.optim.AdamW(model.parameters(), lr=acfg.lr, weight_decay=acfg.weight_decay)
     best_val = float("inf")
     best_state = copy.deepcopy(model.state_dict())
@@ -145,7 +152,7 @@ def train_with_early_stopping(model: MLPTextSSL, data, acfg: ADPConfig, device) 
     
     for _ in range(acfg.max_epochs):
         model.train()
-        for (ids1, len1), (ids2, len2) in zip(train_v1, train_v2):
+        for (ids1, len1), (ids2, len2) in dl_train:
             ids1, len1 = ids1.to(device), len1.to(device)
             ids2, len2 = ids2.to(device), len2.to(device)
             opt.zero_grad(set_to_none=True)
@@ -159,7 +166,7 @@ def train_with_early_stopping(model: MLPTextSSL, data, acfg: ADPConfig, device) 
         with torch.no_grad():
             val_loss = 0.0
             m = 0
-            for (ids1, len1), (ids2, len2) in zip(val_v1, val_v2):
+            for (ids1, len1), (ids2, len2) in dl_val:
                 ids1, len1 = ids1.to(device), len1.to(device)
                 ids2, len2 = ids2.to(device), len2.to(device)
                 val_loss += model((ids1, len1), (ids2, len2), temperature=acfg.temperature).item()
@@ -172,6 +179,8 @@ def train_with_early_stopping(model: MLPTextSSL, data, acfg: ADPConfig, device) 
             es_counter = 0
         else:
             es_counter += 1
+
+        history.append(val_loss)
             
         if es_counter >= acfg.patience:
             break
@@ -179,11 +188,10 @@ def train_with_early_stopping(model: MLPTextSSL, data, acfg: ADPConfig, device) 
     return best_val, best_state
 
 
-def adp_search(model: MLPTextSSL, data, acfg: ADPConfig, device):
-    
-    # Initial training
+def adp_search(model: MLPTextSSL, data, acfg: ADPConfig, device, results_dir: Path | None = None, logger: ContinuousLogger | None = None):
+    dl_train, dl_val = data
+
     from utils.adp_contract import run_module_adp
-    from utils.adp_introspect import infer_adp_shape
 
     best_val, model = run_module_adp(
         globals(),
@@ -192,12 +200,11 @@ def adp_search(model: MLPTextSSL, data, acfg: ADPConfig, device):
         dl_val,
         acfg,
         device,
-        log_loss=locals().get("log_loss", False),
-        log_neurons=locals().get("log_neurons", False),
-        results_dir=locals().get("results_dir"),
-        logger=locals().get("logger"),
+        log_loss=False,
+        log_neurons=False,
+        results_dir=results_dir,
+        logger=logger,
     )
-
     return best_val, model
 
 
@@ -223,16 +230,19 @@ def main():
     p.add_argument("--batch-size", type=int, default=64)
     args = p.parse_args()
 
-    # Placeholder synthetic data (replace with real text pipeline + collate)
-    B, L = 16, 12
-    tok = torch.randint(1, args.vocab_size, (B, L))
-    lens = torch.full((B,), L, dtype=torch.long)
-    v1 = [((tok, lens))] * 4
-    v2 = [((tok, lens))] * 4
-    data = ((v1, v2), (v1, v2))
+    trl, val, test, vocab = make_ag_news_ssl_loaders(
+        batch_size=args.batch_size,
+        max_len=128,
+        seed=0,
+        val_fraction=0.1,
+        word_dropout=0.1,
+        min_freq=2,
+        max_vocab=args.vocab_size,
+    )
+    data = (trl, val)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = MLPTextSSL(vocab_size=args.vocab_size, emb_dim=args.emb_dim, hidden=args.hidden,
+    model = MLPTextSSL(vocab_size=len(vocab), emb_dim=args.emb_dim, hidden=args.hidden,
                        rep_dim=args.rep_dim, proj_dim=args.proj_dim).to(device)
     acfg = ADPConfig(
         adp_mode=args.adp_mode,

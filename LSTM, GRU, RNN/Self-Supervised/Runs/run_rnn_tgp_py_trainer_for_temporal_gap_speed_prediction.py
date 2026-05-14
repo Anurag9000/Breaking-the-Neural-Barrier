@@ -3,25 +3,10 @@ import random
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader
 
-from rnn_tgp import TGPGRU
-
-class ToyTGP(Dataset):
-    def __init__(self, n=40000, T=64, D=16, classes=3, seed=42):
-        rng=np.random.RandomState(seed)
-        self.X=[]; self.y=[]
-        for _ in range(n):
-            speed=rng.randint(0,classes)
-            base=rng.randn(T,D).astype(np.float32)
-            # simulate speed by temporal smoothing extent
-            for t in range(1,T):
-                alpha=0.2+0.3*speed/(classes-1 if classes>1 else 1)
-                base[t]=alpha*base[t-1]+(1-alpha)*base[t]
-            self.X.append(base); self.y.append(speed)
-        self.X=np.stack(self.X,0); self.y=np.array(self.y,np.int64)
-    def __len__(self): return self.X.shape[0]
-    def __getitem__(self,i): return torch.from_numpy(self.X[i]), torch.tensor(self.y[i])
+from rnn_tgp_py_temporal_gap_speed_prediction_gru import TGPGRU
+from _common_forda import make_forda_sequence_loaders, make_multi_transform_batch
 
 class EarlyStopper:
     def __init__(self, patience=10, min_delta=0.0):
@@ -51,23 +36,19 @@ def main():
 
     random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
 
-    ds=ToyTGP(args.n,args.T,args.D,args.classes,args.seed)
-    n_val=int(len(ds)*args.val_split); n_tr=len(ds)-n_val
-    tr_ds,va_ds=random_split(ds,[n_tr,n_val],generator=torch.Generator().manual_seed(args.seed))
-
-    tr=DataLoader(tr_ds,batch_size=args.batch,shuffle=True,drop_last=True)
-    va=DataLoader(va_ds,batch_size=args.batch,shuffle=False,drop_last=False)
+    tr, va, _, _ = make_forda_sequence_loaders(batch_size=args.batch, seed=args.seed, return_index=False)
 
     dev=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    net=TGPGRU(args.D,args.hidden,args.layers,args.classes).to(dev)
+    net=TGPGRU(1,args.hidden,args.layers,3).to(dev)
     opt=torch.optim.AdamW(net.parameters(),lr=args.lr)
     es=EarlyStopper(args.patience,1e-4)
 
     best=None
     for ep in range(1,args.epochs+1):
         net.train(); trl=0.0
-        for x,y in tr:
-            x=x.to(dev); y=y.to(dev)
+        for x in tr:
+            x=x.transpose(1, 2).to(dev)
+            x, y = make_multi_transform_batch(x, num_chunks=4)
             logit=net(x)
             loss=F.cross_entropy(logit,y)
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(net.parameters(),1.0); opt.step()
@@ -76,8 +57,9 @@ def main():
 
         net.eval(); val=0.0
         with torch.no_grad():
-            for x,y in va:
-                x=x.to(dev); y=y.to(dev)
+            for x in va:
+                x=x.transpose(1, 2).to(dev)
+                x, y = make_multi_transform_batch(x, num_chunks=4)
                 logit=net(x)
                 loss=F.cross_entropy(logit,y)
                 val+=loss.item()*x.size(0)

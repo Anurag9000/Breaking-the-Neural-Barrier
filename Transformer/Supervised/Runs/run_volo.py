@@ -1,7 +1,7 @@
 import argparse, os, random
 import torch, torch.nn as nn, torch.optim as optim
-from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+from _common_real_image import infer_num_classes, make_real_image_loaders
 from model_volo import VOLO
 
 
@@ -10,17 +10,7 @@ def seed_all(s=42):
     torch.manual_seed(s); torch.cuda.manual_seed_all(s)
 
 def loaders(dataset, root, img, batch, workers, seed=42):
-    norm=transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225])
-    tr=transforms.Compose([transforms.Resize((img,img)), transforms.RandomResizedCrop(img,scale=(0.8,1.0)),
-                           transforms.RandomHorizontalFlip(), transforms.ToTensor(), norm])
-    ev=transforms.Compose([transforms.Resize((img,img)), transforms.ToTensor(), norm])
-    DS=datasets.CIFAR10 if dataset=='cifar10' else datasets.CIFAR100
-    A=DS(root=root,train=True,download=True,transform=tr)
-    B=DS(root=root,train=True,download=True,transform=ev)
-    T=DS=root and DS(root=root,train=False,download=True,transform=ev)
-    n=int(0.9*len(A)); g=torch.Generator().manual_seed(seed)
-    trS,_=random_split(A,[n,len(A)-n],generator=g); _,vaS=random_split(B,[n,len(B)-n],generator=g)
-    return DataLoader(trS,batch,True,num_workers=workers,pin_memory=True), DataLoader(vaS,batch,False,num_workers=workers,pin_memory=True), DataLoader(T,batch,False,num_workers=workers,pin_memory=True)
+    return make_real_image_loaders(root, batch_size=batch, num_workers=workers, image_size=img)
 
 
 def train(m,dl,dev,crit,opt):
@@ -40,7 +30,7 @@ def evaluate(m,dl,dev,crit):
 
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument('--dataset',default='cifar10',choices=['cifar10','cifar100'])
+    p.add_argument('--dataset',default='imagefolder',choices=['imagefolder'])
     p.add_argument('--data-root',default='./data')
     p.add_argument('--img-size',type=int,default=224)
     p.add_argument('--batch-size',type=int,default=128)
@@ -55,7 +45,7 @@ def main():
 
     seed_all(a.seed); dev=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     tl,vl,te=loaders(a.dataset,a.data_root,a.img_size,a.batch_size,a.workers,a.seed)
-    nc=10 if a.dataset=='cifar10' else 100
+    nc=infer_num_classes(tl)
     m=VOLO(num_classes=nc).to(dev)
     crit=nn.CrossEntropyLoss(); opt=optim.AdamW(m.parameters(),lr=a.lr,weight_decay=a.wd)
     sch=optim.lr_scheduler.CosineAnnealingLR(opt,T_max=a.epochs)

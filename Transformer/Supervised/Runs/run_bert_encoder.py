@@ -1,174 +1,111 @@
 import argparse
-import random
 from pathlib import Path
 
 import torch
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger.nn as nn
-from torch.utils.data import Dataset, DataLoader
+import torch.nn as nn
+
+from utils.adp_logging import ContinuousLogger
+from utils.text_benchmarks import make_ag_news_classification_loaders
 
 from model_bert_encoder import BERTEncoder
-
-# Simple text classification dataset (TSV: "label\ttext") with whitespace tokenization
-class TSVTextCls(Dataset):
-    def __init__(self, path: Path, vocab: dict, max_len: int = 256):
-        self.samples = []
-        self.vocab = vocab
-        self.max_len = max_len
-        with open(path, 'r', encoding='utf-8') as f:
-            for line in f:
-                s = line.rstrip('\n').split('\t')
-                if len(s) < 2:
-                    continue
-                label = int(s[0])
-                text = s[1]
-                self.samples.append((label, text))
-
-    def __len__(self):
-        return len(self.samples)
-
-    def __getitem__(self, idx):
-        return self.samples[idx]
-
-
-def build_vocab(paths, min_freq=1):
-    from collections import Counter
-    cnt = Counter()
-    for p in paths:
-        if not Path(p).exists():
-            continue
-        with open(p, 'r', encoding='utf-8') as f:
-            for line in f:
-                s = line.rstrip('\n').split('\t')
-                if len(s) < 2:
-                    continue
-                text = s[1]
-                cnt.update(text.split())
-    vocab = {"<pad>": 0, "<unk>": 1}
-    for tok, c in cnt.items():
-        if c >= min_freq and tok not in vocab:
-            vocab[tok] = len(vocab)
-    return vocab
-
-
-def collate(batch, vocab: dict, max_len: int):
-    labels, ids = [], []
-    for label, text in batch:
-        labels.append(label)
-        toks = [vocab.get(tok, vocab['<unk>']) for tok in text.split()]
-        toks = toks[:max_len]
-        ids.append(toks)
-    S = max(1, max(len(x) for x in ids))
-    pad = vocab['<pad>']
-    ids = torch.tensor([x + [pad]*(S-len(x)) for x in ids], dtype=torch.long)
-    labels = torch.tensor(labels, dtype=torch.long)
-    return ids, labels
 
 
 def evaluate(model, loader, device):
     model.eval()
-    correct, total = 0, 0
+    correct = 0
+    total = 0
     with torch.no_grad():
         for ids, labels in loader:
-            ids, labels = ids.to(device), labels.to(device)
+            ids = ids.to(device)
+            labels = labels.to(device)
             logits = model(ids)
             pred = logits.argmax(-1)
-            correct += (pred == labels).sum().item()
-            total += labels.numel()
+            correct += int((pred == labels).sum().item())
+            total += int(labels.numel())
     return correct / max(total, 1)
 
 
 def main():
-    p = argparse.ArgumentParser()
-    p.add_argument('--train_tsv', type=str)
-    p.add_argument('--val_tsv', type=str)
-    p.add_argument('--num_classes', type=int, default=2)
-    p.add_argument('--d_model', type=int, default=256)
-    p.add_argument('--nhead', type=int, default=8)
-    p.add_argument('--layers', type=int, default=6)
-    p.add_argument('--ff', type=int, default=1024)
-    p.add_argument('--dropout', type=float, default=0.1)
-    p.add_argument('--max_len', type=int, default=256)
-    p.add_argument('--batch_size', type=int, default=64)
-    p.add_argument('--epochs', type=int, default=10)
-    p.add_argument('--lr', type=float, default=3e-4)
-    p.add_argument('--patience', type=int, default=2)
-    p.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu')
+    p = argparse.ArgumentParser(description="BERT-style encoder on AG News")
+    p.add_argument("--batch_size", type=int, default=64)
+    p.add_argument("--epochs", type=int, default=10)
+    p.add_argument("--lr", type=float, default=3e-4)
+    p.add_argument("--d_model", type=int, default=256)
+    p.add_argument("--nhead", type=int, default=8)
+    p.add_argument("--layers", type=int, default=6)
+    p.add_argument("--ff", type=int, default=1024)
+    p.add_argument("--dropout", type=float, default=0.1)
+    p.add_argument("--max_len", type=int, default=256)
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--val_fraction", type=float, default=0.1)
+    p.add_argument("--min_freq", type=int, default=2)
+    p.add_argument("--max_vocab", type=int, default=50000)
+    p.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     args = p.parse_args()
 
-    # Build vocabulary
-    vocab = build_vocab([args.train_tsv, args.val_tsv]) if args.train_tsv else {"<pad>": 0, "<unk>": 1, "hello": 2, "world": 3}
+    train_loader, val_loader, test_loader, vocab, num_classes = make_ag_news_classification_loaders(
+        batch_size=args.batch_size,
+        max_len=args.max_len,
+        seed=args.seed,
+        val_fraction=args.val_fraction,
+        min_freq=args.min_freq,
+        max_vocab=args.max_vocab,
+    )
 
-    # Datasets (fallback synthetic if TSVs not provided)
-    if args.train_tsv and Path(args.train_tsv).exists():
-        train_ds = TSVTextCls(Path(args.train_tsv), vocab, args.max_len)
-    else:
-        tmp = Path('train_text.tsv')
-        tmp.write_text('\n'.join(['0\thello world']*500 + ['1\tworld hello']*500), encoding='utf-8')
-        train_ds = TSVTextCls(tmp, vocab, args.max_len)
-
-    if args.val_tsv and Path(args.val_tsv).exists():
-        val_ds = TSVTextCls(Path(args.val_tsv), vocab, args.max_len)
-    else:
-        tmpv = Path('val_text.tsv')
-        tmpv.write_text('\n'.join(['0\thello world']*100 + ['1\tworld hello']*100), encoding='utf-8')
-        val_ds = TSVTextCls(tmpv, vocab, args.max_len)
-
-    coll = lambda b: collate(b, vocab, args.max_len)
-    train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, collate_fn=coll)
-    val_loader = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, collate_fn=coll)
-
-    model = BERTEncoder(vocab_size=len(vocab), num_classes=args.num_classes, d_model=args.d_model,
-                        nhead=args.nhead, num_layers=args.layers, dim_feedforward=args.ff,
-                        dropout=args.dropout, max_len=args.max_len, pad_id=0).to(args.device)
+    device = torch.device(args.device)
+    model = BERTEncoder(
+        vocab_size=len(vocab),
+        num_classes=num_classes,
+        d_model=args.d_model,
+        nhead=args.nhead,
+        num_layers=args.layers,
+        dim_feedforward=args.ff,
+        dropout=args.dropout,
+        max_len=args.max_len,
+        pad_id=vocab.pad_idx(),
+    ).to(device)
 
     criterion = nn.CrossEntropyLoss()
     optim = torch.optim.AdamW(model.parameters(), lr=args.lr)
-
     best, bad = 0.0, 0
+    patience = 2
 
-    # Init Logger
-
-    logger = ContinuousLogger(Path('results_run_bert_encoder'), 'run_bert_encoder', 'train')
+    logger = ContinuousLogger(Path("results_run_bert_encoder"), "run_bert_encoder", "train")
 
     for epoch in range(1, args.epochs + 1):
         model.train()
+        train_loss = 0.0
+        total = 0
         for ids, labels in train_loader:
-            ids, labels = ids.to(args.device), labels.to(args.device)
-            optim.zero_grad()
+            ids = ids.to(device)
+            labels = labels.to(device)
+            optim.zero_grad(set_to_none=True)
             logits = model(ids)
             loss = criterion(logits, labels)
             loss.backward()
             nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optim.step()
-        acc = evaluate(model, val_loader, args.device)
-        # Log
+            train_loss += float(loss.item()) * labels.size(0)
+            total += int(labels.size(0))
 
-        msg = f"Epoch {epoch}: val_acc={acc:.4f}"
-
+        val_acc = evaluate(model, val_loader, device)
+        msg = f"Epoch {epoch:03d}: train_loss={train_loss / max(total, 1):.4f} val_acc={val_acc:.4f}"
+        print(msg)
         logger.log_console(msg)
+        logger.log_epoch_stats({"epoch": epoch, "train_loss": train_loss / max(total, 1), "val_acc": val_acc})
 
-        logger.log_epoch_stats({
-
-            "epoch": epoch,
-
-            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
-
-            "train_loss": loss.item() if 'loss' in locals() else 0
-
-        })
-        if acc > best + 1e-6:
-            best = acc
+        if val_acc > best + 1e-6:
+            best = val_acc
             bad = 0
-            torch.save({'model': model.state_dict(), 'vocab': vocab}, 'BERTEncoder_best.pth')
+            torch.save({"model": model.state_dict(), "vocab": vocab}, "BERTEncoder_best.pth")
         else:
             bad += 1
-            if bad >= args.patience:
-                print('Early stopping.')
+            if bad >= patience:
                 break
-    print('Done. Best val acc:', best)
 
-if __name__ == '__main__':
+    test_acc = evaluate(model, test_loader, device)
+    print(f"Done. Best val acc: {best:.4f}, test_acc={test_acc:.4f}")
+
+
+if __name__ == "__main__":
     main()

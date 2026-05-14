@@ -6,21 +6,10 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 from utils.adp_logging import ContinuousLogger
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader
 
 from rnn_cpc import CPCGRU
-
-class ToySeq(Dataset):
-    def __init__(self, n=30000, T=64, D=16, seed=42):
-        rng = np.random.RandomState(seed)
-        self.X = []
-        for _ in range(n):
-            base = rng.randn(T, D).astype(np.float32)
-            base = np.cumsum(base, axis=0) * 0.05
-            self.X.append(base)
-        self.X = np.stack(self.X, axis=0)
-    def __len__(self): return self.X.shape[0]
-    def __getitem__(self, i): return torch.from_numpy(self.X[i])
+from _common_forda import augment_sequence, make_forda_sequence_loaders
 
 class EarlyStopper:
     def __init__(self, patience=10, min_delta=0.0):
@@ -51,15 +40,10 @@ def main():
 
     random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
 
-    ds = ToySeq(args.n, args.T, args.D, args.seed)
-    n_val = int(len(ds)*args.val_split); n_tr = len(ds)-n_val
-    tr_ds, va_ds = random_split(ds, [n_tr, n_val], generator=torch.Generator().manual_seed(args.seed))
-
-    tr = DataLoader(tr_ds, batch_size=args.batch, shuffle=True, drop_last=True)
-    va = DataLoader(va_ds, batch_size=args.batch, shuffle=False, drop_last=False)
+    tr, va, _, _ = make_forda_sequence_loaders(batch_size=args.batch, seed=args.seed, return_index=False)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    net = CPCGRU(args.D, args.hidden, args.proj, args.K, args.layers).to(device)
+    net = CPCGRU(1, args.hidden, args.proj, args.K, args.layers).to(device)
 
     opt = torch.optim.AdamW(net.parameters(), lr=args.lr)
     es = EarlyStopper(args.patience, 1e-4)
@@ -73,7 +57,7 @@ def main():
     for epoch in range(1, args.epochs+1):
         net.train(); tr_loss = 0.0
         for x in tr:
-            x = x.to(device)
+            x = x.transpose(1, 2).to(device)
             h,z = net(x)
             loss = net.nce_loss(h,z)
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(net.parameters(), 1.0); opt.step()
@@ -83,7 +67,7 @@ def main():
         net.eval(); va_loss = 0.0
         with torch.no_grad():
             for x in va:
-                x = x.to(device)
+                x = x.transpose(1, 2).to(device)
                 h,z = net(x)
                 loss = net.nce_loss(h,z)
                 va_loss += loss.item() * x.size(0)

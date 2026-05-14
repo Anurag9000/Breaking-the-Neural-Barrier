@@ -1,88 +1,42 @@
-import torch
-import sys
+from __future__ import annotations
+
+import os
 from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger
+
+import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from core.diffusion_core import DiffusionConfig, BetaSchedule, DiffusionLoss
+
+from core.diffusion_core import BetaSchedule, DiffusionConfig, DiffusionLoss
 from models.ddpm_regress_unet import RegressUNet
+from runs._common_public_benchmarks import VocSegmentationDataset
 
 
-# -----------------------------
-# Dummy Dataset (Regression Example)
-# -----------------------------
-class Dummy(torch.utils.data.Dataset):
-    def __init__(self, n=2048):
-        # Conditioning image (e.g., RGB)
-        self.img = torch.randn(n, 3, 64, 64)
-        # Target to regress (e.g., depth/angle map)
-        self.y = torch.randn(n, 1, 64, 64)
+def main() -> None:
+    root = Path(os.environ.get("BBNB_VOC_ROOT", "./data/VOCdevkit"))
+    dataset = VocSegmentationDataset(root=root, year=os.environ.get("BBNB_VOC_YEAR", "2012"), image_set="train", image_size=256, target_mode="mask")
+    loader = DataLoader(dataset, batch_size=32, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
 
-    def __len__(self):
-        return len(self.img)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = RegressUNet(target_ch=1).to(device)
+    cfg = DiffusionConfig(T=1000, objective="eps")
+    sched = BetaSchedule(cfg.T, cfg.beta_start, cfg.beta_end)
+    lossf = DiffusionLoss(cfg, sched)
+    opt = optim.AdamW(model.parameters(), lr=2e-4)
 
-    def __getitem__(self, i):
-        return self.img[i], self.y[i]
-
-
-# -----------------------------
-# Setup
-# -----------------------------
-loader = DataLoader(Dummy(), batch_size=32, shuffle=True)
-
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model = RegressUNet(target_ch=1).to(device)
-
-cfg = DiffusionConfig(T=1000, objective='eps')
-sched = BetaSchedule(cfg.T, cfg.beta_start, cfg.beta_end)
-lossf = DiffusionLoss(cfg, sched)
-
-opt = optim.AdamW(model.parameters(), lr=2e-4)
+    for epoch in range(3):
+        last_loss = None
+        for x, y in loader:
+            x = x.to(device)
+            y = y.to(device)
+            t = torch.randint(0, cfg.T, (x.size(0),), device=device)
+            loss = lossf(model, y, x, t)
+            opt.zero_grad()
+            loss.backward()
+            opt.step()
+            last_loss = loss.item()
+        print(f"epoch {epoch}: loss {last_loss:.4f}")
 
 
-# -----------------------------
-# Training Loop
-# -----------------------------
-
-# Init Logger
-
-logger = ContinuousLogger(Path('results_run_ddpm_regress_unet'), 'run_ddpm_regress_unet', 'train')
-
-for epoch in range(3):
-    for x, y in loader:
-        x, y = x.to(device), y.to(device)
-
-        # Random diffusion timesteps
-        t = torch.randint(0, cfg.T, (x.size(0),), device=device)
-
-        # Compute loss (model predicts noise or v given y and x)
-        loss = lossf(model, y, x, t)
-
-        # Backpropagation
-        opt.zero_grad()
-        loss.backward()
-        opt.step()
-
-    # Log
-
-
-msg = f"Epoch {epoch}: loss = {loss.item():.4f}"
-
-
-    logger.log_console(msg)
-
-
-    logger.log_epoch_stats({
-
-
-        "epoch": epoch,
-
-
-        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
-
-
-        "train_loss": loss.item() if 'loss' in locals() else 0
-
-
-    })
+if __name__ == "__main__":
+    main()

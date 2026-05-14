@@ -13,17 +13,16 @@ _spec.loader.exec_module(ae_core)
 AutoencoderSSL = ae_core.AutoencoderSSL  # type: ignore
 TrainConfig = ae_core.TrainConfig  # type: ignore
 SearchConfig = ae_core.SearchConfig  # type: ignore
-make_cifar10_ssl_loaders = ae_core.make_cifar10_ssl_loaders  # type: ignore
+make_real_ssl_loaders = ae_core.make_real_ssl_loaders  # type: ignore
 
 
 def run_adp(adp_mode: str, args):
     # Data
-    dl_train, dl_val, _ = make_cifar10_ssl_loaders(
+    dl_train, dl_val, _ = make_real_ssl_loaders(
         data_root=args.data_root,
         batch_size=args.batch_size,
         num_workers=args.num_workers,
         val_split=args.val_split,
-        download=True,
         seed=args.seed,
         two_views=args.two_views,
     )

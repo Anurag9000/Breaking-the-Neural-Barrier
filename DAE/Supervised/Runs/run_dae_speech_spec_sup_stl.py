@@ -6,65 +6,28 @@ from typing import Tuple
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader, Dataset, random_split
+from torch.utils.data import DataLoader
 
 from DAE.Supervised.Models.dae_speech_spec_sup_stl import (
     SupDAESpeechSpec,
     sup_dae_speech_total_neurons,
 )
-
-
-class ToySpeechDataset(Dataset):
-    """
-    Toy spectrogram + label sequences for ASR-style training.
-    """
-
-    def __init__(self, n: int, time: int, freq: int, vocab: int, max_len: int, seed: int):
-        g = torch.Generator().manual_seed(seed)
-        self.spec = torch.randn(n, 1, freq, time, generator=g)
-        lengths = torch.randint(low=max_len // 2, high=max_len, size=(n,), generator=g)
-        labels = []
-        for L in lengths:
-            seq = torch.randint(1, vocab, size=(L,), generator=g)
-            labels.append(seq)
-        self.labels = labels
-        self.vocab = vocab
-
-    def __len__(self) -> int:
-        return len(self.spec)
-
-    def __getitem__(self, idx: int):
-        return self.spec[idx], self.labels[idx]
-
-
-def collate_batch(batch):
-    specs, labels = zip(*batch)
-    specs = torch.stack(specs, dim=0)
-    lengths = torch.tensor([len(l) for l in labels], dtype=torch.long)
-    max_len = int(lengths.max())
-    lab_padded = torch.zeros(len(labels), max_len, dtype=torch.long)
-    for i, l in enumerate(labels):
-        lab_padded[i, : len(l)] = l
-    return specs, lab_padded, lengths
+from utils.audio_benchmarks import make_librispeech_ctc_loaders
 
 
 def make_loaders(
     batch_size: int,
     num_workers: int,
     seed: int,
-) -> Tuple[DataLoader, DataLoader]:
-    ds = ToySpeechDataset(n=2000, time=128, freq=64, vocab=30, max_len=32, seed=seed)
-    n_val = int(len(ds) * 0.1)
-    n_train = len(ds) - n_val
-    g = torch.Generator().manual_seed(seed)
-    ds_train, ds_val = random_split(ds, [n_train, n_val], generator=g)
-    dl_train = DataLoader(
-        ds_train, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True, collate_fn=collate_batch
+) -> Tuple[DataLoader, DataLoader, int]:
+    dl_train, dl_val, _, vocab_size = make_librispeech_ctc_loaders(
+        root="./data/LibriSpeech",
+        batch_size=batch_size,
+        download=True,
+        n_mfcc=64,
+        num_workers=num_workers,
     )
-    dl_val = DataLoader(
-        ds_val, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True, collate_fn=collate_batch
-    )
-    return dl_train, dl_val
+    return dl_train, dl_val, vocab_size
 
 
 def train_one_epoch(
@@ -156,13 +119,13 @@ def main() -> None:
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    dl_train, dl_val = make_loaders(
+    dl_train, dl_val, vocab_size = make_loaders(
         batch_size=args.batch_size,
         num_workers=args.num_workers,
         seed=args.seed,
     )
 
-    model = SupDAESpeechSpec(vocab_size=args.vocab_size, base=args.base, depth=args.depth).to(device)
+    model = SupDAESpeechSpec(vocab_size=vocab_size, base=args.base, depth=args.depth).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
     log_path = out_dir / "training_log.txt"

@@ -2,37 +2,15 @@ import argparse
 import random
 import numpy as np
 import torch
+import torch.nn.functional as F
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger.nn.functional as F
-from torch.utils.data import Dataset, DataLoader, random_split
+from utils.adp_logging import ContinuousLogger
+from torch.utils.data import DataLoader
 
 from rnn_tov import TOVGRU
-
-class ToyTOV(Dataset):
-    def __init__(self, n=40000, T=64, D=16, num_chunks=4, seed=42):
-        rng = np.random.RandomState(seed)
-        self.X = []
-        self.y = []
-        C = num_chunks
-        for _ in range(n):
-            base = rng.randn(T, D).astype(np.float32)
-            base = np.cumsum(base, axis=0) * 0.05
-            if rng.rand() < 0.5:
-                self.X.append(base)
-                self.y.append(1)
-            else:
-                chunks = np.array_split(base, C, axis=0)
-                rng.shuffle(chunks)
-                self.X.append(np.concatenate(chunks, axis=0))
-                self.y.append(0)
-        self.X = np.stack(self.X, axis=0)
-        self.y = np.array(self.y, dtype=np.int64)
-        self.num_chunks = num_chunks
-    def __len__(self): return self.X.shape[0]
-    def __getitem__(self, i):
-        return torch.from_numpy(self.X[i]), torch.tensor(self.y[i])
+from _common_forda import make_binary_order_batch, make_forda_sequence_loaders
 
 class EarlyStopper:
     def __init__(self, patience=10, min_delta=0.0):
@@ -62,15 +40,10 @@ def main():
 
     random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
 
-    ds = ToyTOV(args.n, args.T, args.D, args.chunks, args.seed)
-    n_val = int(len(ds)*args.val_split); n_tr = len(ds)-n_val
-    tr_ds, va_ds = random_split(ds, [n_tr, n_val], generator=torch.Generator().manual_seed(args.seed))
-
-    tr = DataLoader(tr_ds, batch_size=args.batch, shuffle=True, drop_last=True)
-    va = DataLoader(va_ds, batch_size=args.batch, shuffle=False, drop_last=False)
+    tr, va, _, _ = make_forda_sequence_loaders(batch_size=args.batch, seed=args.seed, return_index=False)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    net = TOVGRU(args.D, args.hidden, args.layers, args.chunks).to(device)
+    net = TOVGRU(1, args.hidden, args.layers, args.chunks).to(device)
 
     opt = torch.optim.AdamW(net.parameters(), lr=args.lr)
     es = EarlyStopper(args.patience, 1e-4)
@@ -83,8 +56,9 @@ def main():
 
     for epoch in range(1, args.epochs+1):
         net.train(); tr_loss=0.0
-        for x,y in tr:
-            x=x.to(device); y=y.to(device)
+        for x in tr:
+            x=x.transpose(1, 2).to(device)
+            x,y = make_binary_order_batch(x, num_chunks=args.chunks)
             logit = net(x)
             loss = F.cross_entropy(logit, y)
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(net.parameters(),1.0); opt.step()
@@ -93,8 +67,9 @@ def main():
 
         net.eval(); va_loss=0.0
         with torch.no_grad():
-            for x,y in va:
-                x=x.to(device); y=y.to(device)
+            for x in va:
+                x=x.transpose(1, 2).to(device)
+                x,y = make_binary_order_batch(x, num_chunks=args.chunks)
                 logit = net(x)
                 loss = F.cross_entropy(logit, y)
                 va_loss += loss.item() * x.size(0)

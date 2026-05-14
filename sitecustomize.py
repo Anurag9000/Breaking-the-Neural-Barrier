@@ -61,6 +61,14 @@ if _script_path is not None and _script_path.exists() and _script_path.is_file()
                 f"{_resolved_script} contains synthetic/demo data code and is blocked."
             )
 
+        for _parent in _resolved_script.parents:
+            if _parent.name.lower() == "runs":
+                for _candidate in (_parent.parent / "Models", _parent.parent / "models"):
+                    if _candidate.is_dir():
+                        _candidate_str = str(_candidate)
+                        if _candidate_str not in sys.path:
+                            sys.path.insert(0, _candidate_str)
+
         try:
             import torchvision.datasets as _tvds
         except Exception:

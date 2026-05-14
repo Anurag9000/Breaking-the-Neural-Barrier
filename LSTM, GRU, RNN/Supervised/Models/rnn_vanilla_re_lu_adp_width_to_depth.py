@@ -19,6 +19,7 @@ except ImportError:
     # Fallback if utils not found or different structure
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
+from utils.time_series_benchmarks import make_forda_loaders
 
 # Load baseline
 BASE_PATH = Path(__file__).with_name("rnn_vanilla_re_lu.py").resolve()
