@@ -4,33 +4,15 @@ import random
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms, utils as tvutils
+from torchvision import utils as tvutils
 
 from ddpm_v_model import UNet, DDPMv, DiffCfg, count_parameters
+from runs._common_real_image import make_real_image_loaders
 
 
 def set_seed(seed=42):
     random.seed(seed); torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic=True; torch.backends.cudnn.benchmark=False
-
-
-def build_loaders(data_root, batch_size, val_split=5000, workers=4):
-    mean=(0.5,0.5,0.5); std=(0.5,0.5,0.5)
-    tr_tf = transforms.Compose([
-        transforms.RandomHorizontalFlip(), transforms.RandomCrop(32, padding=4),
-        transforms.ToTensor(), transforms.Normalize(mean,std)
-    ])
-    ev_tf = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean,std)])
-    full = datasets.CIFAR10(root=data_root, train=True, download=True, transform=tr_tf)
-    evalset = datasets.CIFAR10(root=data_root, train=True, download=True, transform=ev_tf)
-    n=len(full); n_val=val_split; n_tr=n-n_val
-    g=torch.Generator().manual_seed(123)
-    tr,_=random_split(full,[n_tr,n_val],generator=g)
-    _,va=random_split(evalset,[n_tr,n_val],generator=g)
-    dl_tr=DataLoader(tr,batch_size=batch_size,shuffle=True,num_workers=workers,pin_memory=True)
-    dl_va=DataLoader(va,batch_size=batch_size,shuffle=False,num_workers=workers,pin_memory=True)
-    return dl_tr, dl_va
 
 
 def train_epoch(model: DDPMv, loader, opt, device):
@@ -74,7 +56,14 @@ def main():
     args=ap.parse_args()
 
     set_seed(42)
-    tr,va=build_loaders(args.data_root,args.batch_size,args.val_split)
+    tr,va,_=make_real_image_loaders(
+        data_root=args.data_root,
+        batch_size=args.batch_size,
+        val_ratio=0.1,
+        test_ratio=0.1,
+        num_workers=4,
+        image_size=32,
+    )
     device=torch.device(args.device)
 
     net=UNet(in_ch=3, base=64, ch_mult=(1,2,4), tdim=256, out_ch=3)

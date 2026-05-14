@@ -1,124 +1,98 @@
 import argparse
 import random
+
 import numpy as np
 import torch
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger.nn as nn
-from torch.utils.data import Dataset, DataLoader, random_split
+import torch.nn as nn
 
+from _common_forda import make_forda_sequence_loaders
 from rnn_apc import APCGRU
 
-class ToyFeat(Dataset):
-    def __init__(self, n=40000, T=64, D=16, seed=42):
-        rng = np.random.RandomState(seed)
-        self.X = []
-        for _ in range(n):
-            base = rng.randn(T, D).astype(np.float32)
-            base = np.convolve([0.8, 0.2], base.ravel(), mode='same').reshape(T, D) if D>1 else base
-            self.X.append(base)
-        self.X = np.stack(self.X, axis=0)
-    def __len__(self): return self.X.shape[0]
-    def __getitem__(self, i): return torch.from_numpy(self.X[i])
 
 class EarlyStopper:
-    def __init__(self, patience=10, min_delta=0.0):
-        self.patience = patience; self.min_delta = min_delta; self.best = float('inf'); self.count = 0
-    def step(self, v):
-        if v < self.best - self.min_delta: self.best=v; self.count=0; return True
-        self.count+=1; return False
-    def should_stop(self): return self.count>=self.patience
+    def __init__(self, patience: int = 10, min_delta: float = 0.0):
+        self.patience = patience
+        self.min_delta = min_delta
+        self.best = float("inf")
+        self.count = 0
+
+    def step(self, value: float) -> bool:
+        if value < self.best - self.min_delta:
+            self.best = value
+            self.count = 0
+            return True
+        self.count += 1
+        return False
+
+    def should_stop(self) -> bool:
+        return self.count >= self.patience
+
+
+def _to_sequence(x: torch.Tensor) -> torch.Tensor:
+    return x.transpose(1, 2).contiguous()
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--epochs', type=int, default=100)
-    ap.add_argument('--patience', type=int, default=15)
-    ap.add_argument('--batch', type=int, default=256)
-    ap.add_argument('--lr', type=float, default=2e-3)
-    ap.add_argument('--hidden', type=int, default=256)
-    ap.add_argument('--layers', type=int, default=1)
-    ap.add_argument('--K', type=int, default=3)
-    ap.add_argument('--T', type=int, default=64)
-    ap.add_argument('--D', type=int, default=16)
-    ap.add_argument('--n', type=int, default=50000)
-    ap.add_argument('--val_split', type=float, default=0.1)
-    ap.add_argument('--seed', type=int, default=42)
-    ap.add_argument('--save', type=str, default='apc_gru_best.pt')
+    ap.add_argument("--epochs", type=int, default=100)
+    ap.add_argument("--patience", type=int, default=15)
+    ap.add_argument("--batch", type=int, default=256)
+    ap.add_argument("--lr", type=float, default=2e-3)
+    ap.add_argument("--hidden", type=int, default=256)
+    ap.add_argument("--layers", type=int, default=1)
+    ap.add_argument("--K", type=int, default=3)
+    ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--save", type=str, default="apc_gru_best.pt")
     args = ap.parse_args()
 
-    random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
 
-    ds = ToyFeat(args.n, args.T, args.D, args.seed)
-    n_val = int(len(ds)*args.val_split); n_tr = len(ds)-n_val
-    tr_ds, va_ds = random_split(ds, [n_tr, n_val], generator=torch.Generator().manual_seed(args.seed))
-
-    tr = DataLoader(tr_ds, batch_size=args.batch, shuffle=True, drop_last=True)
-    va = DataLoader(va_ds, batch_size=args.batch, shuffle=False, drop_last=False)
-
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    net = APCGRU(args.D, args.hidden, args.K, args.layers).to(device)
-
+    train_loader, val_loader, _, _ = make_forda_sequence_loaders(batch_size=args.batch, seed=args.seed)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    net = APCGRU(1, args.hidden, args.K, args.layers).to(device)
     opt = torch.optim.AdamW(net.parameters(), lr=args.lr)
     loss_fn = nn.MSELoss()
     es = EarlyStopper(args.patience, 1e-4)
 
     best = None
+    for epoch in range(1, args.epochs + 1):
+        net.train()
+        train_loss = 0.0
+        for x in train_loader:
+            x = _to_sequence(x).to(device)
+            pred = net(x)
+            loss = loss_fn(pred[:, :-args.K, :], x[:, args.K :, :])
+            opt.zero_grad()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(net.parameters(), 1.0)
+            opt.step()
+            train_loss += loss.item() * x.size(0)
+        train_loss /= len(train_loader.dataset)
 
-    # Init Logger
-
-    logger = ContinuousLogger(Path('results_run_rnn_apc'), 'run_rnn_apc', 'train')
-
-    for epoch in range(1, args.epochs+1):
-        net.train(); tr_loss = 0.0
-        for x in tr:
-            x = x.to(device)
-            yhat = net(x)
-            # align t with t+K: drop last K targets and last K preds appropriately
-            K = args.K
-            pred = yhat[:,:-K,:]
-            tgt = x[:,K:,:]
-            loss = loss_fn(pred, tgt)
-            opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(net.parameters(), 1.0); opt.step()
-            tr_loss += loss.item() * x.size(0)
-        tr_loss /= len(tr.dataset)
-
-        net.eval(); va_loss = 0.0
+        net.eval()
+        val_loss = 0.0
         with torch.no_grad():
-            for x in va:
-                x = x.to(device)
-                yhat = net(x)
-                pred = yhat[:,:-args.K,:]
-                tgt = x[:,args.K:,:]
-                loss = loss_fn(pred, tgt)
-                va_loss += loss.item() * x.size(0)
-        va_loss /= len(va.dataset)
+            for x in val_loader:
+                x = _to_sequence(x).to(device)
+                pred = net(x)
+                loss = loss_fn(pred[:, :-args.K, :], x[:, args.K :, :])
+                val_loss += loss.item() * x.size(0)
+        val_loss /= len(val_loader.dataset)
 
-        improved = es.step(va_loss)
-        if improved:
-            best = {k:v.detach().cpu().clone() for k,v in net.state_dict().items()}
-        # Log
-
-        msg = f"Epoch {epoch:03d} | train {tr_loss:.6f} | val {va_loss:.6f} | best {es.best:.6f}"
-
-        logger.log_console(msg)
-
-        logger.log_epoch_stats({
-
-            "epoch": epoch,
-
-            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
-
-            "train_loss": loss.item() if 'loss' in locals() else 0
-
-        })
+        print(f"Epoch {epoch:03d} | train {train_loss:.6f} | val {val_loss:.6f} | best {es.best:.6f}")
+        if es.step(val_loss):
+            best = {k: v.detach().cpu().clone() for k, v in net.state_dict().items()}
         if es.should_stop():
-            print('Early stopping.'); break
+            print("Early stopping.")
+            break
 
-    if best is not None: net.load_state_dict(best)
+    if best is not None:
+        net.load_state_dict(best)
     torch.save(net.state_dict(), args.save)
     print(f"Saved best model to {args.save}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

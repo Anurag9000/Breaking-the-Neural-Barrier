@@ -201,7 +201,9 @@ def main():
     args = p.parse_args()
 
     tf = transforms.Compose([transforms.ToTensor()])
-    ds = datasets.CIFAR10(root="./data", train=True, download=True, transform=tf)
+    sys.path.append(str(Path(__file__).resolve().parents[1] / "Runs"))
+    from _common_real_image import make_real_image_loaders
+    dl_train, dl_val, _ = make_real_image_loaders("./data", batch_size=8, image_size=32, num_workers=0)
     n_val = int(len(ds) * 0.1)
     n_train = len(ds) - n_val
     train_ds, val_ds = random_split(ds, [n_train, n_val])

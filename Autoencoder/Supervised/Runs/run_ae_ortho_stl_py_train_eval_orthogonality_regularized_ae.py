@@ -5,9 +5,9 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, random_split
-import torchvision as tv
-import torchvision.transforms as T
+from torch.utils.data import DataLoader
+
+from _common_real_image import make_real_image_loaders
 
 from AE_ORTHO_STL import AE_ORTHO_STL, orthogonality_penalty, ae_ortho_total_neurons
 
@@ -17,39 +17,8 @@ from AE_ORTHO_STL import AE_ORTHO_STL, orthogonality_penalty, ae_ortho_total_neu
 # -----------------------------------------------------------------------------
 
 def build_dataloaders(dataset: str, data_dir: str, batch_size: int, num_workers: int, val_frac: float, seed: int):
-    g = torch.Generator().manual_seed(seed)
-
-    if dataset.lower() == 'cifar10':
-        mean, std = (0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616)
-        ds_class = tv.datasets.CIFAR10
-    elif dataset.lower() == 'cifar100':
-        mean, std = (0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)
-        ds_class = tv.datasets.CIFAR100
-    else:
-        raise ValueError('dataset must be cifar10 or cifar100')
-
-    transform_train = T.Compose([
-        T.RandomCrop(32, padding=4),
-        T.RandomHorizontalFlip(),
-        T.ToTensor(),
-        T.Normalize(mean, std),
-    ])
-    transform_test = T.Compose([
-        T.ToTensor(),
-        T.Normalize(mean, std),
-    ])
-
-    train_full = ds_class(root=data_dir, train=True, transform=transform_train, download=True)
-    test_ds = ds_class(root=data_dir, train=False, transform=transform_test, download=True)
-
-    val_size = int(len(train_full) * val_frac)
-    train_size = len(train_full) - val_size
-    train_ds, val_ds = random_split(train_full, [train_size, val_size], generator=g)
-
-    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
-    val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
-    test_loader = DataLoader(test_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
-    return train_loader, val_loader, test_loader
+    del dataset, seed
+    return make_real_image_loaders(data_root=data_dir, batch_size=batch_size, val_ratio=val_frac, num_workers=num_workers, image_size=224)
 
 
 def train_one_epoch(model, loader, opt, device, lam_ortho: float, scaler=None):
@@ -104,7 +73,7 @@ def eval_epoch(model, loader, device, lam_ortho: float):
 def main():
     p = argparse.ArgumentParser()
     # Data/IO
-    p.add_argument('--dataset', type=str, default='cifar10', choices=['cifar10','cifar100'])
+    p.add_argument('--dataset', type=str, default='imagefolder', choices=['imagefolder'])
     p.add_argument('--data_dir', type=str, default='./data')
     p.add_argument('--out_dir', type=str, default='./runs/ae_ortho_stl')
     p.add_argument('--seed', type=int, default=1337)

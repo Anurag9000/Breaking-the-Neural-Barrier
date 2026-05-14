@@ -1,172 +1,132 @@
-import argparse, os, random
-import torch
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger.nn as nn
-from torch.utils.data import Dataset, DataLoader
-from typing import List, Tuple
+from __future__ import annotations
 
+import argparse
+import os
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+from _common_conll2003 import make_conll2003_pos_loaders
 from lstm_tagger_crf import LSTMCRFTagger, LSTMCRFConfig
 
 
-class SyntheticTagging(Dataset):
-    def __init__(self, n: int, vocab_size: int, min_len: int, max_len: int, num_tags: int, pad_idx: int = 0):
-        rng = random.Random(123)
-        self.samples = []
-        for _ in range(n):
-            L = rng.randint(min_len, max_len)
-            x = [rng.randint(1, vocab_size - 1) for _ in range(L)]
-            y = [t % num_tags for t in x]
-            self.samples.append((x, y))
-        self.pad_idx = pad_idx
-        self.num_tags = num_tags
-    def __len__(self):
-        return len(self.samples)
-    def __getitem__(self, i):
-        return self.samples[i]
+class EarlyStopper:
+    def __init__(self, patience: int):
+        self.patience = patience
+        self.best = float("inf")
+        self.bad = 0
+        self.state = None
+
+    def step(self, value: float, model: nn.Module) -> bool:
+        if value < self.best - 1e-7:
+            self.best = value
+            self.bad = 0
+            self.state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
+        else:
+            self.bad += 1
+        return self.bad >= self.patience
+
+    def restore(self, model: nn.Module):
+        if self.state is not None:
+            model.load_state_dict(self.state)
 
 
-def collate_pad(batch: List[Tuple[List[int], List[int]]], pad_idx: int):
-    lengths = torch.tensor([len(x) for x, _ in batch], dtype=torch.long)
-    max_len = int(lengths.max())
-    tokens = torch.full((len(batch), max_len), pad_idx, dtype=torch.long)
-    tags = torch.full((len(batch), max_len), 0, dtype=torch.long)
-    for i, (x, y) in enumerate(batch):
-        L = len(x)
-        tokens[i, :L] = torch.tensor(x, dtype=torch.long)
-        tags[i, :L] = torch.tensor(y, dtype=torch.long)
-    return tokens, lengths, tags
-
-
-def token_acc(paths: List[List[int]], gold: torch.Tensor) -> float:
-    # gold: (B,T) with padded positions zero; we compare only first L positions per path.
-    correct = 0; total = 0
+def token_accuracy(paths, gold, lengths):
+    correct = 0
+    total = 0
     for i, path in enumerate(paths):
-        L = len(path)
-        correct += int((torch.tensor(path) == gold[i, :L]).sum().item())
+        L = int(lengths[i].item())
+        correct += int((torch.tensor(path, device=gold.device) == gold[i, :L]).sum().item())
         total += L
     return correct / max(1, total)
 
 
+def train_epoch(model, loader, opt, device):
+    model.train()
+    total = 0.0
+    n = 0
+    for tokens, lengths, tags in loader:
+        tokens, lengths, tags = tokens.to(device), lengths.to(device), tags.to(device)
+        opt.zero_grad(set_to_none=True)
+        emissions = model(tokens, lengths)
+        loss = model.loss(emissions, tags, lengths)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        opt.step()
+        total += float(loss.item()) * tokens.size(0)
+        n += tokens.size(0)
+    return total / max(1, n)
+
+
+def eval_epoch(model, loader, device):
+    model.eval()
+    total = 0.0
+    n = 0
+    acc = 0.0
+    with torch.no_grad():
+        for tokens, lengths, tags in loader:
+            tokens, lengths, tags = tokens.to(device), lengths.to(device), tags.to(device)
+            emissions = model(tokens, lengths)
+            loss = model.loss(emissions, tags, lengths)
+            total += float(loss.item()) * tokens.size(0)
+            n += tokens.size(0)
+            paths = model.decode(emissions, lengths)
+            acc += token_accuracy(paths, tags, lengths)
+    return total / max(1, n), acc / max(1, len(loader))
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--vocab-size', type=int, default=20000)
-    ap.add_argument('--num-tags', type=int, default=10)
-    ap.add_argument('--min-len', type=int, default=10)
-    ap.add_argument('--max-len', type=int, default=50)
-    ap.add_argument('--train-n', type=int, default=8000)
-    ap.add_argument('--val-n', type=int, default=1000)
-    ap.add_argument('--test-n', type=int, default=1000)
-    ap.add_argument('--emb-dim', type=int, default=128)
-    ap.add_argument('--hidden-dim', type=int, default=256)
-    ap.add_argument('--num-layers', type=int, default=1)
-    ap.add_argument('--dropout', type=float, default=0.1)
-    ap.add_argument('--pad-idx', type=int, default=0)
-    ap.add_argument('--lr', type=float, default=1e-3)
-    ap.add_argument('--weight-decay', type=float, default=1e-2)
-    ap.add_argument('--batch-size', type=int, default=64)
-    ap.add_argument('--max-epochs', type=int, default=30)
-    ap.add_argument('--patience', type=int, default=5)
-    ap.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu')
-    ap.add_argument('--outdir', type=str, default='results_lstm')
+    ap.add_argument("--vocab-size", type=int, default=20000)
+    ap.add_argument("--emb-dim", type=int, default=128)
+    ap.add_argument("--hidden-dim", type=int, default=256)
+    ap.add_argument("--num-layers", type=int, default=1)
+    ap.add_argument("--dropout", type=float, default=0.1)
+    ap.add_argument("--batch-size", type=int, default=64)
+    ap.add_argument("--max-epochs", type=int, default=30)
+    ap.add_argument("--patience", type=int, default=5)
+    ap.add_argument("--lr", type=float, default=1e-3)
+    ap.add_argument("--weight-decay", type=float, default=1e-2)
+    ap.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
+    ap.add_argument("--outdir", type=str, default="results_lstm")
+    ap.add_argument("--seed", type=int, default=123)
     args = ap.parse_args()
 
-    random.seed(123); torch.manual_seed(123)
     os.makedirs(args.outdir, exist_ok=True)
+    torch.manual_seed(args.seed)
 
-    train_ds = SyntheticTagging(args.train_n, args.vocab_size, args.min_len, args.max_len, args.num_tags, pad_idx=args.pad_idx)
-    val_ds = SyntheticTagging(args.val_n, args.vocab_size, args.min_len, args.max_len, args.num_tags, pad_idx=args.pad_idx)
-    test_ds = SyntheticTagging(args.test_n, args.vocab_size, args.min_len, args.max_len, args.num_tags, pad_idx=args.pad_idx)
-
-    collate=lambda b: collate_pad(b, pad_idx=args.pad_idx)
-    train_loader=DataLoader(train_ds,batch_size=args.batch_size,shuffle=True,collate_fn=collate)
-    val_loader=DataLoader(val_ds,batch_size=args.batch_size,shuffle=False,collate_fn=collate)
-    test_loader=DataLoader(test_ds,batch_size=args.batch_size,shuffle=False,collate_fn=collate)
-
-    cfg = LSTMCRFConfig(vocab_size=args.vocab_size, emb_dim=args.emb_dim, hidden_dim=args.hidden_dim,
-                        num_layers=args.num_layers, dropout=args.dropout, num_tags=args.num_tags, pad_idx=args.pad_idx)
+    train_loader, val_loader, test_loader, vocab_size, num_tags = make_conll2003_pos_loaders(
+        batch_size=args.batch_size,
+        vocab_size=args.vocab_size,
+        seed=args.seed,
+    )
+    cfg = LSTMCRFConfig(
+        vocab_size=vocab_size,
+        emb_dim=args.emb_dim,
+        hidden_dim=args.hidden_dim,
+        num_layers=args.num_layers,
+        dropout=args.dropout,
+        num_tags=num_tags,
+        pad_idx=0,
+    )
     model = LSTMCRFTagger(cfg).to(args.device)
-
-    opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-
-    class EarlyStopper:
-        def __init__(self, patience):
-            self.patience=patience; self.best=float('inf'); self.bad=0; self.state=None
-        def step(self, v, m):
-            if v < self.best - 1e-7:
-                self.best=v; self.bad=0; self.state={k:v.detach().cpu().clone() for k,v in m.state_dict().items()}
-            else:
-                self.bad+=1
-            return self.bad>=self.patience
-        def restore(self, m):
-            if self.state is not None: m.load_state_dict(self.state)
-
+    opt = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     es = EarlyStopper(args.patience)
 
-    def run_epoch(loader, train: bool):
-        tot=0.0; n=0
-        if train: model.train()
-        else: model.eval()
-        with torch.set_grad_enabled(train):
-            for tokens, lengths, tags in loader:
-                tokens, lengths, tags = tokens.to(args.device), lengths.to(args.device), tags.to(args.device)
-                emissions = model(tokens, lengths)
-                loss = model.loss(emissions, tags, lengths)
-                if train:
-                    opt.zero_grad(set_to_none=True); loss.backward();
-                    torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
-                tot += float(loss.item()) * tokens.size(0); n += tokens.size(0)
-        return tot/max(1,n)
-
-
-    # Init Logger
-
-
-    logger = ContinuousLogger(Path('results_run_lstm_tagger_crf'), 'run_lstm_tagger_crf', 'train')
-
-
-    for epoch in range(1, args.max_epochs+1):
-        tr = run_epoch(train_loader, True)
-        vl = run_epoch(val_loader, False)
-        stop = es.step(vl, model)
-        # Log
-
-        msg = f'Epoch {epoch:03d} | train_nll={tr:.4f} | val_nll={vl:.4f}'
-
-        logger.log_console(msg)
-
-        logger.log_epoch_stats({
-
-            "epoch": epoch,
-
-            "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
-
-            "train_loss": loss.item() if 'loss' in locals() else 0
-
-        })
-        if stop:
-            print('Early stopping.'); break
+    for epoch in range(1, args.max_epochs + 1):
+        tr = train_epoch(model, train_loader, opt, args.device)
+        vl, vacc = eval_epoch(model, val_loader, args.device)
+        print(f"Epoch {epoch:03d} | train_nll {tr:.4f} | val_nll {vl:.4f} | val_tok_acc {vacc:.4f}")
+        if es.step(vl, model):
+            print("Early stopping.")
+            break
 
     es.restore(model)
+    tl, ta = eval_epoch(model, test_loader, args.device)
+    print(f"TEST | loss {tl:.4f} | token_acc {ta:.4f}")
+    torch.save({"model_state": model.state_dict(), "config": cfg.__dict__, "test_loss": tl, "test_tok_acc": ta}, os.path.join(args.outdir, "lstm_tagger_crf.pt"))
 
-    # Evaluate with Viterbi decoding
-    def decode_acc(loader):
-        acc_total=0.0; batches=0
-        with torch.no_grad():
-            for tokens, lengths, tags in loader:
-                tokens, lengths, tags = tokens.to(args.device), lengths.to(args.device), tags.to(args.device)
-                emissions = model(tokens, lengths)
-                paths = model.decode(emissions, lengths)
-                acc_total += token_acc(paths, tags.cpu())
-                batches += 1
-        return acc_total/max(1,batches)
 
-    test_acc = decode_acc(test_loader)
-    print(f'TEST | viterbi_token_acc={test_acc:.4f}')
-
-    torch.save({'model_state': model.state_dict(), 'config': cfg.__dict__, 'test_token_acc': test_acc},
-               os.path.join(args.outdir, 'lstm_tagger_crf.pt'))
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

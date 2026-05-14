@@ -3,25 +3,10 @@ import random
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader
 
-from rnn_speed import SpeedGRU
-
-class ToySpeed(Dataset):
-    def __init__(self, n=40000, T=64, D=16, classes=3, seed=42):
-        rng=np.random.RandomState(seed)
-        self.X=[]; self.y=[]
-        for _ in range(n):
-            c=rng.randint(0,classes)
-            x=rng.randn(T,D).astype(np.float32)
-            # varying speed: stronger smoothing for higher class id
-            alpha=0.2+0.3*c/max(1,classes-1)
-            for t in range(1,T):
-                x[t]=alpha*x[t-1]+(1-alpha)*x[t]
-            self.X.append(x); self.y.append(c)
-        self.X=np.stack(self.X,0); self.y=np.array(self.y,np.int64)
-    def __len__(self): return self.X.shape[0]
-    def __getitem__(self,i): return torch.from_numpy(self.X[i]), torch.tensor(self.y[i])
+from rnn_speed_py_speed_direction_classification_gru import SpeedGRU
+from _common_forda import make_forda_loaders
 
 class EarlyStopper:
     def __init__(self, patience=10, min_delta=0.0):
@@ -51,15 +36,10 @@ def main():
 
     random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
 
-    ds=ToySpeed(args.n,args.T,args.D,args.classes,args.seed)
-    n_val=int(len(ds)*args.val_split); n_tr=len(ds)-n_val
-    tr_ds,va_ds=random_split(ds,[n_tr,n_val],generator=torch.Generator().manual_seed(args.seed))
-
-    tr=DataLoader(tr_ds,batch_size=args.batch,shuffle=True,drop_last=True)
-    va=DataLoader(va_ds,batch_size=args.batch,shuffle=False,drop_last=False)
+    tr, va, _, num_classes = make_forda_loaders(batch_size=args.batch, seed=args.seed)
 
     dev=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    net=SpeedGRU(args.D,args.hidden,args.layers,args.classes).to(dev)
+    net=SpeedGRU(1,args.hidden,args.layers,num_classes).to(dev)
 
     opt=torch.optim.AdamW(net.parameters(),lr=args.lr)
     es=EarlyStopper(args.patience,1e-4)
@@ -68,7 +48,7 @@ def main():
     for ep in range(1,args.epochs+1):
         net.train(); trl=0.0
         for x,y in tr:
-            x=x.to(dev); y=y.to(dev)
+            x=x.transpose(1, 2).to(dev); y=y.to(dev)
             logit=net(x)
             loss=F.cross_entropy(logit,y)
             opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(net.parameters(),1.0); opt.step()
@@ -78,7 +58,7 @@ def main():
         net.eval(); val=0.0
         with torch.no_grad():
             for x,y in va:
-                x=x.to(dev); y=y.to(dev)
+                x=x.transpose(1, 2).to(dev); y=y.to(dev)
                 logit=net(x)
                 loss=F.cross_entropy(logit,y)
                 val+=loss.item()*x.size(0)

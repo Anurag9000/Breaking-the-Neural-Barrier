@@ -19,8 +19,11 @@ except ImportError:
     # Fallback if utils not found or different structure
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
+from utils.time_series_benchmarks import make_forda_loaders
 
 from utils.adp_introspect import infer_adp_depth, infer_adp_shape, infer_adp_width, can_expand_depth, can_expand_width
+sys.path.append(str(Path(__file__).resolve().parents[1] / "Runs"))
+from _common_conll2003 import make_conll2003_pos_loaders
 
 # Load baseline
 BASE_PATH = Path(__file__).with_name("lstm_tagger_vanilla.py").resolve()
@@ -294,34 +297,9 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     return global_best_val, model, *infer_adp_shape(model)
 
-# Sequence Tagging Data Logic
 def make_loaders(batch_size=32):
-    class SyntheticTaggerData(torch.utils.data.Dataset):
-        def __init__(self, vocab_size, num_tags, num_samples):
-            self.vocab_size = vocab_size
-            self.num_tags = num_tags
-            self.num_samples = num_samples
-        def __len__(self): return self.num_samples
-        def __getitem__(self, idx):
-            l = torch.randint(10, 50, (1,)).item()
-            toks = torch.randint(0, self.vocab_size, (l,))
-            tags = torch.randint(0, self.num_tags, (l,)) # Tag per token
-            return toks, tags
-
-    trainset = SyntheticTaggerData(20000, 10, 1000)
-    valset = SyntheticTaggerData(20000, 10, 200)
-
-    def collate(batch):
-        batch.sort(key=lambda x: len(x[0]), reverse=True)
-        toks, tags = zip(*batch)
-        lengths = torch.tensor([len(t) for t in toks])
-        pad_toks = torch.nn.utils.rnn.pad_sequence(toks, batch_first=True, padding_value=0)
-        pad_tags = torch.nn.utils.rnn.pad_sequence(tags, batch_first=True, padding_value=-1) # -1 for ignore
-        return pad_toks, lengths, pad_tags
-
-    train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, collate_fn=collate)
-    val_loader = DataLoader(valset, batch_size=batch_size, shuffle=False, collate_fn=collate)
-    return train_loader, val_loader
+    train_loader, val_loader, _, vocab_size, num_tags = make_conll2003_pos_loaders(batch_size=batch_size)
+    return train_loader, val_loader, vocab_size, num_tags
 
 def main():
     import argparse
@@ -335,10 +313,10 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     print("Loading tagging data...")
-    dl_train, dl_val = make_loaders(batch_size=32)
+    dl_train, dl_val, vocab_size, num_tags = make_loaders(batch_size=32)
     
     from baseline_module import LSTMTaggerConfig
-    cfg = LSTMTaggerConfig(hidden_dim=args.width, num_layers=args.depth)
+    cfg = LSTMTaggerConfig(hidden_dim=args.width, num_layers=args.depth, vocab_size=vocab_size, num_tags=num_tags)
     model = ModelClass(cfg).to(device)
 
     acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)

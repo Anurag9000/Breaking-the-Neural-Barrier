@@ -1,9 +1,10 @@
 """Runner: Jigsaw-ViT (3x3 tiles, K fixed permutations)"""
 import argparse, torch, torch.optim as optim, random
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torchvision.transforms.functional as TF
 from jigsaw_vit import JigsawViT, JigsawConfig
+from _common_real_image import make_real_image_loaders
 
 # build a fixed set of K permutations of 9 tiles
 def fixed_permutations(K, seed=123):
@@ -18,9 +19,9 @@ def fixed_permutations(K, seed=123):
     return [list(p) for p in list(perms)[:K]]
 
 class JigsawWrapper:
-    def __init__(self, base_tf, perms): self.base=base_tf; self.perms=perms
+    def __init__(self, perms): self.perms=perms
     def __call__(self, img):
-        x=self.base(img)  # tensor CxHxW
+        x=img
         C,H,W=x.shape; gh=gw=3
         th, tw = H//gh, W//gw
         tiles=[x[:, i*th:(i+1)*th, j*tw:(j+1)*tw] for i in range(gh) for j in range(gw)]
@@ -30,43 +31,29 @@ class JigsawWrapper:
         x_perm=torch.cat(rows, dim=1)
         return x_perm, k
 
-class JigsawDataset(torch.utils.data.Dataset):
-    def __init__(self, root, train, dataset, tf):
-        if dataset=='cifar10': self.base=datasets.CIFAR10(root, train=train, download=True)
-        else: self.base=datasets.CIFAR100(root, train=train, download=True)
-        self.tf=tf
-    def __len__(self): return len(self.base)
-    def __getitem__(self, idx):
-        img,_=self.base[idx]; return self.tf(img)
-
-
 def loaders(dataset, data_dir, batch, K, workers=2):
-    mean = (0.4914,0.4822,0.4465) if dataset=='cifar10' else (0.5071,0.4867,0.4408)
-    std  = (0.2470,0.2435,0.2616) if dataset=='cifar10' else (0.2675,0.2565,0.2761)
-    normalize = transforms.Normalize(mean, std)
-    base = transforms.Compose([
-        transforms.RandomResizedCrop(32, scale=(0.8,1.0)),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(), normalize])
     perms=fixed_permutations(K)
-    jig_tf = JigsawWrapper(base, perms)
+    jig_tf = JigsawWrapper(perms)
 
-    full=JigsawDataset(data_dir, True, dataset, jig_tf)
-    val_size=5000; tr_size=len(full)-val_size
-    tr,va=random_split(full,[tr_size,val_size],generator=torch.Generator().manual_seed(42))
+    train_loader, val_loader, test_loader = make_real_image_loaders(data_dir, batch, image_size=32, num_workers=workers)
 
-    test_base = datasets.CIFAR10 if dataset=='cifar10' else datasets.CIFAR100
-    test_raw = test_base(data_dir, train=False, download=True)
-    test=[jig_tf(img) for img,_ in test_raw]
+    class JigsawDataset(torch.utils.data.Dataset):
+        def __init__(self, base):
+            self.base = base
+        def __len__(self):
+            return len(self.base)
+        def __getitem__(self, idx):
+            img, _ = self.base[idx]
+            return jig_tf(img)
 
     def collate(batch):
         xs=[]; ys=[]
         for (x,k) in batch: xs.append(x); ys.append(torch.tensor(k))
         return torch.stack(xs,0), torch.stack(ys,0)
 
-    return DataLoader(tr,batch,True,num_workers=workers,pin_memory=True,collate_fn=collate), \
-           DataLoader(va,batch,False,num_workers=workers,pin_memory=True,collate_fn=collate), \
-           DataLoader(test,batch,False,num_workers=workers,pin_memory=True,collate_fn=collate)
+    return DataLoader(JigsawDataset(train_loader.dataset), batch, True, num_workers=workers, pin_memory=True, collate_fn=collate), \
+           DataLoader(JigsawDataset(val_loader.dataset), batch, False, num_workers=workers, pin_memory=True, collate_fn=collate), \
+           DataLoader(JigsawDataset(test_loader.dataset), batch, False, num_workers=workers, pin_memory=True, collate_fn=collate)
 
 
 def train_epoch(model, loader, device, opt):
@@ -92,7 +79,7 @@ def eval_epoch(model, loader, device):
 
 def main():
     ap=argparse.ArgumentParser()
-    ap.add_argument('--dataset', default='cifar10', choices=['cifar10','cifar100'])
+    ap.add_argument('--dataset', default='imagefolder')
     ap.add_argument('--data_dir', default='./data')
     ap.add_argument('--batch_size', type=int, default=512)
     ap.add_argument('--epochs', type=int, default=200)

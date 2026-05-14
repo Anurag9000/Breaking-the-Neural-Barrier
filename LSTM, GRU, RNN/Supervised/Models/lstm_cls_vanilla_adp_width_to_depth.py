@@ -8,8 +8,7 @@ from typing import List, Optional, Tuple, Dict, Any
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 
 # Add root to sys.path for utils
 sys.path.append(str(Path(__file__).resolve().parents[3]))
@@ -19,6 +18,7 @@ except ImportError:
     # Fallback if utils not found or different structure
     def plot_loss_vs_epoch(*args, **kwargs): pass
     def plot_loss_vs_neurons(*args, **kwargs): pass
+from utils.text_benchmarks import TextClassificationDataset, build_vocab_from_texts, load_ag_news_samples, simple_tokenize
 
 from utils.adp_introspect import infer_adp_depth, infer_adp_shape, infer_adp_width, can_expand_depth, can_expand_width
 
@@ -341,55 +341,38 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     return global_best_val, model, *infer_adp_shape(model)
 
-# Copy make_loaders but adapted for text/LSTM?
-# LSTMClassifier expects (tokens, lengths)
-# But standard Cifar loaders return images. 
-# We should probably stick to Cifar logic as in run_lstm_cls_vanilla.py?
-# Let's check run_lstm_cls_vanilla.py content first? 
-# Proceeding with standard Cifar-seq logic as in other RNN files.
-def make_loaders(batch_size=128, num_workers=0):
-    from torchvision import datasets, transforms
-    from torch.utils.data import DataLoader
-    
-    # We use same logic as run_rnn_vanilla: 32*32*3 flattened or sequenced
-    # BUT LSTMClassifier expects "tokens" (LongTensor).
-    # Ah, the LSTMClassifier in lstm_cls_vanilla.py is for EMBEDDINGS (vocab_size).
-    # It is a NLP model!
-    # We cannot use CIFAR-10 on it directly if it expects vocab indices.
-    
-    # Let's create dummy NLP data for now, or adapt the model.
-    # The Model Class has vocab_size=20000.
-    # We should use IMDB or similar if available, or just synthetic data since we are auditing logic.
-    # User said "fix ANY code which is broken".
-    # Using Cifar on an Embedding-based LSTM is BROKEN.
-    # I will create a synthetic dataset for text classification.
-    
-    class SyntheticTextData(torch.utils.data.Dataset):
-        def __init__(self, vocab_size, num_samples):
-            self.vocab_size = vocab_size
-            self.num_samples = num_samples
-        def __len__(self): return self.num_samples
-        def __getitem__(self, idx):
-            # random seq len 10-50
-            l = torch.randint(10, 50, (1,)).item()
-            toks = torch.randint(0, self.vocab_size, (l,))
-            label = torch.randint(0, 2, (1,)).item()
-            return toks, label
-
-    trainset = SyntheticTextData(20000, 1000)
-    valset = SyntheticTextData(20000, 200)
+def make_loaders(batch_size=128, num_workers=0, seed=0, max_len=256, min_freq=2, max_vocab=50000):
+    train_samples, val_samples, _ = load_ag_news_samples(seed=seed)
+    vocab = build_vocab_from_texts((text for _, text in train_samples), min_freq=min_freq, max_size=max_vocab)
 
     def collate(batch):
-        # Sort by length for packing
-        batch.sort(key=lambda x: len(x[0]), reverse=True)
-        toks, labels = zip(*batch)
-        lengths = torch.tensor([len(t) for t in toks])
-        pad_toks = torch.nn.utils.rnn.pad_sequence(toks, batch_first=True, padding_value=0)
-        labels = torch.tensor(labels)
-        return pad_toks, lengths, labels
+        tokens = []
+        lengths = []
+        labels = []
+        for label, text in batch:
+            ids = vocab.encode_ids(simple_tokenize(text), max_len)
+            tokens.append(ids)
+            lengths.append(max(1, ids.numel()))
+            labels.append(int(label))
+        padded = torch.nn.utils.rnn.pad_sequence(tokens, batch_first=True, padding_value=vocab.pad_idx())
+        lengths_t = torch.tensor(lengths, dtype=torch.long)
+        labels_t = torch.tensor(labels, dtype=torch.long)
+        return padded, lengths_t, labels_t
 
-    train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, collate_fn=collate)
-    val_loader = DataLoader(valset, batch_size=batch_size, shuffle=False, collate_fn=collate)
+    train_loader = DataLoader(
+        TextClassificationDataset(train_samples),
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=num_workers,
+        collate_fn=collate,
+    )
+    val_loader = DataLoader(
+        TextClassificationDataset(val_samples),
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+        collate_fn=collate,
+    )
     return train_loader, val_loader
 
 # Update train loop to handle (toks, lens, y) tuple
@@ -398,6 +381,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--width", type=int, default=64)
     p.add_argument("--depth", type=int, default=2)
+    p.add_argument("--batch-size", type=int, default=128)
     p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
     p.add_argument("--max-epochs", type=int, default=10)
     args = p.parse_args()
@@ -405,12 +389,12 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     print("Loading data...")
-    dl_train, dl_val = make_loaders(batch_size=32)
+    dl_train, dl_val = make_loaders(batch_size=args.batch_size)
     
     # Instantiate initial model
     # Need to import Config
     from baseline_module import LSTMClassifierConfig
-    cfg = LSTMClassifierConfig(hidden_dim=args.width, num_layers=args.depth)
+    cfg = LSTMClassifierConfig(hidden_dim=args.width, num_layers=args.depth, vocab_size=50000, num_classes=4)
     model = ModelClass(cfg).to(device)
 
     acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)

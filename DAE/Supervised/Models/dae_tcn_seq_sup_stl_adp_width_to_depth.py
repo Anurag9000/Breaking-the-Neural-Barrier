@@ -6,11 +6,12 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader, random_split, TensorDataset
+from torch.utils.data import DataLoader
 
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 from utils.adp_logging import ContinuousLogger  # type: ignore
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
+from utils.time_series_benchmarks import make_forda_loaders
 
 from .dae_tcn_seq_sup_stl import SupDAETCNSeq, sup_dae_total_neurons
 
@@ -206,32 +207,6 @@ def train_with_early_stopping(
     return best_val, best_state
 
 
-def make_synthetic_loaders(
-    num_classes: int,
-    seq_len: int,
-    num_train: int,
-    num_val: int,
-    batch_size: int,
-    device: torch.device,
-) -> Tuple[DataLoader, DataLoader]:
-    """
-    Simple synthetic dataset for temporal ADP demo:
-      - Inputs: Gaussian noise sequences in R^{1 x L}
-      - Labels: random integers in [0, num_classes)
-    This keeps the ADP code runnable without a specific real dataset.
-    """
-    x_train = torch.randn(num_train, 1, seq_len)
-    y_train = torch.randint(0, num_classes, (num_train,))
-    x_val = torch.randn(num_val, 1, seq_len)
-    y_val = torch.randint(0, num_classes, (num_val,))
-
-    train_ds = TensorDataset(x_train, y_train)
-    val_ds = TensorDataset(x_val, y_val)
-    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False)
-    return train_loader, val_loader
-
-
 def adp_search(
     model: SupDAETCNSeq,
     dl_train: DataLoader,
@@ -403,12 +378,9 @@ def adp_search(
 def main() -> None:
     import argparse
 
-    p = argparse.ArgumentParser(description="ADP supervised TCN DAE encoder + sequence classifier (synthetic data)")
-    p.add_argument("--num-classes", type=int, default=5)
-    p.add_argument("--seq-len", type=int, default=64)
-    p.add_argument("--n-train", type=int, default=4000)
-    p.add_argument("--n-val", type=int, default=1000)
+    p = argparse.ArgumentParser(description="ADP supervised TCN DAE encoder + sequence classifier on FordA")
     p.add_argument("--batch-size", type=int, default=128)
+    p.add_argument("--data-root", type=str, default="./data")
 
     p.add_argument("--width", type=int, default=32)
     p.add_argument("--depth", type=int, default=3)
@@ -442,17 +414,10 @@ def main() -> None:
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    dl_train, dl_val = make_synthetic_loaders(
-        num_classes=args.num_classes,
-        seq_len=args.seq_len,
-        num_train=args.n_train,
-        num_val=args.n_val,
-        batch_size=args.batch_size,
-        device=device,
-    )
+    dl_train, dl_val, dl_test, num_classes = make_forda_loaders(batch_size=args.batch_size, seed=0)
 
     model = SupDAETCNSeq(
-        num_classes=args.num_classes,
+        num_classes=num_classes,
         in_channels=1,
         width=args.width,
         depth=args.depth,

@@ -9,6 +9,7 @@ import torchvision as tv
 import torchvision.transforms as T
 
 from ae_group_sparse import GroupSparseConvAE, GroupSparseAETrainer
+from _common_real_image import make_real_image_loaders
 
 # -----------------------------
 # Configs ( runner style)
@@ -53,36 +54,7 @@ def set_all_seeds(seed: int):
 
 
 def make_dataloaders(dc: DataConfig):
-    mean = (0.4914, 0.4822, 0.4465)
-    std = (0.2470, 0.2435, 0.2616)
-
-    train_tf = T.Compose([
-        T.RandomCrop(32, padding=4),
-        T.RandomHorizontalFlip(),
-        T.ToTensor(),
-        T.Normalize(mean, std),
-    ])
-
-    eval_tf = T.Compose([
-        T.ToTensor(),
-        T.Normalize(mean, std),
-    ])
-
-    full_train = tv.datasets.CIFAR10(root=dc.root, train=True, download=True, transform=train_tf)
-    N = len(full_train)
-    val_n = int(N * dc.val_split)
-    train_n = N - val_n
-
-    g = torch.Generator().manual_seed(dc.seed)
-    train_set, val_set = random_split(full_train, [train_n, val_n], generator=g)
-
-    test_set = tv.datasets.CIFAR10(root=dc.root, train=False, download=True, transform=eval_tf)
-
-    train_loader = DataLoader(train_set, batch_size=dc.batch_size, shuffle=True, num_workers=dc.num_workers, pin_memory=True)
-    val_loader = DataLoader(val_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=True)
-    test_loader = DataLoader(test_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=True)
-
-    return train_loader, val_loader, test_loader
+    return make_real_image_loaders(dc.root, dc.batch_size, val_ratio=dc.val_split, num_workers=dc.num_workers, image_size=32)
 
 # -----------------------------
 # Main

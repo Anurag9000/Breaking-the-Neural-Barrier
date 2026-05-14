@@ -1,95 +1,38 @@
 import torch
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger
+import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.data import DataLoader
+
 from core.diffusion_core import DiffusionConfig, BetaSchedule, DiffusionLoss
 from models.ddpm_classify_map_unet import ClassifyMapUNet
+from runs._common_real_image import infer_num_classes, make_real_image_loaders
 
 
-# -----------------------------
-# Dummy Dataset (Pixelwise Classification Example)
-# -----------------------------
-class Dummy(torch.utils.data.Dataset):
-    def __init__(self, n=1024, k=4):
-        """
-        Args:
-            n: Number of samples.
-            k: Number of classes (for segmentation map).
-        """
-        self.x = torch.randn(n, 3, 64, 64)  # input RGB images
-        self.k = k
-        self.y = torch.randint(0, k, (n, 64, 64))  # per-pixel class labels
-
-    def __len__(self):
-        return len(self.x)
-
-    def __getitem__(self, i):
-        # Convert integer labels → one-hot class maps
-        y = torch.nn.functional.one_hot(self.y[i], num_classes=self.k)
-        y = y.permute(2, 0, 1).float()  # (k, H, W)
-        return self.x[i], y
+def class_map_from_labels(y, h, w, k):
+    return F.one_hot(y, num_classes=k).view(y.size(0), k, 1, 1).expand(y.size(0), k, h, w).float()
 
 
-# -----------------------------
-# Setup
-# -----------------------------
-loader = DataLoader(Dummy(), batch_size=32, shuffle=True)
+def main():
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    loader, _, _ = make_real_image_loaders(batch_size=32, image_size=64)
+    k = infer_num_classes(loader)
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model = ClassifyMapUNet(num_classes=4).to(device)
+    model = ClassifyMapUNet(num_classes=k).to(device)
+    cfg = DiffusionConfig(T=1000, objective="eps")
+    sched = BetaSchedule(cfg.T, cfg.beta_start, cfg.beta_end)
+    lossf = DiffusionLoss(cfg, sched)
+    opt = optim.AdamW(model.parameters(), lr=2e-4)
 
-cfg = DiffusionConfig(T=1000, objective='eps')
-sched = BetaSchedule(cfg.T, cfg.beta_start, cfg.beta_end)
-lossf = DiffusionLoss(cfg, sched)
-
-opt = optim.AdamW(model.parameters(), lr=2e-4)
-
-
-# -----------------------------
-# Training Loop
-# -----------------------------
-
-# Init Logger
-
-logger = ContinuousLogger(Path('results_run_ddpm_classify_map_unet'), 'run_ddpm_classify_map_unet', 'train')
-
-for epoch in range(3):
-    for x, y in loader:
-        x, y = x.to(device), y.to(device)
-
-        # Random diffusion timesteps
-        t = torch.randint(0, cfg.T, (x.size(0),), device=device)
-
-        # Diffusion loss — model predicts denoised logits given image context
-        loss = lossf(model, y, None, t)
-
-        # Backpropagation
-        opt.zero_grad()
-        loss.backward()
-        opt.step()
-
-    # Log
+    for epoch in range(3):
+        for _, y in loader:
+            y = y.to(device)
+            y_map = class_map_from_labels(y, 64, 64, k).to(device)
+            t = torch.randint(0, cfg.T, (y.size(0),), device=device)
+            loss = lossf(model, y_map, None, t)
+            opt.zero_grad()
+            loss.backward()
+            opt.step()
+        print(f"epoch {epoch}: loss {loss.item():.4f}")
 
 
-msg = f"Epoch {epoch}: loss = {loss.item():.4f}"
-
-
-    logger.log_console(msg)
-
-
-    logger.log_epoch_stats({
-
-
-        "epoch": epoch,
-
-
-        "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
-
-
-        "train_loss": loss.item() if 'loss' in locals() else 0
-
-
-    })
+if __name__ == "__main__":
+    main()

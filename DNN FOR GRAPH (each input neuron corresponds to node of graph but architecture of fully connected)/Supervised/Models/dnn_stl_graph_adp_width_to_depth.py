@@ -382,6 +382,7 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
 def main():
     import argparse
     p = argparse.ArgumentParser()
+    p.add_argument("--dataset", type=str, default="Cora", choices=["Cora","Citeseer","PubMed"])
     p.add_argument("--width", type=int, default=64)
     p.add_argument("--depth", type=int, default=4)
     p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
@@ -389,13 +390,13 @@ def main():
     args = p.parse_args()
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    data, num_classes = load_planetoid(args.dataset)
+    X, y, train_mask, val_mask, test_mask = data
+    dl_train = [data]
+    dl_val = [data]
     
     try:
-        model = ModelClass(depth=args.depth).to(device)
+        model = ModelClass(num_nodes=X.size(0), num_classes=num_classes, hidden=args.width, depth=args.depth).to(device)
     except:
         print("Could not instantiate model with default args.")
         return

@@ -363,9 +363,12 @@ def main():
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    # Real loader for smoke testing
+    tf = transforms.ToTensor()
+    train_ds = datasets.CIFAR10(root="data", train=True, download=True, transform=tf)
+    val_ds = datasets.CIFAR10(root="data", train=False, download=True, transform=tf)
+    dl_train = DataLoader(train_ds, batch_size=8, shuffle=True)
+    dl_val = DataLoader(val_ds, batch_size=8, shuffle=False)
     
     try:
         model = ModelClass().to(device)

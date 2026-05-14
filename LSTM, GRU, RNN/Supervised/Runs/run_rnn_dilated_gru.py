@@ -1,41 +1,22 @@
-import argparse, torch
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
+from __future__ import annotations
+
+import argparse
+import os
+
+import torch
 import torch.nn as nn
 import torch.optim as optim
 from RNN_DilatedGRU import RNN_DilatedGRU
+from _common_real_benchmark import make_caltech256_loaders
 
 
 def make_loaders(batch_size=128):
-    transform_train = transforms.Compose([
-        transforms.RandomCrop(32, padding=4),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-    ])
-    transform_test = transforms.Compose([transforms.ToTensor()])
-    trainset = datasets.CIFAR10('./data', train=True, download=True, transform=transform_train)
-    testset  = datasets.CIFAR10('./data', train=False, download=True, transform=transform_test)
-    n = len(trainset)
-    n_val = n // 10
-    n_train = n - n_val
-    trainset, valset = torch.utils.data.random_split(trainset, [n_train, n_val], generator=torch.Generator().manual_seed(42))
-
-    def collate(batch):
-        xs, ys = [], []
-        for x, y in batch:
-            xs.append(x.permute(1,2,0).reshape(32, -1))
-            ys.append(y)
-        return torch.stack(xs,0), torch.tensor(ys)
-
-    return (
-        DataLoader(trainset, batch_size=batch_size, shuffle=True, collate_fn=collate),
-        DataLoader(valset,   batch_size=batch_size, shuffle=False, collate_fn=collate),
-        DataLoader(testset,  batch_size=batch_size, shuffle=False, collate_fn=collate),
-    )
+    root = os.environ.get("BBNB_CALTECH256_ROOT", "./data/Caltech256")
+    return make_caltech256_loaders(root=root, batch_size=batch_size)
 
 
 def train_eval(model, loaders, device, epochs=40, lr=1e-3, wd=1e-4, patience=7):
-    train_loader, val_loader, test_loader = loaders
+    train_loader, val_loader, test_loader, *_ = loaders
     model.to(device)
     opt = optim.AdamW(model.parameters(), lr=lr, weight_decay=wd)
     ce = nn.CrossEntropyLoss()
@@ -89,7 +70,7 @@ def main():
     torch.manual_seed(args.seed)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     loaders = make_loaders(batch_size=args.batch)
-    model = RNN_DilatedGRU(input_dim=96, hidden_size=args.hidden, num_layers=args.layers, num_classes=10, base=args.base)
+    model = RNN_DilatedGRU(input_dim=192, hidden_size=args.hidden, num_layers=args.layers, num_classes=257, base=args.base)
     train_eval(model, loaders, device, epochs=args.epochs, lr=args.lr, wd=args.wd)
 
 if __name__ == '__main__':

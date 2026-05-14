@@ -1,29 +1,11 @@
 """Runner: Denoising ViT Autoencoder"""
 import argparse, torch, torch.optim as optim
-from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
 from dae_vit import ViTDAE, DAEConfig
+from _common_real_image import make_real_image_loaders
 
 
 def loaders(dataset, data_dir, batch, workers=2):
-    norm = transforms.Normalize((0.4914,0.4822,0.4465) if dataset=='cifar10' else (0.5071,0.4867,0.4408),
-                                (0.2470,0.2435,0.2616) if dataset=='cifar10' else (0.2675,0.2565,0.2761))
-    aug = transforms.Compose([
-        transforms.RandomResizedCrop(32, scale=(0.8,1.0)),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(), norm])
-    plain = transforms.Compose([transforms.ToTensor(), norm])
-    if dataset=='cifar10':
-        full=datasets.CIFAR10(data_dir, train=True, transform=aug, download=True)
-        test=datasets.CIFAR10(data_dir, train=False, transform=plain, download=True)
-    else:
-        full=datasets.CIFAR100(data_dir, train=True, transform=aug, download=True)
-        test=datasets.CIFAR100(data_dir, train=False, transform=plain, download=True)
-    val_size=5000; tr_size=len(full)-val_size
-    tr,va=random_split(full,[tr_size,val_size],generator=torch.Generator().manual_seed(42))
-    return DataLoader(tr,batch,True,num_workers=workers,pin_memory=True), \
-           DataLoader(va,batch,False,num_workers=workers,pin_memory=True), \
-           DataLoader(test,batch,False,num_workers=workers,pin_memory=True)
+    return make_real_image_loaders(data_dir, batch, image_size=32, num_workers=workers)
 
 
 def train_epoch(model, loader, device, opt):
@@ -46,7 +28,7 @@ def eval_epoch(model, loader, device):
 
 def main():
     ap=argparse.ArgumentParser()
-    ap.add_argument('--dataset', default='cifar10', choices=['cifar10','cifar100'])
+    ap.add_argument('--dataset', default='imagefolder')
     ap.add_argument('--data_dir', default='./data')
     ap.add_argument('--batch_size', type=int, default=256)
     ap.add_argument('--epochs', type=int, default=300)

@@ -13,24 +13,21 @@ Files
 - `run_goliath.py`: sequential STL + AE experiment runner with resumable checkpoints
 
 Tasks and default datasets
-- prediction: synthetic regression (20-d -> 1-d)
-- classification: MNIST
-- representation: MNIST (embedding + kNN metric)
-- autoencoding: MNIST (x -> x)
-- generation: MNIST (noise -> image)
-- denoising: MNIST (noisy -> clean)
-- anomaly: MNIST (train 0-4, test 5-9)
-- sequence: synthetic sine wave (window=20 -> next value)
-- inverse: synthetic linear inverse (y -> x)
-- control: synthetic LQR (state -> action)
-- clustering: MNIST (embedding + k-means NMI)
-- compression: MNIST (autoencode + compression ratio)
-- ranking: synthetic score regression (pairwise metric)
-- multimodal: MNIST + parity scalar
-- selfsupervised: MNIST rotation prediction
-- simulation: synthetic linear dynamics
-- edge: MNIST (ADP max width capped at 32)
-- misc: synthetic residual regression
+- prediction: YearPredictionMSD with California Housing fallback
+- representation: Covertype (embedding + kNN metric)
+- autoencoding: Covertype (x -> x)
+- generation: Covertype (noise -> feature reconstruction)
+- denoising: Covertype (noisy -> clean)
+- anomaly: Covertype (train normal class, test normal vs anomaly)
+- inverse: California Housing split into observed vs latent features
+- control: California Housing + target-side feature conditioning
+- clustering: Covertype (embedding + k-means NMI)
+- compression: Covertype (autoencode + compression ratio)
+- ranking: YearPredictionMSD with California Housing fallback
+- multimodal: Covertype + parity scalar
+- selfsupervised: Covertype feature permutation prediction
+- simulation: California Housing synthetic target transform
+- misc: California Housing residual regression
 
 Run one task (STL, fixed architecture)
 ```

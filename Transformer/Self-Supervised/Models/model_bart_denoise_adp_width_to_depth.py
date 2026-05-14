@@ -255,9 +255,11 @@ def main():
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).resolve().parents[1] / "Runs"))
+    from _common_real_image import make_real_image_loaders
+    dl_train, dl_val, _ = make_real_image_loaders("./data", batch_size=8, image_size=32, num_workers=0)
     
     try:
         model = ModelClass(dim=args.width, depth=args.depth).to(device)

@@ -14,6 +14,7 @@ from utils.adp_introspect import can_expand_depth, can_expand_width, infer_adp_d
 
 # Add root to sys.path for utils
 sys.path.append(str(Path(__file__).resolve().parents[3]))
+sys.path.append(str(Path(__file__).resolve().parents[1] / "Runs"))
 try:
     from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons
 except ImportError:
@@ -27,6 +28,7 @@ _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
 baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
 ModelClass = baseline_module.SimpleCodebook
+from _common_real_image import make_real_image_loaders
 
 # ADP REVIEW (BEFORE REFACTOR)
 # - This file is newly created to implement the ADP algorithms from scratch for the SimpleCodebook model.
@@ -361,9 +363,7 @@ def main():
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # Generic loader
-    dl_train = [torch.randn(8, 3, 32, 32) for _ in range(10)] # Dummy
-    dl_val = [torch.randn(8, 3, 32, 32) for _ in range(5)]
+    dl_train, dl_val, _ = make_real_image_loaders("./data", batch_size=8, image_size=32, num_workers=0)
     
     try:
         model = ModelClass(dim=args.width).to(device)

@@ -6,27 +6,13 @@ import torch
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[3]))
-from utils.adp_logging import ContinuousLogger.nn as nn
-from torch.utils.data import Dataset, DataLoader, random_split
+from utils.adp_logging import ContinuousLogger
+import torch.nn as nn
+from torch.utils.data import DataLoader
+
+from utils.time_series_benchmarks import make_forda_sequence_loaders
 
 from rnn_mtm import MaskedTimeModel
-
-class ToySequence(Dataset):
-    def __init__(self, n_samples=20000, T=64, D=16, seed=42):
-        rng = np.random.RandomState(seed)
-        self.X = []
-        for _ in range(n_samples):
-            base = rng.randn(T, D).astype(np.float32)
-            # smooth across time
-            base = np.cumsum(base, axis=0) / np.sqrt(np.arange(1, T+1)[:,None])
-            self.X.append(base)
-        self.X = np.stack(self.X, axis=0)
-
-    def __len__(self):
-        return self.X.shape[0]
-
-    def __getitem__(self, idx):
-        return torch.from_numpy(self.X[idx])
 
 
 def make_mask(B, T, mask_prob, device):
@@ -72,16 +58,12 @@ def main():
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
 
-    ds = ToySequence(n_samples=args.n_samples, T=args.T, D=args.D, seed=args.seed)
-    n_val = int(len(ds) * args.val_split)
-    n_train = len(ds) - n_val
-    train_ds, val_ds = random_split(ds, [n_train, n_val], generator=torch.Generator().manual_seed(args.seed))
-
-    train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, drop_last=True)
-    val_loader = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, drop_last=False)
+    train_base, val_base, _, _ = make_forda_sequence_loaders(batch_size=args.batch_size, seed=args.seed, return_index=False)
+    train_loader = DataLoader(train_base.dataset, batch_size=args.batch_size, shuffle=False, drop_last=True)
+    val_loader = DataLoader(val_base.dataset, batch_size=args.batch_size, shuffle=False, drop_last=False)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    net = MaskedTimeModel(args.D, args.hidden_dim, args.layers).to(device)
+    net = MaskedTimeModel(1, args.hidden_dim, args.layers).to(device)
 
     opt = torch.optim.AdamW(net.parameters(), lr=args.lr)
     loss_fn = nn.MSELoss(reduction='sum')
@@ -98,7 +80,7 @@ def main():
         tr = 0.0
         ntr = 0
         for x in train_loader:
-            x = x.to(device)
+            x = x.transpose(1, 2).to(device)
             B,T,D = x.shape
             mask = make_mask(B,T,args.mask_prob,device)
             x_masked = x.clone()
@@ -123,7 +105,7 @@ def main():
         nva = 0
         with torch.no_grad():
             for x in val_loader:
-                x = x.to(device)
+                x = x.transpose(1, 2).to(device)
                 B,T,D = x.shape
                 mask = make_mask(B,T,args.mask_prob,device)
                 x_masked = x.clone(); x_masked[mask] = 0.0

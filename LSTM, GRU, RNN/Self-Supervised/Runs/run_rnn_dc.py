@@ -3,21 +3,11 @@ import random
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader
+
+from utils.time_series_benchmarks import make_forda_sequence_loaders
 
 from rnn_dc import DCGRU
-
-class ToySeq(Dataset):
-    def __init__(self, n=60000, T=64, D=16, seed=42):
-        rng=np.random.RandomState(seed)
-        self.X=[]
-        for _ in range(n):
-            x=rng.randn(T,D).astype(np.float32)
-            x=np.cumsum(x,axis=0)*0.05
-            self.X.append(x)
-        self.X=np.stack(self.X,0)
-    def __len__(self): return self.X.shape[0]
-    def __getitem__(self,i): return torch.from_numpy(self.X[i])
 
 # very small k-means (L2) for embeddings
 @torch.no_grad()
@@ -66,11 +56,12 @@ def main():
 
     random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
 
-    ds=ToySeq(args.n,args.T,args.D,args.seed)
-    loader=DataLoader(ds,batch_size=args.batch,shuffle=True,drop_last=True)
+    base_train_loader, _, _, _ = make_forda_sequence_loaders(batch_size=args.batch, seed=args.seed, return_index=False)
+    ds = base_train_loader.dataset
+    loader = DataLoader(ds, batch_size=args.batch, shuffle=False, drop_last=True)
 
     dev=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    net=DCGRU(args.D,args.hidden,args.proj,args.layers,args.clusters).to(dev)
+    net=DCGRU(1,args.hidden,args.proj,args.layers,args.clusters).to(dev)
     opt=torch.optim.AdamW(net.parameters(),lr=args.lr)
 
     best=None
@@ -79,7 +70,7 @@ def main():
         feats=[]
         with torch.no_grad():
             for x in DataLoader(ds,batch_size=args.batch,shuffle=False):
-                x=x.to(dev); z=net.features(x); feats.append(z.cpu())
+                x=x.transpose(1, 2).to(dev); z=net.features(x); feats.append(z.cpu())
         feats=torch.cat(feats,0)
         # 2) kmeans to produce pseudo labels
         y, _ = kmeans(feats.to(dev), args.clusters, iters=10)
@@ -90,6 +81,7 @@ def main():
             net.train(); trl=0.0
             i0=0
             for x in loader:
+                x = x.transpose(1, 2)
                 B=x.size(0)
                 lab=y[i0:i0+B]; i0+=B
                 x=x.to(dev); lab=lab.to(dev)
