@@ -23,9 +23,9 @@ MaskedConvAE = baseline_module.MaskedConvAE  # type: ignore
 ConvBNReLU = baseline_module.ConvBNReLU  # type: ignore
 
 # ADP REVIEW (BEFORE REFACTOR)
-# - Modes: width_only/width, depth_only/depth, width_to_depth, depth_to_width, alt_width, alt_depth via ad hoc toggling.
+# ADP REVIEW: delegated to utils.adp_contract forward-only core.
 # - Inner training: train_with_patience ties ES to delta; no separate patience_es; no phys metric.
-# - Width/depth expansions: mutate in place with trials counters; rollback per failure; single delta for both dimensions.
+# ADP REVIEW: delegated to utils.adp_contract forward-only core.
 # - 2D/ALT loops: toggle modes on no improvement; lack forward-only expansion and context-end restore per updated spec.
 # - Missing snapshot/restore abstractions and distinct width/depth failure handling aligned to new forward-only rule.
 
@@ -191,148 +191,23 @@ def train_with_patience(model: MaskedConvAE, dl_train, dl_val, acfg: ADPConfig, 
 
 
 def adp_search(model: MaskedConvAE, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
-    results_dir.mkdir(parents=True, exist_ok=True)
-    val_history: List[float] = []
-    improvements: List[tuple[int, float]] = []
-    def can_widen(widths: List[int]) -> bool:
-        return max(widths) + acfg.ex_k <= acfg.max_width and total_neurons(model) < acfg.max_neurons
+    from utils.adp_contract import run_module_adp
+    from utils.adp_introspect import infer_adp_shape
 
-    def can_deepen(widths: List[int]) -> bool:
-        return len(widths) + 1 <= acfg.max_depth and (total_neurons(model) + widths[-1]) <= acfg.max_neurons
+    best_val, model = run_module_adp(
+        globals(),
+        model,
+        dl_train,
+        dl_val,
+        acfg,
+        device,
+        log_loss=locals().get("log_loss", False),
+        log_neurons=locals().get("log_neurons", False),
+        results_dir=locals().get("results_dir"),
+        logger=locals().get("logger"),
+    )
 
-    inner_val = train_with_patience(model, dl_train, dl_val, acfg, device, val_history)
-    best_val, best_state = inner_val, copy.deepcopy(model.state_dict())
-    best_widths = list(model.widths)
-    improvements.append((total_neurons(model), inner_val))
-    pw, pd = acfg.trials_width, acfg.trials_depth
-    mode = acfg.adp_mode
-
-    def width_search(local_model: MaskedConvAE, initial_val=None, initial_state=None, log_improvement: bool = False):
-        local_best_val = initial_val
-        local_best_state = initial_state
-        local_best_widths = list(local_model.widths)
-        if local_best_val is None or local_best_state is None:
-            local_best_val, local_best_state = train_with_patience(local_model, dl_train, dl_val, acfg, device, val_history), copy.deepcopy(local_model.state_dict())
-        width_failure_count = 0
-        while width_failure_count < patience_width_exp and can_widen(local_model.widths):
-            widen_all(local_model, acfg.ex_k, acfg.max_width)
-            val = train_with_patience(local_model, dl_train, dl_val, acfg, device, val_history)
-            if val < local_best_val - acfg.delta:
-                local_best_val = val
-                local_best_state = copy.deepcopy(local_model.state_dict())
-                local_best_widths = list(local_model.widths)
-                width_failure_count = 0
-                if log_improvement:
-                    improvements.append((total_neurons(local_model), local_best_val))
-            else:
-                width_failure_count += 1
-        local_model.widths = local_best_widths
-        rebuild_decoder(local_model, local_best_widths)
-        local_model.load_state_dict(local_best_state)
-        return local_model, local_best_val, local_best_state, local_best_widths
-
-    def depth_search(local_model: MaskedConvAE, initial_val=None, initial_state=None, log_improvement: bool = False):
-        local_best_val = initial_val
-        local_best_state = initial_state
-        local_best_widths = list(local_model.widths)
-        if local_best_val is None or local_best_state is None:
-            local_best_val, local_best_state = train_with_patience(local_model, dl_train, dl_val, acfg, device, val_history), copy.deepcopy(local_model.state_dict())
-        depth_failure_count = 0
-        while depth_failure_count < patience_depth_exp and can_deepen(local_model.widths):
-            append_depth(local_model)
-            val = train_with_patience(local_model, dl_train, dl_val, acfg, device, val_history)
-            if val < local_best_val - acfg.delta:
-                local_best_val = val
-                local_best_state = copy.deepcopy(local_model.state_dict())
-                local_best_widths = list(local_model.widths)
-                depth_failure_count = 0
-                if log_improvement:
-                    improvements.append((total_neurons(local_model), local_best_val))
-            else:
-                depth_failure_count += 1
-        local_model.widths = local_best_widths
-        rebuild_decoder(local_model, local_best_widths)
-        local_model.load_state_dict(local_best_state)
-        return local_model, local_best_val, local_best_state, local_best_widths
-
-    improved = True
-    while improved:
-        improved = False
-        if mode in ("width_only","width"):
-            model, best_val, best_state, best_widths = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
-        elif mode in ("depth_only","depth"):
-            model, best_val, best_state, best_widths = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
-        elif mode == "depth_to_width":
-            model, best_val, best_state, best_widths = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
-            depth_failure_count = 0
-            while depth_failure_count < patience_depth_exp and can_deepen(best_widths):
-                append_depth(model)
-                cand_model, cand_val, cand_state, cand_widths = width_search(model, log_improvement=False)
-                if cand_val < best_val - acfg.delta:
-                    best_val = cand_val; best_state = cand_state; best_widths = cand_widths; depth_failure_count = 0; model = cand_model; model.load_state_dict(best_state); improvements.append((total_neurons(model), best_val))
-                else:
-                    depth_failure_count += 1
-            improved = True
-        elif mode == "width_to_depth":
-            model, best_val, best_state, best_widths = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
-            width_failure_count = 0
-            while width_failure_count < patience_width_exp and can_widen(best_widths):
-                widen_all(model, acfg.ex_k, acfg.max_width)
-                cand_model, cand_val, cand_state, cand_widths = depth_search(model, log_improvement=False)
-                if cand_val < best_val - acfg.delta:
-                    best_val = cand_val; best_state = cand_state; best_widths = cand_widths; width_failure_count = 0; model = cand_model; model.load_state_dict(best_state); improvements.append((total_neurons(model), best_val))
-                else:
-                    width_failure_count += 1
-            improved = True
-        elif mode == "alt_depth":
-            depth_saturated = False; width_saturated = False; phase = "depth"
-            while not (depth_saturated and width_saturated):
-                if phase == "depth":
-                    model, phase_val, phase_state, phase_widths = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
-                    if phase_val < best_val:
-                        best_val = phase_val; best_state = phase_state; best_widths = phase_widths; depth_saturated = False; improvements.append((total_neurons(model), best_val))
-                    else:
-                        depth_saturated = True
-                    model.widths = best_widths; rebuild_decoder(model, best_widths); model.load_state_dict(best_state); phase = "width"
-                else:
-                    model, phase_val, phase_state, phase_widths = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
-                    if phase_val < best_val:
-                        best_val = phase_val; best_state = phase_state; best_widths = phase_widths; width_saturated = False; improvements.append((total_neurons(model), best_val))
-                    else:
-                        width_saturated = True
-                    model.widths = best_widths; rebuild_decoder(model, best_widths); model.load_state_dict(best_state); phase = "depth"
-            improved = True
-        elif mode == "alt_width":
-            depth_saturated = False; width_saturated = False; phase = "width"
-            while not (depth_saturated and width_saturated):
-                if phase == "width":
-                    model, phase_val, phase_state, phase_widths = width_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
-                    if phase_val < best_val:
-                        best_val = phase_val; best_state = phase_state; best_widths = phase_widths; width_saturated = False; improvements.append((total_neurons(model), best_val))
-                    else:
-                        width_saturated = True
-                    model.widths = best_widths; rebuild_decoder(model, best_widths); model.load_state_dict(best_state); phase = "depth"
-                else:
-                    model, phase_val, phase_state, phase_widths = depth_search(model, initial_val=best_val, initial_state=best_state, log_improvement=True)
-                    if phase_val < best_val:
-                        best_val = phase_val; best_state = phase_state; best_widths = phase_widths; depth_saturated = False; improvements.append((total_neurons(model), best_val))
-                    else:
-                        depth_saturated = True
-                    model.widths = best_widths; rebuild_decoder(model, best_widths); model.load_state_dict(best_state); phase = "width"
-            improved = True
-        else:
-            raise ValueError(f"Unsupported ADP mode: {mode}")
-        if mode in ("width_only","depth_only","width","depth"):
-            break
-
-    model.widths = best_widths
-    rebuild_decoder(model, best_widths)
-    model.load_state_dict(best_state)
-    if log_loss:
-        plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
-    if log_neurons and improvements:
-        plot_loss_vs_neurons([n for n, _ in improvements], [v for _, v in improvements], results_dir / "loss_vs_neurons.png", title=f"{BASE_PATH.stem} ({acfg.adp_mode})")
-    return best_val, model, best_widths
+    return best_val, model, list(getattr(model, "widths", []))
 
 
 def main():
@@ -376,7 +251,7 @@ if __name__ == "__main__":
 
 
 # ADP REVIEW (AFTER REFACTOR)
-# - Mode: width_only / width -> ADP_WIDTH_ONLY with forward-only expansions (no rollback per failure, restore best at end).
+# ADP REVIEW: delegated to utils.adp_contract forward-only core.
 # - Mode: depth_only / depth -> ADP_DEPTH_ONLY forward-only depth search with patience_depth_exp.
 # - Mode: depth_to_width -> ADP_DEPTH_OUTER_WIDTH_INNER forward-only outer depth; inner width search forward-only; restore global best after loop.
 # - Mode: width_to_depth -> ADP_WIDTH_OUTER_DEPTH_INNER forward-only outer width; inner depth forward-only; restore global best after loop.
