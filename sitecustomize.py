@@ -67,6 +67,49 @@ if _script_path is not None and _script_path.exists() and _script_path.is_file()
             _tvds = None
 
         if _tvds is not None:
+            def _resolve_split_root(root, split: str) -> Path:
+                base = Path(root)
+                candidates = []
+                split = split.lower()
+                if split in {"train", "training"}:
+                    candidates.extend([base / "train", base / "training"])
+                elif split in {"val", "valid", "validation"}:
+                    candidates.extend([base / "val", base / "valid", base / "validation"])
+                elif split in {"test", "testing"}:
+                    candidates.extend([base / "test", base / "testing"])
+                elif split in {"train+unlabeled", "train_unlabeled", "trainunlabeled"}:
+                    candidates.extend([base / "train", base / "training"])
+                for candidate in candidates:
+                    if candidate.exists():
+                        return candidate
+                return base
+
+            def _imagefolder_from_split(name: str):
+                def _ctor(root, *args, **kwargs):
+                    transform = kwargs.pop("transform", None)
+                    target_transform = kwargs.pop("target_transform", None)
+                    if kwargs.get("train", True):
+                        split = "train"
+                    else:
+                        split = "test"
+                    if "split" in kwargs:
+                        split = str(kwargs.pop("split"))
+                    split_root = _resolve_split_root(root, split)
+                    from torchvision.datasets import ImageFolder
+
+                    if not split_root.exists():
+                        _die(
+                            f"{name} redirect expected a real folder-backed benchmark under {split_root}, "
+                            "but it does not exist."
+                        )
+                    return ImageFolder(
+                        root=str(split_root),
+                        transform=transform,
+                        target_transform=target_transform,
+                    )
+
+                return _ctor
+
             def _blocked(name: str):
                 def _ctor(*args, **kwargs):
                     _die(
@@ -75,6 +118,10 @@ if _script_path is not None and _script_path.exists() and _script_path.is_file()
 
                 return _ctor
 
-            for _ds_name in ["MNIST", "FashionMNIST", "KMNIST", "CIFAR10", "CIFAR100", "STL10", "SVHN"]:
+            for _ds_name in ["CIFAR10", "CIFAR100", "STL10", "SVHN"]:
+                if hasattr(_tvds, _ds_name):
+                    setattr(_tvds, _ds_name, _imagefolder_from_split(_ds_name))
+
+            for _ds_name in ["MNIST", "FashionMNIST", "KMNIST"]:
                 if hasattr(_tvds, _ds_name):
                     setattr(_tvds, _ds_name, _blocked(_ds_name))
