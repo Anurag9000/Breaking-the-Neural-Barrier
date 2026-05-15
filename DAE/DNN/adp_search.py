@@ -210,10 +210,23 @@ def adp_search(
     logger: Optional[ContinuousLogger] = None,
     measure_throughput: bool = False,
     batch_controller=None,
+    max_candidates: Optional[int] = None,
 ):
-    best_val, best_state, _ = train_with_early_stopping(
-        model, task, cfg, device, logger, measure_throughput, batch_controller=batch_controller
-    )
+    candidate_evals = 0
+
+    def train_candidate(curr_model: MLP):
+        nonlocal candidate_evals
+        if max_candidates is not None and candidate_evals >= int(max_candidates):
+            return None
+        candidate_evals += 1
+        return train_with_early_stopping(
+            curr_model, task, cfg, device, logger, measure_throughput, batch_controller=batch_controller
+        )
+
+    first_run = train_candidate(model)
+    if first_run is None:
+        return float("inf"), model
+    best_val, best_state, _ = first_run
     model.load_state_dict(best_state)
 
     global_best_val = best_val
@@ -233,9 +246,10 @@ def adp_search(
         if logger is not None:
             logger.log_console(f"[PHASE][WIDTH] start widths={curr_model.hidden_widths}")
 
-        local_val, local_state, _ = train_with_early_stopping(
-            curr_model, task, cfg, device, logger, measure_throughput, batch_controller=batch_controller
-        )
+        first_local = train_candidate(curr_model)
+        if first_local is None:
+            return curr_model, global_best_val, global_best_snap
+        local_val, local_state, _ = first_local
         local_best_val = local_val
         local_best_snap = snapshot_arch_and_state(curr_model, local_state)
 
@@ -253,9 +267,10 @@ def adp_search(
             if logger is not None:
                 logger.log_console(f"[EXPAND][WIDTH] {prev_widths} -> {curr_model.hidden_widths}")
 
-            v, s, _ = train_with_early_stopping(
-                curr_model, task, cfg, device, logger, measure_throughput, batch_controller=batch_controller
-            )
+            next_run = train_candidate(curr_model)
+            if next_run is None:
+                break
+            v, s, _ = next_run
             if v < local_best_val - cfg.delta:
                 local_best_val = v
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
@@ -276,9 +291,10 @@ def adp_search(
         if logger is not None:
             logger.log_console(f"[PHASE][DEPTH] start widths={curr_model.hidden_widths}")
 
-        local_val, local_state, _ = train_with_early_stopping(
-            curr_model, task, cfg, device, logger, measure_throughput, batch_controller=batch_controller
-        )
+        first_local = train_candidate(curr_model)
+        if first_local is None:
+            return curr_model, global_best_val, global_best_snap
+        local_val, local_state, _ = first_local
         local_best_val = local_val
         local_best_snap = snapshot_arch_and_state(curr_model, local_state)
 
@@ -296,9 +312,10 @@ def adp_search(
             if logger is not None:
                 logger.log_console(f"[EXPAND][DEPTH] depth {prev_depth} -> {len(curr_model.hidden_widths)}")
 
-            v, s, _ = train_with_early_stopping(
-                curr_model, task, cfg, device, logger, measure_throughput, batch_controller=batch_controller
-            )
+            next_run = train_candidate(curr_model)
+            if next_run is None:
+                break
+            v, s, _ = next_run
             if v < local_best_val - cfg.delta:
                 local_best_val = v
                 local_best_snap = snapshot_arch_and_state(curr_model, s)
