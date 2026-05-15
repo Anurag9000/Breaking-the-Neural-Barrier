@@ -47,6 +47,17 @@ PER_TASK_BATCH_SIZES = {
     "misc": 32768,
 }
 
+GOLIATH_ADP_PHASES = [
+    ("ae_alt_width", "alt_width"),
+    ("ae_alt_depth", "alt_depth"),
+    ("ae_width_only", "width_only"),
+    ("ae_depth_only", "depth_only"),
+    ("ae_width_to_depth", "width_to_depth"),
+    ("ae_depth_to_width", "depth_to_width"),
+]
+
+GOLIATH_PHASE_ORDER = [name for name, _ in GOLIATH_ADP_PHASES] + ["stl"]
+
 
 @dataclass
 class RunConfig:
@@ -302,10 +313,8 @@ def base_stl_hidden(task: Task, cfg: RunConfig) -> List[int]:
     return [width for _ in range(depth)]
 
 
-def alt_start_hidden(cfg: RunConfig) -> List[int]:
-    depth = max(1, int(cfg.alt_start_depth))
-    width = max(2, int(cfg.alt_start_width))
-    return [width for _ in range(depth)]
+def adp_seed_hidden() -> List[int]:
+    return [2, 2]
 
 
 def default_batch_size_for_task(task_name: str) -> int:
@@ -801,9 +810,10 @@ def ensure_phase_state(phase_root: Path, mode: str) -> Dict[str, Any]:
     state_path = phase_root / "search_state.json"
     if state_path.exists():
         return read_json(state_path)
+    initial_phase = "width" if mode in ["width_only", "alt_width", "width_to_depth"] else "depth"
     state = {
         "mode": mode,
-        "current_phase": "width" if mode in ["width_only", "alt_width"] else "depth",
+        "current_phase": initial_phase,
         "width_fail": 0,
         "depth_fail": 0,
         "best_val": 1e30,
@@ -843,6 +853,21 @@ def infer_hidden_from_checkpoint(candidate_dir: Path) -> List[int]:
         raise ValueError(f"Checkpoint at {candidate_dir} does not contain model weights")
     _, hidden_widths, _, _ = infer_model_signature_from_state_dict(state_dict)
     return hidden_widths
+
+
+def phase_mode(phase_name: str) -> Optional[str]:
+    if phase_name == "stl":
+        return None
+    for name, mode in GOLIATH_ADP_PHASES:
+        if phase_name == name:
+            return mode
+    raise ValueError(f"Unknown phase: {phase_name}")
+
+
+def phase_seed_hidden(phase_name: str, task: Task, cfg: RunConfig) -> List[int]:
+    if phase_name == "stl":
+        return base_stl_hidden(task, cfg)
+    return adp_seed_hidden()
 
 
 def run_stl_phase(
@@ -981,7 +1006,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
         next_candidate_index = max(int(p.name.split("_")[1]) for p in candidate_dirs) + 1
     else:
         next_candidate_index = int(state.get("candidate_index", 0))
-    current_phase = state.get("current_phase", "width" if mode == "alt_width" else mode.split("_")[0])
+    current_phase = state.get("current_phase", "width" if mode in ["width_only", "alt_width", "width_to_depth"] else "depth")
     global_best_val = float(state.get("best_val", 1e30))
     width_fail = int(state.get("width_fail", 0))
     depth_fail = int(state.get("depth_fail", 0))
@@ -1103,6 +1128,111 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                         save_phase_state(phase_root, state)
                         continue
                     next_arch = [int(w) for w in next_model.hidden_widths]
+            elif mode == "alt_depth":
+                if current_phase == "depth":
+                    if not can_deepen(current_base, cfg):
+                        depth_fail = int(cfg.patience)
+                        state.update({"depth_fail": depth_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "width"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_model = expand_depth(current_base, int(cfg.max_depth))
+                    if next_model is None:
+                        depth_fail = int(cfg.patience)
+                        state.update({"depth_fail": depth_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "width"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_arch = [int(w) for w in next_model.hidden_widths]
+                else:
+                    if not can_widen(current_base, cfg):
+                        width_fail = int(cfg.patience)
+                        state.update({"width_fail": width_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "depth"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_model = expand_width(current_base, 1, int(cfg.max_width))
+                    if next_model is None:
+                        width_fail = int(cfg.patience)
+                        state.update({"width_fail": width_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "depth"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_arch = [int(w) for w in next_model.hidden_widths]
+            elif mode == "width_to_depth":
+                if current_phase == "width":
+                    if not can_widen(current_base, cfg):
+                        width_fail = int(cfg.patience)
+                        state.update({"width_fail": width_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "depth"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_model = expand_width(current_base, 1, int(cfg.max_width))
+                    if next_model is None:
+                        width_fail = int(cfg.patience)
+                        state.update({"width_fail": width_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "depth"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_arch = [int(w) for w in next_model.hidden_widths]
+                else:
+                    if not can_deepen(current_base, cfg):
+                        depth_fail = int(cfg.patience)
+                        state.update({"depth_fail": depth_fail})
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_model = expand_depth(current_base, int(cfg.max_depth))
+                    if next_model is None:
+                        depth_fail = int(cfg.patience)
+                        state.update({"depth_fail": depth_fail})
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_arch = [int(w) for w in next_model.hidden_widths]
+            elif mode == "depth_to_width":
+                if current_phase == "depth":
+                    if not can_deepen(current_base, cfg):
+                        depth_fail = int(cfg.patience)
+                        state.update({"depth_fail": depth_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "width"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_model = expand_depth(current_base, int(cfg.max_depth))
+                    if next_model is None:
+                        depth_fail = int(cfg.patience)
+                        state.update({"depth_fail": depth_fail})
+                        save_phase_state(phase_root, state)
+                        current_phase = "width"
+                        state["current_phase"] = current_phase
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_arch = [int(w) for w in next_model.hidden_widths]
+                else:
+                    if not can_widen(current_base, cfg):
+                        width_fail = int(cfg.patience)
+                        state.update({"width_fail": width_fail})
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_model = expand_width(current_base, 1, int(cfg.max_width))
+                    if next_model is None:
+                        width_fail = int(cfg.patience)
+                        state.update({"width_fail": width_fail})
+                        save_phase_state(phase_root, state)
+                        continue
+                    next_arch = [int(w) for w in next_model.hidden_widths]
             else:
                 raise ValueError(f"Unknown mode: {mode}")
 
@@ -1182,7 +1312,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
 
         next_candidate_index += 1
 
-        if mode == "alt_width":
+        if mode in ["alt_width", "alt_depth"]:
             current_phase = "depth" if current_phase == "width" else "width"
 
         state.update(
@@ -1204,7 +1334,11 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
             break
         if mode == "depth_only" and depth_fail >= int(cfg.patience):
             break
-        if mode == "alt_width" and width_fail >= int(cfg.patience) and depth_fail >= int(cfg.patience):
+        if mode in ["alt_width", "alt_depth"] and width_fail >= int(cfg.patience) and depth_fail >= int(cfg.patience):
+            break
+        if mode == "width_to_depth" and current_phase == "depth" and depth_fail >= int(cfg.patience):
+            break
+        if mode == "depth_to_width" and current_phase == "width" and width_fail >= int(cfg.patience):
             break
 
         candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
@@ -1256,49 +1390,22 @@ def run_task_pipeline(task_name: str, cfg: RunConfig, run_root: Path, device) ->
 
     task_summary: Dict[str, Any] = {"task": task.name, "phases": []}
     base_hidden = base_stl_hidden(task, cfg)
-    alt_hidden = alt_start_hidden(cfg)
 
-    if "stl" in cfg.phases:
-        task_summary["phases"].append(run_stl_phase(task, task_root, cfg, device, base_hidden))
-
-    if "ae_alt_width" in cfg.phases:
+    for phase_name in GOLIATH_PHASE_ORDER:
+        if phase_name not in cfg.phases:
+            continue
+        if phase_name == "stl":
+            task_summary["phases"].append(run_stl_phase(task, task_root, cfg, device, base_hidden))
+            continue
         task_summary["phases"].append(
             run_growth_phase(
                 task,
                 task_root,
                 cfg,
                 device,
-                alt_hidden,
-                "ae_alt_width",
-                "alt_width",
-                reconstruct=True,
-            )
-        )
-
-    if "ae_width_only" in cfg.phases:
-        task_summary["phases"].append(
-            run_growth_phase(
-                task,
-                task_root,
-                cfg,
-                device,
-                base_hidden,
-                "ae_width_only",
-                "width_only",
-                reconstruct=True,
-            )
-        )
-
-    if "ae_depth_only" in cfg.phases:
-        task_summary["phases"].append(
-            run_growth_phase(
-                task,
-                task_root,
-                cfg,
-                device,
-                base_hidden,
-                "ae_depth_only",
-                "depth_only",
+                adp_seed_hidden(),
+                phase_name,
+                phase_mode(phase_name) or "width_only",
                 reconstruct=True,
             )
         )
@@ -1309,46 +1416,20 @@ def run_task_pipeline(task_name: str, cfg: RunConfig, run_root: Path, device) ->
 
 def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phase_name: str, batch_controller: Optional[AdaptiveBatchController] = None) -> Dict[str, Any]:
     base_hidden = base_stl_hidden(task, cfg)
-    alt_hidden = alt_start_hidden(cfg)
-
     if phase_name == "stl":
         return run_stl_phase(task, task_root, cfg, device, base_hidden, batch_controller=batch_controller)
-    if phase_name == "ae_alt_width":
+    if phase_name in [name for name, _ in GOLIATH_ADP_PHASES]:
         return run_growth_phase(
             task,
             task_root,
             cfg,
             device,
-            alt_hidden,
-            "ae_alt_width",
-            "alt_width",
+            adp_seed_hidden(),
+            phase_name,
+            phase_mode(phase_name) or "width_only",
             reconstruct=True,
             batch_controller=batch_controller,
-            )
-    if phase_name == "ae_width_only":
-        return run_growth_phase(
-            task,
-            task_root,
-            cfg,
-            device,
-            base_hidden,
-            "ae_width_only",
-            "width_only",
-            reconstruct=True,
-            batch_controller=batch_controller,
-            )
-    if phase_name == "ae_depth_only":
-        return run_growth_phase(
-            task,
-            task_root,
-            cfg,
-            device,
-            base_hidden,
-            "ae_depth_only",
-            "depth_only",
-            reconstruct=True,
-            batch_controller=batch_controller,
-            )
+        )
     raise ValueError(f"Unknown phase: {phase_name}")
 
 
@@ -1364,7 +1445,12 @@ def main() -> None:
     p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
     p.add_argument("--run-root", type=str, default=None)
     p.add_argument("--tasks", type=str, nargs="+", default=["all"])
-    p.add_argument("--phases", type=str, nargs="+", default=["ae_alt_width", "ae_width_only", "ae_depth_only", "stl"])
+    p.add_argument(
+        "--phases",
+        type=str,
+        nargs="+",
+        default=["ae_width_only", "ae_depth_only", "ae_width_to_depth", "ae_depth_to_width", "ae_alt_width", "ae_alt_depth", "stl"],
+    )
     p.add_argument("--batch-size", type=int, default=32768, help="Global batch-size default/override. The adaptive controller will shrink this if VRAM pressure rises.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
@@ -1484,7 +1570,7 @@ def main() -> None:
         )
         task_summaries[task_name] = {"task": task.name, "phases": []}
 
-    phase_order = [phase for phase in ["ae_alt_width", "ae_width_only", "ae_depth_only", "stl"] if phase in cfg.phases]
+    phase_order = [phase for phase in GOLIATH_PHASE_ORDER if phase in cfg.phases]
 
     try:
         for phase_name in phase_order:
@@ -1495,20 +1581,7 @@ def main() -> None:
                 batch_controller = task_batch_controllers[task_name]
                 log.log_console(f"--- Task start: {task_name} ---")
                 refresh_task_loaders(task, batch_controller.current_batch_size)
-                if phase_name == "stl":
-                    phase_summary = run_phase_for_task(task, task_root, cfg, device, phase_name, batch_controller=batch_controller)
-                else:
-                    phase_summary = run_growth_phase(
-                        task,
-                        task_root,
-                        cfg,
-                        device,
-                        alt_start_hidden(cfg) if phase_name == "ae_alt_width" else base_stl_hidden(task, cfg),
-                        phase_name,
-                        "alt_width" if phase_name == "ae_alt_width" else ("width_only" if phase_name == "ae_width_only" else "depth_only"),
-                        reconstruct=True,
-                        batch_controller=batch_controller,
-                    )
+                phase_summary = run_phase_for_task(task, task_root, cfg, device, phase_name, batch_controller=batch_controller)
                 task_summaries[task_name]["phases"].append(phase_summary)
                 write_json(task_root / "task_summary.json", task_summaries[task_name])
                 append_csv_row(
