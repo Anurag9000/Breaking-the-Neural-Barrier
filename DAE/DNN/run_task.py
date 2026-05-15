@@ -29,7 +29,7 @@ def main() -> None:
         choices=["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth", "width", "depth"],
     )
     p.add_argument("--hidden", type=int, nargs="+", default=[50, 50])
-    p.add_argument("--batch-size", type=int, default=2048)
+    p.add_argument("--batch-size", type=int, default=32768)
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
     p.add_argument("--trials-width", type=int, default=0)

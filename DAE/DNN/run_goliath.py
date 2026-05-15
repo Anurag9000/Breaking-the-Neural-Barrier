@@ -30,21 +30,21 @@ DEFAULT_MAX_EPOCHS = 99999999999999999999999999999999999999999999999999999999999
 DEFAULT_VRAM_BUDGET_GB = 5.5
 
 PER_TASK_BATCH_SIZES = {
-    "prediction": 2048,
-    "ranking": 2048,
-    "representation": 1024,
-    "autoencoding": 1024,
-    "generation": 1024,
-    "denoising": 1024,
-    "anomaly": 1024,
-    "clustering": 1024,
-    "compression": 1024,
-    "multimodal": 1024,
-    "selfsupervised": 1024,
-    "inverse": 512,
-    "control": 512,
-    "simulation": 512,
-    "misc": 512,
+    "prediction": 32768,
+    "ranking": 32768,
+    "representation": 32768,
+    "autoencoding": 32768,
+    "generation": 32768,
+    "denoising": 32768,
+    "anomaly": 32768,
+    "clustering": 32768,
+    "compression": 32768,
+    "multimodal": 32768,
+    "selfsupervised": 32768,
+    "inverse": 32768,
+    "control": 32768,
+    "simulation": 32768,
+    "misc": 32768,
 }
 
 
@@ -309,7 +309,7 @@ def alt_start_hidden(cfg: RunConfig) -> List[int]:
 
 
 def default_batch_size_for_task(task_name: str) -> int:
-    return int(PER_TASK_BATCH_SIZES.get(task_name.lower(), 1024))
+    return int(PER_TASK_BATCH_SIZES.get(task_name.lower(), 32768))
 
 
 def batch_size_for_task(task_name: str, override: int) -> int:
@@ -1365,7 +1365,7 @@ def main() -> None:
     p.add_argument("--run-root", type=str, default=None)
     p.add_argument("--tasks", type=str, nargs="+", default=["all"])
     p.add_argument("--phases", type=str, nargs="+", default=["stl", "ae_alt_width", "ae_width_only", "ae_depth_only"])
-    p.add_argument("--batch-size", type=int, default=0, help="Global batch-size override. Leave at 0 to use per-task defaults tuned for each benchmark family.")
+    p.add_argument("--batch-size", type=int, default=32768, help="Global batch-size default/override. The adaptive controller will shrink this if VRAM pressure rises.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--stl-width", type=int, default=128)
