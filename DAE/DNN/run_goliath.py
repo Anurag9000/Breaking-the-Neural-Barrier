@@ -417,6 +417,22 @@ def load_checkpoint(path: Path, device) -> Dict[str, Any]:
     return torch.load(path, map_location=device)
 
 
+def infer_model_signature_from_state_dict(state_dict: Dict[str, Any]) -> Tuple[int, List[int], int, bool]:
+    linear_shapes: List[Tuple[int, int]] = []
+    use_bn = False
+    for key, value in state_dict.items():
+        if torch.is_tensor(value) and value.ndim == 2:
+            linear_shapes.append((int(value.shape[0]), int(value.shape[1])))
+        if "running_mean" in key or "running_var" in key:
+            use_bn = True
+    if not linear_shapes:
+        raise ValueError("Could not infer MLP architecture from checkpoint state dict")
+    in_dim = int(linear_shapes[0][1])
+    hidden_widths = [int(shape[0]) for shape in linear_shapes[:-1]]
+    out_dim = int(linear_shapes[-1][0])
+    return in_dim, hidden_widths, out_dim, use_bn
+
+
 def phase_metadata(
     *,
     task: Task,
@@ -462,10 +478,35 @@ def candidate_completed(candidate_dir: Path) -> bool:
 
 
 def load_candidate_model(candidate_dir: Path, device) -> Tuple[MLP, Dict[str, Any], Dict[str, Any]]:
-    meta = read_json(candidate_dir / "metadata.json")
+    meta_path = candidate_dir / "metadata.json"
     ckpt = load_checkpoint(candidate_dir / "checkpoint_best.pt", device)
-    model = make_model(meta["model"]["in_dim"], meta["model"]["hidden_widths"], meta["model"]["out_dim"], meta["model"]["use_bn"]).to(device)
-    model.load_state_dict(ckpt["best_state"])
+    state_dict = ckpt.get("best_state") or ckpt.get("model_state")
+    if state_dict is None:
+        raise ValueError(f"Checkpoint at {candidate_dir} does not contain model weights")
+
+    if meta_path.exists():
+        meta = read_json(meta_path)
+        model = make_model(
+            meta["model"]["in_dim"],
+            meta["model"]["hidden_widths"],
+            meta["model"]["out_dim"],
+            meta["model"]["use_bn"],
+        ).to(device)
+    else:
+        in_dim, hidden_widths, out_dim, use_bn = infer_model_signature_from_state_dict(state_dict)
+        model = make_model(in_dim, hidden_widths, out_dim, use_bn).to(device)
+        meta = {
+            "candidate_dir": str(candidate_dir),
+            "model": {
+                "in_dim": int(in_dim),
+                "hidden_widths": [int(w) for w in hidden_widths],
+                "out_dim": int(out_dim),
+                "use_bn": bool(use_bn),
+            },
+            "source": "inferred_from_checkpoint",
+        }
+
+    model.load_state_dict(state_dict)
     return model, meta, ckpt
 
 
@@ -792,8 +833,16 @@ def can_deepen(model: MLP, cfg: RunConfig) -> bool:
 
 
 def infer_hidden_from_checkpoint(candidate_dir: Path) -> List[int]:
-    meta = read_json(candidate_dir / "metadata.json")
-    return [int(w) for w in meta["model"]["hidden_widths"]]
+    meta_path = candidate_dir / "metadata.json"
+    if meta_path.exists():
+        meta = read_json(meta_path)
+        return [int(w) for w in meta["model"]["hidden_widths"]]
+    ckpt = load_checkpoint(candidate_dir / "checkpoint_best.pt", device="cpu")
+    state_dict = ckpt.get("best_state") or ckpt.get("model_state")
+    if state_dict is None:
+        raise ValueError(f"Checkpoint at {candidate_dir} does not contain model weights")
+    _, hidden_widths, _, _ = infer_model_signature_from_state_dict(state_dict)
+    return hidden_widths
 
 
 def run_stl_phase(
@@ -953,10 +1002,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
     def current_base_model() -> MLP:
         latest = latest_completed_candidate(phase_root)
         if latest is not None:
-            meta = read_json(latest / "metadata.json")
-            base = make_model(meta["model"]["in_dim"], meta["model"]["hidden_widths"], meta["model"]["out_dim"], meta["model"]["use_bn"]).to(device)
-            ckpt = load_checkpoint(latest / "checkpoint_best.pt", device)
-            base.load_state_dict(ckpt["best_state"])
+            base, _, _ = load_candidate_model(latest, device)
             return base
         return make_reconstruction_model(task, base_hidden, cfg.use_bn).to(device) if reconstruct else make_stl_model(task, base_hidden, cfg.use_bn).to(device)
 
