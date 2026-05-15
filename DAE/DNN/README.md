@@ -23,6 +23,18 @@ Files
 - `run_goliath.py`: sequential STL + ADP experiment runner with resumable
   checkpoints
 
+`run_goliath.py` exposes six ADP phases plus STL:
+- `ae_width_only`
+- `ae_depth_only`
+- `ae_width_to_depth`
+- `ae_depth_to_width`
+- `ae_alt_width`
+- `ae_alt_depth`
+- `stl`
+
+All ADP phases start from a fixed `2x2` seed and preserve the best checkpoint
+found during search, not just the last epoch.
+
 Tasks and default benchmark mappings
 - prediction: YearPredictionMSD
 - representation: Covertype
