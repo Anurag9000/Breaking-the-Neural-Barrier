@@ -143,7 +143,3 @@ def main():
     logger.log_console(f"Done. Best val={best_val} w={width} d={depth}")
     logger.close()
     print(f"[ADP Denoise AE STL] mode={args.adp_mode} best_val={best_val:.6f} width={width} depth={depth}")
-
-
-if __name__ == "__main__":
-    main()

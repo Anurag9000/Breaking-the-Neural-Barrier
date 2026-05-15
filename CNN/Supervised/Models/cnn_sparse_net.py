@@ -174,8 +174,3 @@ def make_sparsenet_cifar(growth_rate: int = 12, layers_per_block: int = 16, comp
                           drop_rate: float = 0.0, num_classes: int = 10, in_channels: int = 3) -> SparseNetCIFAR:
     return SparseNetCIFAR(growth_rate=growth_rate, layers_per_block=layers_per_block, compression=compression,
                           drop_rate=drop_rate, num_classes=num_classes, in_channels=in_channels)
-
-if __name__ == "__main__":
-    m = make_sparsenet_cifar(growth_rate=12, layers_per_block=16, compression=0.5, drop_rate=0.0, num_classes=10)
-    y = m(torch.randn(2,3,32,32))
-    print(y.shape)  # (2,10)

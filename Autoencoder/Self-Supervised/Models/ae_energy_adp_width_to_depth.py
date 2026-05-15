@@ -230,7 +230,3 @@ def main():
                      max_neurons=args.max_neurons, max_epochs=args.max_epochs)
     best_val, model, widths = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     print(f"[ADP Energy AE] mode={args.adp_mode} best_val={best_val:.6f} widths={widths} depth={len(widths)}")
-
-
-if __name__ == "__main__":
-    main()

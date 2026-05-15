@@ -18,10 +18,3 @@ class APCGRU(nn.Module):
         # predict x_{t+K} from h_t
         yhat = self.head(h)
         return yhat  # (B,T,D); runner will align target at t+K
-
-if __name__ == '__main__':
-    B,T,D=2,16,8
-    net = APCGRU(D, 64, K=3)
-    x = torch.randn(B,T,D)
-    yhat = net(x)
-    print(yhat.shape)

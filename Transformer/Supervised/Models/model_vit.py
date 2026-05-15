@@ -112,8 +112,3 @@ class VisionTransformer(nn.Module):
         x = self.norm(x)
         cls = x[:, 0]  # CLS token
         return self.head(cls)
-
-if __name__ == "__main__":
-    m = VisionTransformer(img_size=224, patch_size=16, num_classes=10, embed_dim=192, depth=12, num_heads=3)
-    y = m(torch.randn(2,3,224,224))
-    print(y.shape)

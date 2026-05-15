@@ -161,9 +161,3 @@ def make_resnetd_cifar(depth: int = 18, num_classes: int = 10, in_channels: int 
         return ResNetD_CIFAR(BottleneckD, [3,4,6,3], num_classes=num_classes, in_channels=in_channels)
     else:
         raise ValueError("Supported depths for ResNet-D: 18, 34, 50")
-
-if __name__ == "__main__":
-    for d in [18,34,50]:
-        m = make_resnetd_cifar(depth=d, num_classes=10)
-        y = m(torch.randn(2,3,32,32))
-        print(d, y.shape)

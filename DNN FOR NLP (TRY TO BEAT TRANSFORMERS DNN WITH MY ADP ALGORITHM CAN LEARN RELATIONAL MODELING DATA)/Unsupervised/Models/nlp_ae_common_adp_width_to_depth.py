@@ -325,7 +325,3 @@ def main():
                      max_neurons=args.max_neurons, max_epochs=args.max_epochs, vocab_size=vocab_size)
     best, model = adp_search(model, dl_train, dl_val, acfg, device)
     print(f"[ADP NLP AE] mode={args.adp_mode} best_val={best:.6f} hidden={model.hidden} depth={len(model.hidden)+1}")
-
-
-if __name__ == "__main__":
-    main()

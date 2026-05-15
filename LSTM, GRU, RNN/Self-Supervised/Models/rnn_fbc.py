@@ -16,10 +16,3 @@ class FBCGRU(nn.Module):
         h = h.mean(dim=1)
         logit = self.head(h)
         return logit.squeeze(-1)
-
-if __name__ == '__main__':
-    B,T,D=4,32,8
-    net = FBCGRU(D, 64)
-    x = torch.randn(B,T,D)
-    y = net(x)
-    print(y.shape)

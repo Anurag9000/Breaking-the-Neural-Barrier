@@ -246,7 +246,3 @@ def main():
                      holes_per_image=args.holes_per_image, min_hole_frac=args.min_hole_frac, max_hole_frac=args.max_hole_frac)
     best = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     print(f"[ADP Inpaint AE] mode={args.adp_mode} best_val={best:.6f} widths={model.widths} depth={len(model.widths)}")
-
-
-if __name__ == "__main__":
-    main()

@@ -97,8 +97,3 @@ class WideResNet(nn.Module):
 
 def make_wrn_cifar(depth: int = 28, widen_factor: int = 10, num_classes: int = 10, in_channels: int = 3, p_drop: float = 0.0) -> WideResNet:
     return WideResNet(depth=depth, widen_factor=widen_factor, num_classes=num_classes, in_channels=in_channels, p_drop=p_drop)
-
-if __name__ == "__main__":
-    m = make_wrn_cifar(depth=28, widen_factor=10, num_classes=10, p_drop=0.3)
-    y = m(torch.randn(2,3,32,32))
-    print(y.shape)  # (2,10)

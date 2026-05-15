@@ -16,10 +16,3 @@ class TOVGRU(nn.Module):
         h,_ = self.encoder(x)
         h = h.mean(dim=1)
         return self.head(h)
-
-if __name__ == '__main__':
-    B,T,D=4,64,8
-    net=TOVGRU(D,64)
-    x=torch.randn(B,T,D)
-    y=net(x)
-    print(y.shape)

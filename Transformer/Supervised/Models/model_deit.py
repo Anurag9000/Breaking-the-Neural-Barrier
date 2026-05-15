@@ -17,8 +17,3 @@ class DeiT(nn.Module):
 
     def forward(self, x):
         return self.backbone(x)
-
-if __name__ == "__main__":
-    m = DeiT(img_size=224, patch_size=16, num_classes=10, embed_dim=384, depth=12, num_heads=6)
-    y = m(torch.randn(2,3,224,224))
-    print(y.shape)

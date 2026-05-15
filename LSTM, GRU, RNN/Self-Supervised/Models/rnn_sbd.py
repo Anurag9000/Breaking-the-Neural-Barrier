@@ -10,9 +10,3 @@ class SBDGRU(nn.Module):
     def forward(self, x):
         h,_=self.encoder(x)
         return self.head(h).squeeze(-1)  # (B,T)
-
-if __name__=='__main__':
-    B,T,D=4,64,8
-    net=SBDGRU(D,64)
-    x=torch.randn(B,T,D)
-    print(net(x).shape)

@@ -11,9 +11,3 @@ class SpeedGRU(nn.Module):
         h,_=self.encoder(x)
         h=h.mean(dim=1)
         return self.head(h)
-
-if __name__=='__main__':
-    B,T,D=8,64,16
-    net=SpeedGRU(D,64,num_classes=3)
-    x=torch.randn(B,T,D)
-    print(net(x).shape)

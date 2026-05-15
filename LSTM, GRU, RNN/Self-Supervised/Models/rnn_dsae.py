@@ -43,14 +43,3 @@ class GRUDenoisingAutoencoder(nn.Module):
     def decode(self, h0: torch.Tensor, dec_inp: torch.Tensor) -> torch.Tensor:
         out, _ = self.decoder(dec_inp, h0)
         return self.proj(out)
-
-if __name__ == "__main__":
-    B, T, D = 2, 10, 4
-    model = GRUDenoisingAutoencoder(D, 16, 16)
-    clean = torch.randn(B,T,D)
-    noisy = clean + 0.1*torch.randn_like(clean)
-    z, h0 = model(clean, noisy)
-    dec_inp = torch.zeros_like(clean)
-    dec_inp[:,1:,:] = clean[:,:-1,:]
-    rec = model.decode(h0, dec_inp)
-    print(rec.shape)

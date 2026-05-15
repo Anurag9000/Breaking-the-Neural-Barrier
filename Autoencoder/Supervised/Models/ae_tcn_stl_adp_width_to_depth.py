@@ -278,7 +278,3 @@ def main():
                      max_neurons=args.max_neurons, max_epochs=args.max_epochs, pool_every=args.pool_every)
     best, model, w, d = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     print(f"[ADP TCN AE] mode={args.adp_mode} best_val={best:.6f} width={w} depth={d}")
-
-
-if __name__ == "__main__":
-    main()

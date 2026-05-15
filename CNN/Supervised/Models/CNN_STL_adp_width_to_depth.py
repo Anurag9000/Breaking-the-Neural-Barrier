@@ -498,6 +498,3 @@ def main():
     val, m, w, d = adp_search(model, dl_train, dl_val, acfg, device, logger=logger, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=results_dir)
     logger.log_console(f"Done. Best val={val} w={w} d={d}")
     logger.close()
-
-if __name__ == "__main__":
-    main()

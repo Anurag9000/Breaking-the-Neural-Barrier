@@ -12,7 +12,3 @@ def main():
     # Pass through plotting flags and results dir if supplied
     cmd.extend(sys.argv[1:])
     raise SystemExit(subprocess.call(cmd))
-
-
-if __name__ == "__main__":
-    main()

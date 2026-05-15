@@ -206,8 +206,3 @@ class GhostNetCIFAR(nn.Module):
 
 def make_ghostnet_cifar(num_classes: int = 10, in_channels: int = 3, width_mult: float = 1.0, ghost_ratio: int = 2, dropout: float = 0.0) -> GhostNetCIFAR:
     return GhostNetCIFAR(num_classes=num_classes, in_channels=in_channels, width_mult=width_mult, ghost_ratio=ghost_ratio, dropout=dropout)
-
-if __name__ == "__main__":
-    m = make_ghostnet_cifar(num_classes=10, width_mult=1.0, ghost_ratio=2)
-    y = m(torch.randn(2,3,32,32))
-    print(y.shape, GhostNetCIFAR.param_count(m))
