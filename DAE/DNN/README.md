@@ -84,6 +84,7 @@ Then launch the sequential experiment:
 ```bash
 python DAE/DNN/run_goliath.py --tasks all --data-dir ./data --results-dir DAE/DNN/results --stl-width 128 --stl-depth 2 --alt-start-width 2 --alt-start-depth 2 --patience 5 --seed 0
 ```
+By default, `run_goliath.py` runs the ADP growth phases first and the STL phase last.
 
 Common flags
 - `--hidden`: starting widths (length = starting depth)

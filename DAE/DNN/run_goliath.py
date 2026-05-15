@@ -1364,7 +1364,7 @@ def main() -> None:
     p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
     p.add_argument("--run-root", type=str, default=None)
     p.add_argument("--tasks", type=str, nargs="+", default=["all"])
-    p.add_argument("--phases", type=str, nargs="+", default=["stl", "ae_alt_width", "ae_width_only", "ae_depth_only"])
+    p.add_argument("--phases", type=str, nargs="+", default=["ae_alt_width", "ae_width_only", "ae_depth_only", "stl"])
     p.add_argument("--batch-size", type=int, default=32768, help="Global batch-size default/override. The adaptive controller will shrink this if VRAM pressure rises.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
@@ -1484,7 +1484,7 @@ def main() -> None:
         )
         task_summaries[task_name] = {"task": task.name, "phases": []}
 
-    phase_order = [phase for phase in ["stl", "ae_alt_width", "ae_width_only", "ae_depth_only"] if phase in cfg.phases]
+    phase_order = [phase for phase in ["ae_alt_width", "ae_width_only", "ae_depth_only", "stl"] if phase in cfg.phases]
 
     try:
         for phase_name in phase_order:
