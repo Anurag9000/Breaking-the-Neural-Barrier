@@ -93,6 +93,7 @@ Common flags
 - `--trials-width`, `--trials-depth`: expansion patience
 - `--max-epochs`: cap for each single-shot training
 - `--seed`, `--batch-size`, `--num-workers`
+- Default batch size is `32768`; the adaptive controller shrinks it automatically if VRAM pressure crosses the threshold.
 
 Where results go
 - Per-run folder:
