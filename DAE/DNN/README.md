@@ -37,6 +37,14 @@ automatically trains an STL refit on that ADP-discovered architecture and logs
 the ADP-vs-STL comparison for the task. A standalone STL baseline is optional
 if you explicitly include `stl` in `--phases`.
 
+At the end of a full goliath run, the runner writes:
+- `final_report.json`
+- `final_report.md`
+
+These summarize, for each task and each ADP phase, the best architecture found,
+the paired STL refit loss on that same architecture, and the overall task
+winner.
+
 Tasks and default benchmark mappings
 - prediction: YearPredictionMSD
 - representation: Covertype
@@ -126,3 +134,6 @@ Where results go
   `training_stats.csv`
 - Phase roots store `search_state.json`, `phase_summary.json`, and
   `phase_progress.csv`
+- The run root also stores `final_report.json` and `final_report.md`, which
+  summarize the best ADP architecture per variant, the paired STL refit loss
+  on the same architecture, and the overall winner per task.
