@@ -56,7 +56,7 @@ GOLIATH_ADP_PHASES = [
     ("ae_depth_to_width", "depth_to_width"),
 ]
 
-GOLIATH_PHASE_ORDER = [name for name, _ in GOLIATH_ADP_PHASES] + ["stl"]
+GOLIATH_PHASE_ORDER = [name for name, _ in GOLIATH_ADP_PHASES]
 
 
 @dataclass
@@ -870,15 +870,25 @@ def phase_seed_hidden(phase_name: str, task: Task, cfg: RunConfig) -> List[int]:
     return adp_seed_hidden()
 
 
+def extract_hidden_widths(architecture: Any) -> List[int]:
+    if isinstance(architecture, dict):
+        if "hidden_widths" in architecture:
+            return [int(w) for w in architecture["hidden_widths"]]
+    if isinstance(architecture, (list, tuple)):
+        return [int(w) for w in architecture]
+    raise ValueError(f"Unsupported architecture payload: {architecture!r}")
+
+
 def run_stl_phase(
     task: Task,
     task_root: Path,
     cfg: RunConfig,
     device,
     base_hidden: List[int],
+    phase_name: str = "stl",
+    source_phase: Optional[str] = None,
     batch_controller: Optional[AdaptiveBatchController] = None,
 ) -> Dict[str, Any]:
-    phase_name = "stl"
     phase_root = phase_root_for(task_root, phase_name)
     phase_root.mkdir(parents=True, exist_ok=True)
     progress_path = phase_root / "phase_progress.csv"
@@ -896,7 +906,16 @@ def run_stl_phase(
     logger = ContinuousLogger(candidate_dir, f"{task.name}_{phase_name}", phase_name)
     write_json(
         phase_root / "phase_metadata.json",
-        phase_metadata(task=task, phase_name=phase_name, phase_kind="stl", reconstruct=False, model=model, cfg=cfg, candidate_index=candidate_idx, extra={"hidden_widths": base_hidden}),
+        phase_metadata(
+            task=task,
+            phase_name=phase_name,
+            phase_kind="stl",
+            reconstruct=False,
+            model=model,
+            cfg=cfg,
+            candidate_index=candidate_idx,
+            extra={"hidden_widths": base_hidden, "seed_hidden_widths": base_hidden, "source_phase": source_phase},
+        ),
     )
 
     if candidate_completed(candidate_dir):
@@ -905,6 +924,7 @@ def run_stl_phase(
         summary = {
             "task": task.name,
             "phase": phase_name,
+            "source_phase": source_phase,
             "candidate_dir": candidate_dir.name,
             "architecture": base_hidden,
             "best_val": float(ckpt["best_val"]),
@@ -953,6 +973,7 @@ def run_stl_phase(
     summary = {
         "task": task.name,
         "phase": phase_name,
+        "source_phase": source_phase,
         "candidate_dir": candidate_dir.name,
         "architecture": base_hidden,
         "best_val": float(result.best_val),
@@ -1369,48 +1390,176 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
     return summary
 
 
-def run_task_pipeline(task_name: str, cfg: RunConfig, run_root: Path, device) -> Dict[str, Any]:
-    task_batch_size = batch_size_for_task(task_name, cfg.batch_size)
-    task = build_task(task_name, cfg.data_dir, task_batch_size, cfg.num_workers, cfg.seed)
-    task_root = run_root / f"{task_name}"
-    task_root.mkdir(parents=True, exist_ok=True)
-    write_json(
-        task_root / "task_metadata.json",
-        {
-            "task": task.name,
-            "in_dim": task.in_dim,
-            "out_dim": task.out_dim,
-            "task_type": task.task_type,
-            "extra": task.extra,
-            "config": asdict(cfg),
-            "batch_size": int(task_batch_size),
-            "batch_size_policy": "override" if int(cfg.batch_size) > 0 else "per_task_default",
-        },
-    )
+def run_task_pipeline(
+    task: Task,
+    task_root: Path,
+    cfg: RunConfig,
+    device,
+    batch_controller: Optional[AdaptiveBatchController] = None,
+    log: Optional[ContinuousLogger] = None,
+    progress_path: Optional[Path] = None,
+) -> Dict[str, Any]:
+    task_summary: Dict[str, Any] = {
+        "task": task.name,
+        "phases": [],
+        "adp_runs": [],
+        "paired_stl_runs": [],
+        "comparisons": [],
+        "winner": None,
+    }
 
-    task_summary: Dict[str, Any] = {"task": task.name, "phases": []}
-    base_hidden = base_stl_hidden(task, cfg)
+    best_overall: Optional[Dict[str, Any]] = None
+    if log is not None:
+        log.log_console(f"[TASK] start {task.name}")
 
-    for phase_name in GOLIATH_PHASE_ORDER:
-        if phase_name not in cfg.phases:
+    for adp_phase_name, adp_mode in GOLIATH_ADP_PHASES:
+        if adp_phase_name not in cfg.phases:
             continue
-        if phase_name == "stl":
-            task_summary["phases"].append(run_stl_phase(task, task_root, cfg, device, base_hidden))
-            continue
-        task_summary["phases"].append(
-            run_growth_phase(
-                task,
-                task_root,
-                cfg,
-                device,
-                adp_seed_hidden(),
-                phase_name,
-                phase_mode(phase_name) or "width_only",
-                reconstruct=True,
-            )
+
+        if log is not None:
+            log.log_console(f"[TASK:{task.name}] ADP phase start: {adp_phase_name}")
+
+        adp_summary = run_growth_phase(
+            task,
+            task_root,
+            cfg,
+            device,
+            adp_seed_hidden(),
+            adp_phase_name,
+            adp_mode,
+            reconstruct=True,
+            batch_controller=batch_controller,
         )
+        task_summary["phases"].append(adp_summary)
+        task_summary["adp_runs"].append(adp_summary)
 
+        adp_arch = extract_hidden_widths(adp_summary.get("architecture"))
+        stl_phase_name = f"stl_from_{adp_phase_name}"
+        stl_summary = run_stl_phase(
+            task,
+            task_root,
+            cfg,
+            device,
+            adp_arch,
+            phase_name=stl_phase_name,
+            source_phase=adp_phase_name,
+            batch_controller=batch_controller,
+        )
+        task_summary["phases"].append(stl_summary)
+        task_summary["paired_stl_runs"].append(stl_summary)
+
+        adp_score = float(adp_summary.get("best_val", float("inf")))
+        stl_score = float(stl_summary.get("best_val", float("inf")))
+        winner = "adp" if adp_score <= stl_score else "stl"
+        comparison = {
+            "task": task.name,
+            "adp_phase": adp_phase_name,
+            "stl_phase": stl_phase_name,
+            "adp_best_val": adp_score,
+            "stl_best_val": stl_score,
+            "winner": winner,
+            "winner_phase": adp_phase_name if winner == "adp" else stl_phase_name,
+            "winner_value": min(adp_score, stl_score),
+            "adp_architecture": adp_summary.get("architecture"),
+            "stl_architecture": stl_summary.get("architecture"),
+        }
+        task_summary["comparisons"].append(comparison)
+
+        if best_overall is None or comparison["winner_value"] < best_overall["winner_value"]:
+            best_overall = comparison
+
+        if progress_path is not None:
+            append_csv_row(
+                progress_path,
+                {
+                    "task": task.name,
+                    "phase": adp_phase_name,
+                    "phase_type": adp_mode,
+                    "best_val": adp_score,
+                    "best_epoch": adp_summary.get("best_epoch"),
+                    "final_epoch": adp_summary.get("final_epoch", adp_summary.get("best_epoch")),
+                    "test_loss": (adp_summary.get("test_metrics") or {}).get("test_loss"),
+                    "test_acc": (adp_summary.get("test_metrics") or {}).get("test_acc"),
+                    "best_checkpoint": adp_summary.get("best_checkpoint"),
+                    "candidate_dir": adp_summary.get("best_candidate_dir"),
+                },
+            )
+            append_csv_row(
+                progress_path,
+                {
+                    "task": task.name,
+                    "phase": stl_phase_name,
+                    "phase_type": "stl_refit",
+                    "best_val": stl_score,
+                    "best_epoch": stl_summary.get("best_epoch"),
+                    "final_epoch": stl_summary.get("final_epoch", stl_summary.get("best_epoch")),
+                    "test_loss": (stl_summary.get("test_metrics") or {}).get("test_loss"),
+                    "test_acc": (stl_summary.get("test_metrics") or {}).get("test_acc"),
+                    "best_checkpoint": stl_summary.get("checkpoint_best"),
+                    "candidate_dir": stl_summary.get("candidate_dir"),
+                },
+            )
+
+        task_summary["winner"] = best_overall
+        write_json(task_root / "task_summary.json", task_summary)
+
+        if log is not None:
+            log.log_console(
+                f"[TASK:{task.name}] ADP={adp_phase_name} best_val={adp_score:.6f} STL={stl_phase_name} best_val={stl_score:.6f} winner={winner}"
+            )
+
+    # Optional baseline STL if explicitly requested.
+    if "stl" in cfg.phases:
+        baseline_name = "stl_base"
+        baseline_summary = run_stl_phase(
+            task,
+            task_root,
+            cfg,
+            device,
+            base_stl_hidden(task, cfg),
+            phase_name=baseline_name,
+            source_phase=None,
+            batch_controller=batch_controller,
+        )
+        task_summary.setdefault("baseline_stl_runs", []).append(baseline_summary)
+        task_summary["phases"].append(baseline_summary)
+        baseline_score = float(baseline_summary.get("best_val", float("inf")))
+        baseline_comparison = {
+            "task": task.name,
+            "adp_phase": None,
+            "stl_phase": baseline_name,
+            "adp_best_val": None,
+            "stl_best_val": baseline_score,
+            "winner": "stl",
+            "winner_phase": baseline_name,
+            "winner_value": baseline_score,
+            "adp_architecture": None,
+            "stl_architecture": baseline_summary.get("architecture"),
+        }
+        task_summary["comparisons"].append(baseline_comparison)
+        if best_overall is None or baseline_score < best_overall["winner_value"]:
+            best_overall = baseline_comparison
+        if progress_path is not None:
+            append_csv_row(
+                progress_path,
+                {
+                    "task": task.name,
+                    "phase": baseline_name,
+                    "phase_type": "stl_base",
+                    "best_val": baseline_summary.get("best_val"),
+                    "best_epoch": baseline_summary.get("best_epoch"),
+                    "final_epoch": baseline_summary.get("final_epoch", baseline_summary.get("best_epoch")),
+                    "test_loss": (baseline_summary.get("test_metrics") or {}).get("test_loss"),
+                    "test_acc": (baseline_summary.get("test_metrics") or {}).get("test_acc"),
+                    "best_checkpoint": baseline_summary.get("checkpoint_best"),
+                    "candidate_dir": baseline_summary.get("candidate_dir"),
+                },
+            )
+
+    task_summary["winner"] = best_overall
     write_json(task_root / "task_summary.json", task_summary)
+    if log is not None:
+        log.log_console(f"[TASK] done {task.name}")
     return task_summary
 
 
@@ -1440,7 +1589,7 @@ def build_run_root(cfg: RunConfig) -> Path:
 
 
 def main() -> None:
-    p = argparse.ArgumentParser(description="Sequential STL + AE goliath runner for DAE/DNN tasks")
+    p = argparse.ArgumentParser(description="Sequential ADP-first goliath runner for DAE/DNN tasks with paired STL refits")
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
     p.add_argument("--run-root", type=str, default=None)
@@ -1449,7 +1598,7 @@ def main() -> None:
         "--phases",
         type=str,
         nargs="+",
-        default=["ae_width_only", "ae_depth_only", "ae_width_to_depth", "ae_depth_to_width", "ae_alt_width", "ae_alt_depth", "stl"],
+        default=["ae_width_only", "ae_depth_only", "ae_width_to_depth", "ae_depth_to_width", "ae_alt_width", "ae_alt_depth"],
     )
     p.add_argument("--batch-size", type=int, default=32768, help="Global batch-size default/override. The adaptive controller will shrink this if VRAM pressure rises.")
     p.add_argument("--num-workers", type=int, default=0)
@@ -1570,37 +1719,25 @@ def main() -> None:
         )
         task_summaries[task_name] = {"task": task.name, "phases": []}
 
-    phase_order = [phase for phase in GOLIATH_PHASE_ORDER if phase in cfg.phases]
-
     try:
-        for phase_name in phase_order:
-            log.log_console(f"=== Phase start: {phase_name} ===")
-            for task_name in tasks:
-                task = task_objects[task_name]
-                task_root = task_roots[task_name]
-                batch_controller = task_batch_controllers[task_name]
-                log.log_console(f"--- Task start: {task_name} ---")
-                refresh_task_loaders(task, batch_controller.current_batch_size)
-                phase_summary = run_phase_for_task(task, task_root, cfg, device, phase_name, batch_controller=batch_controller)
-                task_summaries[task_name]["phases"].append(phase_summary)
-                write_json(task_root / "task_summary.json", task_summaries[task_name])
-                append_csv_row(
-                    progress_path,
-                    {
-                        "task": task_name,
-                        "phase": phase_name,
-                        "phase_type": phase_summary.get("mode", "stl"),
-                        "best_val": phase_summary.get("best_val"),
-                        "best_epoch": phase_summary.get("best_epoch"),
-                        "final_epoch": phase_summary.get("final_epoch", phase_summary.get("best_epoch")),
-                        "test_loss": (phase_summary.get("test_metrics") or {}).get("test_loss"),
-                        "test_acc": (phase_summary.get("test_metrics") or {}).get("test_acc"),
-                        "best_checkpoint": phase_summary.get("checkpoint_best", phase_summary.get("best_checkpoint")),
-                        "candidate_dir": phase_summary.get("candidate_dir", phase_summary.get("best_candidate_dir")),
-                    },
-                )
-                log.log_console(f"--- Task done: {task_name} ---")
-            log.log_console(f"=== Phase done: {phase_name} ===")
+        for task_name in tasks:
+            task = task_objects[task_name]
+            task_root = task_roots[task_name]
+            batch_controller = task_batch_controllers[task_name]
+            log.log_console(f"=== Task start: {task_name} ===")
+            refresh_task_loaders(task, batch_controller.current_batch_size)
+            task_summary = run_task_pipeline(
+                task,
+                task_root,
+                cfg,
+                device,
+                batch_controller=batch_controller,
+                log=log,
+                progress_path=progress_path,
+            )
+            task_summaries[task_name] = task_summary
+            write_json(task_root / "task_summary.json", task_summary)
+            log.log_console(f"=== Task done: {task_name} ===")
     finally:
         for controller in task_batch_controllers.values():
             controller.stop()

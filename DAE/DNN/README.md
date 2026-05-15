@@ -23,17 +23,19 @@ Files
 - `run_goliath.py`: sequential STL + ADP experiment runner with resumable
   checkpoints
 
-`run_goliath.py` exposes six ADP phases plus STL:
+`run_goliath.py` exposes six ADP phases:
 - `ae_width_only`
 - `ae_depth_only`
 - `ae_width_to_depth`
 - `ae_depth_to_width`
 - `ae_alt_width`
 - `ae_alt_depth`
-- `stl`
 
 All ADP phases start from a fixed `2x2` seed and preserve the best checkpoint
-found during search, not just the last epoch.
+found during search, not just the last epoch. After each ADP phase, the runner
+automatically trains an STL refit on that ADP-discovered architecture and logs
+the ADP-vs-STL comparison for the task. A standalone STL baseline is optional
+if you explicitly include `stl` in `--phases`.
 
 Tasks and default benchmark mappings
 - prediction: YearPredictionMSD
@@ -96,7 +98,9 @@ Then launch the sequential experiment:
 ```bash
 python DAE/DNN/run_goliath.py --tasks all --data-dir ./data --results-dir DAE/DNN/results --stl-width 128 --stl-depth 2 --alt-start-width 2 --alt-start-depth 2 --patience 5 --seed 0
 ```
-By default, `run_goliath.py` runs the ADP growth phases first and the STL phase last.
+By default, `run_goliath.py` runs all ADP phases first and then an STL refit on
+each ADP-discovered architecture. Include `stl` in `--phases` only if you also
+want a standalone baseline STL run.
 
 Common flags
 - `--hidden`: starting widths (length = starting depth)
