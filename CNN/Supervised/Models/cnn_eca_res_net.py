@@ -177,9 +177,3 @@ def make_eca_resnet_cifar(depth: int = 18, num_classes: int = 10, in_channels: i
         return ECAResNetCIFAR(ECABottleneck, [3,4,6,3], num_classes=num_classes, in_channels=in_channels, k_size=k_size, gamma=gamma, b=b)
     else:
         raise ValueError("Supported depths for ECA-ResNet: 18, 34, 50")
-
-if __name__ == "__main__":
-    for d in [18,34,50]:
-        m = make_eca_resnet_cifar(depth=d, num_classes=10)
-        y = m(torch.randn(2,3,32,32))
-        print(d, y.shape)

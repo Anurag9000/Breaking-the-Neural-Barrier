@@ -396,7 +396,3 @@ def main():
     print(f"[ADP AE_UNet] Starting {args.adp_mode}, Init: Width={args.width}, Depth={args.depth}")
     best, model, w, d = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     print(f"[ADP AE_UNet] DONE. Best Val={best:.6f} Width={w} Depth={d}")
-
-
-if __name__ == "__main__":
-    main()

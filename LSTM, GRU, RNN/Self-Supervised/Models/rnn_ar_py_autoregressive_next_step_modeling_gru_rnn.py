@@ -24,10 +24,3 @@ class ARRNN(nn.Module):
     def forward(self, x):
         h,_ = self.rnn(x)
         return self.head(h)
-
-if __name__ == '__main__':
-    B,T,D=2,9,4
-    net = ARGRU(D, 16)
-    x = torch.randn(B,T,D)
-    y = net(x[:,:-1,:])
-    print(y.shape)  # (B,T-1,D)

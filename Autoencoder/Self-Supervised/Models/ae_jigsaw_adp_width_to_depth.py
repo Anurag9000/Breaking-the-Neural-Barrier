@@ -393,7 +393,3 @@ def main():
     print(
         f"[ADP Jigsaw] mode={args.adp_mode} best_val={best_val:.6f} width={width} head_depth={depth}"
     )
-
-
-if __name__ == "__main__":
-    main()

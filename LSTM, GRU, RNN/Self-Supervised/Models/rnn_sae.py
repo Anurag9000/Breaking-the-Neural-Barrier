@@ -50,13 +50,3 @@ class GRUSequenceAutoencoder(nn.Module):
     def forward(self, x: torch.Tensor, decoder_input: torch.Tensor) -> torch.Tensor:
         z, _ = self.encode(x)
         return self.decode(z, decoder_input)
-
-if __name__ == "__main__":
-    B, T, D = 4, 12, 16
-    model = GRUSequenceAutoencoder(input_dim=D, hidden_dim=32, latent_dim=32, num_layers=1)
-    x = torch.randn(B, T, D)
-    # teacher forcing: decoder input is x shifted right with zero at t=0
-    dec_inp = torch.zeros_like(x)
-    dec_inp[:,1:,:] = x[:,:-1,:]
-    y_hat = model(x, dec_inp)
-    print(y_hat.shape)  # (B, T, D)

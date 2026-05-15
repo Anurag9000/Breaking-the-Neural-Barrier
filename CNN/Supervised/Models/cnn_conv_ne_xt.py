@@ -157,8 +157,3 @@ def make_convnext_cifar(num_classes: int = 10, in_channels: int = 3, preset: str
                          width_mult: float = 1.0, layer_scale_init: float = 1e-6, drop_path_rate: float = 0.0) -> ConvNeXtCIFAR:
     return ConvNeXtCIFAR(num_classes=num_classes, in_channels=in_channels, preset=preset,
                          width_mult=width_mult, layer_scale_init=layer_scale_init, drop_path_rate=drop_path_rate)
-
-if __name__ == "__main__":
-    m = make_convnext_cifar(num_classes=10, preset="tiny", drop_path_rate=0.1)
-    y = m(torch.randn(2,3,32,32))
-    print(y.shape, ConvNeXtCIFAR.param_count(m))

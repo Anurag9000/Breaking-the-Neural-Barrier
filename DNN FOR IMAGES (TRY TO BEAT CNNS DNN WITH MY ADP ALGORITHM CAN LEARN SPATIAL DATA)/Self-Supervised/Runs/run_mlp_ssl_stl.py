@@ -29,20 +29,14 @@ def build_ssl_transforms(img_size):
 def build_data(dataset, data_dir, img_size, val_split):
     ssl_tfm = build_ssl_transforms(img_size)
     dataset = dataset.lower()
-    if dataset == "mnist":
-        ds = datasets.MNIST(data_dir, train=True, download=True, transform=ssl_tfm)
-        C=1
-    elif dataset == "fashionmnist":
-        ds = datasets.FashionMNIST(data_dir, train=True, download=True, transform=ssl_tfm)
-        C=1
-    elif dataset == "cifar10":
+    if dataset == "cifar10":
         ds = datasets.CIFAR10(data_dir, train=True, download=True, transform=ssl_tfm)
         C=3
     elif dataset == "cifar100":
         ds = datasets.CIFAR100(data_dir, train=True, download=True, transform=ssl_tfm)
         C=3
     else:
-        raise ValueError("Unsupported dataset")
+        raise ValueError("Unsupported dataset. Use cifar10 or cifar100.")
     val_len = int(len(ds) * val_split)
     tr_len = len(ds) - val_len
     tr, va = random_split(ds, [tr_len, val_len])
@@ -85,7 +79,7 @@ def eval_epoch(model, loader, device, temperature):
 def main():
     global optimizer
     p = argparse.ArgumentParser()
-    p.add_argument("--dataset", type=str, default="cifar10", choices=["mnist","fashionmnist","cifar10","cifar100"])
+    p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10","cifar100"])
     p.add_argument("--data_dir", type=str, default="./data")
     p.add_argument("--img_size", type=int, nargs=2, default=[32,32])
     p.add_argument("--batch_size", type=int, default=512)

@@ -237,7 +237,3 @@ def main():
                      max_neurons=args.max_neurons, max_epochs=args.max_epochs, pool_after=args.pool_after, mix_every=args.mix_every)
     best_val, model, w, d = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     print(f"[ADP Stacked AE] mode={args.adp_mode} best_val={best_val:.6f} width={w} depth={d}")
-
-
-if __name__ == "__main__":
-    main()

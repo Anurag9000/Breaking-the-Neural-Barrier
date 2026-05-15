@@ -14,15 +14,11 @@ def get_dataset(name: str, data_dir: str, img_size=(32, 32), train=True):
         transforms.ToTensor(),  # [0,1]
     ])
     name = name.lower()
-    if name == "mnist":
-        return datasets.MNIST(data_dir, train=train, download=True, transform=tfm)
-    if name == "fashionmnist":
-        return datasets.FashionMNIST(data_dir, train=train, download=True, transform=tfm)  # typo fix below
     if name == "cifar10":
         return datasets.CIFAR10(data_dir, train=train, download=True, transform=tfm)
     if name == "cifar100":
         return datasets.CIFAR100(data_dir, train=train, download=True, transform=tfm)
-    raise ValueError(f"Unsupported dataset: {name}")
+    raise ValueError(f"Unsupported dataset: {name}. Use cifar10 or cifar100.")
 
 def build_autoencoder(input_shape, hidden_widths, bottleneck, output_activation):
     C, H, W = input_shape
@@ -72,7 +68,7 @@ def eval_epoch(model, loader, device, denoise_std=0.0):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--dataset", type=str, default="cifar10", choices=["mnist","fashionmnist","cifar10","cifar100"])
+    p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10","cifar100"])
     p.add_argument("--data_dir", type=str, default="./data")
     p.add_argument("--img_size", type=int, nargs=2, default=[32,32])
     p.add_argument("--batch_size", type=int, default=256)
@@ -93,20 +89,14 @@ def main():
 
     # Transforms/loader builder convenience variables
     tf_ = transforms.Compose([transforms.Resize(args.img_size), transforms.ToTensor()])
-    if args.dataset.lower() == "mnist":
-        train_full = datasets.MNIST(args.data_dir, train=True, download=True, transform=tf_)
-        C=1
-    elif args.dataset.lower() == "fashionmnist":
-        train_full = datasets.FashionMNIST(args.data_dir, train=True, download=True, transform=tf_)
-        C=1
-    elif args.dataset.lower() == "cifar10":
+    if args.dataset.lower() == "cifar10":
         train_full = datasets.CIFAR10(args.data_dir, train=True, download=True, transform=tf_)
         C=3
     elif args.dataset.lower() == "cifar100":
         train_full = datasets.CIFAR100(args.data_dir, train=True, download=True, transform=tf_)
         C=3
     else:
-        raise ValueError("Unsupported dataset")
+        raise ValueError("Unsupported dataset. Use cifar10 or cifar100.")
 
     H, W = args.img_size
     in_shape = (C, H, W)

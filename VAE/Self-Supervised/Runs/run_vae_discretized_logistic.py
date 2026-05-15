@@ -1,20 +1,13 @@
 import argparse, os
 import torch
 from torch.utils.data import DataLoader, random_split
-from torchvision import datasets, transforms
+from _common_cifar_gray import make_cifar10_gray_loaders
 
 from vae_discretized_logistic_model import VAE_DiscretizedLogistic
 
 
 def get_loaders(root, bs, val_split=5000):
-    tfm = transforms.ToTensor()
-    train = datasets.MNIST(root, train=True, download=True, transform=tfm)
-    test = datasets.MNIST(root, train=False, download=True, transform=tfm)
-    tr_len = len(train) - val_split
-    tr, va = random_split(train, [tr_len, val_split], generator=torch.Generator().manual_seed(42))
-    return (DataLoader(tr, bs, True, num_workers=2, pin_memory=True),
-            DataLoader(va, bs, False, num_workers=2, pin_memory=True),
-            DataLoader(test, bs, False, num_workers=2, pin_memory=True))
+    return make_cifar10_gray_loaders(root, bs, val_split=val_split)
 
 
 def train_epoch(model, loader, opt, device):

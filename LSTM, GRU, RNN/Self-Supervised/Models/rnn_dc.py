@@ -15,9 +15,3 @@ class DCGRU(nn.Module):
     def forward(self, x):
         z=self.features(x)
         return self.cls(z)
-
-if __name__=='__main__':
-    B,T,D=8,64,16
-    net=DCGRU(D,128,64,num_clusters=10)
-    x=torch.randn(B,T,D)
-    print(net(x).shape)

@@ -104,8 +104,3 @@ class CSPDarknet53(nn.Module):
 
 def make_cspdarknet53_cifar(num_classes: int = 10, in_channels: int = 3) -> CSPDarknet53:
     return CSPDarknet53(num_classes=num_classes, in_channels=in_channels)
-
-if __name__ == "__main__":
-    m = make_cspdarknet53_cifar(num_classes=10)
-    y = m(torch.randn(2,3,32,32))
-    print(y.shape)  # (2,10)

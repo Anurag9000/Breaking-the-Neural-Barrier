@@ -43,7 +43,7 @@ class ADPConfig:
     batch_size: int = 128
     val_split: float = 0.1
     max_epochs: int = 100_000_000
-    dataset: str = "mnist"
+    dataset: str = "cifar10"
     data_dir: str = "./data"
     img_size: Tuple[int, int] = (28, 28)
     seed: int = 0
@@ -149,15 +149,7 @@ def make_loaders(
 ):
     tf = transforms.Compose([transforms.Resize(img_size), transforms.ToTensor()])
     name = dataset.lower()
-    if name == "mnist":
-        ds = datasets.MNIST(root=data_dir, train=True, download=True, transform=tf)
-        in_ch = 1
-        num_classes = 10
-    elif name == "fashionmnist":
-        ds = datasets.FashionMNIST(root=data_dir, train=True, download=True, transform=tf)
-        in_ch = 1
-        num_classes = 10
-    elif name == "cifar10":
+    if name == "cifar10":
         ds = datasets.CIFAR10(root=data_dir, train=True, download=True, transform=tf)
         in_ch = 3
         num_classes = 10
@@ -166,7 +158,7 @@ def make_loaders(
         in_ch = 3
         num_classes = 100
     else:
-        raise ValueError(f"Unsupported dataset: {dataset}")
+        raise ValueError(f"Unsupported dataset: {dataset}. Use cifar10 or cifar100.")
 
     n_val = int(len(ds) * val_split)
     n_train = len(ds) - n_val
@@ -480,7 +472,7 @@ def main() -> None:
         default="width_only",
         choices=["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth", "width", "depth"],
     )
-    p.add_argument("--dataset", type=str, default="mnist", choices=["mnist", "fashionmnist", "cifar10", "cifar100"])
+    p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100"])
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--img-size", type=int, nargs=2, default=[28, 28])
     p.add_argument("--seed", type=int, default=0)
@@ -551,7 +543,3 @@ def main() -> None:
         )
     finally:
         logger.close()
-
-
-if __name__ == "__main__":
-    main()

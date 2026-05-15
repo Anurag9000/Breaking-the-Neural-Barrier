@@ -18,9 +18,3 @@ class TIDGRU(nn.Module):
         h = h.mean(dim=1)
         z = F.normalize(self.proj(h), dim=-1)
         return self.cls(z)
-
-if __name__=='__main__':
-    B,T,D=32,64,16
-    net=TIDGRU(D,128,128,n_classes=256)
-    x=torch.randn(B,T,D)
-    print(net(x).shape)

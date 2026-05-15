@@ -128,7 +128,3 @@ def main():
 
     model = run_adp(args.adp_mode, args)
     print(f"[ADP Classical AE SSL] mode={args.adp_mode} widths={model.widths} depth={len(model.widths)}")
-
-
-if __name__ == "__main__":
-    main()

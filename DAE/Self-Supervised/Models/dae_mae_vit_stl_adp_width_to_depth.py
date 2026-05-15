@@ -509,7 +509,3 @@ def main() -> None:
         },
         results_dir / "best_adp_model.pt",
     )
-
-
-if __name__ == "__main__":
-    main()

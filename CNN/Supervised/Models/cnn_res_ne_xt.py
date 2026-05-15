@@ -126,9 +126,3 @@ def make_resnext_cifar(depth: int = 29, cardinality: int = 8, base_width: int = 
         n = max(1, int(round((depth - 2) / 9)))
         layers = [n, n, n]
     return ResNeXtCIFAR(layers=layers, num_classes=num_classes, in_channels=in_channels, cardinality=cardinality, base_width=base_width)
-
-if __name__ == "__main__":
-    for cfg in [(29,8,64),(29,16,64)]:
-        m = make_resnext_cifar(depth=cfg[0], cardinality=cfg[1], base_width=cfg[2], num_classes=10)
-        y = m(torch.randn(2,3,32,32))
-        print(cfg, y.shape)

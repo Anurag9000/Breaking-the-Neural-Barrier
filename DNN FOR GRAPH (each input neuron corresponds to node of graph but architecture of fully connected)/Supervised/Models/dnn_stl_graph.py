@@ -115,6 +115,3 @@ def main():
     best_val, test_acc, best_epoch = train_nodeclf(model, data, cfg)
     print(f"[STL] Dataset={args.dataset} N={N} C={num_classes} H={args.hidden} D={args.depth}")
     print(f"Best Val Loss={best_val:.4f} at epoch {best_epoch}, Test@1={test_acc*100:.2f}%")
-
-if __name__ == "__main__":
-    main()

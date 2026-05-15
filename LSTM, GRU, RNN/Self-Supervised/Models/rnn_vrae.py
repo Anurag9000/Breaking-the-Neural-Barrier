@@ -44,11 +44,3 @@ class VRAEGRU(nn.Module):
     def kld(mu, logvar):
         # KL(N(mu,sigma)||N(0,1))
         return -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
-
-if __name__ == '__main__':
-    B,T,D=4,16,8
-    net=VRAEGRU(D,64,32)
-    x=torch.randn(B,T,D)
-    dec_inp=torch.zeros_like(x); dec_inp[:,1:,:]=x[:,:-1,:]
-    y,mu,lv=net(x,dec_inp)
-    print(y.shape, mu.shape)

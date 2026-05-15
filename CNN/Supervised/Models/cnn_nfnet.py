@@ -191,8 +191,3 @@ def make_nfnet_cifar(num_classes: int = 10, in_channels: int = 3, preset: str = 
                       beta: float = 1.0, drop_path_rate: float = 0.0, gamma: float = 1.0, act: str = "silu") -> NFNetCIFAR:
     return NFNetCIFAR(num_classes=num_classes, in_channels=in_channels, preset=preset,
                       beta=beta, drop_path_rate=drop_path_rate, gamma=gamma, act=act)
-
-if __name__ == "__main__":
-    m = make_nfnet_cifar(num_classes=10, preset="L0", drop_path_rate=0.1)
-    y = m(torch.randn(2,3,32,32))
-    print(y.shape, NFNetCIFAR.param_count(m))

@@ -188,9 +188,3 @@ def make_mobilenet_v3_cifar(num_classes: int = 10, in_channels: int = 3, version
                              width_mult: float = 1.0, dropout: float = 0.0) -> MobileNetV3CIFAR:
     return MobileNetV3CIFAR(num_classes=num_classes, in_channels=in_channels, version=version,
                             width_mult=width_mult, dropout=dropout)
-
-if __name__ == "__main__":
-    for v in ["small","large"]:
-        m = make_mobilenet_v3_cifar(num_classes=10, version=v, width_mult=1.0)
-        y = m(torch.randn(2,3,32,32))
-        print(v, y.shape, MobileNetV3CIFAR.param_count(m))

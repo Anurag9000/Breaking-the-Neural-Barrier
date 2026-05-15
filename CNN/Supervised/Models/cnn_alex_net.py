@@ -72,8 +72,3 @@ class AlexNet(nn.Module):
     @staticmethod
     def param_count(model: nn.Module) -> int:
         return sum(p.numel() for p in model.parameters())
-
-if __name__ == "__main__":
-    m = AlexNet(num_classes=10)
-    y = m(torch.randn(2,3,32,32))
-    print(y.shape)  # (2,10)

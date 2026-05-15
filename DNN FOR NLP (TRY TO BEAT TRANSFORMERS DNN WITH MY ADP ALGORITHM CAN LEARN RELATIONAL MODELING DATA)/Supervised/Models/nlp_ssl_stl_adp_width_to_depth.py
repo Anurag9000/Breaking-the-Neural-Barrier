@@ -258,7 +258,3 @@ def main():
     )
     best, model = adp_search(model, data, acfg, device)
     print(f"[ADP NLP SSL] mode={args.adp_mode} best_val={best:.6f} hidden={model.hidden} depth={len(model.hidden)+1}")
-
-
-if __name__ == "__main__":
-    main()

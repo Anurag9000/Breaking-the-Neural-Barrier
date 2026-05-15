@@ -278,11 +278,3 @@ def main():
     )
     best_val, model, hidden, layers = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     print(f"[ADP SeqAE] mode={args.adp_mode} best_val={best_val:.6f} hidden={hidden} layers={layers}")
-
-
-if __name__ == "__main__":
-    main()
-
-
-# ADP REVIEW (AFTER REFACTOR)
-# ADP REVIEW: delegated to utils.adp_contract forward-only core.

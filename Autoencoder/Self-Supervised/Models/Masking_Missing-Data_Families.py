@@ -272,6 +272,3 @@ def main():
     with open(hist_path, "w") as f:
         json.dump(history, f, indent=2)
     print(f"History saved to: {hist_path}")
-
-if __name__ == "__main__":
-    main()

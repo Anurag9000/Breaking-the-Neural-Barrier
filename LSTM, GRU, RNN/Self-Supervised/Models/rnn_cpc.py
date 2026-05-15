@@ -49,11 +49,3 @@ class CPCGRU(nn.Module):
             total_loss += loss
             n_terms += 1
         return total_loss / max(n_terms, 1)
-
-if __name__ == '__main__':
-    B,T,D=2,16,8
-    net = CPCGRU(D, 64, 32, K=3)
-    x = torch.randn(B,T,D)
-    h,z = net(x)
-    loss = net.nce_loss(h,z)
-    print(float(loss))

@@ -277,9 +277,10 @@ def make_loaders(batch_size=128):
         val_idx = indices[n - n_val_split :]
         trainset = Subset(trainset, train_idx)
         valset = Subset(evalset, val_idx)
-    except:
-        trainset = datasets.FakeData(transform=transforms.ToTensor())
-        valset = datasets.FakeData(transform=transforms.ToTensor())
+    except Exception as exc:
+        raise RuntimeError(
+            "CIFAR10 benchmark data is unavailable. Download the real dataset before running this benchmark."
+        ) from exc
         
     train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=0)
     val_loader = DataLoader(valset, batch_size=batch_size, shuffle=False, num_workers=0)
@@ -430,6 +431,3 @@ def main():
     acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)
     val, m, w, d = adp_search(model, dl_train, dl_val, acfg, device)
     print(f"Done. Best val={val} w={w} d={d}")
-
-if __name__ == "__main__":
-    main()

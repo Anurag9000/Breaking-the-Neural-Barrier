@@ -84,8 +84,3 @@ def make_vgg(variant: str = "D", num_classes: int = 10, in_channels: int = 3, ba
     if variant not in VGG_CFGS:
         raise ValueError(f"Unknown VGG variant '{variant}'. Choose from {list(VGG_CFGS.keys())}.")
     return VGG(cfg=VGG_CFGS[variant], num_classes=num_classes, in_channels=in_channels, batch_norm=batch_norm, dropout=dropout)
-
-if __name__ == "__main__":
-    m = make_vgg("D", num_classes=10, batch_norm=True)
-    y = m(torch.randn(2,3,32,32))
-    print(y.shape)  # (2,10)
