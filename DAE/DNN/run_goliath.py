@@ -132,6 +132,11 @@ def write_json(path: Path, payload: Dict[str, Any]) -> None:
         json.dump(payload, f, indent=2, sort_keys=True)
 
 
+def write_text(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+
 def read_json(path: Path) -> Dict[str, Any]:
     with path.open("r", encoding="utf-8") as f:
         return json.load(f)
@@ -145,6 +150,15 @@ def append_csv_row(path: Path, row: Dict[str, Any]) -> None:
         if not exists:
             writer.writeheader()
         writer.writerow(row)
+
+
+def write_csv(path: Path, rows: Sequence[Dict[str, Any]], fieldnames: Sequence[str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=list(fieldnames))
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
 
 
 def model_signature(model: MLP) -> Dict[str, Any]:
@@ -877,6 +891,178 @@ def extract_hidden_widths(architecture: Any) -> List[int]:
     if isinstance(architecture, (list, tuple)):
         return [int(w) for w in architecture]
     raise ValueError(f"Unsupported architecture payload: {architecture!r}")
+
+
+def format_architecture_for_report(architecture: Any) -> str:
+    if architecture is None:
+        return "n/a"
+    if isinstance(architecture, dict):
+        hidden_widths = architecture.get("hidden_widths")
+        if hidden_widths is not None:
+            in_dim = architecture.get("in_dim", "?")
+            out_dim = architecture.get("out_dim", "?")
+            use_bn = architecture.get("use_bn", "?")
+            return f"in={in_dim} hidden={list(hidden_widths)} out={out_dim} bn={use_bn}"
+        return json.dumps(architecture, sort_keys=True)
+    if isinstance(architecture, (list, tuple)):
+        return str([int(w) for w in architecture])
+    return str(architecture)
+
+
+def format_float_for_report(value: Any) -> str:
+    if value is None:
+        return "n/a"
+    try:
+        return f"{float(value):.6f}"
+    except Exception:
+        return str(value)
+
+
+def build_task_report(task_summary: Dict[str, Any]) -> Dict[str, Any]:
+    adp_runs = {entry.get("phase"): entry for entry in task_summary.get("adp_runs", [])}
+    paired_stl_runs = {entry.get("phase"): entry for entry in task_summary.get("paired_stl_runs", [])}
+    baseline_runs = task_summary.get("baseline_stl_runs", [])
+    baseline_comparisons = [comp for comp in task_summary.get("comparisons", []) if comp.get("adp_phase") is None]
+
+    adp_rows: List[Dict[str, Any]] = []
+    paired_rows: List[Dict[str, Any]] = []
+    for adp_phase_name, adp_mode in GOLIATH_ADP_PHASES:
+        adp_entry = adp_runs.get(adp_phase_name)
+        if adp_entry is None:
+            continue
+        stl_entry = paired_stl_runs.get(f"stl_from_{adp_phase_name}")
+        comparison = next(
+            (comp for comp in task_summary.get("comparisons", []) if comp.get("adp_phase") == adp_phase_name),
+            None,
+        )
+        adp_rows.append(
+            {
+                "phase": adp_phase_name,
+                "mode": adp_mode,
+                "architecture": adp_entry.get("architecture"),
+                "best_val": adp_entry.get("best_val"),
+                "best_epoch": adp_entry.get("best_epoch"),
+                "final_epoch": adp_entry.get("final_epoch"),
+                "test_metrics": adp_entry.get("test_metrics"),
+                "candidate_dir": adp_entry.get("best_candidate_dir"),
+            }
+        )
+        paired_rows.append(
+            {
+                "adp_phase": adp_phase_name,
+                "stl_phase": f"stl_from_{adp_phase_name}",
+                "adp_best_val": None if comparison is None else comparison.get("adp_best_val"),
+                "stl_best_val": None if comparison is None else comparison.get("stl_best_val"),
+                "winner": None if comparison is None else comparison.get("winner"),
+                "winner_phase": None if comparison is None else comparison.get("winner_phase"),
+                "winner_value": None if comparison is None else comparison.get("winner_value"),
+                "adp_architecture": None if comparison is None else comparison.get("adp_architecture"),
+                "stl_architecture": None if comparison is None else comparison.get("stl_architecture"),
+                "stl_run": stl_entry,
+            }
+        )
+
+    return {
+        "task": task_summary.get("task"),
+        "adp_runs": adp_rows,
+        "paired_stl_runs": paired_rows,
+        "baseline_stl_runs": baseline_runs,
+        "baseline_comparisons": baseline_comparisons,
+        "comparisons": task_summary.get("comparisons", []),
+        "winner": task_summary.get("winner"),
+    }
+
+
+def render_final_report(report: Dict[str, Any]) -> str:
+    lines: List[str] = []
+    lines.append("# DAE/DNN Goliath Final Report")
+    lines.append("")
+    lines.append(f"- Run root: `{report.get('run_root', 'n/a')}`")
+    lines.append(f"- Git commit: `{report.get('git_commit', 'n/a')}`")
+    lines.append(f"- Device: `{report.get('device', 'n/a')}`")
+    lines.append(f"- Tasks completed: `{report.get('summary', {}).get('tasks_completed', 0)}`")
+    lines.append("")
+
+    for task_report in report.get("tasks", []):
+        lines.append(f"## Task: {task_report.get('task', 'n/a')}")
+        winner = task_report.get("winner") or {}
+        lines.append(
+            f"- Overall winner: `{winner.get('winner', 'n/a')}` via `{winner.get('winner_phase', 'n/a')}` "
+            f"at `{format_float_for_report(winner.get('winner_value'))}`"
+        )
+        if winner.get("adp_architecture") is not None:
+            lines.append(f"- Winner ADP architecture: `{format_architecture_for_report(winner.get('adp_architecture'))}`")
+        if winner.get("stl_architecture") is not None:
+            lines.append(f"- Winner STL architecture: `{format_architecture_for_report(winner.get('stl_architecture'))}`")
+        lines.append("")
+        lines.append("| ADP variant | ADP best arch | ADP best val | STL refit arch | STL refit best val | Winner |")
+        lines.append("|---|---|---:|---|---:|---|")
+        for adp_entry, paired_entry in zip(task_report.get("adp_runs", []), task_report.get("paired_stl_runs", [])):
+            winner_label = paired_entry.get("winner") or "n/a"
+            lines.append(
+                "| "
+                f"{adp_entry.get('phase', 'n/a')} | "
+                f"{format_architecture_for_report(adp_entry.get('architecture'))} | "
+                f"{format_float_for_report(adp_entry.get('best_val'))} | "
+                f"{format_architecture_for_report(paired_entry.get('stl_architecture'))} | "
+                f"{format_float_for_report(paired_entry.get('stl_best_val'))} | "
+                f"{winner_label} |"
+            )
+        if task_report.get("baseline_stl_runs"):
+            lines.append("")
+            lines.append("Standalone STL baseline runs:")
+            for baseline in task_report.get("baseline_stl_runs", []):
+                lines.append(
+                    f"- `{baseline.get('phase', 'stl_base')}` arch `{format_architecture_for_report(baseline.get('architecture'))}` "
+                    f"best val `{format_float_for_report(baseline.get('best_val'))}`"
+                )
+        lines.append("")
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def build_task_summary_csv_rows(task_name: str, task_summary: Dict[str, Any]) -> List[Dict[str, Any]]:
+    rows: List[Dict[str, Any]] = []
+    comparisons = {entry.get("adp_phase"): entry for entry in task_summary.get("comparisons", []) if entry.get("adp_phase") is not None}
+    for adp_phase_name, adp_mode in GOLIATH_ADP_PHASES:
+        comp = comparisons.get(adp_phase_name)
+        if comp is None:
+            continue
+        rows.append(
+            {
+                "task": task_name,
+                "row_type": "adp_vs_stl",
+                "adp_phase": adp_phase_name,
+                "adp_mode": adp_mode,
+                "stl_phase": comp.get("stl_phase"),
+                "adp_best_val": comp.get("adp_best_val"),
+                "stl_best_val": comp.get("stl_best_val"),
+                "winner": comp.get("winner"),
+                "winner_phase": comp.get("winner_phase"),
+                "winner_value": comp.get("winner_value"),
+                "adp_architecture": format_architecture_for_report(comp.get("adp_architecture")),
+                "stl_architecture": format_architecture_for_report(comp.get("stl_architecture")),
+            }
+        )
+
+    for baseline in task_summary.get("baseline_stl_runs", []):
+        rows.append(
+            {
+                "task": task_name,
+                "row_type": "baseline_stl",
+                "adp_phase": "",
+                "adp_mode": "",
+                "stl_phase": baseline.get("phase"),
+                "adp_best_val": "",
+                "stl_best_val": baseline.get("best_val"),
+                "winner": "stl",
+                "winner_phase": baseline.get("phase"),
+                "winner_value": baseline.get("best_val"),
+                "adp_architecture": "",
+                "stl_architecture": format_architecture_for_report(baseline.get("architecture")),
+            }
+        )
+    return rows
 
 
 def run_stl_phase(
@@ -1719,6 +1905,7 @@ def main() -> None:
         )
         task_summaries[task_name] = {"task": task.name, "phases": []}
 
+    run_error: Optional[BaseException] = None
     try:
         for task_name in tasks:
             task = task_objects[task_name]
@@ -1738,10 +1925,56 @@ def main() -> None:
             task_summaries[task_name] = task_summary
             write_json(task_root / "task_summary.json", task_summary)
             log.log_console(f"=== Task done: {task_name} ===")
+    except BaseException as exc:
+        run_error = exc
     finally:
         for controller in task_batch_controllers.values():
             controller.stop()
-        log.close()
+        try:
+            summary_rows: List[Dict[str, Any]] = []
+            for task_name in tasks:
+                if task_name not in task_summaries:
+                    continue
+                summary_rows.extend(build_task_summary_csv_rows(task_name, task_summaries[task_name]))
+            final_report = {
+                "run_root": str(run_root),
+                "git_commit": git_commit(),
+                "device": str(device),
+                "config": asdict(cfg),
+                "summary": {
+                    "tasks_requested": list(tasks),
+                    "tasks_completed": [name for name, summary in task_summaries.items() if summary.get("winner") is not None],
+                    "num_tasks_requested": len(tasks),
+                    "num_tasks_completed": sum(1 for summary in task_summaries.values() if summary.get("winner") is not None),
+                },
+                "tasks": [build_task_report(task_summaries[name]) for name in tasks if name in task_summaries],
+            }
+            write_json(run_root / "final_report.json", final_report)
+            write_text(run_root / "final_report.md", render_final_report(final_report))
+            if summary_rows:
+                write_csv(
+                    run_root / "task_summary.csv",
+                    summary_rows,
+                    [
+                        "task",
+                        "row_type",
+                        "adp_phase",
+                        "adp_mode",
+                        "stl_phase",
+                        "adp_best_val",
+                        "stl_best_val",
+                        "winner",
+                        "winner_phase",
+                        "winner_value",
+                        "adp_architecture",
+                        "stl_architecture",
+                    ],
+                )
+            log.log_console(f"Final report written to {run_root / 'final_report.json'}")
+        finally:
+            log.close()
+    if run_error is not None:
+        raise run_error
 
 
 if __name__ == "__main__":
