@@ -261,7 +261,3 @@ def main():
     )
     best_val, model, widths = adp_search(model, dl_train, dl_val, acfg, device)
     print(f"[ADP Robust AE] mode={args.adp_mode} best_val={best_val:.6f} widths={widths} depth={len(widths)}")
-
-
-if __name__ == "__main__":
-    main()

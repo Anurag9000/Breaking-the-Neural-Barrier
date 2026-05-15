@@ -265,7 +265,3 @@ def main():
     results_dir = Path(f"results_{BASE_PATH.stem}")
     best_val, model, hidden, layers = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=results_dir)
     print(f"[ADP Predictive SeqAE] mode={args.adp_mode} best_val={best_val:.6f} hidden={hidden} layers={layers}")
-
-
-if __name__ == "__main__":
-    main()

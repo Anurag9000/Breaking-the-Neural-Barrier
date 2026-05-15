@@ -17,7 +17,3 @@ def main():
     # delegate to common impl
     import subprocess, sys
     subprocess.call([sys.executable, str(BASE_PATH)])
-
-
-if __name__ == "__main__":
-    main()

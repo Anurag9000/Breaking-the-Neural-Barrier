@@ -204,9 +204,3 @@ def make_sknet_cifar(depth: int = 18, num_classes: int = 10, in_channels: int = 
         return SKResNetCIFAR(SKBottleneck, [3,4,6,3], num_classes=num_classes, in_channels=in_channels, reduction=reduction, groups=groups)
     else:
         raise ValueError("Supported depths for SKNet-ResNet: 18, 34, 50")
-
-if __name__ == "__main__":
-    for d in [18,34,50]:
-        m = make_sknet_cifar(depth=d, num_classes=10)
-        y = m(torch.randn(2,3,32,32))
-        print(d, y.shape)

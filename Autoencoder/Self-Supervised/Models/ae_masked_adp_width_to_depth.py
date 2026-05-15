@@ -246,16 +246,3 @@ def main():
                      mask_ratio=args.mask_ratio, patch_size=args.patch_size)
     best_val, model, widths = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     print(f"[ADP Masked AE] mode={args.adp_mode} best_val={best_val:.6f} widths={widths} depth={len(widths)}")
-
-
-if __name__ == "__main__":
-    main()
-
-
-# ADP REVIEW (AFTER REFACTOR)
-# ADP REVIEW: delegated to utils.adp_contract forward-only core.
-# - Mode: depth_only / depth -> ADP_DEPTH_ONLY forward-only depth search with patience_depth_exp.
-# - Mode: depth_to_width -> ADP_DEPTH_OUTER_WIDTH_INNER forward-only outer depth; inner width search forward-only; restore global best after loop.
-# - Mode: width_to_depth -> ADP_WIDTH_OUTER_DEPTH_INNER forward-only outer width; inner depth forward-only; restore global best after loop.
-# - Mode: alt_depth / alt_width -> ADP_ALT_DEPTH / ADP_ALT_WIDTH forward-only phases; only revert to global best between phases.
-# - Snapshot/restore kept for global best; patiences map to trials_width/trials_depth; delta shared for width/depth thresholds.

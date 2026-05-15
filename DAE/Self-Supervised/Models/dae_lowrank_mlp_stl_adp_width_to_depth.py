@@ -459,7 +459,3 @@ def main() -> None:
 
     logger.log_console(f"[DONE] Best val={best_val:.6f}, width={best_w}, depth={best_d}")
     logger.close()
-
-
-if __name__ == "__main__":
-    main()

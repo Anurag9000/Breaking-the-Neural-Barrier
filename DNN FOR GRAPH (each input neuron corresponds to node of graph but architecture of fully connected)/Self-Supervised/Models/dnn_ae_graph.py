@@ -65,4 +65,3 @@ def main():
     data,_=load_planetoid(a.dataset); X,_,_,_,_=data; N=X.size(0)
     m=DNNNodeAE(N,a.hidden,a.depth); cfg=TrainCfg(); v,t=train_autoencoder(m,data,cfg)
     print(f"[AE] {a.dataset} N={N} H={a.hidden} D={a.depth} Val={v:.6f} Test={t:.6f}")
-if __name__=="__main__": main()

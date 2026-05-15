@@ -17,10 +17,3 @@ class MaskedTimeModel(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         h, _ = self.encoder(x)
         return self.head(h)
-
-if __name__ == '__main__':
-    B,T,D=2,8,4
-    net = MaskedTimeModel(D, 16)
-    x = torch.randn(B,T,D)
-    y = net(x)
-    print(y.shape)

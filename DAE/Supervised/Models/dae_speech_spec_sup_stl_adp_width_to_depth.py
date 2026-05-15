@@ -409,7 +409,3 @@ def main():
         if stats_csv.exists():
             plot_loss_vs_epoch(stats_csv, results_dir / "loss_vs_epoch.png")
             plot_loss_vs_neurons(stats_csv, results_dir / "loss_vs_neurons.png")
-
-
-if __name__ == "__main__":
-    main()

@@ -148,9 +148,3 @@ class ShuffleNetV2CIFAR(nn.Module):
 
 def make_shufflenet_v2_cifar(num_classes: int = 10, in_channels: int = 3, width_mult: float = 1.0) -> ShuffleNetV2CIFAR:
     return ShuffleNetV2CIFAR(num_classes=num_classes, in_channels=in_channels, width_mult=width_mult)
-
-if __name__ == "__main__":
-    for a in [0.5, 1.0]:
-        m = make_shufflenet_v2_cifar(num_classes=10, width_mult=a)
-        y = m(torch.randn(2,3,32,32))
-        print(a, y.shape, ShuffleNetV2CIFAR.param_count(m))

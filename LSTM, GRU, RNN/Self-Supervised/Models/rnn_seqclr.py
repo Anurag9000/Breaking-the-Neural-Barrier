@@ -33,10 +33,3 @@ class SeqCLRGRU(nn.Module):
         labels = torch.cat([torch.arange(B, 2*B), torch.arange(0, B)]).to(z.device)
         loss = torch.nn.functional.cross_entropy(sim, labels)
         return loss
-
-if __name__ == '__main__':
-    B,T,D=4,32,8
-    net = SeqCLRGRU(D, 64, 32)
-    x = torch.randn(B,T,D)
-    z = net(x)
-    print(z.shape)

@@ -12,9 +12,3 @@ class TripletGRU(nn.Module):
         h=h.mean(dim=1)
         z=F.normalize(self.proj(h),dim=-1)
         return z
-
-if __name__=='__main__':
-    B,T,D=12,64,16
-    net=TripletGRU(D,128,64)
-    x=torch.randn(B,T,D)
-    print(net.encode(x).shape)

@@ -182,9 +182,3 @@ def make_dpn_cifar(config: str = "compact", num_classes: int = 10, in_channels: 
     else:
         raise ValueError("Unknown DPN config. Use 'compact' or 'dpn92lite'.")
     return DPNCIFAR(num_classes=num_classes, in_channels=in_channels, units=units, R_list=R, k_list=k, groups=groups)
-
-if __name__ == "__main__":
-    for cfg in ["compact", "dpn92lite"]:
-        m = make_dpn_cifar(config=cfg, num_classes=10)
-        y = m(torch.randn(2,3,32,32))
-        print(cfg, y.shape)

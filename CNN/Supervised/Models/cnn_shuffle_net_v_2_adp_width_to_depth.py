@@ -423,6 +423,3 @@ def main():
     acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)
     val, m, w, d = adp_search(model, dl_train, dl_val, acfg, device)
     print(f"Done. Best val={val} w={w} d={d}")
-
-if __name__ == "__main__":
-    main()

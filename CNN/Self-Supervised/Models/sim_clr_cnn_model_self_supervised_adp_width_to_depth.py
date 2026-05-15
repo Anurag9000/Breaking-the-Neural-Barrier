@@ -458,6 +458,3 @@ def main():
     val, m, w, d = adp_search(model, dl_train, dl_val, acfg, device, logger=logger)
     logger.log_console(f"Done. Best val={val} w={w} d={d}")
     logger.close()
-
-if __name__ == "__main__":
-    main()

@@ -136,7 +136,3 @@ def main():
     results_dir = Path(f"results_{BASE_PATH.stem}")
     best = adp_search(model, dl_train, dl_val, acfg, device, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=results_dir)
     print(f"[ADP Multi-Scale AE STL] mode={args.adp_mode} best_val={best_val:.6f} width={width} depth={depth}")
-
-
-if __name__ == "__main__":
-    main()

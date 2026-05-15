@@ -368,9 +368,10 @@ def make_loaders(batch_size=128, num_workers=0):
     try:
         trainset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
         testset  = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
-    except:
-        trainset = datasets.FakeData(transform=transforms.ToTensor())
-        testset = datasets.FakeData(transform=transforms.ToTensor())
+    except Exception as exc:
+        raise RuntimeError(
+            "CIFAR10 benchmark data is unavailable. Download the real dataset before running this benchmark."
+        ) from exc
         
     n = len(trainset)
     n_val = n // 10
@@ -418,6 +419,3 @@ def main():
     acfg = ADPConfig(adp_mode=args.adp_mode, max_epochs=args.max_epochs)
     val, m, w, d = adp_search(model, dl_train, dl_val, acfg, device)
     print(f"Done. Best val={val} w={w} d={d}")
-
-if __name__ == "__main__":
-    main()

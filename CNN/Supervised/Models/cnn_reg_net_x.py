@@ -178,9 +178,3 @@ class RegNetXCIFAR(nn.Module):
 
 def make_regnetx_cifar(num_classes: int = 10, in_channels: int = 3, preset: str = "regnetx_400mf") -> RegNetXCIFAR:
     return RegNetXCIFAR(num_classes=num_classes, in_channels=in_channels, preset=preset)
-
-if __name__ == "__main__":
-    for p in ["regnetx_200mf", "regnetx_400mf", "regnetx_800mf"]:
-        m = make_regnetx_cifar(num_classes=10, preset=p)
-        y = m(torch.randn(2,3,32,32))
-        print(p, y.shape, RegNetXCIFAR.param_count(m))

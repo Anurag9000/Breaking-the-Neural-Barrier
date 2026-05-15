@@ -124,10 +124,10 @@ def make_loaders(batch_size=128, num_workers=0): # workers 0 for compat
     try:
         trainset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
         testset  = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
-    except:
-        # Fallback if no internet or data
-        trainset = datasets.FakeData(transform=transforms.ToTensor())
-        testset = datasets.FakeData(transform=transforms.ToTensor())
+    except Exception as exc:
+        raise RuntimeError(
+            "CIFAR10 benchmark data is unavailable. Download the real dataset before running this benchmark."
+        ) from exc
         
     n = len(trainset)
     n_val = n // 10
@@ -434,6 +434,3 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     if log_loss: plot_loss_vs_epoch(val_history, results_dir / "loss.png")
     
     return global_best_val, model, model.dim, model.num_layers
-
-if __name__ == "__main__":
-    main()

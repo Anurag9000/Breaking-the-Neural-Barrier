@@ -261,7 +261,3 @@ def main():
     )
     best, model = adp_search(model.to(device), dl_train, dl_val, acfg, device)
     print(f"[ADP MLP SSL] mode={args.adp_mode} best_val={best:.6f} hidden={model.encoder.hidden_widths} depth={len(model.encoder.hidden_widths)+1}")
-
-
-if __name__ == "__main__":
-    main()

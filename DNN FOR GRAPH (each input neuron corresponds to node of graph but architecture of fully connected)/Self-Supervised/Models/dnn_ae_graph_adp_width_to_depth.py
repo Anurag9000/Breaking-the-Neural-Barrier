@@ -270,7 +270,3 @@ def main():
     best, model = adp_search(model, data, tcfg, acfg, logger=logger, results_dir=results_dir)
     logger.log_console(f"[ADP AE] Done. best={best:.6f}")
     logger.close()
-
-
-if __name__ == "__main__":
-    main()

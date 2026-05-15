@@ -13,9 +13,3 @@ class JigsawGRU(nn.Module):
         h,_=self.encoder(x)
         h=h.mean(dim=1)
         return self.head(h)
-
-if __name__=='__main__':
-    B,T,D=8,64,16
-    net=JigsawGRU(D,64,num_permutations=24)
-    x=torch.randn(B,T,D)
-    print(net(x).shape)

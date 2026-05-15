@@ -200,8 +200,3 @@ class InceptionV1(nn.Module):
     @staticmethod
     def param_count(model: nn.Module) -> int:
         return sum(p.numel() for p in model.parameters())
-
-if __name__ == "__main__":
-    m = InceptionV1(num_classes=10, aux_logits=True)
-    logits, a1, a2 = m(torch.randn(2,3,32,32))
-    print(logits.shape, a1.shape if a1 is not None else None, a2.shape if a2 is not None else None)

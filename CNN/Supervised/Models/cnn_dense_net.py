@@ -147,9 +147,3 @@ def make_densenet_cifar(growth_rate: int = 12, layers_per_block: int = 16, compr
                         drop_rate: float = 0.0, num_classes: int = 10, in_channels: int = 3) -> DenseNetCIFAR:
     return DenseNetCIFAR(growth_rate=growth_rate, num_layers_per_block=layers_per_block, compression=compression,
                          drop_rate=drop_rate, num_classes=num_classes, in_channels=in_channels)
-
-if __name__ == "__main__":
-    # Example: DenseNet-BC L=100, k=12 → n=16 per block
-    m = make_densenet_cifar(growth_rate=12, layers_per_block=16, compression=0.5, drop_rate=0.0, num_classes=10)
-    y = m(torch.randn(2,3,32,32))
-    print(y.shape)  # (2,10)

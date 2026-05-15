@@ -266,7 +266,3 @@ def main():
     best, model, w, d = adp_search(model, dl_train, dl_val, acfg, device, logger=logger, log_loss=args.plot_loss, log_neurons=args.plot_neurons, results_dir=args.results_dir)
     logger.log_console(f"\n[FINAL RESULT] mode={args.adp_mode} best_val={best:.6f} width={w} depth={d}\n")
     logger.close()
-
-
-if __name__ == "__main__":
-    main()

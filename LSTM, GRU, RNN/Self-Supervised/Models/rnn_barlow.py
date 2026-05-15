@@ -24,10 +24,3 @@ class BarlowGRU(nn.Module):
         on_diag = torch.diagonal(c).add_(-1).pow_(2).sum()
         off_diag = (c - torch.diag(torch.diag(c))).pow_(2).sum()
         return on_diag + lambd * off_diag
-
-if __name__ == '__main__':
-    B,T,D=8,64,16
-    net = BarlowGRU(D, 64, 32)
-    x = torch.randn(B,T,D)
-    z = net(x)
-    print(z.shape)

@@ -1,14 +1,13 @@
-﻿# DNN Defaults (STL + ADP)
+# DNN Defaults (STL + ADP)
 
-This folder implements plain MLP baselines for the tasks listed in `not_accomplished.md`.
-All tasks run with the same training loop and logging, and can be executed in STL or ADP
-mode (6 ADP variants). These defaults are intentionally simple so the focus is on
-comparative behavior rather than SOTA.
+This folder implements plain MLP baselines for 15 non-vision tasks.
+All tasks use real public benchmark datasets and can be executed in STL or ADP
+mode (6 ADP variants).
 
-Default task mapping (datasets, I/O, losses, metrics)
+Default task mapping
 
 1) Prediction / regression
-   - Dataset: YearPredictionMSD with California Housing fallback
+   - Dataset: YearPredictionMSD
    - Input: 90-d float vector -> Output: 1-d float
    - Loss: MSE
    - Metric: MSE, pairwise accuracy
@@ -27,7 +26,8 @@ Default task mapping (datasets, I/O, losses, metrics)
 
 4) Generation (single-model)
    - Dataset: Covertype
-   - Input: fixed noise vector paired with each feature vector -> Output: 54-d reconstruction
+   - Input: fixed noise vector paired with each feature vector -> Output:
+     54-d reconstruction
    - Loss: MSE
    - Metric: MSE
 
@@ -50,16 +50,16 @@ Default task mapping (datasets, I/O, losses, metrics)
    - Metric: MSE
 
 8) Control / optimization approximation
-    - Dataset: California Housing
-    - Input: conditioned features -> Output: target-side features
-    - Loss: MSE
-    - Metric: MSE
+   - Dataset: California Housing
+   - Input: conditioned features -> Output: target-side features
+   - Loss: MSE
+   - Metric: MSE
 
 9) Clustering / similarity
-    - Dataset: Covertype
-    - Input: 54-d feature vector -> Output: embedding
-    - Loss: reconstruction MSE (autoencoder)
-    - Metric: k-means NMI on embeddings
+   - Dataset: Covertype
+   - Input: 54-d feature vector -> Output: embedding
+   - Loss: reconstruction MSE (autoencoder)
+   - Metric: k-means NMI on embeddings
 
 10) Compression / encoding
     - Dataset: Covertype
@@ -68,7 +68,7 @@ Default task mapping (datasets, I/O, losses, metrics)
     - Metric: MSE, compression ratio (latent/in_dim)
 
 11) Ranking / scoring
-    - Dataset: YearPredictionMSD with California Housing fallback
+    - Dataset: YearPredictionMSD
     - Input: x -> Output: score
     - Loss: MSE
     - Metric: pairwise ranking accuracy
@@ -98,6 +98,6 @@ Default task mapping (datasets, I/O, losses, metrics)
     - Metric: MSE
 
 Notes
-- All tasks use the same plain MLP backbone (no CNNs).
+- All tasks use the same plain MLP backbone.
 - STL = fixed architecture; ADP = width/depth adaptive (6 modes).
 - Logging: per-run `training_log.txt`, `training_stats.csv`, and plots.
