@@ -1,0 +1,49 @@
+{
+  "completed": true,
+  "completed_methods": [
+    "bayes",
+    "grid",
+    "nas",
+    "random"
+  ],
+  "methods": [
+    "grid",
+    "random",
+    "bayes",
+    "nas"
+  ],
+  "next_method_index": 4,
+  "task": "prediction",
+  "winner": {
+    "method": "random",
+    "search_architecture": {
+      "hidden_widths": [
+        512,
+        512
+      ],
+      "in_dim": 8,
+      "out_dim": 1,
+      "use_bn": true
+    },
+    "search_best_val": 0.0008057808154262602,
+    "search_test_metrics": {
+      "test_loss": 0.0011948860483244061
+    },
+    "stl_architecture": {
+      "hidden_widths": [
+        512,
+        512
+      ],
+      "in_dim": 8,
+      "out_dim": 1,
+      "use_bn": true
+    },
+    "stl_best_val": 0.3298645615577698,
+    "stl_test_metrics": {
+      "test_loss": 0.3341970443725586
+    },
+    "winner": "search",
+    "winner_phase": "random",
+    "winner_value": 0.0008057808154262602
+  }
+}

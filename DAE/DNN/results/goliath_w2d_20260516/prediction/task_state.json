@@ -1,0 +1,35 @@
+{
+  "completed": true,
+  "completed_phases": [
+    "ae_width_to_depth",
+    "stl_from_ae_width_to_depth"
+  ],
+  "next_phase_index": 2,
+  "phases": [
+    "ae_width_to_depth"
+  ],
+  "task": "prediction",
+  "winner": {
+    "adp_architecture": {
+      "hidden_widths": [
+        255,
+        255
+      ],
+      "in_dim": 8,
+      "out_dim": 8,
+      "use_bn": true
+    },
+    "adp_best_val": 0.0002721167984418571,
+    "adp_phase": "ae_width_to_depth",
+    "stl_architecture": [
+      255,
+      255
+    ],
+    "stl_best_val": 0.33261337876319885,
+    "stl_phase": "stl_from_ae_width_to_depth",
+    "task": "prediction",
+    "winner": "adp",
+    "winner_phase": "ae_width_to_depth",
+    "winner_value": 0.0002721167984418571
+  }
+}
