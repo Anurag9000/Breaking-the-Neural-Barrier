@@ -28,6 +28,7 @@ from DAE.DNN.run_goliath import (
     extract_hidden_widths,
     format_architecture_for_report,
     git_commit,
+    load_candidate_model,
     make_reconstruction_model,
     make_stl_model,
     model_signature,
@@ -132,6 +133,94 @@ def candidate_root_for(method_root: Path, index: int, hidden_widths: Sequence[in
     depth = len(hidden_widths)
     width = max(hidden_widths) if hidden_widths else 0
     return method_root / f"cand_{index:03d}_d{depth}_w{width}"
+
+
+def candidate_summary_path(candidate_dir: Path) -> Path:
+    return candidate_dir / "candidate_summary.json"
+
+
+def candidate_state_path(candidate_dir: Path) -> Path:
+    return candidate_dir / "candidate_state.json"
+
+
+def method_summary_path(task_root: Path, method: str) -> Path:
+    return method_root_for(task_root, method) / "method_summary.json"
+
+
+def method_state_path(task_root: Path, method: str) -> Path:
+    return method_root_for(task_root, method) / "method_state.json"
+
+
+def task_state_path(task_root: Path) -> Path:
+    return task_root / "task_state.json"
+
+
+def load_json_if_exists(path: Path) -> Optional[Dict[str, Any]]:
+    if not path.exists():
+        return None
+    try:
+        return read_json(path)
+    except Exception:
+        return None
+
+
+def load_completed_candidate_summary(candidate_dir: Path) -> Optional[Dict[str, Any]]:
+    state = load_json_if_exists(candidate_state_path(candidate_dir))
+    summary = load_json_if_exists(candidate_summary_path(candidate_dir))
+    if state is not None and bool(state.get("completed", False)) and summary is not None:
+        return summary
+    return None
+
+
+def collect_completed_candidate_summaries(method_root: Path, task: Task, device, reconstruct: bool) -> List[Dict[str, Any]]:
+    summaries: List[Dict[str, Any]] = []
+    for candidate_dir in sorted([p for p in method_root.iterdir() if p.is_dir() and p.name.startswith("cand_")]):
+        summary = load_completed_candidate_summary(candidate_dir)
+        if summary is not None:
+            summaries.append(summary)
+            continue
+        state = load_json_if_exists(candidate_state_path(candidate_dir))
+        if state is None or not bool(state.get("completed", False)):
+            continue
+        try:
+            model, _, ckpt = load_candidate_model(candidate_dir, device)
+        except Exception:
+            continue
+        test_metrics = eval_final(model, task, device, reconstruct=reconstruct)
+        hidden_widths = extract_hidden_widths(state.get("architecture") or [])
+        if not hidden_widths:
+            hidden_widths = list(model.hidden_widths)
+        reconstructed = {
+            "method": candidate_dir.parent.name,
+            "candidate_dir": str(candidate_dir),
+            "architecture": {"hidden_widths": hidden_widths, "in_dim": task.in_dim, "out_dim": task.out_dim, "use_bn": getattr(model, "use_bn", True)},
+            "best_val": float(ckpt["best_val"]),
+            "best_epoch": int(ckpt["best_epoch"]),
+            "final_epoch": int(ckpt.get("epoch", ckpt["best_epoch"])),
+            "best_checkpoint": str(candidate_dir / "checkpoint_best.pt"),
+            "last_checkpoint": str(candidate_dir / "checkpoint_last.pt"),
+            "test_metrics": test_metrics,
+            "reconstruct": reconstruct,
+        }
+        write_json(candidate_summary_path(candidate_dir), reconstructed)
+        summaries.append(reconstructed)
+    return summaries
+
+
+def load_method_state(task_root: Path, method: str) -> Optional[Dict[str, Any]]:
+    return load_json_if_exists(method_state_path(task_root, method))
+
+
+def save_method_state(task_root: Path, method: str, state: Dict[str, Any]) -> None:
+    write_json(method_state_path(task_root, method), state)
+
+
+def load_task_state(task_root: Path) -> Optional[Dict[str, Any]]:
+    return load_json_if_exists(task_state_path(task_root))
+
+
+def save_task_state(task_root: Path, state: Dict[str, Any]) -> None:
+    write_json(task_state_path(task_root), state)
 
 
 def write_text(path: Path, content: str) -> None:
@@ -290,6 +379,30 @@ def train_candidate(
     method_root = method_root_for(task_root, method)
     candidate_dir = candidate_root_for(method_root, candidate_index, hidden_widths)
     candidate_dir.mkdir(parents=True, exist_ok=True)
+
+    existing_summary = load_completed_candidate_summary(candidate_dir)
+    if existing_summary is not None:
+        return existing_summary
+
+    state_path = candidate_state_path(candidate_dir)
+    if state_path.exists() and bool(read_json(state_path).get("completed", False)):
+        model, meta, ckpt = load_candidate_model(candidate_dir, device)
+        test_metrics = eval_final(model, task, device, reconstruct=reconstruct)
+        summary = {
+            "method": method,
+            "candidate_dir": str(candidate_dir),
+            "architecture": {"hidden_widths": [int(w) for w in hidden_widths], "in_dim": task.in_dim, "out_dim": task.out_dim, "use_bn": train_cfg.use_bn},
+            "best_val": float(ckpt["best_val"]),
+            "best_epoch": int(ckpt["best_epoch"]),
+            "final_epoch": int(ckpt.get("epoch", ckpt["best_epoch"])),
+            "best_checkpoint": str(candidate_dir / "checkpoint_best.pt"),
+            "last_checkpoint": str(candidate_dir / "checkpoint_last.pt"),
+            "test_metrics": test_metrics,
+            "reconstruct": reconstruct,
+        }
+        write_json(candidate_summary_path(candidate_dir), summary)
+        return summary
+
     model = make_candidate_model(task, hidden_widths, train_cfg.use_bn, reconstruct).to(device)
     logger = ContinuousLogger(candidate_dir, f"{task.name}_{method}", method)
     write_json(
@@ -366,22 +479,60 @@ def run_grid_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: Ru
     method = "grid"
     method_root = method_root_for(task_root, method)
     method_root.mkdir(parents=True, exist_ok=True)
-    candidates = []
-    for i, arch in enumerate(pool):
-        candidates.append(
-            train_candidate(
-                task=task,
-                task_root=task_root,
-                method=method,
-                candidate_index=i,
-                hidden_widths=arch,
-                cfg=cfg,
-                train_cfg=train_cfg,
-                device=device,
-                reconstruct=True,
-                batch_controller=batch_controller,
-            )
+    existing = load_json_if_exists(method_summary_path(task_root, method))
+    if existing is not None and bool(existing.get("completed", False)):
+        return existing
+
+    state = load_method_state(task_root, method) or {
+        "method": method,
+        "task": task.name,
+        "candidate_order": [list(map(int, arch)) for arch in pool],
+        "budget": budget,
+        "next_candidate_index": 0,
+        "completed": False,
+        "best_candidate_dir": None,
+        "best_val": None,
+    }
+
+    candidates = collect_completed_candidate_summaries(method_root, task, device, True)
+    start_index = int(state.get("next_candidate_index", 0))
+    for i, arch in enumerate(pool[start_index:], start=start_index):
+        state.update(
+            {
+                "active_candidate_index": i,
+                "active_architecture": [int(w) for w in arch],
+                "next_candidate_index": i,
+                "completed": False,
+            }
         )
+        save_method_state(task_root, method, state)
+        result = train_candidate(
+            task=task,
+            task_root=task_root,
+            method=method,
+            candidate_index=i,
+            hidden_widths=arch,
+            cfg=cfg,
+            train_cfg=train_cfg,
+            device=device,
+            reconstruct=True,
+            batch_controller=batch_controller,
+        )
+        candidates.append(result)
+        state.update(
+            {
+                "active_candidate_index": None,
+                "active_architecture": None,
+                "next_candidate_index": i + 1,
+                "best_candidate_dir": min(candidates, key=lambda x: float(x["best_val"]))["candidate_dir"],
+                "best_val": min(float(x["best_val"]) for x in candidates),
+            }
+        )
+        save_method_state(task_root, method, state)
+
+    candidates = collect_completed_candidate_summaries(method_root, task, device, True)
+    if not candidates:
+        raise ValueError(f"No completed candidates found for {method} on task {task.name}")
     best = min(candidates, key=lambda x: float(x["best_val"]))
     refit = refit_stl_on_architecture(
         task=task,
@@ -393,7 +544,18 @@ def run_grid_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: Ru
         device=device,
         batch_controller=batch_controller,
     )
-    return {"method": method, "search_candidates": candidates, "best": best, "stl_refit": refit}
+    result = {"method": method, "search_candidates": candidates, "best": best, "stl_refit": refit, "completed": True}
+    write_json(method_summary_path(task_root, method), result)
+    state.update(
+        {
+            "completed": True,
+            "best_candidate_dir": best["candidate_dir"],
+            "best_val": float(best["best_val"]),
+            "stl_refit_candidate_dir": refit["candidate_dir"],
+        }
+    )
+    save_method_state(task_root, method, state)
+    return result
 
 
 def run_random_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: RunConfig, device, batch_controller) -> Dict[str, Any]:
@@ -406,22 +568,60 @@ def run_random_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: 
     method = "random"
     method_root = method_root_for(task_root, method)
     method_root.mkdir(parents=True, exist_ok=True)
-    candidates = []
-    for i, arch in enumerate(pool):
-        candidates.append(
-            train_candidate(
-                task=task,
-                task_root=task_root,
-                method=method,
-                candidate_index=i,
-                hidden_widths=arch,
-                cfg=cfg,
-                train_cfg=train_cfg,
-                device=device,
-                reconstruct=True,
-                batch_controller=batch_controller,
-            )
+    existing = load_json_if_exists(method_summary_path(task_root, method))
+    if existing is not None and bool(existing.get("completed", False)):
+        return existing
+
+    state = load_method_state(task_root, method) or {
+        "method": method,
+        "task": task.name,
+        "candidate_order": [list(map(int, arch)) for arch in pool],
+        "budget": budget,
+        "next_candidate_index": 0,
+        "completed": False,
+        "best_candidate_dir": None,
+        "best_val": None,
+    }
+
+    candidates = collect_completed_candidate_summaries(method_root, task, device, True)
+    start_index = int(state.get("next_candidate_index", 0))
+    for i, arch in enumerate(pool[start_index:], start=start_index):
+        state.update(
+            {
+                "active_candidate_index": i,
+                "active_architecture": [int(w) for w in arch],
+                "next_candidate_index": i,
+                "completed": False,
+            }
         )
+        save_method_state(task_root, method, state)
+        result = train_candidate(
+            task=task,
+            task_root=task_root,
+            method=method,
+            candidate_index=i,
+            hidden_widths=arch,
+            cfg=cfg,
+            train_cfg=train_cfg,
+            device=device,
+            reconstruct=True,
+            batch_controller=batch_controller,
+        )
+        candidates.append(result)
+        state.update(
+            {
+                "active_candidate_index": None,
+                "active_architecture": None,
+                "next_candidate_index": i + 1,
+                "best_candidate_dir": min(candidates, key=lambda x: float(x["best_val"]))["candidate_dir"],
+                "best_val": min(float(x["best_val"]) for x in candidates),
+            }
+        )
+        save_method_state(task_root, method, state)
+
+    candidates = collect_completed_candidate_summaries(method_root, task, device, True)
+    if not candidates:
+        raise ValueError(f"No completed candidates found for {method} on task {task.name}")
     best = min(candidates, key=lambda x: float(x["best_val"]))
     refit = refit_stl_on_architecture(
         task=task,
@@ -433,7 +633,18 @@ def run_random_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: 
         device=device,
         batch_controller=batch_controller,
     )
-    return {"method": method, "search_candidates": candidates, "best": best, "stl_refit": refit}
+    result = {"method": method, "search_candidates": candidates, "best": best, "stl_refit": refit, "completed": True}
+    write_json(method_summary_path(task_root, method), result)
+    state.update(
+        {
+            "completed": True,
+            "best_candidate_dir": best["candidate_dir"],
+            "best_val": float(best["best_val"]),
+            "stl_refit_candidate_dir": refit["candidate_dir"],
+        }
+    )
+    save_method_state(task_root, method, state)
+    return result
 
 
 def run_bayesian_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: RunConfig, device, batch_controller) -> Dict[str, Any]:
@@ -446,19 +657,73 @@ def run_bayesian_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg
     method_root = method_root_for(task_root, method)
     method_root.mkdir(parents=True, exist_ok=True)
 
-    observed: Dict[Tuple[int, ...], Dict[str, Any]] = {}
-    pending = pool[:]
-    rng.shuffle(pending)
-    init_count = min(max(3, int(cfg.bayes_warmup)), budget, len(pending))
+    existing = load_json_if_exists(method_summary_path(task_root, method))
+    if existing is not None and bool(existing.get("completed", False)):
+        return existing
 
-    candidates: List[Dict[str, Any]] = []
-    for i in range(init_count):
+    state = load_method_state(task_root, method)
+    if state is None:
+        pending = [list(map(int, arch)) for arch in pool]
+        rng.shuffle(pending)
+        observed: List[Dict[str, Any]] = []
+        init_count = min(max(3, int(cfg.bayes_warmup)), budget, len(pending))
+        state = {
+            "method": method,
+            "task": task.name,
+            "budget": budget,
+            "pending": pending,
+            "observed": observed,
+            "candidate_index": 0,
+            "init_count": init_count,
+            "completed": False,
+            "best_candidate_dir": None,
+            "best_val": None,
+        }
+    else:
+        pending = [list(map(int, arch)) for arch in state.get("pending", [])]
+        observed = [dict(item) for item in state.get("observed", [])]
+        init_count = int(state.get("init_count", min(max(3, int(cfg.bayes_warmup)), budget, len(pending))))
+        # Reconcile from on-disk candidates if state was not fully persisted.
+        if not observed:
+            completed = collect_completed_candidate_summaries(method_root, task, device, True)
+            observed = [
+                {
+                    "architecture": summary["architecture"]["hidden_widths"],
+                    "best_val": summary["best_val"],
+                    "candidate_dir": summary["candidate_dir"],
+                    "candidate_index": int(Path(summary["candidate_dir"]).name.split("_")[1]),
+                    "summary": summary,
+                }
+                for summary in completed
+            ]
+            observed_keys = {architecture_key(item["architecture"]) for item in observed}
+            pending = [arch for arch in pending if architecture_key(arch) not in observed_keys]
+            state["observed"] = observed
+            state["pending"] = pending
+            save_method_state(task_root, method, state)
+
+    candidates: List[Dict[str, Any]] = [item.get("summary") for item in observed if item.get("summary") is not None]
+    next_index = int(state.get("candidate_index", len(candidates)))
+    if next_index < len(candidates):
+        next_index = len(candidates)
+
+    for i in range(min(init_count, len(pending))):
         arch = pending.pop(0)
+        state.update(
+            {
+                "candidate_index": next_index,
+                "active_architecture": arch,
+                "pending": pending,
+                "observed": observed,
+                "completed": False,
+            }
+        )
+        save_method_state(task_root, method, state)
         res = train_candidate(
             task=task,
             task_root=task_root,
             method=method,
-            candidate_index=i,
+            candidate_index=next_index,
             hidden_widths=arch,
             cfg=cfg,
             train_cfg=train_cfg,
@@ -467,13 +732,31 @@ def run_bayesian_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg
             batch_controller=batch_controller,
         )
         candidates.append(res)
-        observed[architecture_key(arch)] = res
+        observed.append(
+            {
+                "architecture": res["architecture"]["hidden_widths"],
+                "best_val": res["best_val"],
+                "candidate_dir": res["candidate_dir"],
+                "candidate_index": next_index,
+                "summary": res,
+            }
+        )
+        next_index += 1
+        state.update(
+            {
+                "candidate_index": next_index,
+                "active_architecture": None,
+                "pending": pending,
+                "observed": observed,
+            }
+        )
+        save_method_state(task_root, method, state)
 
     def fit_gp() -> Optional[GaussianProcessRegressor]:
         if len(observed) < 2:
             return None
-        xs = np.vstack([architecture_features(res["architecture"]["hidden_widths"], cfg) for res in observed.values()])
-        ys = np.asarray([float(res["best_val"]) for res in observed.values()], dtype=np.float64)
+        xs = np.vstack([architecture_features(res["architecture"], cfg) for res in observed])
+        ys = np.asarray([float(res["best_val"]) for res in observed], dtype=np.float64)
         kernel = ConstantKernel(1.0, (1e-3, 1e3)) * Matern(length_scale=np.ones(xs.shape[1]), nu=2.5) + WhiteKernel(noise_level=1e-6)
         gp = GaussianProcessRegressor(kernel=kernel, alpha=1e-6, normalize_y=True, random_state=int(cfg.seed))
         gp.fit(xs, ys)
@@ -486,18 +769,28 @@ def run_bayesian_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg
         else:
             xs_pending = np.vstack([architecture_features(arch, cfg) for arch in pending])
             mu, sigma = gp.predict(xs_pending, return_std=True)
-            best_y = min(float(res["best_val"]) for res in observed.values())
+            best_y = min(float(res["best_val"]) for res in observed)
             imp = best_y - mu - 1e-6
             with np.errstate(divide="ignore", invalid="ignore"):
                 z = np.divide(imp, sigma, out=np.zeros_like(imp), where=sigma > 0)
                 ei = imp * norm.cdf(z) + sigma * norm.pdf(z)
             choice = int(np.argmax(ei))
             arch = pending.pop(choice)
+        state.update(
+            {
+                "candidate_index": next_index,
+                "active_architecture": arch,
+                "pending": pending,
+                "observed": observed,
+                "completed": False,
+            }
+        )
+        save_method_state(task_root, method, state)
         res = train_candidate(
             task=task,
             task_root=task_root,
             method=method,
-            candidate_index=len(candidates),
+            candidate_index=next_index,
             hidden_widths=arch,
             cfg=cfg,
             train_cfg=train_cfg,
@@ -506,8 +799,29 @@ def run_bayesian_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg
             batch_controller=batch_controller,
         )
         candidates.append(res)
-        observed[architecture_key(arch)] = res
+        observed.append(
+            {
+                "architecture": res["architecture"]["hidden_widths"],
+                "best_val": res["best_val"],
+                "candidate_dir": res["candidate_dir"],
+                "candidate_index": next_index,
+                "summary": res,
+            }
+        )
+        next_index += 1
+        state.update(
+            {
+                "candidate_index": next_index,
+                "active_architecture": None,
+                "pending": pending,
+                "observed": observed,
+            }
+        )
+        save_method_state(task_root, method, state)
 
+    candidates = collect_completed_candidate_summaries(method_root, task, device, True)
+    if not candidates:
+        raise ValueError(f"No completed candidates found for {method} on task {task.name}")
     best = min(candidates, key=lambda x: float(x["best_val"]))
     refit = refit_stl_on_architecture(
         task=task,
@@ -519,7 +833,20 @@ def run_bayesian_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg
         device=device,
         batch_controller=batch_controller,
     )
-    return {"method": method, "search_candidates": candidates, "best": best, "stl_refit": refit}
+    result = {"method": method, "search_candidates": candidates, "best": best, "stl_refit": refit, "completed": True}
+    write_json(method_summary_path(task_root, method), result)
+    state.update(
+        {
+            "completed": True,
+            "best_candidate_dir": best["candidate_dir"],
+            "best_val": float(best["best_val"]),
+            "stl_refit_candidate_dir": refit["candidate_dir"],
+            "pending": pending,
+            "observed": observed,
+        }
+    )
+    save_method_state(task_root, method, state)
+    return result
 
 
 def run_nas_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: RunConfig, device, batch_controller) -> Dict[str, Any]:
@@ -527,13 +854,47 @@ def run_nas_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: Run
     method_root = method_root_for(task_root, method)
     method_root.mkdir(parents=True, exist_ok=True)
     budget = len(architecture_pool(task, cfg)) if int(cfg.candidate_budget) <= 0 else int(cfg.candidate_budget)
-    candidates: List[Dict[str, Any]] = []
-    current_arch = [2, 2]
-    no_improve = 0
-    candidate_index = 0
+    existing = load_json_if_exists(method_summary_path(task_root, method))
+    if existing is not None and bool(existing.get("completed", False)):
+        return existing
+
+    state = load_method_state(task_root, method) or {
+        "method": method,
+        "task": task.name,
+        "budget": budget,
+        "current_arch": [2, 2],
+        "best_architecture": [2, 2],
+        "best_val": None,
+        "candidate_index": 0,
+        "no_improve": 0,
+        "pending_children": [],
+        "completed": False,
+    }
+
+    current_arch = [int(w) for w in state.get("current_arch", [2, 2])]
+    best_architecture = [int(w) for w in state.get("best_architecture", current_arch)]
+    best_val = state.get("best_val")
+    no_improve = int(state.get("no_improve", 0))
+    candidate_index = int(state.get("candidate_index", 0))
+    pending_children: List[List[int]] = [list(map(int, child)) for child in state.get("pending_children", [])]
+
+    candidates: List[Dict[str, Any]] = collect_completed_candidate_summaries(method_root, task, device, True)
 
     def evaluate(arch: Sequence[int]) -> Dict[str, Any]:
         nonlocal candidate_index
+        state.update(
+            {
+                "candidate_index": candidate_index,
+                "current_arch": [int(w) for w in current_arch],
+                "best_architecture": best_architecture,
+                "best_val": best_val,
+                "no_improve": no_improve,
+                "pending_children": pending_children,
+                "active_architecture": [int(w) for w in arch],
+                "completed": False,
+            }
+        )
+        save_method_state(task_root, method, state)
         res = train_candidate(
             task=task,
             task_root=task_root,
@@ -549,31 +910,74 @@ def run_nas_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: Run
         candidate_index += 1
         return res
 
-    candidates.append(evaluate(current_arch))
-    best = candidates[-1]
+    if not candidates:
+        first = evaluate(current_arch)
+        candidates.append(first)
+        best_val = float(first["best_val"])
+        best_architecture = list(first["architecture"]["hidden_widths"])
+        state.update(
+            {
+                "current_arch": current_arch,
+                "best_architecture": best_architecture,
+                "best_val": best_val,
+                "candidate_index": candidate_index,
+                "no_improve": no_improve,
+                "pending_children": pending_children,
+            }
+        )
+        save_method_state(task_root, method, state)
+
     while candidate_index < budget and no_improve < int(cfg.nas_patience):
-        children: List[List[int]] = []
-        widen = expand_width(make_reconstruction_model(task, current_arch, train_cfg.use_bn), 1, int(cfg.max_width))
-        deepen = expand_depth(make_reconstruction_model(task, current_arch, train_cfg.use_bn), int(cfg.max_depth))
-        if widen is not None:
-            children.append(list(widen.hidden_widths))
-        if deepen is not None:
-            children.append(list(deepen.hidden_widths))
-        if not children:
-            break
-        child_results = [evaluate(child) for child in children if candidate_index < budget]
-        candidates.extend(child_results)
+        if not pending_children:
+            children: List[List[int]] = []
+            widen = expand_width(make_reconstruction_model(task, current_arch, train_cfg.use_bn), 1, int(cfg.max_width))
+            deepen = expand_depth(make_reconstruction_model(task, current_arch, train_cfg.use_bn), int(cfg.max_depth))
+            if widen is not None:
+                children.append(list(widen.hidden_widths))
+            if deepen is not None:
+                children.append(list(deepen.hidden_widths))
+            if not children:
+                break
+            pending_children = children
+            state["pending_children"] = pending_children
+            save_method_state(task_root, method, state)
+
+        child_results = []
+        for child in list(pending_children):
+            if candidate_index >= budget:
+                break
+            child_results.append(evaluate(child))
+        pending_children = []
+        state["pending_children"] = pending_children
+        save_method_state(task_root, method, state)
         if not child_results:
             break
         child_best = min(child_results, key=lambda x: float(x["best_val"]))
-        if float(child_best["best_val"]) < float(best["best_val"]) - float(cfg.delta):
-            best = child_best
-            current_arch = list(child_best["architecture"]["hidden_widths"])
+        if best_val is None or float(child_best["best_val"]) < float(best_val) - float(cfg.delta):
+            best_val = float(child_best["best_val"])
+            best_architecture = list(child_best["architecture"]["hidden_widths"])
+            current_arch = best_architecture[:]
             no_improve = 0
         else:
             no_improve += 1
             current_arch = list(child_best["architecture"]["hidden_widths"])
+        state.update(
+            {
+                "current_arch": current_arch,
+                "best_architecture": best_architecture,
+                "best_val": best_val,
+                "candidate_index": candidate_index,
+                "no_improve": no_improve,
+                "pending_children": pending_children,
+                "completed": False,
+            }
+        )
+        save_method_state(task_root, method, state)
 
+    candidates = collect_completed_candidate_summaries(method_root, task, device, True)
+    if not candidates:
+        raise ValueError(f"No completed candidates found for {method} on task {task.name}")
+    best = min(candidates, key=lambda x: float(x["best_val"]))
     refit = refit_stl_on_architecture(
         task=task,
         task_root=task_root,
@@ -584,7 +988,21 @@ def run_nas_search(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: Run
         device=device,
         batch_controller=batch_controller,
     )
-    return {"method": method, "search_candidates": candidates, "best": best, "stl_refit": refit}
+    result = {"method": method, "search_candidates": candidates, "best": best, "stl_refit": refit, "completed": True}
+    write_json(method_summary_path(task_root, method), result)
+    state.update(
+        {
+            "completed": True,
+            "current_arch": current_arch,
+            "best_architecture": best["architecture"]["hidden_widths"],
+            "best_val": float(best["best_val"]),
+            "candidate_index": candidate_index,
+            "pending_children": [],
+            "stl_refit_candidate_dir": refit["candidate_dir"],
+        }
+    )
+    save_method_state(task_root, method, state)
+    return result
 
 
 def run_adp_search_method(
@@ -673,12 +1091,13 @@ def method_comparison(method_result: Dict[str, Any], task: Task) -> Dict[str, An
 
 
 def run_task_suite(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: RunConfig, device, batch_controller) -> Dict[str, Any]:
+    existing_task_summary = load_json_if_exists(task_root / "task_summary.json") or {}
     task_summary: Dict[str, Any] = {
         "task": task.name,
-        "reference": None,
-        "method_runs": [],
-        "comparisons": [],
-        "winner": None,
+        "reference": existing_task_summary.get("reference"),
+        "method_runs": list(existing_task_summary.get("method_runs", [])),
+        "comparisons": list(existing_task_summary.get("comparisons", [])),
+        "winner": existing_task_summary.get("winner"),
     }
 
     reference_summary = load_reference_task_summary(cfg.reference_run_root, task.name)
@@ -688,31 +1107,59 @@ def run_task_suite(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: Run
     else:
         reference_comparison = None
 
-    best_overall: Optional[Dict[str, Any]] = reference_comparison
+    best_overall: Optional[Dict[str, Any]] = task_summary.get("winner") or reference_comparison
     effective_budget = len(architecture_pool(task, cfg)) if int(cfg.candidate_budget) <= 0 else int(cfg.candidate_budget)
 
     if reference_comparison is not None:
-        task_summary["comparisons"].append(reference_comparison)
+        if not any(comp.get("reference", False) for comp in task_summary["comparisons"]):
+            task_summary["comparisons"].append(reference_comparison)
 
-    for method in cfg.methods:
+    completed_methods = {str(entry.get("method")) for entry in task_summary.get("method_runs", []) if entry.get("method")}
+    task_state = load_task_state(task_root) or {
+        "task": task.name,
+        "methods": list(cfg.methods),
+        "next_method_index": 0,
+        "completed_methods": sorted(completed_methods),
+        "winner": task_summary.get("winner"),
+        "completed": False,
+    }
+
+    for method_index, method in enumerate(cfg.methods):
         if method in ADP_METHODS:
             raise ValueError(
                 f"run_search_suite.py is baseline-only and does not run ADP methods. "
                 f"Use run_goliath.py for {method}."
             )
+        if method in completed_methods:
+            continue
         method_root_for(task_root, method).mkdir(parents=True, exist_ok=True)
-        if method == "grid":
-            result = run_grid_search(task, task_root, cfg, train_cfg, device, batch_controller)
-        elif method == "random":
-            result = run_random_search(task, task_root, cfg, train_cfg, device, batch_controller)
-        elif method == "bayes":
-            result = run_bayesian_search(task, task_root, cfg, train_cfg, device, batch_controller)
-        elif method == "nas":
-            result = run_nas_search(task, task_root, cfg, train_cfg, device, batch_controller)
-        elif method in ADP_METHODS:
-            result = run_adp_search_method(task, task_root, cfg, train_cfg, device, batch_controller, method, effective_budget)
+        existing_method_summary = load_json_if_exists(method_summary_path(task_root, method))
+        if existing_method_summary is not None and bool(existing_method_summary.get("completed", False)):
+            result = existing_method_summary
         else:
-            raise ValueError(f"Unknown method: {method}")
+            task_state.update(
+                {
+                    "next_method_index": method_index,
+                    "active_method": method,
+                    "completed": False,
+                }
+            )
+            save_task_state(task_root, task_state)
+            existing_method_summary = load_json_if_exists(method_summary_path(task_root, method))
+            if existing_method_summary is not None and bool(existing_method_summary.get("completed", False)):
+                result = existing_method_summary
+            elif method == "grid":
+                result = run_grid_search(task, task_root, cfg, train_cfg, device, batch_controller)
+            elif method == "random":
+                result = run_random_search(task, task_root, cfg, train_cfg, device, batch_controller)
+            elif method == "bayes":
+                result = run_bayesian_search(task, task_root, cfg, train_cfg, device, batch_controller)
+            elif method == "nas":
+                result = run_nas_search(task, task_root, cfg, train_cfg, device, batch_controller)
+            elif method in ADP_METHODS:
+                result = run_adp_search_method(task, task_root, cfg, train_cfg, device, batch_controller, method, effective_budget)
+            else:
+                raise ValueError(f"Unknown method: {method}")
 
         comparison = method_comparison(result, task)
         task_summary["method_runs"].append(result)
@@ -721,9 +1168,27 @@ def run_task_suite(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: Run
             best_overall = comparison
         task_summary["winner"] = best_overall
         write_json(task_root / "task_summary.json", task_summary)
+        task_state.update(
+            {
+                "next_method_index": method_index + 1,
+                "completed_methods": sorted({str(entry.get("method")) for entry in task_summary.get("method_runs", []) if entry.get("method")}),
+                "winner": task_summary["winner"],
+                "completed": False,
+            }
+        )
+        save_task_state(task_root, task_state)
 
     task_summary["winner"] = best_overall
     write_json(task_root / "task_summary.json", task_summary)
+    task_state.update(
+        {
+            "next_method_index": len(cfg.methods),
+            "completed_methods": sorted({str(entry.get("method")) for entry in task_summary.get("method_runs", []) if entry.get("method")}),
+            "winner": task_summary["winner"],
+            "completed": True,
+        }
+    )
+    save_task_state(task_root, task_state)
     return task_summary
 
 
