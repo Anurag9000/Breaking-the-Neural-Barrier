@@ -1,0 +1,3795 @@
+{
+  "comparisons": [
+    {
+      "method": "grid",
+      "search_architecture": {
+        "hidden_widths": [
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "in_dim": 8,
+        "out_dim": 1,
+        "use_bn": true
+      },
+      "search_best_val": 0.0008414287003688514,
+      "search_test_metrics": {
+        "test_loss": 0.0019542307127267122
+      },
+      "stl_architecture": {
+        "hidden_widths": [
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "in_dim": 8,
+        "out_dim": 1,
+        "use_bn": true
+      },
+      "stl_best_val": 0.2780097424983978,
+      "stl_test_metrics": {
+        "test_loss": 0.30967506766319275
+      },
+      "winner": "search",
+      "winner_phase": "grid",
+      "winner_value": 0.0008414287003688514
+    },
+    {
+      "method": "random",
+      "search_architecture": {
+        "hidden_widths": [
+          512,
+          512
+        ],
+        "in_dim": 8,
+        "out_dim": 1,
+        "use_bn": true
+      },
+      "search_best_val": 0.0008057808154262602,
+      "search_test_metrics": {
+        "test_loss": 0.0011948860483244061
+      },
+      "stl_architecture": {
+        "hidden_widths": [
+          512,
+          512
+        ],
+        "in_dim": 8,
+        "out_dim": 1,
+        "use_bn": true
+      },
+      "stl_best_val": 0.3298645615577698,
+      "stl_test_metrics": {
+        "test_loss": 0.3341970443725586
+      },
+      "winner": "search",
+      "winner_phase": "random",
+      "winner_value": 0.0008057808154262602
+    },
+    {
+      "method": "bayes",
+      "search_architecture": {
+        "hidden_widths": [
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "in_dim": 8,
+        "out_dim": 1,
+        "use_bn": true
+      },
+      "search_best_val": 0.0010810543317347765,
+      "search_test_metrics": {
+        "test_loss": 0.0024403436109423637
+      },
+      "stl_architecture": {
+        "hidden_widths": [
+          512,
+          512,
+          512,
+          512,
+          512
+        ],
+        "in_dim": 8,
+        "out_dim": 1,
+        "use_bn": true
+      },
+      "stl_best_val": 0.2843468487262726,
+      "stl_test_metrics": {
+        "test_loss": 0.3054700195789337
+      },
+      "winner": "search",
+      "winner_phase": "bayes",
+      "winner_value": 0.0010810543317347765
+    },
+    {
+      "method": "nas",
+      "search_architecture": {
+        "hidden_widths": [
+          17,
+          17,
+          17,
+          17
+        ],
+        "in_dim": 8,
+        "out_dim": 1,
+        "use_bn": true
+      },
+      "search_best_val": 0.0171149093657732,
+      "search_test_metrics": {
+        "test_loss": 0.019224917516112328
+      },
+      "stl_architecture": {
+        "hidden_widths": [
+          17,
+          17,
+          17,
+          17
+        ],
+        "in_dim": 8,
+        "out_dim": 1,
+        "use_bn": true
+      },
+      "stl_best_val": 0.3568846881389618,
+      "stl_test_metrics": {
+        "test_loss": 0.355078786611557
+      },
+      "winner": "search",
+      "winner_phase": "nas",
+      "winner_value": 0.0171149093657732
+    }
+  ],
+  "method_runs": [
+    {
+      "best": {
+        "architecture": {
+          "hidden_widths": [
+            512,
+            512,
+            512,
+            512,
+            512
+          ],
+          "in_dim": 8,
+          "out_dim": 1,
+          "use_bn": true
+        },
+        "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_035_d5_w512/checkpoint_best.pt",
+        "best_epoch": 84,
+        "best_val": 0.0008414287003688514,
+        "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_035_d5_w512",
+        "final_epoch": 89,
+        "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_035_d5_w512/checkpoint_last.pt",
+        "method": "grid",
+        "reconstruct": true,
+        "test_metrics": {
+          "test_loss": 0.0019542307127267122
+        }
+      },
+      "method": "grid",
+      "search_candidates": [
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_000_d2_w2/checkpoint_best.pt",
+          "best_epoch": 9,
+          "best_val": 1.9481598138809204,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_000_d2_w2",
+          "final_epoch": 15,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_000_d2_w2/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.708510398864746
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_001_d2_w4/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.657675862312317,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_001_d2_w4",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_001_d2_w4/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.315577983856201
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_002_d2_w8/checkpoint_best.pt",
+          "best_epoch": 1344,
+          "best_val": 0.023361781612038612,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_002_d2_w8",
+          "final_epoch": 1349,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_002_d2_w8/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.027371546253561974
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_003_d2_w16/checkpoint_best.pt",
+          "best_epoch": 834,
+          "best_val": 0.019053401425480843,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_003_d2_w16",
+          "final_epoch": 839,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_003_d2_w16/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.01940939575433731
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_004_d2_w32/checkpoint_best.pt",
+          "best_epoch": 435,
+          "best_val": 0.0076670278795063496,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_004_d2_w32",
+          "final_epoch": 440,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_004_d2_w32/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.008846689946949482
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_005_d2_w64/checkpoint_best.pt",
+          "best_epoch": 233,
+          "best_val": 0.004639605525881052,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_005_d2_w64",
+          "final_epoch": 238,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_005_d2_w64/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.005573493428528309
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_006_d2_w128/checkpoint_best.pt",
+          "best_epoch": 132,
+          "best_val": 0.0025589317083358765,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_006_d2_w128",
+          "final_epoch": 137,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_006_d2_w128/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.003066938603296876
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_007_d2_w256/checkpoint_best.pt",
+          "best_epoch": 81,
+          "best_val": 0.0014213245594874024,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_007_d2_w256",
+          "final_epoch": 86,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_007_d2_w256/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0019236356019973755
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_008_d2_w512/checkpoint_best.pt",
+          "best_epoch": 30,
+          "best_val": 0.0032326020300388336,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_008_d2_w512",
+          "final_epoch": 36,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_008_d2_w512/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.004447779152542353
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_009_d3_w2/checkpoint_best.pt",
+          "best_epoch": 16,
+          "best_val": 1.776448369026184,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_009_d3_w2",
+          "final_epoch": 22,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_009_d3_w2/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.354770183563232
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_010_d3_w4/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.6698578596115112,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_010_d3_w4",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_010_d3_w4/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.3186116218566895
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_011_d3_w8/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.6650515794754028,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_011_d3_w8",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_011_d3_w8/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.470668315887451
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_012_d3_w16/checkpoint_best.pt",
+          "best_epoch": 897,
+          "best_val": 0.014471112750470638,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_012_d3_w16",
+          "final_epoch": 902,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_012_d3_w16/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.018763136118650436
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_013_d3_w32/checkpoint_best.pt",
+          "best_epoch": 445,
+          "best_val": 0.008104182779788971,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_013_d3_w32",
+          "final_epoch": 450,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_013_d3_w32/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.010948427021503448
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_014_d3_w64/checkpoint_best.pt",
+          "best_epoch": 236,
+          "best_val": 0.004960515070706606,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_014_d3_w64",
+          "final_epoch": 241,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_014_d3_w64/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.005675236228853464
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_015_d3_w128/checkpoint_best.pt",
+          "best_epoch": 125,
+          "best_val": 0.0026780650950968266,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_015_d3_w128",
+          "final_epoch": 130,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_015_d3_w128/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.003249955829232931
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_016_d3_w256/checkpoint_best.pt",
+          "best_epoch": 79,
+          "best_val": 0.0013186224969103932,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_016_d3_w256",
+          "final_epoch": 85,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_016_d3_w256/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0018159017199650407
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_017_d3_w512/checkpoint_best.pt",
+          "best_epoch": 69,
+          "best_val": 0.0009056281414814293,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_017_d3_w512",
+          "final_epoch": 75,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_017_d3_w512/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.001480085658840835
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2,
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_018_d4_w2/checkpoint_best.pt",
+          "best_epoch": 26,
+          "best_val": 1.6320918798446655,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_018_d4_w2",
+          "final_epoch": 32,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_018_d4_w2/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.191333770751953
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4,
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_019_d4_w4/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.6561428308486938,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_019_d4_w4",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_019_d4_w4/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.224964141845703
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8,
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_020_d4_w8/checkpoint_best.pt",
+          "best_epoch": 1166,
+          "best_val": 0.036680083721876144,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_020_d4_w8",
+          "final_epoch": 1172,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_020_d4_w8/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.04583194479346275
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16,
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_021_d4_w16/checkpoint_best.pt",
+          "best_epoch": 949,
+          "best_val": 0.017135055735707283,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_021_d4_w16",
+          "final_epoch": 954,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_021_d4_w16/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.021173246204853058
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32,
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_022_d4_w32/checkpoint_best.pt",
+          "best_epoch": 491,
+          "best_val": 0.00960294809192419,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_022_d4_w32",
+          "final_epoch": 496,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_022_d4_w32/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.012313559651374817
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64,
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_023_d4_w64/checkpoint_best.pt",
+          "best_epoch": 259,
+          "best_val": 0.005272680427879095,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_023_d4_w64",
+          "final_epoch": 264,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_023_d4_w64/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.006465625017881393
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128,
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_024_d4_w128/checkpoint_best.pt",
+          "best_epoch": 135,
+          "best_val": 0.002563989022746682,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_024_d4_w128",
+          "final_epoch": 140,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_024_d4_w128/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.003073633648455143
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256,
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_025_d4_w256/checkpoint_best.pt",
+          "best_epoch": 87,
+          "best_val": 0.0013804229674860835,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_025_d4_w256",
+          "final_epoch": 92,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_025_d4_w256/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0016854681307449937
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512,
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_026_d4_w512/checkpoint_best.pt",
+          "best_epoch": 36,
+          "best_val": 0.0038535671774297953,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_026_d4_w512",
+          "final_epoch": 42,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_026_d4_w512/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.009721851907670498
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_027_d5_w2/checkpoint_best.pt",
+          "best_epoch": 1202,
+          "best_val": 1.2520322799682617,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_027_d5_w2",
+          "final_epoch": 1208,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_027_d5_w2/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 4.8266167640686035
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4,
+              4,
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_028_d5_w4/checkpoint_best.pt",
+          "best_epoch": 488,
+          "best_val": 0.7497422099113464,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_028_d5_w4",
+          "final_epoch": 494,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_028_d5_w4/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 1.885329246520996
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8,
+              8,
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_029_d5_w8/checkpoint_best.pt",
+          "best_epoch": 688,
+          "best_val": 0.11586903035640717,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_029_d5_w8",
+          "final_epoch": 693,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_029_d5_w8/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.16362492740154266
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16,
+              16,
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_030_d5_w16/checkpoint_best.pt",
+          "best_epoch": 694,
+          "best_val": 0.026629911735653877,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_030_d5_w16",
+          "final_epoch": 699,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_030_d5_w16/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.03130500391125679
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32,
+              32,
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_031_d5_w32/checkpoint_best.pt",
+          "best_epoch": 539,
+          "best_val": 0.009749301709234715,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_031_d5_w32",
+          "final_epoch": 544,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_031_d5_w32/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.01166466437280178
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64,
+              64,
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_032_d5_w64/checkpoint_best.pt",
+          "best_epoch": 282,
+          "best_val": 0.0052557215094566345,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_032_d5_w64",
+          "final_epoch": 287,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_032_d5_w64/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.006993194110691547
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128,
+              128,
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_033_d5_w128/checkpoint_best.pt",
+          "best_epoch": 129,
+          "best_val": 0.0036942826118320227,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_033_d5_w128",
+          "final_epoch": 135,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_033_d5_w128/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.005128094926476479
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256,
+              256,
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_034_d5_w256/checkpoint_best.pt",
+          "best_epoch": 90,
+          "best_val": 0.0015942732570692897,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_034_d5_w256",
+          "final_epoch": 95,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_034_d5_w256/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0023585569579154253
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512,
+              512,
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_035_d5_w512/checkpoint_best.pt",
+          "best_epoch": 84,
+          "best_val": 0.0008414287003688514,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_035_d5_w512",
+          "final_epoch": 89,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid/cand_035_d5_w512/checkpoint_last.pt",
+          "method": "grid",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0019542307127267122
+          }
+        }
+      ],
+      "stl_refit": {
+        "architecture": {
+          "hidden_widths": [
+            512,
+            512,
+            512,
+            512,
+            512
+          ],
+          "in_dim": 8,
+          "out_dim": 1,
+          "use_bn": true
+        },
+        "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid_stl_refit/cand_000_d5_w512/checkpoint_best.pt",
+        "best_epoch": 51,
+        "best_val": 0.2780097424983978,
+        "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/grid_stl_refit/cand_000_d5_w512",
+        "final_epoch": 56,
+        "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/grid_stl_refit/cand_000_d5_w512/checkpoint_last.pt",
+        "method": "grid_stl_refit",
+        "reconstruct": false,
+        "test_metrics": {
+          "test_loss": 0.30967506766319275
+        }
+      }
+    },
+    {
+      "best": {
+        "architecture": {
+          "hidden_widths": [
+            512,
+            512
+          ],
+          "in_dim": 8,
+          "out_dim": 1,
+          "use_bn": true
+        },
+        "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_002_d2_w512/checkpoint_best.pt",
+        "best_epoch": 66,
+        "best_val": 0.0008057808154262602,
+        "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_002_d2_w512",
+        "final_epoch": 72,
+        "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_002_d2_w512/checkpoint_last.pt",
+        "method": "random",
+        "reconstruct": true,
+        "test_metrics": {
+          "test_loss": 0.0011948860483244061
+        }
+      },
+      "method": "random",
+      "search_candidates": [
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_000_d2_w256/checkpoint_best.pt",
+          "best_epoch": 73,
+          "best_val": 0.001707511954009533,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_000_d2_w256",
+          "final_epoch": 78,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_000_d2_w256/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.002236210973933339
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_001_d3_w32/checkpoint_best.pt",
+          "best_epoch": 438,
+          "best_val": 0.008806142956018448,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_001_d3_w32",
+          "final_epoch": 443,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_001_d3_w32/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.010305377654731274
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_002_d2_w512/checkpoint_best.pt",
+          "best_epoch": 66,
+          "best_val": 0.0008057808154262602,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_002_d2_w512",
+          "final_epoch": 72,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_002_d2_w512/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0011948860483244061
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_003_d2_w128/checkpoint_best.pt",
+          "best_epoch": 125,
+          "best_val": 0.0025142061058431864,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_003_d2_w128",
+          "final_epoch": 130,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_003_d2_w128/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0026354992296546698
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_004_d3_w16/checkpoint_best.pt",
+          "best_epoch": 954,
+          "best_val": 0.0165544543415308,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_004_d3_w16",
+          "final_epoch": 959,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_004_d3_w16/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.019440198317170143
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_005_d3_w512/checkpoint_best.pt",
+          "best_epoch": 34,
+          "best_val": 0.0023697861470282078,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_005_d3_w512",
+          "final_epoch": 40,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_005_d3_w512/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.004089831840246916
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128,
+              128,
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_006_d5_w128/checkpoint_best.pt",
+          "best_epoch": 142,
+          "best_val": 0.0030644861981272697,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_006_d5_w128",
+          "final_epoch": 147,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_006_d5_w128/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.004574932623654604
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128,
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_007_d4_w128/checkpoint_best.pt",
+          "best_epoch": 129,
+          "best_val": 0.003018569201231003,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_007_d4_w128",
+          "final_epoch": 134,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_007_d4_w128/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.004112279508262873
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_008_d2_w2/checkpoint_best.pt",
+          "best_epoch": 1227,
+          "best_val": 1.0852888822555542,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_008_d2_w2",
+          "final_epoch": 1232,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_008_d2_w2/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 4.761983871459961
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_009_d2_w32/checkpoint_best.pt",
+          "best_epoch": 458,
+          "best_val": 0.0079253064468503,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_009_d2_w32",
+          "final_epoch": 463,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_009_d2_w32/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.009642990306019783
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512,
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_010_d4_w512/checkpoint_best.pt",
+          "best_epoch": 76,
+          "best_val": 0.0009512864635325968,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_010_d4_w512",
+          "final_epoch": 82,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_010_d4_w512/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0015515637351199985
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_011_d2_w64/checkpoint_best.pt",
+          "best_epoch": 229,
+          "best_val": 0.004534382373094559,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_011_d2_w64",
+          "final_epoch": 234,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_011_d2_w64/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.006018125917762518
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8,
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_012_d4_w8/checkpoint_best.pt",
+          "best_epoch": 1044,
+          "best_val": 0.06956232339143753,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_012_d4_w8",
+          "final_epoch": 1050,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_012_d4_w8/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.08344914019107819
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2,
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_013_d4_w2/checkpoint_best.pt",
+          "best_epoch": 922,
+          "best_val": 1.3569751977920532,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_013_d4_w2",
+          "final_epoch": 928,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_013_d4_w2/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 4.926516532897949
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32,
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_014_d4_w32/checkpoint_best.pt",
+          "best_epoch": 510,
+          "best_val": 0.00938355177640915,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_014_d4_w32",
+          "final_epoch": 515,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_014_d4_w32/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.01213269867002964
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_015_d3_w4/checkpoint_best.pt",
+          "best_epoch": 525,
+          "best_val": 0.44553619623184204,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_015_d3_w4",
+          "final_epoch": 531,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_015_d3_w4/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.7689088582992554
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_016_d3_w256/checkpoint_best.pt",
+          "best_epoch": 82,
+          "best_val": 0.001323777949437499,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_016_d3_w256",
+          "final_epoch": 87,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_016_d3_w256/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.001684315619058907
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32,
+              32,
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_017_d5_w32/checkpoint_best.pt",
+          "best_epoch": 351,
+          "best_val": 0.016023293137550354,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_017_d5_w32",
+          "final_epoch": 357,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_017_d5_w32/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.02249380387365818
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_018_d2_w16/checkpoint_best.pt",
+          "best_epoch": 815,
+          "best_val": 0.012096820399165154,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_018_d2_w16",
+          "final_epoch": 820,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_018_d2_w16/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.013771221973001957
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512,
+              512,
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_019_d5_w512/checkpoint_best.pt",
+          "best_epoch": 74,
+          "best_val": 0.0012334154453128576,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_019_d5_w512",
+          "final_epoch": 80,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_019_d5_w512/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.002223850693553686
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16,
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_020_d4_w16/checkpoint_best.pt",
+          "best_epoch": 725,
+          "best_val": 0.02564784698188305,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_020_d4_w16",
+          "final_epoch": 730,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_020_d4_w16/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.034211136400699615
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256,
+              256,
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_021_d5_w256/checkpoint_best.pt",
+          "best_epoch": 93,
+          "best_val": 0.001701404806226492,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_021_d5_w256",
+          "final_epoch": 98,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_021_d5_w256/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0029869982972741127
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_022_d3_w8/checkpoint_best.pt",
+          "best_epoch": 980,
+          "best_val": 0.03667633607983589,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_022_d3_w8",
+          "final_epoch": 986,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_022_d3_w8/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.043899595737457275
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_023_d5_w2/checkpoint_best.pt",
+          "best_epoch": 17,
+          "best_val": 1.7559516429901123,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_023_d5_w2",
+          "final_epoch": 23,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_023_d5_w2/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.3037028312683105
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_024_d2_w4/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.7458430528640747,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_024_d2_w4",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_024_d2_w4/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 6.019861221313477
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_025_d3_w128/checkpoint_best.pt",
+          "best_epoch": 144,
+          "best_val": 0.002465440658852458,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_025_d3_w128",
+          "final_epoch": 149,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_025_d3_w128/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0030833736527711153
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16,
+              16,
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_026_d5_w16/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.6005457639694214,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_026_d5_w16",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_026_d5_w16/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.295201778411865
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4,
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_027_d4_w4/checkpoint_best.pt",
+          "best_epoch": 1271,
+          "best_val": 0.8730312585830688,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_027_d4_w4",
+          "final_epoch": 1276,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_027_d4_w4/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 4.558709144592285
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64,
+              64,
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_028_d5_w64/checkpoint_best.pt",
+          "best_epoch": 273,
+          "best_val": 0.005465087480843067,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_028_d5_w64",
+          "final_epoch": 278,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_028_d5_w64/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.007639382500201464
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_029_d2_w8/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.6636818647384644,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_029_d2_w8",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_029_d2_w8/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.480202674865723
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8,
+              8,
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_030_d5_w8/checkpoint_best.pt",
+          "best_epoch": 905,
+          "best_val": 0.06255855411291122,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_030_d5_w8",
+          "final_epoch": 911,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_030_d5_w8/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.06971117109060287
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_031_d3_w64/checkpoint_best.pt",
+          "best_epoch": 241,
+          "best_val": 0.004966617561876774,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_031_d3_w64",
+          "final_epoch": 246,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_031_d3_w64/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.006426145322620869
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64,
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_032_d4_w64/checkpoint_best.pt",
+          "best_epoch": 254,
+          "best_val": 0.0052327257581055164,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_032_d4_w64",
+          "final_epoch": 259,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_032_d4_w64/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.007567383348941803
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256,
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_033_d4_w256/checkpoint_best.pt",
+          "best_epoch": 86,
+          "best_val": 0.0014641282614320517,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_033_d4_w256",
+          "final_epoch": 92,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_033_d4_w256/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0018681716173887253
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_034_d3_w2/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.7308053970336914,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_034_d3_w2",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_034_d3_w2/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.281113147735596
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4,
+              4,
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_035_d5_w4/checkpoint_best.pt",
+          "best_epoch": 402,
+          "best_val": 1.086411714553833,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_035_d5_w4",
+          "final_epoch": 408,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random/cand_035_d5_w4/checkpoint_last.pt",
+          "method": "random",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 4.776587963104248
+          }
+        }
+      ],
+      "stl_refit": {
+        "architecture": {
+          "hidden_widths": [
+            512,
+            512
+          ],
+          "in_dim": 8,
+          "out_dim": 1,
+          "use_bn": true
+        },
+        "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random_stl_refit/cand_000_d2_w512/checkpoint_best.pt",
+        "best_epoch": 42,
+        "best_val": 0.3298645615577698,
+        "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/random_stl_refit/cand_000_d2_w512",
+        "final_epoch": 48,
+        "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/random_stl_refit/cand_000_d2_w512/checkpoint_last.pt",
+        "method": "random_stl_refit",
+        "reconstruct": false,
+        "test_metrics": {
+          "test_loss": 0.3341970443725586
+        }
+      }
+    },
+    {
+      "best": {
+        "architecture": {
+          "hidden_widths": [
+            512,
+            512,
+            512,
+            512,
+            512
+          ],
+          "in_dim": 8,
+          "out_dim": 1,
+          "use_bn": true
+        },
+        "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_001_d5_w512/checkpoint_best.pt",
+        "best_epoch": 75,
+        "best_val": 0.0010810543317347765,
+        "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_001_d5_w512",
+        "final_epoch": 81,
+        "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_001_d5_w512/checkpoint_last.pt",
+        "method": "bayes",
+        "reconstruct": true,
+        "test_metrics": {
+          "test_loss": 0.0024403436109423637
+        }
+      },
+      "method": "bayes",
+      "search_candidates": [
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32,
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_000_d4_w32/checkpoint_best.pt",
+          "best_epoch": 492,
+          "best_val": 0.00981602817773819,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_000_d4_w32",
+          "final_epoch": 497,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_000_d4_w32/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.01189329195767641
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512,
+              512,
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_001_d5_w512/checkpoint_best.pt",
+          "best_epoch": 75,
+          "best_val": 0.0010810543317347765,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_001_d5_w512",
+          "final_epoch": 81,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_001_d5_w512/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0024403436109423637
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_002_d3_w8/checkpoint_best.pt",
+          "best_epoch": 1543,
+          "best_val": 0.028195491060614586,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_002_d3_w8",
+          "final_epoch": 1549,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_002_d3_w8/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.03366798534989357
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2,
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_003_d4_w2/checkpoint_best.pt",
+          "best_epoch": 25,
+          "best_val": 1.854498267173767,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_003_d4_w2",
+          "final_epoch": 31,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_003_d4_w2/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.390261173248291
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_004_d3_w4/checkpoint_best.pt",
+          "best_epoch": 753,
+          "best_val": 0.8156580924987793,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_004_d3_w4",
+          "final_epoch": 759,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_004_d3_w4/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 4.158604145050049
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_005_d3_w256/checkpoint_best.pt",
+          "best_epoch": 79,
+          "best_val": 0.0013709206832572818,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_005_d3_w256",
+          "final_epoch": 84,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_005_d3_w256/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0018973592668771744
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64,
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_006_d4_w64/checkpoint_best.pt",
+          "best_epoch": 265,
+          "best_val": 0.005217798054218292,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_006_d4_w64",
+          "final_epoch": 270,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_006_d4_w64/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.006476764101535082
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128,
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_007_d4_w128/checkpoint_best.pt",
+          "best_epoch": 127,
+          "best_val": 0.0027531033847481012,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_007_d4_w128",
+          "final_epoch": 132,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_007_d4_w128/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0038670976646244526
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_008_d2_w64/checkpoint_best.pt",
+          "best_epoch": 238,
+          "best_val": 0.004340304993093014,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_008_d2_w64",
+          "final_epoch": 243,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_008_d2_w64/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.005557624623179436
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_009_d2_w512/checkpoint_best.pt",
+          "best_epoch": 31,
+          "best_val": 0.002665116684511304,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_009_d2_w512",
+          "final_epoch": 37,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_009_d2_w512/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0038088327273726463
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_010_d3_w64/checkpoint_best.pt",
+          "best_epoch": 257,
+          "best_val": 0.00479556480422616,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_010_d3_w64",
+          "final_epoch": 262,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_010_d3_w64/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.005523246247321367
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_011_d2_w4/checkpoint_best.pt",
+          "best_epoch": 819,
+          "best_val": 0.6881406903266907,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_011_d2_w4",
+          "final_epoch": 825,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_011_d2_w4/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 3.3542706966400146
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8,
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_012_d4_w8/checkpoint_best.pt",
+          "best_epoch": 1458,
+          "best_val": 0.035298869013786316,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_012_d4_w8",
+          "final_epoch": 1463,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_012_d4_w8/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.04302070662379265
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256,
+              256,
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_013_d5_w256/checkpoint_best.pt",
+          "best_epoch": 77,
+          "best_val": 0.0018306777346879244,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_013_d5_w256",
+          "final_epoch": 83,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_013_d5_w256/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.002704333048313856
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128,
+              128,
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_014_d5_w128/checkpoint_best.pt",
+          "best_epoch": 140,
+          "best_val": 0.0030671204440295696,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_014_d5_w128",
+          "final_epoch": 145,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_014_d5_w128/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0039998856373131275
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_015_d3_w16/checkpoint_best.pt",
+          "best_epoch": 1016,
+          "best_val": 0.013595106080174446,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_015_d3_w16",
+          "final_epoch": 1021,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_015_d3_w16/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.016743455082178116
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_016_d3_w128/checkpoint_best.pt",
+          "best_epoch": 135,
+          "best_val": 0.0023885145783424377,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_016_d3_w128",
+          "final_epoch": 140,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_016_d3_w128/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.002729358384385705
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_017_d3_w32/checkpoint_best.pt",
+          "best_epoch": 408,
+          "best_val": 0.008730195462703705,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_017_d3_w32",
+          "final_epoch": 413,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_017_d3_w32/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.011683321557939053
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_018_d3_w512/checkpoint_best.pt",
+          "best_epoch": 37,
+          "best_val": 0.0028736614622175694,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_018_d3_w512",
+          "final_epoch": 42,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_018_d3_w512/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.005304886493831873
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_019_d2_w256/checkpoint_best.pt",
+          "best_epoch": 91,
+          "best_val": 0.0014555830275639892,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_019_d2_w256",
+          "final_epoch": 96,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_019_d2_w256/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.001876948168501258
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              256,
+              256,
+              256,
+              256
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_020_d4_w256/checkpoint_best.pt",
+          "best_epoch": 91,
+          "best_val": 0.0015343331033363938,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_020_d4_w256",
+          "final_epoch": 96,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_020_d4_w256/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0019451227271929383
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_021_d5_w2/checkpoint_best.pt",
+          "best_epoch": 7,
+          "best_val": 1.656962275505066,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_021_d5_w2",
+          "final_epoch": 13,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_021_d5_w2/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.223015785217285
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_022_d3_w2/checkpoint_best.pt",
+          "best_epoch": 10,
+          "best_val": 1.6898157596588135,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_022_d3_w2",
+          "final_epoch": 16,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_022_d3_w2/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.250699520111084
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_023_d2_w32/checkpoint_best.pt",
+          "best_epoch": 433,
+          "best_val": 0.008187071420252323,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_023_d2_w32",
+          "final_epoch": 438,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_023_d2_w32/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.009521882981061935
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_024_d2_w8/checkpoint_best.pt",
+          "best_epoch": 1173,
+          "best_val": 0.02494666911661625,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_024_d2_w8",
+          "final_epoch": 1178,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_024_d2_w8/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.027346216142177582
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              64,
+              64,
+              64,
+              64,
+              64
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_025_d5_w64/checkpoint_best.pt",
+          "best_epoch": 246,
+          "best_val": 0.00636089313775301,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_025_d5_w64",
+          "final_epoch": 252,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_025_d5_w64/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.007623613346368074
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              32,
+              32,
+              32,
+              32,
+              32
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_026_d5_w32/checkpoint_best.pt",
+          "best_epoch": 512,
+          "best_val": 0.0118521424010396,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_026_d5_w32",
+          "final_epoch": 517,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_026_d5_w32/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.01624385640025139
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_027_d2_w2/checkpoint_best.pt",
+          "best_epoch": 880,
+          "best_val": 0.862496554851532,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_027_d2_w2",
+          "final_epoch": 886,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_027_d2_w2/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 2.2163782119750977
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4,
+              4,
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_028_d5_w4/checkpoint_best.pt",
+          "best_epoch": 10,
+          "best_val": 1.6127713918685913,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_028_d5_w4",
+          "final_epoch": 16,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_028_d5_w4/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.181607246398926
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4,
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_029_d4_w4/checkpoint_best.pt",
+          "best_epoch": 1336,
+          "best_val": 0.31076931953430176,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_029_d4_w4",
+          "final_epoch": 1342,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_029_d4_w4/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.43799343705177307
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              128,
+              128
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_030_d2_w128/checkpoint_best.pt",
+          "best_epoch": 134,
+          "best_val": 0.002466874197125435,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_030_d2_w128",
+          "final_epoch": 139,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_030_d2_w128/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.002950953785330057
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16,
+              16,
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_031_d5_w16/checkpoint_best.pt",
+          "best_epoch": 744,
+          "best_val": 0.028895622119307518,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_031_d5_w16",
+          "final_epoch": 749,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_031_d5_w16/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.03195272386074066
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_032_d2_w16/checkpoint_best.pt",
+          "best_epoch": 954,
+          "best_val": 0.011141632683575153,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_032_d2_w16",
+          "final_epoch": 959,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_032_d2_w16/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.012912779115140438
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16,
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_033_d4_w16/checkpoint_best.pt",
+          "best_epoch": 643,
+          "best_val": 0.024936245754361153,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_033_d4_w16",
+          "final_epoch": 649,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_033_d4_w16/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.030673539265990257
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              512,
+              512,
+              512,
+              512
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_034_d4_w512/checkpoint_best.pt",
+          "best_epoch": 30,
+          "best_val": 0.004823335912078619,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_034_d4_w512",
+          "final_epoch": 36,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_034_d4_w512/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.00851297564804554
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8,
+              8,
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_035_d5_w8/checkpoint_best.pt",
+          "best_epoch": 1501,
+          "best_val": 0.0366656668484211,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_035_d5_w8",
+          "final_epoch": 1507,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes/cand_035_d5_w8/checkpoint_last.pt",
+          "method": "bayes",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.050697989761829376
+          }
+        }
+      ],
+      "stl_refit": {
+        "architecture": {
+          "hidden_widths": [
+            512,
+            512,
+            512,
+            512,
+            512
+          ],
+          "in_dim": 8,
+          "out_dim": 1,
+          "use_bn": true
+        },
+        "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes_stl_refit/cand_000_d5_w512/checkpoint_best.pt",
+        "best_epoch": 53,
+        "best_val": 0.2843468487262726,
+        "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/bayes_stl_refit/cand_000_d5_w512",
+        "final_epoch": 58,
+        "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/bayes_stl_refit/cand_000_d5_w512/checkpoint_last.pt",
+        "method": "bayes_stl_refit",
+        "reconstruct": false,
+        "test_metrics": {
+          "test_loss": 0.3054700195789337
+        }
+      }
+    },
+    {
+      "best": {
+        "architecture": {
+          "hidden_widths": [
+            17,
+            17,
+            17,
+            17
+          ],
+          "in_dim": 8,
+          "out_dim": 1,
+          "use_bn": true
+        },
+        "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_033_d4_w17/checkpoint_best.pt",
+        "best_epoch": 855,
+        "best_val": 0.0171149093657732,
+        "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_033_d4_w17",
+        "final_epoch": 860,
+        "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_033_d4_w17/checkpoint_last.pt",
+        "method": "nas",
+        "reconstruct": true,
+        "test_metrics": {
+          "test_loss": 0.019224917516112328
+        }
+      },
+      "method": "nas",
+      "search_candidates": [
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_000_d2_w2/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.7173563241958618,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_000_d2_w2",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_000_d2_w2/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.277482986450195
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              3,
+              3
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_001_d2_w3/checkpoint_best.pt",
+          "best_epoch": 1134,
+          "best_val": 0.4120035171508789,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_001_d2_w3",
+          "final_epoch": 1139,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_001_d2_w3/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.5523985028266907
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              2,
+              2,
+              2
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_002_d3_w2/checkpoint_best.pt",
+          "best_epoch": 2,
+          "best_val": 1.7821334600448608,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_002_d3_w2",
+          "final_epoch": 8,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_002_d3_w2/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.424818992614746
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_003_d2_w4/checkpoint_best.pt",
+          "best_epoch": 1237,
+          "best_val": 0.24150216579437256,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_003_d2_w4",
+          "final_epoch": 1242,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_003_d2_w4/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.347317636013031
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              3,
+              3,
+              3
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_004_d3_w3/checkpoint_best.pt",
+          "best_epoch": 10,
+          "best_val": 1.6771516799926758,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_004_d3_w3",
+          "final_epoch": 16,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_004_d3_w3/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.413259506225586
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              5,
+              5
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_005_d2_w5/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.755045771598816,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_005_d2_w5",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_005_d2_w5/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.841744422912598
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_006_d3_w4/checkpoint_best.pt",
+          "best_epoch": 773,
+          "best_val": 1.1229490041732788,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_006_d3_w4",
+          "final_epoch": 779,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_006_d3_w4/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 4.668695449829102
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              5,
+              5,
+              5
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_007_d3_w5/checkpoint_best.pt",
+          "best_epoch": 981,
+          "best_val": 0.7846320271492004,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_007_d3_w5",
+          "final_epoch": 987,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_007_d3_w5/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 4.410460948944092
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              4,
+              4,
+              4,
+              4
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_008_d4_w4/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.6573095321655273,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_008_d4_w4",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_008_d4_w4/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.2242021560668945
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              6,
+              6,
+              6
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_009_d3_w6/checkpoint_best.pt",
+          "best_epoch": 985,
+          "best_val": 0.0687122717499733,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_009_d3_w6",
+          "final_epoch": 991,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_009_d3_w6/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.07658741623163223
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              5,
+              5,
+              5,
+              5
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_010_d4_w5/checkpoint_best.pt",
+          "best_epoch": 1405,
+          "best_val": 0.12119488418102264,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_010_d4_w5",
+          "final_epoch": 1410,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_010_d4_w5/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.16414669156074524
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              7,
+              7,
+              7
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_011_d3_w7/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.602192759513855,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_011_d3_w7",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_011_d3_w7/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.269774913787842
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              6,
+              6,
+              6,
+              6
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_012_d4_w6/checkpoint_best.pt",
+          "best_epoch": 1647,
+          "best_val": 0.062258802354335785,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_012_d4_w6",
+          "final_epoch": 1653,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_012_d4_w6/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.09801424294710159
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              7,
+              7,
+              7,
+              7
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_013_d4_w7/checkpoint_best.pt",
+          "best_epoch": 951,
+          "best_val": 0.06881830096244812,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_013_d4_w7",
+          "final_epoch": 957,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_013_d4_w7/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0816154032945633
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              6,
+              6,
+              6,
+              6,
+              6
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_014_d5_w6/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.5924937725067139,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_014_d5_w6",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_014_d5_w6/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.160386085510254
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8,
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_015_d4_w8/checkpoint_best.pt",
+          "best_epoch": 1710,
+          "best_val": 0.02547292225062847,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_015_d4_w8",
+          "final_epoch": 1715,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_015_d4_w8/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.029753530398011208
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              7,
+              7,
+              7,
+              7,
+              7
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_016_d5_w7/checkpoint_best.pt",
+          "best_epoch": 115,
+          "best_val": 1.0139623880386353,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_016_d5_w7",
+          "final_epoch": 120,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_016_d5_w7/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 2.944478750228882
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              9,
+              9,
+              9,
+              9
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_017_d4_w9/checkpoint_best.pt",
+          "best_epoch": 1259,
+          "best_val": 0.03344980999827385,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_017_d4_w9",
+          "final_epoch": 1265,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_017_d4_w9/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.04731295630335808
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              8,
+              8,
+              8,
+              8,
+              8
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_018_d5_w8/checkpoint_best.pt",
+          "best_epoch": 1719,
+          "best_val": 0.03645680099725723,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_018_d5_w8",
+          "final_epoch": 1724,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_018_d5_w8/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.06609749794006348
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              10,
+              10,
+              10,
+              10
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_019_d4_w10/checkpoint_best.pt",
+          "best_epoch": 1175,
+          "best_val": 0.03620501607656479,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_019_d4_w10",
+          "final_epoch": 1180,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_019_d4_w10/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.042154502123594284
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              9,
+              9,
+              9,
+              9,
+              9
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_020_d5_w9/checkpoint_best.pt",
+          "best_epoch": 1,
+          "best_val": 1.5955736637115479,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_020_d5_w9",
+          "final_epoch": 7,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_020_d5_w9/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.171021938323975
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              11,
+              11,
+              11,
+              11
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_021_d4_w11/checkpoint_best.pt",
+          "best_epoch": 1169,
+          "best_val": 0.02301694266498089,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_021_d4_w11",
+          "final_epoch": 1175,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_021_d4_w11/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.027637895196676254
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              10,
+              10,
+              10,
+              10,
+              10
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_022_d5_w10/checkpoint_best.pt",
+          "best_epoch": 5,
+          "best_val": 1.5801913738250732,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_022_d5_w10",
+          "final_epoch": 11,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_022_d5_w10/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.169466018676758
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              12,
+              12,
+              12,
+              12
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_023_d4_w12/checkpoint_best.pt",
+          "best_epoch": 1018,
+          "best_val": 0.028527239337563515,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_023_d4_w12",
+          "final_epoch": 1023,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_023_d4_w12/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.033670857548713684
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              11,
+              11,
+              11,
+              11,
+              11
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_024_d5_w11/checkpoint_best.pt",
+          "best_epoch": 977,
+          "best_val": 0.03418209031224251,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_024_d5_w11",
+          "final_epoch": 983,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_024_d5_w11/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.03912803903222084
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              13,
+              13,
+              13,
+              13
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_025_d4_w13/checkpoint_best.pt",
+          "best_epoch": 909,
+          "best_val": 0.02734234184026718,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_025_d4_w13",
+          "final_epoch": 915,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_025_d4_w13/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.03217149153351784
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_026_d5_w12/checkpoint_best.pt",
+          "best_epoch": 1017,
+          "best_val": 0.03243798762559891,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_026_d5_w12",
+          "final_epoch": 1022,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_026_d5_w12/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.0390414223074913
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              14,
+              14,
+              14,
+              14
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_027_d4_w14/checkpoint_best.pt",
+          "best_epoch": 999,
+          "best_val": 0.018508106470108032,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_027_d4_w14",
+          "final_epoch": 1004,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_027_d4_w14/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.02238447405397892
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              13,
+              13,
+              13,
+              13,
+              13
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_028_d5_w13/checkpoint_best.pt",
+          "best_epoch": 6,
+          "best_val": 1.5718599557876587,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_028_d5_w13",
+          "final_epoch": 12,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_028_d5_w13/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 5.165398597717285
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              15,
+              15,
+              15,
+              15
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_029_d4_w15/checkpoint_best.pt",
+          "best_epoch": 788,
+          "best_val": 0.026682665571570396,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_029_d4_w15",
+          "final_epoch": 793,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_029_d4_w15/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.029295310378074646
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              14,
+              14,
+              14,
+              14,
+              14
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_030_d5_w14/checkpoint_best.pt",
+          "best_epoch": 644,
+          "best_val": 0.03630993142724037,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_030_d5_w14",
+          "final_epoch": 650,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_030_d5_w14/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.04964379966259003
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16,
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_031_d4_w16/checkpoint_best.pt",
+          "best_epoch": 809,
+          "best_val": 0.02202860824763775,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_031_d4_w16",
+          "final_epoch": 814,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_031_d4_w16/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.025078654289245605
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              15,
+              15,
+              15,
+              15,
+              15
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_032_d5_w15/checkpoint_best.pt",
+          "best_epoch": 670,
+          "best_val": 0.031270794570446014,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_032_d5_w15",
+          "final_epoch": 675,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_032_d5_w15/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.03274647146463394
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              17,
+              17,
+              17,
+              17
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_033_d4_w17/checkpoint_best.pt",
+          "best_epoch": 855,
+          "best_val": 0.0171149093657732,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_033_d4_w17",
+          "final_epoch": 860,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_033_d4_w17/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.019224917516112328
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              16,
+              16,
+              16,
+              16,
+              16
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_034_d5_w16/checkpoint_best.pt",
+          "best_epoch": 706,
+          "best_val": 0.02769431844353676,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_034_d5_w16",
+          "final_epoch": 711,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_034_d5_w16/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.028277482837438583
+          }
+        },
+        {
+          "architecture": {
+            "hidden_widths": [
+              18,
+              18,
+              18,
+              18
+            ],
+            "in_dim": 8,
+            "out_dim": 1,
+            "use_bn": true
+          },
+          "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_035_d4_w18/checkpoint_best.pt",
+          "best_epoch": 632,
+          "best_val": 0.020794866606593132,
+          "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_035_d4_w18",
+          "final_epoch": 638,
+          "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas/cand_035_d4_w18/checkpoint_last.pt",
+          "method": "nas",
+          "reconstruct": true,
+          "test_metrics": {
+            "test_loss": 0.023537449538707733
+          }
+        }
+      ],
+      "stl_refit": {
+        "architecture": {
+          "hidden_widths": [
+            17,
+            17,
+            17,
+            17
+          ],
+          "in_dim": 8,
+          "out_dim": 1,
+          "use_bn": true
+        },
+        "best_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas_stl_refit/cand_000_d4_w17/checkpoint_best.pt",
+        "best_epoch": 173,
+        "best_val": 0.3568846881389618,
+        "candidate_dir": "DAE/DNN/results/search_suite_20260516/prediction/nas_stl_refit/cand_000_d4_w17",
+        "final_epoch": 179,
+        "last_checkpoint": "DAE/DNN/results/search_suite_20260516/prediction/nas_stl_refit/cand_000_d4_w17/checkpoint_last.pt",
+        "method": "nas_stl_refit",
+        "reconstruct": false,
+        "test_metrics": {
+          "test_loss": 0.355078786611557
+        }
+      }
+    }
+  ],
+  "reference": null,
+  "task": "prediction",
+  "winner": {
+    "method": "random",
+    "search_architecture": {
+      "hidden_widths": [
+        512,
+        512
+      ],
+      "in_dim": 8,
+      "out_dim": 1,
+      "use_bn": true
+    },
+    "search_best_val": 0.0008057808154262602,
+    "search_test_metrics": {
+      "test_loss": 0.0011948860483244061
+    },
+    "stl_architecture": {
+      "hidden_widths": [
+        512,
+        512
+      ],
+      "in_dim": 8,
+      "out_dim": 1,
+      "use_bn": true
+    },
+    "stl_best_val": 0.3298645615577698,
+    "stl_test_metrics": {
+      "test_loss": 0.3341970443725586
+    },
+    "winner": "search",
+    "winner_phase": "random",
+    "winner_value": 0.0008057808154262602
+  }
+}
