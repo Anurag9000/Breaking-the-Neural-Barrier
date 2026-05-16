@@ -79,7 +79,20 @@ class AdaptiveBatchController:
         self.shrink_factor = float(shrink_factor)
         self.min_batch_size = int(min_batch_size)
         self.state_path = Path(state_path) if state_path is not None else None
-        self._current_batch_size = max(self.min_batch_size, int(initial_batch_size))
+        restored_batch_size = None
+        if self.state_path is not None and self.state_path.exists():
+            try:
+                payload = json.loads(self.state_path.read_text(encoding="utf-8"))
+                restored_batch_size = int(payload.get("batch_size")) if payload.get("batch_size") is not None else None
+                if payload.get("threshold_gb") is not None:
+                    self.threshold_mb = float(payload["threshold_gb"]) * 1024.0
+                if payload.get("poll_interval_sec") is not None:
+                    self.poll_interval_sec = float(payload["poll_interval_sec"])
+                if payload.get("shrink_factor") is not None:
+                    self.shrink_factor = float(payload["shrink_factor"])
+            except Exception:
+                restored_batch_size = None
+        self._current_batch_size = max(self.min_batch_size, int(restored_batch_size or initial_batch_size))
         self._last_poll = 0.0
         self._last_vram_mb: Optional[int] = None
         self._device_index = int(torch.cuda.current_device()) if torch.cuda.is_available() else 0

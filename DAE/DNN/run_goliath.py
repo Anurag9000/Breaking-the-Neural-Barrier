@@ -13,6 +13,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
+import numpy as np
 import torch
 import torch.nn.functional as F
 
@@ -140,6 +141,15 @@ def write_text(path: Path, content: str) -> None:
 def read_json(path: Path) -> Dict[str, Any]:
     with path.open("r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def load_json_if_exists(path: Path) -> Optional[Dict[str, Any]]:
+    if not path.exists():
+        return None
+    try:
+        return read_json(path)
+    except Exception:
+        return None
 
 
 def append_csv_row(path: Path, row: Dict[str, Any]) -> None:
@@ -431,13 +441,46 @@ def save_checkpoint(
         "best_epoch": int(best_epoch),
         "es_counter": int(es_counter),
         "metadata": metadata,
+        "rng_state": {
+            "python": random.getstate(),
+            "numpy": np.random.get_state(),
+            "torch": torch.get_rng_state(),
+            "cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None,
+        },
     }
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save(payload, path)
 
 
 def load_checkpoint(path: Path, device) -> Dict[str, Any]:
-    return torch.load(path, map_location=device)
+    # These checkpoints intentionally store optimizer and RNG state in addition
+    # to model weights, so we need the full unpickler rather than the
+    # PyTorch 2.6+ restricted default.
+    try:
+        return torch.load(path, map_location=device, weights_only=False)
+    except TypeError:
+        return torch.load(path, map_location=device)
+
+
+def restore_rng_state(payload: Dict[str, Any]) -> None:
+    rng_state = payload.get("rng_state")
+    if not isinstance(rng_state, dict):
+        return
+    python_state = rng_state.get("python")
+    numpy_state = rng_state.get("numpy")
+    torch_state = rng_state.get("torch")
+    cuda_state = rng_state.get("cuda")
+    if python_state is not None:
+        random.setstate(python_state)
+    if numpy_state is not None:
+        np.random.set_state(numpy_state)
+    if torch_state is not None:
+        torch.set_rng_state(torch_state)
+    if cuda_state is not None and torch.cuda.is_available():
+        try:
+            torch.cuda.set_rng_state_all(cuda_state)
+        except Exception:
+            pass
 
 
 def infer_model_signature_from_state_dict(state_dict: Dict[str, Any]) -> Tuple[int, List[int], int, bool]:
@@ -579,6 +622,7 @@ def training_loop(
         ckpt = load_checkpoint(last_ckpt, device)
         model.load_state_dict(ckpt["model_state"])
         optimizer.load_state_dict(ckpt["optimizer_state"])
+        restore_rng_state(ckpt)
         start_epoch = int(ckpt["epoch"]) + 1
         best_val = float(ckpt["best_val"])
         best_state = copy.deepcopy(ckpt["best_state"])
@@ -1585,6 +1629,12 @@ def run_task_pipeline(
     log: Optional[ContinuousLogger] = None,
     progress_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
+    task_state_path = task_root / "task_state.json"
+    existing_task_state = load_json_if_exists(task_state_path) or {}
+    existing_task_summary = load_json_if_exists(task_root / "task_summary.json") or {}
+    if bool(existing_task_state.get("completed", False)) and existing_task_summary.get("winner") is not None:
+        return existing_task_summary
+
     task_summary: Dict[str, Any] = {
         "task": task.name,
         "phases": [],
@@ -1594,7 +1644,15 @@ def run_task_pipeline(
         "winner": None,
     }
 
-    best_overall: Optional[Dict[str, Any]] = None
+    best_overall: Optional[Dict[str, Any]] = existing_task_summary.get("winner")
+    task_state: Dict[str, Any] = {
+        "task": task.name,
+        "phases": list(cfg.phases),
+        "completed_phases": list(existing_task_state.get("completed_phases", [])),
+        "next_phase_index": int(existing_task_state.get("next_phase_index", 0)),
+        "completed": False,
+        "winner": existing_task_summary.get("winner"),
+    }
     if log is not None:
         log.log_console(f"[TASK] start {task.name}")
 
@@ -1688,6 +1746,15 @@ def run_task_pipeline(
 
         task_summary["winner"] = best_overall
         write_json(task_root / "task_summary.json", task_summary)
+        task_state.update(
+            {
+                "completed_phases": [phase.get("phase") for phase in task_summary["phases"]],
+                "next_phase_index": len(task_summary["phases"]),
+                "winner": task_summary["winner"],
+                "completed": False,
+            }
+        )
+        write_json(task_state_path, task_state)
 
         if log is not None:
             log.log_console(
@@ -1741,9 +1808,27 @@ def run_task_pipeline(
                     "candidate_dir": baseline_summary.get("candidate_dir"),
                 },
             )
+        task_state.update(
+            {
+                "completed_phases": [phase.get("phase") for phase in task_summary["phases"]],
+                "next_phase_index": len(task_summary["phases"]),
+                "winner": task_summary["winner"],
+                "completed": False,
+            }
+        )
+        write_json(task_state_path, task_state)
 
     task_summary["winner"] = best_overall
     write_json(task_root / "task_summary.json", task_summary)
+    task_state.update(
+        {
+            "completed_phases": [phase.get("phase") for phase in task_summary["phases"]],
+            "next_phase_index": len(task_summary["phases"]),
+            "winner": task_summary["winner"],
+            "completed": True,
+        }
+    )
+    write_json(task_state_path, task_state)
     if log is not None:
         log.log_console(f"[TASK] done {task.name}")
     return task_summary
