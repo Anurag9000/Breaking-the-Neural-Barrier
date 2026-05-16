@@ -18,6 +18,25 @@ def unpack_batch(batch):
     return batch, None, None
 
 
+def _batchnorm_modules(model: nn.Module):
+    return [m for m in model.modules() if isinstance(m, nn.modules.batchnorm._BatchNorm)]
+
+
+def forward_train_safe(model: nn.Module, x: torch.Tensor) -> torch.Tensor:
+    batchnorm_layers = _batchnorm_modules(model)
+    if x.size(0) != 1 or not batchnorm_layers:
+        return model(x)
+
+    prior_states = [(layer, layer.training) for layer in batchnorm_layers]
+    for layer, _ in prior_states:
+        layer.eval()
+    try:
+        return model(x)
+    finally:
+        for layer, was_training in prior_states:
+            layer.train(was_training)
+
+
 def query_gpu_vram_used_mb(device_index: int = 0) -> Optional[int]:
     try:
         out = subprocess.check_output(
@@ -146,7 +165,7 @@ def train_epoch(model, loader, loss_fn, optimizer, device, task_type: str, grad_
         x = x.to(device)
         y = y.to(device)
         optimizer.zero_grad(set_to_none=True)
-        out = model(x)
+        out = forward_train_safe(model, x)
         loss = loss_fn(out, y)
         loss.backward()
         if grad_clip and grad_clip > 0:
@@ -176,7 +195,7 @@ def eval_epoch(model, loader, loss_fn, device, task_type: str, measure_throughpu
         x, y, _ = unpack_batch(batch)
         x = x.to(device)
         y = y.to(device)
-        out = model(x)
+        out = forward_train_safe(model, x)
         loss = loss_fn(out, y)
         total_loss += loss.item() * x.size(0)
         n += x.size(0)

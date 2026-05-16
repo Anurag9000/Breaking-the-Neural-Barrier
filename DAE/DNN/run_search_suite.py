@@ -56,7 +56,7 @@ ADP_METHODS = [
     "adp_alt_width",
     "adp_alt_depth",
 ]
-SEARCH_METHODS = ["grid", "random", "bayes", "nas"] + ADP_METHODS
+DEFAULT_BASELINE_METHODS = ["grid", "random", "bayes", "nas"]
 
 
 @dataclass
@@ -82,6 +82,7 @@ class SuiteConfig:
     candidate_budget: int
     bayes_warmup: int
     nas_patience: int
+    reference_run_root: Optional[str]
 
 
 def seed_everything(seed: int) -> None:
@@ -94,6 +95,11 @@ def seed_everything(seed: int) -> None:
 
 def task_reconstruct(task: Task) -> bool:
     return task.task_type == "reconstruction"
+
+
+def read_json(path: Path) -> Dict[str, Any]:
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 def is_adp_method(method: str) -> bool:
@@ -131,6 +137,60 @@ def candidate_root_for(method_root: Path, index: int, hidden_widths: Sequence[in
 def write_text(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
+
+
+def load_reference_task_summary(reference_run_root: Optional[str], task_name: str) -> Optional[Dict[str, Any]]:
+    if not reference_run_root:
+        return None
+    task_summary_path = Path(reference_run_root) / task_name / "task_summary.json"
+    if not task_summary_path.exists():
+        return None
+    try:
+        return read_json(task_summary_path)
+    except Exception:
+        return None
+
+
+def reference_winner_comparison(reference_summary: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    winner = reference_summary.get("winner") or {}
+    if not winner:
+        return None
+    winner_phase = winner.get("winner_phase")
+    winner_kind = winner.get("winner")
+    winner_value = winner.get("winner_value")
+    if winner_phase is None or winner_value is None:
+        return None
+
+    winner_architecture = None
+    winner_metrics: Dict[str, Any] = {}
+    for comp in reference_summary.get("comparisons", []):
+        method = comp.get("method")
+        if method == winner_phase:
+            winner_architecture = comp.get("search_architecture")
+            winner_metrics = comp.get("search_test_metrics", {})
+            break
+        if winner_phase == f"{method}_stl_refit":
+            winner_architecture = comp.get("stl_architecture")
+            winner_metrics = comp.get("stl_test_metrics", {})
+            break
+
+    if winner_architecture is None:
+        winner_architecture = winner.get("search_architecture") or winner.get("stl_architecture")
+
+    return {
+        "method": "reference_goliath",
+        "reference_run_root": reference_summary.get("run_root"),
+        "search_best_val": float(winner_value),
+        "stl_best_val": float(winner_value),
+        "winner": winner_kind or "reference",
+        "winner_phase": winner_phase,
+        "winner_value": float(winner_value),
+        "search_architecture": winner_architecture,
+        "stl_architecture": winner_architecture,
+        "search_test_metrics": winner_metrics,
+        "stl_test_metrics": winner_metrics,
+        "reference": True,
+    }
 
 
 def build_train_cfg(suite_cfg: SuiteConfig) -> RunConfig:
@@ -615,15 +675,31 @@ def method_comparison(method_result: Dict[str, Any], task: Task) -> Dict[str, An
 def run_task_suite(task: Task, task_root: Path, cfg: SuiteConfig, train_cfg: RunConfig, device, batch_controller) -> Dict[str, Any]:
     task_summary: Dict[str, Any] = {
         "task": task.name,
+        "reference": None,
         "method_runs": [],
         "comparisons": [],
         "winner": None,
     }
 
-    best_overall: Optional[Dict[str, Any]] = None
+    reference_summary = load_reference_task_summary(cfg.reference_run_root, task.name)
+    if reference_summary is not None:
+        task_summary["reference"] = reference_summary
+        reference_comparison = reference_winner_comparison(reference_summary)
+    else:
+        reference_comparison = None
+
+    best_overall: Optional[Dict[str, Any]] = reference_comparison
     effective_budget = len(architecture_pool(task, cfg)) if int(cfg.candidate_budget) <= 0 else int(cfg.candidate_budget)
 
+    if reference_comparison is not None:
+        task_summary["comparisons"].append(reference_comparison)
+
     for method in cfg.methods:
+        if method in ADP_METHODS:
+            raise ValueError(
+                f"run_search_suite.py is baseline-only and does not run ADP methods. "
+                f"Use run_goliath.py for {method}."
+            )
         method_root_for(task_root, method).mkdir(parents=True, exist_ok=True)
         if method == "grid":
             result = run_grid_search(task, task_root, cfg, train_cfg, device, batch_controller)
@@ -661,6 +737,12 @@ def render_report(report: Dict[str, Any]) -> str:
     lines.append("")
     for task_report in report.get("tasks", []):
         lines.append(f"## Task: {task_report.get('task', 'n/a')}")
+        reference = task_report.get("reference")
+        if reference:
+            ref_winner = reference.get("winner") or {}
+            lines.append(
+                f"- Reference goliath winner: `{ref_winner.get('winner', 'n/a')}` via `{ref_winner.get('winner_phase', 'n/a')}` at `{ref_winner.get('winner_value', 'n/a')}`"
+            )
         winner = task_report.get("winner") or {}
         lines.append(
             f"- Overall winner: `{winner.get('winner', 'n/a')}` via `{winner.get('winner_phase', 'n/a')}` at `{winner.get('winner_value', 'n/a')}`"
@@ -689,6 +771,7 @@ def build_summary_rows(task_name: str, task_summary: Dict[str, Any]) -> List[Dic
             {
                 "task": task_name,
                 "method": comp.get("method"),
+                "reference": bool(comp.get("reference", False)),
                 "search_best_val": comp.get("search_best_val"),
                 "stl_best_val": comp.get("stl_best_val"),
                 "winner": comp.get("winner"),
@@ -706,13 +789,14 @@ def main() -> None:
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
     p.add_argument("--run-root", type=str, default=None)
+    p.add_argument("--reference-run-root", type=str, default=None, help="Existing goliath run root to use as ADP/STL reference")
     p.add_argument("--tasks", type=str, nargs="+", default=["all"])
     p.add_argument(
         "--methods",
         type=str,
         nargs="+",
-        default=["grid", "random", "bayes", "nas", *ADP_METHODS],
-        help="Search methods to run",
+        default=DEFAULT_BASELINE_METHODS,
+        help="Search methods to run. Defaults to the stronger baselines only.",
     )
     p.add_argument("--batch-size", type=int, default=32768)
     p.add_argument("--num-workers", type=int, default=0)
@@ -764,7 +848,13 @@ def main() -> None:
         candidate_budget=int(args.candidate_budget),
         bayes_warmup=int(args.bayes_warmup),
         nas_patience=int(args.nas_patience),
+        reference_run_root=args.reference_run_root,
     )
+    if any(method in ADP_METHODS for method in cfg.methods):
+        raise ValueError(
+            "run_search_suite.py is baseline-only. ADP methods are not allowed here; "
+            "use run_goliath.py for ADP/STL comparisons."
+        )
     train_cfg = build_train_cfg(cfg)
 
     seed_everything(cfg.seed)
@@ -783,6 +873,7 @@ def main() -> None:
             "available_tasks": task_names(),
             "timestamp": now_stamp(),
             "methods": cfg.methods,
+            "reference_run_root": cfg.reference_run_root,
         },
     )
 
@@ -825,6 +916,7 @@ def main() -> None:
                     [
                         "task",
                         "method",
+                        "reference",
                         "search_best_val",
                         "stl_best_val",
                         "winner",

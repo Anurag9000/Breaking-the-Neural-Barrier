@@ -22,8 +22,9 @@ Files
 - `run_all.py`: run STL + all ADP modes for all tasks
 - `run_goliath.py`: sequential STL + ADP experiment runner with resumable
   checkpoints
-- `run_search_suite.py`: exhaustive benchmark suite for grid search, random
-  search, Bayesian HPO, greedy NAS-style growth, and the 6 ADP variants
+- `run_search_suite.py`: baseline-only benchmark suite for grid search,
+  random search, Bayesian HPO, and greedy NAS-style growth; it can compare
+  against a completed goliath reference run, but it does not run ADP variants
 
 `run_goliath.py` exposes six ADP phases:
 - `ae_width_only`
@@ -114,11 +115,12 @@ want a standalone baseline STL run.
 
 To run the broader benchmark-suite comparison:
 ```bash
-python DAE/DNN/run_search_suite.py --tasks all --data-dir ./data --results-dir DAE/DNN/results --batch-size 32768 --candidate-budget 0 --seed 0
+python DAE/DNN/run_search_suite.py --tasks all --data-dir ./data --results-dir DAE/DNN/results --reference-run-root DAE/DNN/results/goliath_<timestamp> --batch-size 32768 --candidate-budget 0 --seed 0
 ```
-This evaluates grid search, random search, Bayesian HPO, greedy NAS-style
-growth, and all 6 ADP variants, then refits STL on the best architecture
-found by each method.
+This evaluates grid search, random search, Bayesian HPO, and greedy NAS-style
+growth by default, then refits STL on the best architecture found by each
+method. Use `run_goliath.py` for ADP/STL comparisons; `run_search_suite.py`
+never reruns ADP.
 
 Common flags
 - `--hidden`: starting widths (length = starting depth)
