@@ -1,0 +1,52 @@
+{
+  "active_method": "bayes",
+  "completed": false,
+  "completed_methods": [
+    "grid",
+    "random"
+  ],
+  "methods": [
+    "grid",
+    "random",
+    "bayes",
+    "nas"
+  ],
+  "next_method_index": 2,
+  "task": "representation",
+  "winner": {
+    "method": "grid",
+    "search_architecture": {
+      "hidden_widths": [
+        512,
+        512,
+        512
+      ],
+      "in_dim": 54,
+      "out_dim": 7,
+      "use_bn": true
+    },
+    "search_best_val": 0.0016829122115501615,
+    "search_test_metrics": {
+      "test_loss": 0.003452754054867143
+    },
+    "stl_architecture": {
+      "hidden_widths": [
+        512,
+        512,
+        512
+      ],
+      "in_dim": 54,
+      "out_dim": 7,
+      "use_bn": true
+    },
+    "stl_best_val": 0.19764739447941979,
+    "stl_test_metrics": {
+      "knn_acc": 0.9430646632588079,
+      "test_acc": 0.9218946317619318,
+      "test_loss": 0.19819614506831043
+    },
+    "winner": "search",
+    "winner_phase": "grid",
+    "winner_value": 0.0016829122115501615
+  }
+}

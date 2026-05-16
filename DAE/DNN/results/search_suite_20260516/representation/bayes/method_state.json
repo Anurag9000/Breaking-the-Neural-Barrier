@@ -1,0 +1,406 @@
+{
+  "active_architecture": [
+    16,
+    16,
+    16
+  ],
+  "best_candidate_dir": null,
+  "best_val": null,
+  "budget": 56,
+  "candidate_index": 3,
+  "completed": false,
+  "init_count": 5,
+  "method": "bayes",
+  "observed": [
+    {
+      "architecture": [
+        4,
+        4
+      ],
+      "best_val": 0.8039013412646654,
+      "candidate_dir": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_000_d2_w4",
+      "candidate_index": 0,
+      "summary": {
+        "architecture": {
+          "hidden_widths": [
+            4,
+            4
+          ],
+          "in_dim": 54,
+          "out_dim": 7,
+          "use_bn": true
+        },
+        "best_checkpoint": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_000_d2_w4/checkpoint_best.pt",
+        "best_epoch": 158,
+        "best_val": 0.8039013412646654,
+        "candidate_dir": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_000_d2_w4",
+        "final_epoch": 163,
+        "last_checkpoint": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_000_d2_w4/checkpoint_last.pt",
+        "method": "bayes",
+        "reconstruct": true,
+        "test_metrics": {
+          "test_loss": 0.8633489558937665
+        }
+      }
+    },
+    {
+      "architecture": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "best_val": 0.8508575836173171,
+      "candidate_dir": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_001_d5_w4",
+      "candidate_index": 1,
+      "summary": {
+        "architecture": {
+          "hidden_widths": [
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "in_dim": 54,
+          "out_dim": 7,
+          "use_bn": true
+        },
+        "best_checkpoint": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_001_d5_w4/checkpoint_best.pt",
+        "best_epoch": 17,
+        "best_val": 0.8508575836173171,
+        "candidate_dir": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_001_d5_w4",
+        "final_epoch": 22,
+        "last_checkpoint": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_001_d5_w4/checkpoint_last.pt",
+        "method": "bayes",
+        "reconstruct": true,
+        "test_metrics": {
+          "test_loss": 0.9103684446451223
+        }
+      }
+    },
+    {
+      "architecture": [
+        216,
+        216
+      ],
+      "best_val": 0.020739059861519166,
+      "candidate_dir": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_002_d2_w216",
+      "candidate_index": 2,
+      "summary": {
+        "architecture": {
+          "hidden_widths": [
+            216,
+            216
+          ],
+          "in_dim": 54,
+          "out_dim": 7,
+          "use_bn": true
+        },
+        "best_checkpoint": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_002_d2_w216/checkpoint_best.pt",
+        "best_epoch": 2,
+        "best_val": 0.020739059861519166,
+        "candidate_dir": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_002_d2_w216",
+        "final_epoch": 7,
+        "last_checkpoint": "DAE/DNN/results/search_suite_20260516/representation/bayes/cand_002_d2_w216/checkpoint_last.pt",
+        "method": "bayes",
+        "reconstruct": true,
+        "test_metrics": {
+          "test_loss": 0.09224819848940034
+        }
+      }
+    }
+  ],
+  "pending": [
+    [
+      8,
+      8,
+      8
+    ],
+    [
+      32,
+      32,
+      32
+    ],
+    [
+      8,
+      8,
+      8,
+      8
+    ],
+    [
+      16,
+      16,
+      16,
+      16
+    ],
+    [
+      512,
+      512,
+      512
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      7,
+      7
+    ],
+    [
+      128,
+      128,
+      128,
+      128,
+      128
+    ],
+    [
+      54,
+      54
+    ],
+    [
+      108,
+      108,
+      108,
+      108,
+      108
+    ],
+    [
+      128,
+      128,
+      128
+    ],
+    [
+      256,
+      256,
+      256,
+      256,
+      256
+    ],
+    [
+      108,
+      108,
+      108
+    ],
+    [
+      128,
+      128
+    ],
+    [
+      8,
+      8,
+      8,
+      8,
+      8
+    ],
+    [
+      64,
+      64
+    ],
+    [
+      14,
+      14,
+      14,
+      14
+    ],
+    [
+      16,
+      16
+    ],
+    [
+      108,
+      108
+    ],
+    [
+      64,
+      64,
+      64,
+      64
+    ],
+    [
+      14,
+      14
+    ],
+    [
+      32,
+      32,
+      32,
+      32,
+      32
+    ],
+    [
+      256,
+      256
+    ],
+    [
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    [
+      256,
+      256,
+      256,
+      256
+    ],
+    [
+      216,
+      216,
+      216,
+      216,
+      216
+    ],
+    [
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    [
+      14,
+      14,
+      14
+    ],
+    [
+      8,
+      8
+    ],
+    [
+      512,
+      512,
+      512,
+      512
+    ],
+    [
+      7,
+      7,
+      7,
+      7
+    ],
+    [
+      32,
+      32,
+      32,
+      32
+    ],
+    [
+      2,
+      2,
+      2
+    ],
+    [
+      32,
+      32
+    ],
+    [
+      16,
+      16,
+      16,
+      16,
+      16
+    ],
+    [
+      216,
+      216,
+      216
+    ],
+    [
+      128,
+      128,
+      128,
+      128
+    ],
+    [
+      4,
+      4,
+      4
+    ],
+    [
+      4,
+      4,
+      4,
+      4
+    ],
+    [
+      256,
+      256,
+      256
+    ],
+    [
+      54,
+      54,
+      54
+    ],
+    [
+      512,
+      512
+    ],
+    [
+      108,
+      108,
+      108,
+      108
+    ],
+    [
+      64,
+      64,
+      64,
+      64,
+      64
+    ],
+    [
+      512,
+      512,
+      512,
+      512,
+      512
+    ],
+    [
+      14,
+      14,
+      14,
+      14,
+      14
+    ],
+    [
+      54,
+      54,
+      54,
+      54,
+      54
+    ],
+    [
+      2,
+      2,
+      2,
+      2
+    ],
+    [
+      7,
+      7,
+      7
+    ],
+    [
+      54,
+      54,
+      54,
+      54
+    ],
+    [
+      216,
+      216,
+      216,
+      216
+    ],
+    [
+      64,
+      64,
+      64
+    ]
+  ],
+  "task": "representation"
+}

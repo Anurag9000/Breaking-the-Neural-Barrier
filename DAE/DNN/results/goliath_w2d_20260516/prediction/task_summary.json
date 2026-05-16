@@ -1,0 +1,141 @@
+{
+  "adp_runs": [
+    {
+      "architecture": {
+        "hidden_widths": [
+          255,
+          255
+        ],
+        "in_dim": 8,
+        "out_dim": 8,
+        "use_bn": true
+      },
+      "best_candidate_dir": "DAE/DNN/results/goliath_w2d_20260516/prediction/ae_width_to_depth/cand_253_d2_w255",
+      "best_checkpoint": "DAE/DNN/results/goliath_w2d_20260516/prediction/ae_width_to_depth/cand_253_d2_w255/checkpoint_best.pt",
+      "best_val": 0.0002721167984418571,
+      "completed": true,
+      "depth_fail": 5,
+      "mode": "width_to_depth",
+      "phase": "ae_width_to_depth",
+      "task": "prediction",
+      "test_metrics": {
+        "test_loss": 0.0017684169579297304
+      },
+      "width_fail": 5
+    }
+  ],
+  "comparisons": [
+    {
+      "adp_architecture": {
+        "hidden_widths": [
+          255,
+          255
+        ],
+        "in_dim": 8,
+        "out_dim": 8,
+        "use_bn": true
+      },
+      "adp_best_val": 0.0002721167984418571,
+      "adp_phase": "ae_width_to_depth",
+      "stl_architecture": [
+        255,
+        255
+      ],
+      "stl_best_val": 0.33261337876319885,
+      "stl_phase": "stl_from_ae_width_to_depth",
+      "task": "prediction",
+      "winner": "adp",
+      "winner_phase": "ae_width_to_depth",
+      "winner_value": 0.0002721167984418571
+    }
+  ],
+  "paired_stl_runs": [
+    {
+      "architecture": [
+        255,
+        255
+      ],
+      "best_epoch": 45,
+      "best_val": 0.33261337876319885,
+      "candidate_dir": "cand_000_d2_w255",
+      "checkpoint_best": "DAE/DNN/results/goliath_w2d_20260516/prediction/stl_from_ae_width_to_depth/cand_000_d2_w255/checkpoint_best.pt",
+      "checkpoint_last": "DAE/DNN/results/goliath_w2d_20260516/prediction/stl_from_ae_width_to_depth/cand_000_d2_w255/checkpoint_last.pt",
+      "final_epoch": 50,
+      "phase": "stl_from_ae_width_to_depth",
+      "resumed": false,
+      "source_phase": "ae_width_to_depth",
+      "task": "prediction",
+      "test_metrics": {
+        "test_loss": 0.3288881480693817
+      }
+    }
+  ],
+  "phases": [
+    {
+      "architecture": {
+        "hidden_widths": [
+          255,
+          255
+        ],
+        "in_dim": 8,
+        "out_dim": 8,
+        "use_bn": true
+      },
+      "best_candidate_dir": "DAE/DNN/results/goliath_w2d_20260516/prediction/ae_width_to_depth/cand_253_d2_w255",
+      "best_checkpoint": "DAE/DNN/results/goliath_w2d_20260516/prediction/ae_width_to_depth/cand_253_d2_w255/checkpoint_best.pt",
+      "best_val": 0.0002721167984418571,
+      "completed": true,
+      "depth_fail": 5,
+      "mode": "width_to_depth",
+      "phase": "ae_width_to_depth",
+      "task": "prediction",
+      "test_metrics": {
+        "test_loss": 0.0017684169579297304
+      },
+      "width_fail": 5
+    },
+    {
+      "architecture": [
+        255,
+        255
+      ],
+      "best_epoch": 45,
+      "best_val": 0.33261337876319885,
+      "candidate_dir": "cand_000_d2_w255",
+      "checkpoint_best": "DAE/DNN/results/goliath_w2d_20260516/prediction/stl_from_ae_width_to_depth/cand_000_d2_w255/checkpoint_best.pt",
+      "checkpoint_last": "DAE/DNN/results/goliath_w2d_20260516/prediction/stl_from_ae_width_to_depth/cand_000_d2_w255/checkpoint_last.pt",
+      "final_epoch": 50,
+      "phase": "stl_from_ae_width_to_depth",
+      "resumed": false,
+      "source_phase": "ae_width_to_depth",
+      "task": "prediction",
+      "test_metrics": {
+        "test_loss": 0.3288881480693817
+      }
+    }
+  ],
+  "task": "prediction",
+  "winner": {
+    "adp_architecture": {
+      "hidden_widths": [
+        255,
+        255
+      ],
+      "in_dim": 8,
+      "out_dim": 8,
+      "use_bn": true
+    },
+    "adp_best_val": 0.0002721167984418571,
+    "adp_phase": "ae_width_to_depth",
+    "stl_architecture": [
+      255,
+      255
+    ],
+    "stl_best_val": 0.33261337876319885,
+    "stl_phase": "stl_from_ae_width_to_depth",
+    "task": "prediction",
+    "winner": "adp",
+    "winner_phase": "ae_width_to_depth",
+    "winner_value": 0.0002721167984418571
+  }
+}
