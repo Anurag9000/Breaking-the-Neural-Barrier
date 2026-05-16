@@ -21,7 +21,7 @@ sys.path.append(str(Path(__file__).resolve().parents[2]))
 from DAE.DNN.adp_search import expand_depth, expand_width, model_depth, model_width
 from DAE.DNN.mlp import MLP
 from DAE.DNN.tasks import Task, build_task, refresh_task_loaders, task_names
-from DAE.DNN.train_utils import eval_epoch, train_epoch, unpack_batch
+from DAE.DNN.train_utils import eval_epoch, forward_train_safe, train_epoch, unpack_batch
 from DAE.DNN.train_utils import AdaptiveBatchController
 from utils.adp_logging import ContinuousLogger
 from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_from_csv
@@ -371,7 +371,7 @@ def reconstruction_train_epoch(
         x, _, _ = unpack_batch(batch)
         x = x.to(device)
         optimizer.zero_grad(set_to_none=True)
-        out = model(x)
+        out = forward_train_safe(model, x)
         loss = loss_fn(out, x)
         loss.backward()
         if grad_clip and grad_clip > 0:
@@ -399,7 +399,7 @@ def reconstruction_eval_epoch(
     for batch in loader:
         x, _, _ = unpack_batch(batch)
         x = x.to(device)
-        out = model(x)
+        out = forward_train_safe(model, x)
         loss = loss_fn(out, x)
         total_loss += loss.item() * x.size(0)
         total += x.size(0)

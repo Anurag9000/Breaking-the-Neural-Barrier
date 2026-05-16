@@ -54,7 +54,7 @@ class ContinuousLogger:
             priority = ["timestamp", "model", "mode", "epoch", "width", "depth", "train_loss", "val_loss"]
             fieldnames.sort(key=lambda x: priority.index(x) if x in priority else 999)
             
-            self.csv_writer = csv.DictWriter(self.csv_handle, fieldnames=fieldnames)
+            self.csv_writer = csv.DictWriter(self.csv_handle, fieldnames=fieldnames, extrasaction="ignore")
             
             # Write header only if file is empty
             if self.csv_file.stat().st_size == 0:
