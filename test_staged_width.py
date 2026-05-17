@@ -160,7 +160,7 @@ class StagedWidthTests(unittest.TestCase):
 
             self.assertEqual(
                 [row["architecture"] for row in rows],
-                ["[1]", "[2]", "[2, 2]", "[3, 2]", "[3, 3]", "[3, 3, 3]"],
+                ["1", "2", "2,2", "3,2", "3,3", "3,3,3"],
             )
             self.assertEqual(
                 [row["search_phase"] for row in rows],

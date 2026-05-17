@@ -19,6 +19,9 @@ from DAE.DNN.train_utils import eval_epoch
 
 
 def main() -> None:
+    def format_hidden(hidden):
+        return ",".join(str(int(w)) for w in hidden)
+
     p = argparse.ArgumentParser(description="DNN STL/ADP task runner (plain MLP)")
     p.add_argument("--task", type=str, required=True)
     p.add_argument("--mode", type=str, default="adp", choices=["stl", "adp"])
@@ -73,7 +76,7 @@ def main() -> None:
     logger = ContinuousLogger(results_dir, f"dnn_{task.name}", args.adp_mode)
 
     logger.log_console(
-        f"Task={task.name} mode={args.mode} adp_mode={args.adp_mode} hidden={args.hidden} in_dim={task.in_dim} out_dim={task.out_dim}"
+        f"Task={task.name} mode={args.mode} adp_mode={args.adp_mode} hidden={format_hidden(args.hidden)} in_dim={task.in_dim} out_dim={task.out_dim}"
     )
     logger.log_console(
         f"ADP: ex_k={args.ex_k} trials_width={args.trials_width} trials_depth={args.trials_depth} max_width={max_width} max_depth={args.max_depth} max_neurons={args.max_neurons}"
@@ -113,12 +116,12 @@ def main() -> None:
                 model.to(device), task, cfg, device, logger, batch_controller=batch_controller
             )
             model.load_state_dict(best_state)
-            logger.log_console(f"[STL] best_val_loss={best_val:.6f} hidden={model.hidden_widths}")
+            logger.log_console(f"[STL] best_val_loss={best_val:.6f} hidden={format_hidden(model.hidden_widths)}")
         else:
             best_val, model = adp_search(
                 model.to(device), task, cfg, device, logger, batch_controller=batch_controller
             )
-            logger.log_console(f"[ADP] best_val_loss={best_val:.6f} hidden={model.hidden_widths}")
+            logger.log_console(f"[ADP] best_val_loss={best_val:.6f} hidden={format_hidden(model.hidden_widths)}")
 
         val_loss, val_acc, throughput = eval_epoch(model, task.val_loader, task.loss_fn, device, task.task_type, measure_throughput=(task.name == "edge"))
         logger.log_console(f"[VAL] loss={val_loss:.6f} acc={val_acc if val_acc is not None else 'na'}")
