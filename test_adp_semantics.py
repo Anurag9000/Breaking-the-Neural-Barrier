@@ -170,6 +170,47 @@ class ADPSemanticsTests(unittest.TestCase):
             ["[1]", "[2]", "[3]", "[3, 3]", "[4, 4]", "[4, 4, 4]"],
         )
 
+    def test_width_to_depth_switches_on_small_width_stage_improvements(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = self.make_task()
+            cfg = self.make_cfg(root, patience=50, max_width=4, max_depth=3)
+            cfg.width_stage_margin_patience = 2
+            cfg.width_stage_min_improve_pct = 5.0
+            task_root = root / "prediction"
+            task_root.mkdir(parents=True, exist_ok=True)
+            phase_name = next(name for name, phase_mode in rg.GOLIATH_ADP_PHASES if phase_mode == "width_to_depth")
+            fake_training_loop = self.fake_training_loop_factory([1.0, 0.99, 0.989, 0.988, 0.987, 0.986, 0.985, 0.984])
+
+            with mock.patch.object(rg, "training_loop", side_effect=fake_training_loop), \
+                mock.patch.object(rg, "eval_final", return_value={"test_loss": 0.0}), \
+                mock.patch.object(rg, "plot_candidate_stats", return_value=None):
+                rg.run_growth_phase(
+                    task=task,
+                    task_root=task_root,
+                    cfg=cfg,
+                    device=torch.device("cpu"),
+                    base_hidden=[1],
+                    phase_name=phase_name,
+                    mode="width_to_depth",
+                    reconstruct=False,
+                    batch_controller=None,
+                )
+
+            progress_path = task_root / phase_name / "phase_progress.csv"
+            with progress_path.open("r", encoding="utf-8", newline="") as handle:
+                rows = list(csv.DictReader(handle))
+
+            self.assertEqual(
+                [row["architecture"] for row in rows[:4]],
+                ["[1]", "[2]", "[3]", "[3, 3]"],
+            )
+            self.assertEqual(
+                [row["search_phase"] for row in rows[:4]],
+                ["width", "width", "width", "depth"],
+            )
+            self.assertEqual(rows[2]["width_stage_margin_fail"], "2")
+
     def test_depth_to_width_switches_after_depth_failures_and_stops_after_width_failures(self):
         rows = self.run_mode("depth_to_width", values=[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], patience=2, max_width=3, max_depth=4)
         self.assert_phases_and_architectures(

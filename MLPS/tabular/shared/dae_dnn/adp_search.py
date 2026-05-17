@@ -25,6 +25,8 @@ class ADPConfig:
     max_width: int = 4096
     max_depth: int = 10
     max_neurons: int = 10_000_000
+    width_stage_margin_patience: int = 5
+    width_stage_min_improve_pct: float = 0.0
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
@@ -100,6 +102,13 @@ def model_depth(model: MLP) -> int:
 
 def _format_hidden_widths(hidden_widths: List[int]) -> str:
     return str([int(w) for w in hidden_widths])
+
+
+def _relative_improvement_pct(previous_val: Optional[float], current_val: float) -> float:
+    if previous_val is None:
+        return float("inf")
+    denom = max(abs(float(previous_val)), 1e-12)
+    return ((float(previous_val) - float(current_val)) / denom) * 100.0
 
 
 def snapshot_arch_and_state(model: MLP, state_dict=None) -> Dict[str, Any]:
@@ -361,6 +370,8 @@ def adp_search(
     width_fail = 0
     depth_fail = 0
     consecutive_fail = 0
+    width_stage_margin_fail = 0
+    width_stage_anchor_val: Optional[float] = float(global_best_val)
     alt_consecutive_patience = max((2 * int(cfg.patience)) + 1, 10)
     current_model = restore_arch_and_state(model, global_best_snap, device)
 
@@ -378,7 +389,13 @@ def adp_search(
             next_model = expand_depth(current_model, cfg.max_depth)
         elif mode == "width_to_depth":
             if current_phase == "width":
-                if width_fail >= int(cfg.patience):
+                if (
+                    width_fail >= int(cfg.patience)
+                    or (
+                        int(cfg.width_stage_margin_patience) > 0
+                        and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+                    )
+                ):
                     current_phase = "depth"
                     continue
                 if not can_widen(current_model):
@@ -493,32 +510,66 @@ def adp_search(
             else:
                 depth_fail += 1
 
+        if phase_for_candidate == "width":
+            stage_margin_pct = _relative_improvement_pct(width_stage_anchor_val, global_best_val)
+            if width_stage_anchor_val is None:
+                width_stage_margin_fail = 0
+            elif stage_margin_pct >= float(cfg.width_stage_min_improve_pct):
+                width_stage_margin_fail = 0
+            else:
+                width_stage_margin_fail += 1
+            width_stage_anchor_val = float(global_best_val)
+
         if mode == "alt_width":
-            if phase_for_candidate == "width" and width_fail >= int(cfg.patience):
+            if phase_for_candidate == "width" and (
+                width_fail >= int(cfg.patience)
+                or (
+                    int(cfg.width_stage_margin_patience) > 0
+                    and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+                )
+            ):
                 current_phase = "depth"
                 width_fail = 0
+                width_stage_margin_fail = 0
             elif phase_for_candidate == "depth" and depth_fail >= int(cfg.patience):
                 current_phase = "width"
                 depth_fail = 0
+                width_stage_margin_fail = 0
         elif mode == "alt_depth":
             if phase_for_candidate == "depth" and depth_fail >= int(cfg.patience):
                 current_phase = "width"
                 depth_fail = 0
-            elif phase_for_candidate == "width" and width_fail >= int(cfg.patience):
+                width_stage_margin_fail = 0
+            elif phase_for_candidate == "width" and (
+                width_fail >= int(cfg.patience)
+                or (
+                    int(cfg.width_stage_margin_patience) > 0
+                    and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+                )
+            ):
                 current_phase = "depth"
                 width_fail = 0
         elif mode == "width_to_depth":
             if phase_for_candidate == "depth":
                 current_phase = "width"
                 width_fail = 0
-            elif width_fail >= int(cfg.patience):
+                width_stage_margin_fail = 0
+            elif (
+                width_fail >= int(cfg.patience)
+                or (
+                    int(cfg.width_stage_margin_patience) > 0
+                    and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+                )
+            ):
                 current_phase = "depth"
         elif mode == "depth_to_width":
             if phase_for_candidate == "width":
                 current_phase = "depth"
                 depth_fail = 0
+                width_stage_margin_fail = 0
             elif depth_fail >= int(cfg.patience):
                 current_phase = "width"
+                width_stage_margin_fail = 0
 
         if mode in ["alt_width", "alt_depth"] and consecutive_fail >= alt_consecutive_patience:
             break
