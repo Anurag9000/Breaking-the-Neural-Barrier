@@ -99,7 +99,7 @@ def model_depth(model: MLP) -> int:
 
 
 def _format_hidden_widths(hidden_widths: List[int]) -> str:
-    return ",".join(str(int(w)) for w in hidden_widths)
+    return str([int(w) for w in hidden_widths])
 
 
 def snapshot_arch_and_state(model: MLP, state_dict=None) -> Dict[str, Any]:
