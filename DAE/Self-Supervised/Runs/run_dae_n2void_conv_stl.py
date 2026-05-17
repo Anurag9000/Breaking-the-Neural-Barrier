@@ -128,7 +128,7 @@ def main() -> None:
     p = argparse.ArgumentParser(description="Noise2Void-style Conv DAE STL on CIFAR")
     p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100"])
     p.add_argument("--data_dir", type=str, default="./data")
-    p.add_argument("--out_dir", type=str, default="./runs/dae_n2void_conv_stl")
+    p.add_argument("--out_dir", type=str, default="./Runs/dae_n2void_conv_stl")
     p.add_argument("--seed", type=int, default=1337)
     # Model
     p.add_argument("--width", type=int, default=64)

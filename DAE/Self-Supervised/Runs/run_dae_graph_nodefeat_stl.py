@@ -143,7 +143,7 @@ def eval_epoch(
 def main() -> None:
     p = argparse.ArgumentParser(description="Graph node-feature DAE STL training")
     p.add_argument("--graph-path", type=str, required=True, help="Path to .pt file with 'x' and 'adj'.")
-    p.add_argument("--out-dir", type=str, default="./runs/dae_graph_nodefeat_stl")
+    p.add_argument("--out-dir", type=str, default="./Runs/dae_graph_nodefeat_stl")
     p.add_argument("--seed", type=int, default=1337)
     # Model
     p.add_argument("--in-dim", type=int, default=None, help="Override feature dim; otherwise inferred from data.")

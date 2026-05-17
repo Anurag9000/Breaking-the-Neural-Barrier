@@ -50,7 +50,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--dataset', type=str, default='imagefolder', choices=['imagefolder'])
     p.add_argument('--data_dir', type=str, default='./data')
-    p.add_argument('--out_dir', type=str, default='./runs/ae_transformer_stl')
+    p.add_argument('--out_dir', type=str, default='./Runs/ae_transformer_stl')
     p.add_argument('--seed', type=int, default=1337)
     p.add_argument('--embed_dim', type=int, default=192)
     p.add_argument('--depth', type=int, default=6)

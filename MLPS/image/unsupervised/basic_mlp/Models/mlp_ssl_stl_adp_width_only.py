@@ -1,0 +1,4 @@
+from plain_mlp_redirect import exec_centralized_file, inject_default_cli_arg
+
+inject_default_cli_arg("--adp-mode", "width_only")
+exec_centralized_file(__file__, 'MLPS/image/unsupervised/basic_mlp/Models/mlp_ssl_stl_adp_width_to_depth.py')
