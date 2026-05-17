@@ -951,10 +951,11 @@ def format_architecture_for_report(architecture: Any) -> str:
             in_dim = architecture.get("in_dim", "?")
             out_dim = architecture.get("out_dim", "?")
             use_bn = architecture.get("use_bn", "?")
-            return f"in={in_dim} hidden={list(hidden_widths)} out={out_dim} bn={use_bn}"
+            hidden_str = ",".join(str(int(w)) for w in hidden_widths)
+            return f"in={in_dim} hidden={hidden_str} out={out_dim} bn={use_bn}"
         return json.dumps(architecture, sort_keys=True)
     if isinstance(architecture, (list, tuple)):
-        return str([int(w) for w in architecture])
+        return ",".join(str(int(w)) for w in architecture)
     return str(architecture)
 
 
@@ -1177,7 +1178,7 @@ def run_stl_phase(
                 "phase": phase_name,
                 "candidate_index": candidate_idx,
                 "candidate_dir": candidate_dir.name,
-                "architecture": str(base_hidden),
+                "architecture": format_architecture_for_report(base_hidden),
                 "best_val": float(ckpt["best_val"]),
                 "best_epoch": int(ckpt["best_epoch"]),
                 "final_epoch": int(ckpt["epoch"]) if "epoch" in ckpt else int(ckpt["best_epoch"]),
@@ -1227,7 +1228,7 @@ def run_stl_phase(
             "phase": phase_name,
             "candidate_index": candidate_idx,
             "candidate_dir": candidate_dir.name,
-            "architecture": str(base_hidden),
+            "architecture": format_architecture_for_report(base_hidden),
             "best_val": float(result.best_val),
             "best_epoch": int(result.best_epoch),
             "final_epoch": int(result.final_epoch),
@@ -1576,7 +1577,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 "phase": phase_name,
                 "candidate_index": candidate_idx,
                 "candidate_dir": candidate_dir.name,
-                "architecture": str(next_arch),
+                "architecture": format_architecture_for_report(next_arch),
                 "best_val": float(result.best_val),
                 "best_epoch": int(result.best_epoch),
                 "final_epoch": int(result.final_epoch),
