@@ -342,7 +342,7 @@ def base_stl_hidden(task: Task, cfg: RunConfig) -> List[int]:
 
 
 def adp_seed_hidden() -> List[int]:
-    return [2, 2]
+    return [1]
 
 
 def default_batch_size_for_task(task_name: str) -> int:
@@ -1930,8 +1930,8 @@ def main() -> None:
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
-    p.add_argument("--alt-start-width", type=int, default=2)
-    p.add_argument("--alt-start-depth", type=int, default=2)
+    p.add_argument("--alt-start-width", type=int, default=1)
+    p.add_argument("--alt-start-depth", type=int, default=1)
     p.add_argument("--patience", type=int, default=5)
     p.add_argument("--delta", type=float, default=1e-4)
     p.add_argument("--max-epochs", type=int, default=DEFAULT_MAX_EPOCHS)

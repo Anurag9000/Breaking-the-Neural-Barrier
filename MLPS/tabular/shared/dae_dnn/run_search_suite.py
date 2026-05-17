@@ -294,8 +294,8 @@ def build_train_cfg(suite_cfg: SuiteConfig) -> RunConfig:
         seed=suite_cfg.seed,
         stl_width=128,
         stl_depth=2,
-        alt_start_width=2,
-        alt_start_depth=2,
+        alt_start_width=1,
+        alt_start_depth=1,
         patience=suite_cfg.patience,
         delta=suite_cfg.delta,
         max_epochs=suite_cfg.max_epochs,
@@ -1035,7 +1035,7 @@ def run_adp_search_method(
         max_epochs=int(cfg.max_epochs),
         metrics_interval=5,
     )
-    model = make_candidate_model(task, [2, 2], train_cfg.use_bn, reconstruct).to(device)
+    model = make_candidate_model(task, [1], train_cfg.use_bn, reconstruct).to(device)
     logger = ContinuousLogger(method_root_for(task_root, method), f"{task.name}_{method}", method)
     best_val, best_model = adp_search(
         model,

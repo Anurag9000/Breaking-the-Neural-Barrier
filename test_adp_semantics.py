@@ -56,8 +56,8 @@ class ADPSemanticsTests(unittest.TestCase):
             seed=0,
             stl_width=2,
             stl_depth=2,
-            alt_start_width=2,
-            alt_start_depth=2,
+            alt_start_width=1,
+            alt_start_depth=1,
             patience=patience,
             delta=1e-6,
             max_epochs=1,
@@ -136,7 +136,7 @@ class ADPSemanticsTests(unittest.TestCase):
                     task_root=task_root,
                     cfg=cfg,
                     device=torch.device("cpu"),
-                    base_hidden=[2, 2],
+                    base_hidden=[1],
                     phase_name=phase_name,
                     mode=mode,
                     reconstruct=False,
@@ -154,34 +154,42 @@ class ADPSemanticsTests(unittest.TestCase):
 
     def test_width_only_stops_after_patience_failures(self):
         rows = self.run_mode("width_only", values=[1.0, 2.0, 3.0], patience=2, max_width=4)
-        self.assert_phases_and_architectures(rows, ["width", "width", "width"], ["[2, 2]", "[3, 3]", "[4, 4]"])
+        self.assert_phases_and_architectures(rows, ["width", "width", "width"], ["[1]", "[2]", "[3]"])
 
     def test_depth_only_stops_after_patience_failures(self):
         rows = self.run_mode("depth_only", values=[1.0, 2.0, 3.0], patience=2, max_depth=4)
-        self.assert_phases_and_architectures(rows, ["depth", "depth", "depth"], ["[2, 2]", "[2, 2, 2]", "[2, 2, 2, 2]"])
+        self.assert_phases_and_architectures(rows, ["depth", "depth", "depth"], ["[1]", "[1, 1]", "[1, 1, 1]"])
 
     def test_width_to_depth_switches_after_width_failures_and_stops_after_depth_failures(self):
-        rows = self.run_mode("width_to_depth", values=[1.0, 2.0, 3.0, 4.0], patience=2, max_width=4, max_depth=3)
-        self.assert_phases_and_architectures(rows, ["width", "width", "width", "depth"], ["[2, 2]", "[3, 3]", "[4, 4]", "[4, 4, 4]"])
-
-    def test_depth_to_width_switches_after_depth_failures_and_stops_after_width_failures(self):
-        rows = self.run_mode("depth_to_width", values=[1.0, 2.0, 3.0, 4.0], patience=2, max_width=3, max_depth=4)
-        self.assert_phases_and_architectures(rows, ["depth", "depth", "depth", "width"], ["[2, 2]", "[2, 2, 2]", "[2, 2, 2, 2]", "[3, 3, 3, 3]"])
-
-    def test_alt_width_runs_width_then_depth_blocks_and_terminates_when_no_expansions_remain(self):
-        rows = self.run_mode("alt_width", values=[1.0, 2.0, 3.0, 4.0, 5.0], patience=1, max_width=4, max_depth=4)
+        rows = self.run_mode("width_to_depth", values=[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], patience=2, max_width=4, max_depth=3)
         self.assert_phases_and_architectures(
             rows,
-            ["width", "width", "depth", "width", "depth"],
-            ["[2, 2]", "[3, 3]", "[3, 3, 3]", "[4, 4, 4]", "[4, 4, 4, 4]"],
+            ["width", "width", "width", "depth", "width", "depth"],
+            ["[1]", "[2]", "[3]", "[3, 3]", "[4, 4]", "[4, 4, 4]"],
+        )
+
+    def test_depth_to_width_switches_after_depth_failures_and_stops_after_width_failures(self):
+        rows = self.run_mode("depth_to_width", values=[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], patience=2, max_width=3, max_depth=4)
+        self.assert_phases_and_architectures(
+            rows,
+            ["depth", "depth", "depth", "width", "depth", "width"],
+            ["[1]", "[1, 1]", "[1, 1, 1]", "[2, 2, 2]", "[2, 2, 2, 2]", "[3, 3, 3, 3]"],
+        )
+
+    def test_alt_width_runs_width_then_depth_blocks_and_terminates_when_no_expansions_remain(self):
+        rows = self.run_mode("alt_width", values=[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], patience=1, max_width=4, max_depth=4)
+        self.assert_phases_and_architectures(
+            rows,
+            ["width", "width", "depth", "width", "depth", "width", "depth"],
+            ["[1]", "[2]", "[2, 2]", "[3, 3]", "[3, 3, 3]", "[4, 4, 4]", "[4, 4, 4, 4]"],
         )
 
     def test_alt_depth_runs_depth_then_width_blocks_and_terminates_when_no_expansions_remain(self):
-        rows = self.run_mode("alt_depth", values=[1.0, 2.0, 3.0, 4.0, 5.0], patience=1, max_width=4, max_depth=4)
+        rows = self.run_mode("alt_depth", values=[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0], patience=1, max_width=4, max_depth=4)
         self.assert_phases_and_architectures(
             rows,
-            ["depth", "depth", "width", "depth", "width"],
-            ["[2, 2]", "[2, 2, 2]", "[3, 3, 3]", "[3, 3, 3, 3]", "[4, 4, 4, 4]"],
+            ["depth", "depth", "width", "depth", "width", "depth", "width"],
+            ["[1]", "[1, 1]", "[2, 2]", "[2, 2, 2]", "[3, 3, 3]", "[3, 3, 3, 3]", "[4, 4, 4, 4]"],
         )
 
 
