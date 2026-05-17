@@ -34,7 +34,12 @@
     "num_workers": 0,
     "patience": 5,
     "phases": [
-      "ae_width_to_depth"
+      "ae_width_only",
+      "ae_depth_only",
+      "ae_width_to_depth",
+      "ae_depth_to_width",
+      "ae_alt_width",
+      "ae_alt_depth"
     ],
     "results_dir": "DAE/DNN/results",
     "run_root": "DAE/DNN/results/goliath_w2d_20260516",
@@ -54,9 +59,7 @@
       "compression",
       "ranking",
       "multimodal",
-      "selfsupervised",
-      "simulation",
-      "misc"
+      "selfsupervised"
     ],
     "use_bn": true,
     "weight_decay": 0.0001
@@ -70,16 +73,14 @@
     "denoising": 32768,
     "generation": 32768,
     "inverse": 32768,
-    "misc": 32768,
     "multimodal": 32768,
     "prediction": 32768,
     "ranking": 32768,
     "representation": 32768,
-    "selfsupervised": 32768,
-    "simulation": 32768
+    "selfsupervised": 32768
   },
   "device": "cuda",
-  "git_commit": "ae063cf34603af76bd877c6937c4090762c0b8c5",
+  "git_commit": "a1518b0cd2bfe645df996832a9308294c59833d3",
   "tasks": [
     "prediction",
     "representation",
@@ -93,9 +94,7 @@
     "compression",
     "ranking",
     "multimodal",
-    "selfsupervised",
-    "simulation",
-    "misc"
+    "selfsupervised"
   ],
-  "timestamp": "20260516_192113"
+  "timestamp": "20260517_102520"
 }
