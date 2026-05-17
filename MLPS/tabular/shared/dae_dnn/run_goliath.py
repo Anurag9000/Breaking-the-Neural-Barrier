@@ -965,6 +965,13 @@ def format_architecture_for_report(architecture: Any) -> str:
     return str(architecture)
 
 
+def relative_improvement_pct(previous_val: Optional[float], current_val: float) -> float:
+    if previous_val is None:
+        return float("inf")
+    denom = max(abs(float(previous_val)), 1e-12)
+    return ((float(previous_val) - float(current_val)) / denom) * 100.0
+
+
 def format_float_for_report(value: Any) -> str:
     if value is None:
         return "n/a"
@@ -1274,6 +1281,9 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
     width_fail = int(state.get("width_fail", 0))
     depth_fail = int(state.get("depth_fail", 0))
     consecutive_fail = int(state.get("consecutive_fail", 0))
+    width_stage_margin_fail = int(state.get("width_stage_margin_fail", 0))
+    width_stage_anchor_val = state.get("width_stage_anchor_val")
+    width_stage_anchor_val = None if width_stage_anchor_val is None else float(width_stage_anchor_val)
     alt_consecutive_patience = max((2 * int(cfg.patience)) + 1, 10)
     global_best_candidate_dir = resolve_candidate_dir(phase_root, state.get("best_candidate_dir"))
     global_best_checkpoint = Path(state["best_checkpoint"]) if state.get("best_checkpoint") else None
@@ -1358,11 +1368,15 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 next_arch = [int(w) for w in next_model.hidden_widths]
             elif mode == "alt_width":
                 if current_phase == "width":
-                    if width_fail >= int(cfg.patience):
+                    if width_fail >= int(cfg.patience) or (
+                        int(cfg.width_stage_margin_patience) > 0
+                        and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+                    ):
                         if not can_deepen(current_base, cfg):
                             break
                         current_phase = "depth"
                         width_fail = 0
+                        width_stage_margin_fail = 0
                         state.update({"current_phase": current_phase, "width_fail": width_fail})
                         save_phase_state(phase_root, state)
                         continue
@@ -1371,6 +1385,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                             break
                         current_phase = "depth"
                         width_fail = 0
+                        width_stage_margin_fail = 0
                         state.update({"current_phase": current_phase, "width_fail": width_fail})
                         save_phase_state(phase_root, state)
                         continue
@@ -1378,6 +1393,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                     if next_model is None:
                         current_phase = "depth"
                         width_fail = 0
+                        width_stage_margin_fail = 0
                         state.update({"current_phase": current_phase, "width_fail": width_fail})
                         save_phase_state(phase_root, state)
                         continue
@@ -1464,7 +1480,10 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                     next_arch = [int(w) for w in next_model.hidden_widths]
             elif mode == "width_to_depth":
                 if current_phase == "width":
-                    if width_fail >= int(cfg.patience):
+                    if width_fail >= int(cfg.patience) or (
+                        int(cfg.width_stage_margin_patience) > 0
+                        and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+                    ):
                         current_phase = "depth"
                         state["current_phase"] = current_phase
                         save_phase_state(phase_root, state)
@@ -1510,7 +1529,10 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                         continue
                     next_arch = [int(w) for w in next_model.hidden_widths]
                 else:
-                    if width_fail >= int(cfg.patience):
+                    if width_fail >= int(cfg.patience) or (
+                        int(cfg.width_stage_margin_patience) > 0
+                        and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+                    ):
                         break
                     if not can_widen(current_base, cfg):
                         break
@@ -1582,6 +1604,16 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 else:
                     depth_fail += 1
 
+        if phase_for_candidate == "width":
+            stage_margin_pct = relative_improvement_pct(width_stage_anchor_val, global_best_val)
+            if width_stage_anchor_val is None:
+                width_stage_margin_fail = 0
+            elif stage_margin_pct >= float(cfg.width_stage_min_improve_pct):
+                width_stage_margin_fail = 0
+            else:
+                width_stage_margin_fail += 1
+            width_stage_anchor_val = float(global_best_val)
+
         log_phase_progress(
             progress_path,
             {
@@ -1600,37 +1632,62 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 "width_fail": width_fail,
                 "depth_fail": depth_fail,
                 "consecutive_fail": consecutive_fail,
+                "width_stage_margin_fail": width_stage_margin_fail,
+                "width_stage_anchor_val": width_stage_anchor_val,
+                "width_stage_margin_pct": stage_margin_pct if phase_for_candidate == "width" else "",
             },
         )
 
         next_candidate_index += 1
 
         if mode == "alt_width":
-            if phase_for_candidate == "width" and width_fail >= int(cfg.patience):
+            if phase_for_candidate == "width" and (
+                width_fail >= int(cfg.patience)
+                or (
+                    int(cfg.width_stage_margin_patience) > 0
+                    and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+                )
+            ):
                 current_phase = "depth"
                 width_fail = 0
+                width_stage_margin_fail = 0
             elif phase_for_candidate == "depth" and depth_fail >= int(cfg.patience):
                 current_phase = "width"
                 depth_fail = 0
+                width_stage_margin_fail = 0
         elif mode == "alt_depth":
             if phase_for_candidate == "depth" and depth_fail >= int(cfg.patience):
                 current_phase = "width"
                 depth_fail = 0
-            elif phase_for_candidate == "width" and width_fail >= int(cfg.patience):
+                width_stage_margin_fail = 0
+            elif phase_for_candidate == "width" and (
+                width_fail >= int(cfg.patience)
+                or (
+                    int(cfg.width_stage_margin_patience) > 0
+                    and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+                )
+            ):
                 current_phase = "depth"
                 width_fail = 0
+                width_stage_margin_fail = 0
         elif mode == "width_to_depth":
             if phase_for_candidate == "depth":
                 current_phase = "width"
                 width_fail = 0
-            elif width_fail >= int(cfg.patience):
+                width_stage_margin_fail = 0
+            elif width_fail >= int(cfg.patience) or (
+                int(cfg.width_stage_margin_patience) > 0
+                and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+            ):
                 current_phase = "depth"
         elif mode == "depth_to_width":
             if phase_for_candidate == "width":
                 current_phase = "depth"
                 depth_fail = 0
+                width_stage_margin_fail = 0
             elif depth_fail >= int(cfg.patience):
                 current_phase = "width"
+                width_stage_margin_fail = 0
 
         state.update(
             {
@@ -1639,6 +1696,8 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 "width_fail": width_fail,
                 "depth_fail": depth_fail,
                 "consecutive_fail": consecutive_fail,
+                "width_stage_margin_fail": width_stage_margin_fail,
+                "width_stage_anchor_val": width_stage_anchor_val,
                 "best_val": global_best_val,
                 "candidate_index": next_candidate_index,
                 "completed": False,

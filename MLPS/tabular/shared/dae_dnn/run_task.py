@@ -41,6 +41,8 @@ def main() -> None:
     p.add_argument("--max-width", type=int, default=4096)
     p.add_argument("--max-depth", type=int, default=10)
     p.add_argument("--max-neurons", type=int, default=10000000)
+    p.add_argument("--width-stage-margin-patience", type=int, default=5)
+    p.add_argument("--width-stage-min-improve-pct", type=float, default=0.0)
     p.add_argument("--metrics-interval", type=int, default=5)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--num-workers", type=int, default=0)
@@ -105,6 +107,8 @@ def main() -> None:
         max_width=max_width,
         max_depth=args.max_depth,
         max_neurons=args.max_neurons,
+        width_stage_margin_patience=args.width_stage_margin_patience,
+        width_stage_min_improve_pct=args.width_stage_min_improve_pct,
         max_epochs=args.max_epochs,
         metrics_interval=args.metrics_interval,
     )
