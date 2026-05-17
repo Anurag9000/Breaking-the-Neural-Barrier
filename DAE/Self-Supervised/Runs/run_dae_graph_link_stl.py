@@ -127,7 +127,7 @@ def eval_epoch(
 def main() -> None:
     p = argparse.ArgumentParser(description="Graph link-structure DAE STL")
     p.add_argument("--graph-path", type=str, required=True, help="Path to .pt file with adjacency")
-    p.add_argument("--out-dir", type=str, default="./runs/dae_graph_link_stl")
+    p.add_argument("--out-dir", type=str, default="./Runs/dae_graph_link_stl")
     p.add_argument("--seed", type=int, default=1337)
 
     p.add_argument("--n-nodes", type=int, default=None, help="Override number of nodes; otherwise inferred")

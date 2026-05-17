@@ -95,7 +95,7 @@ def main():
     # Data/IO
     p.add_argument('--dataset', type=str, default='imagefolder', choices=['imagefolder'])
     p.add_argument('--data_dir', type=str, default='./data')
-    p.add_argument('--out_dir', type=str, default='./runs/ae_mask_stl')
+    p.add_argument('--out_dir', type=str, default='./Runs/ae_mask_stl')
     p.add_argument('--seed', type=int, default=1337)
     # Model
     p.add_argument('--width', type=int, default=64)

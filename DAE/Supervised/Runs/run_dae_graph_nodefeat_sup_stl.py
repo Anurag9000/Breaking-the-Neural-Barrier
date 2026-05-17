@@ -202,7 +202,7 @@ def eval_test_accuracy(
 def main() -> None:
     p = argparse.ArgumentParser(description="Supervised graph node-feature DAE encoder + node classifier")
     p.add_argument("--graph-path", type=str, required=True)
-    p.add_argument("--out-dir", type=str, default="./runs/dae_graph_nodefeat_sup")
+    p.add_argument("--out-dir", type=str, default="./Runs/dae_graph_nodefeat_sup")
     p.add_argument("--width", type=int, default=64)
     p.add_argument("--depth", type=int, default=2)
     p.add_argument("--epochs", type=int, default=200)
