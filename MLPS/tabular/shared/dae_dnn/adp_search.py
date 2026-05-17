@@ -26,7 +26,7 @@ class ADPConfig:
     max_depth: int = 10
     max_neurons: int = 10_000_000
     width_stage_margin_patience: int = 5
-    width_stage_min_improve_pct: float = 0.0
+    width_stage_min_improve_pct: float = 1.0
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
