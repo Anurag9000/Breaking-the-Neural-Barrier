@@ -23,6 +23,13 @@ def can_deepen_uniform(model: MLP, cfg: rg.RunConfig) -> bool:
     return is_uniform_width(model) and rg.can_deepen(model, cfg)
 
 
+def relative_improvement_pct(previous_val: Optional[float], current_val: float) -> float:
+    if previous_val is None:
+        return float("inf")
+    denom = max(abs(float(previous_val)), 1e-12)
+    return ((float(previous_val) - float(current_val)) / denom) * 100.0
+
+
 def _switch_to_width_until_uniform(
     *,
     mode: str,
@@ -79,6 +86,9 @@ def run_growth_phase(
     depth_fail = int(state.get("depth_fail", 0))
     consecutive_fail = int(state.get("consecutive_fail", 0))
     width_stage_improved = bool(state.get("width_stage_improved", False))
+    width_stage_margin_fail = int(state.get("width_stage_margin_fail", 0))
+    width_stage_anchor_val = state.get("width_stage_anchor_val")
+    width_stage_anchor_val = None if width_stage_anchor_val is None else float(width_stage_anchor_val)
     alt_consecutive_patience = max((2 * int(cfg.patience)) + 1, 10)
     global_best_candidate_dir = rg.resolve_candidate_dir(phase_root, state.get("best_candidate_dir"))
     global_best_checkpoint = Path(state["best_checkpoint"]) if state.get("best_checkpoint") else None
@@ -291,7 +301,11 @@ def run_growth_phase(
                     next_arch = [int(w) for w in next_model.hidden_widths]
             elif mode == "width_to_depth":
                 if current_phase == "width":
-                    if width_fail >= int(cfg.patience) and is_uniform_width(current_base):
+                    width_stage_limit_hit = (
+                        int(cfg.width_stage_margin_patience) > 0
+                        and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+                    )
+                    if is_uniform_width(current_base) and (width_fail >= int(cfg.patience) or width_stage_limit_hit):
                         current_phase = "depth"
                         state["current_phase"] = current_phase
                         rg.save_phase_state(phase_root, state)
@@ -395,12 +409,20 @@ def run_growth_phase(
         if phase_for_candidate == "width":
             width_stage_improved = width_stage_improved or improved
             if is_uniform_width(next_model):
+                stage_margin_pct = relative_improvement_pct(width_stage_anchor_val, global_best_val)
                 if width_stage_improved:
                     width_fail = 0
                     consecutive_fail = 0
                 else:
                     width_fail += 1
                     consecutive_fail += 1
+                if width_stage_anchor_val is None:
+                    width_stage_margin_fail = 0
+                elif stage_margin_pct >= float(cfg.width_stage_min_improve_pct):
+                    width_stage_margin_fail = 0
+                else:
+                    width_stage_margin_fail += 1
+                width_stage_anchor_val = float(global_best_val)
                 width_stage_improved = False
         else:
             if improved:
@@ -429,6 +451,9 @@ def run_growth_phase(
                 "depth_fail": depth_fail,
                 "consecutive_fail": consecutive_fail,
                 "width_stage_improved": width_stage_improved,
+                "width_stage_margin_fail": width_stage_margin_fail,
+                "width_stage_anchor_val": width_stage_anchor_val,
+                "width_stage_margin_pct": stage_margin_pct if phase_for_candidate == "width" and is_uniform_width(next_model) else "",
             },
         )
 
@@ -456,7 +481,14 @@ def run_growth_phase(
             if phase_for_candidate == "depth":
                 current_phase = "width"
                 width_fail = 0
-            elif width_fail >= int(cfg.patience) and is_uniform_width(next_model):
+                width_stage_margin_fail = 0
+            elif is_uniform_width(next_model) and (
+                width_fail >= int(cfg.patience)
+                or (
+                    int(cfg.width_stage_margin_patience) > 0
+                    and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
+                )
+            ):
                 current_phase = "depth"
             else:
                 current_phase = "width"
@@ -475,6 +507,8 @@ def run_growth_phase(
                 "depth_fail": depth_fail,
                 "consecutive_fail": consecutive_fail,
                 "width_stage_improved": width_stage_improved,
+                "width_stage_margin_fail": width_stage_margin_fail,
+                "width_stage_anchor_val": width_stage_anchor_val,
                 "best_val": global_best_val,
                 "candidate_index": next_candidate_index,
                 "completed": False,
