@@ -411,7 +411,7 @@ def run_growth_phase(
                 "phase": phase_name,
                 "candidate_index": candidate_idx,
                 "candidate_dir": candidate_dir.name,
-                "architecture": str(next_arch),
+                "architecture": rg.format_architecture_for_report(next_arch),
                 "best_val": float(result.best_val),
                 "best_epoch": int(result.best_epoch),
                 "final_epoch": int(result.final_epoch),

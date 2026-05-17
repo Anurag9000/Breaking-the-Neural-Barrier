@@ -98,6 +98,10 @@ def model_depth(model: MLP) -> int:
     return int(len(model.hidden_widths))
 
 
+def _format_hidden_widths(hidden_widths: List[int]) -> str:
+    return ",".join(str(int(w)) for w in hidden_widths)
+
+
 def snapshot_arch_and_state(model: MLP, state_dict=None) -> Dict[str, Any]:
     state = state_dict if state_dict is not None else model.state_dict()
     return {
@@ -244,7 +248,7 @@ def adp_search(
 
     def optimize_width_at_fixed_depth(curr_model: MLP):
         if logger is not None:
-            logger.log_console(f"[PHASE][WIDTH] start widths={curr_model.hidden_widths}")
+            logger.log_console(f"[PHASE][WIDTH] start widths={_format_hidden_widths(list(curr_model.hidden_widths))}")
 
         first_local = train_candidate(curr_model)
         if first_local is None:
@@ -265,7 +269,7 @@ def adp_search(
             prev_widths = list(curr_model.hidden_widths)
             curr_model = next_model
             if logger is not None:
-                logger.log_console(f"[EXPAND][WIDTH] {prev_widths} -> {curr_model.hidden_widths}")
+                logger.log_console(f"[EXPAND][WIDTH] {_format_hidden_widths(prev_widths)} -> {_format_hidden_widths(list(curr_model.hidden_widths))}")
 
             next_run = train_candidate(curr_model)
             if next_run is None:
@@ -284,12 +288,12 @@ def adp_search(
 
         final_model = restore_arch_and_state(curr_model, local_best_snap, device)
         if logger is not None:
-            logger.log_console(f"[PHASE][WIDTH] end best_val_loss={local_best_val:.6f} best_widths={final_model.hidden_widths}")
+            logger.log_console(f"[PHASE][WIDTH] end best_val_loss={local_best_val:.6f} best_widths={_format_hidden_widths(list(final_model.hidden_widths))}")
         return final_model, local_best_val, local_best_snap
 
     def optimize_depth_at_fixed_width(curr_model: MLP):
         if logger is not None:
-            logger.log_console(f"[PHASE][DEPTH] start widths={curr_model.hidden_widths}")
+            logger.log_console(f"[PHASE][DEPTH] start widths={_format_hidden_widths(list(curr_model.hidden_widths))}")
 
         first_local = train_candidate(curr_model)
         if first_local is None:
