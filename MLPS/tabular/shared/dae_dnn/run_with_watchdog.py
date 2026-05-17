@@ -5,6 +5,7 @@ import re
 import subprocess
 import sys
 import time
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
@@ -26,6 +27,16 @@ from DAE.DNN.run_goliath import (
 
 
 EPOCH_PATTERN = re.compile(r"\bepoch=(\d+)\b")
+
+
+@dataclass(frozen=True)
+class HeartbeatSnapshot:
+    latest_path: Optional[str]
+    latest_mtime_ns: int
+    epoch_events: int
+    candidate_epoch_total: int
+    method_progress_total: int
+    task_progress_total: int
 
 
 def log_line(message: str) -> None:
@@ -74,6 +85,16 @@ def parse_latest_epoch_from_log(log_path: Path) -> Optional[int]:
     return None
 
 
+def count_epoch_events_in_log(log_path: Path) -> int:
+    if not log_path.exists():
+        return 0
+    try:
+        text = log_path.read_text(encoding="utf-8", errors="ignore")
+    except Exception:
+        return 0
+    return len(EPOCH_PATTERN.findall(text))
+
+
 def latest_heartbeat_file(run_root: Path) -> Optional[Path]:
     files: List[Path] = []
     files.extend(candidate_state_paths(run_root))
@@ -84,6 +105,55 @@ def latest_heartbeat_file(run_root: Path) -> Optional[Path]:
     if not files:
         return None
     return max(files, key=lambda path: path.stat().st_mtime)
+
+
+def heartbeat_snapshot(run_root: Path) -> HeartbeatSnapshot:
+    candidate_paths = [path for path in candidate_state_paths(run_root) if path.exists()]
+    method_paths = [path for path in method_state_paths(run_root) if path.exists()]
+    task_paths = [path for path in task_state_paths(run_root) if path.exists()]
+    log_paths = [path for path in training_log_paths(run_root) if path.exists()]
+
+    files: List[Path] = []
+    files.extend(candidate_paths)
+    files.extend(method_paths)
+    files.extend(task_paths)
+    files.extend(log_paths)
+
+    latest_path: Optional[Path] = None
+    latest_mtime_ns = 0
+    for path in files:
+        try:
+            mtime_ns = path.stat().st_mtime_ns
+        except Exception:
+            continue
+        if latest_path is None or mtime_ns >= latest_mtime_ns:
+            latest_path = path
+            latest_mtime_ns = mtime_ns
+
+    epoch_events = sum(count_epoch_events_in_log(path) for path in log_paths)
+    candidate_epoch_total = 0
+    for path in candidate_paths:
+        state = load_json_if_exists(path) or {}
+        candidate_epoch_total += int(state.get("epoch") or state.get("final_epoch") or 0)
+
+    method_progress_total = 0
+    for path in method_paths:
+        state = load_json_if_exists(path) or {}
+        method_progress_total += int(state.get("candidate_index") or state.get("next_candidate_index") or 0)
+
+    task_progress_total = 0
+    for path in task_paths:
+        state = load_json_if_exists(path) or {}
+        task_progress_total += int(state.get("next_phase_index") or state.get("next_method_index") or 0)
+
+    return HeartbeatSnapshot(
+        latest_path=str(latest_path) if latest_path is not None else None,
+        latest_mtime_ns=latest_mtime_ns,
+        epoch_events=epoch_events,
+        candidate_epoch_total=candidate_epoch_total,
+        method_progress_total=method_progress_total,
+        task_progress_total=task_progress_total,
+    )
 
 
 def latest_incomplete_candidate(run_root: Path) -> Optional[Path]:
@@ -226,62 +296,55 @@ def terminate_process(proc: subprocess.Popen[Any], grace_seconds: int) -> None:
         pass
 
 
+def ensure_run_root_arg(command: Sequence[str], run_root: Path) -> List[str]:
+    prepared = list(command)
+    if "--run-root" in prepared:
+        return prepared
+    for token in prepared:
+        if token.endswith("run_goliath.py") or token.endswith("run_search_suite.py"):
+            return prepared + ["--run-root", str(run_root)]
+    return prepared
+
+
 def run_supervised(command: Sequence[str], run_root: Path, idle_seconds: int, max_restarts: int, burst_limit: int, burst_window_seconds: int, poll_seconds: int, grace_seconds: int) -> int:
     if not command:
         raise ValueError("No command supplied to watchdog supervisor")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    prepared_command = ensure_run_root_arg(command, run_root)
     restart_count = 0
     first_hiccup_at: Optional[float] = None
     hiccup_restarts = 0
-    current_heartbeat_path: Optional[Path] = None
-    current_heartbeat_mtime: Optional[float] = None
-    current_progress_value: Optional[int] = None
+    current_snapshot = HeartbeatSnapshot(
+        latest_path=None,
+        latest_mtime_ns=0,
+        epoch_events=0,
+        candidate_epoch_total=0,
+        method_progress_total=0,
+        task_progress_total=0,
+    )
 
     while True:
-        log_line(f"Starting supervised command: {' '.join(command)}")
-        proc = subprocess.Popen(list(command))
+        log_line(f"Starting supervised command: {' '.join(prepared_command)}")
+        proc = subprocess.Popen(prepared_command)
         last_progress_at = time.monotonic()
 
         while proc.poll() is None:
-            heartbeat_path = latest_heartbeat_file(run_root)
-            heartbeat_mtime = None
-            progress_value = None
-            if heartbeat_path is not None:
-                try:
-                    heartbeat_mtime = heartbeat_path.stat().st_mtime
-                except Exception:
-                    heartbeat_mtime = None
-                if heartbeat_path.name == "candidate_state.json":
-                    state = load_json_if_exists(heartbeat_path) or {}
-                    progress_value = int(state.get("epoch") or state.get("final_epoch") or 0)
-                elif heartbeat_path.name == "training_log.txt":
-                    progress_value = parse_latest_epoch_from_log(heartbeat_path)
-                elif heartbeat_path.name == "method_state.json":
-                    state = load_json_if_exists(heartbeat_path) or {}
-                    progress_value = int(state.get("candidate_index") or state.get("next_candidate_index") or 0)
-                elif heartbeat_path.name == "task_state.json":
-                    state = load_json_if_exists(heartbeat_path) or {}
-                    progress_value = int(state.get("next_phase_index") or state.get("next_method_index") or 0)
-
-            if heartbeat_path is not None:
-                changed = (
-                    heartbeat_path != current_heartbeat_path
-                    or heartbeat_mtime != current_heartbeat_mtime
-                    or progress_value != current_progress_value
-                )
-                if changed:
-                    current_heartbeat_path = heartbeat_path
-                    current_heartbeat_mtime = heartbeat_mtime
-                    current_progress_value = progress_value
-                    last_progress_at = time.monotonic()
-                    first_hiccup_at = None
-                    hiccup_restarts = 0
+            snapshot = heartbeat_snapshot(run_root)
+            if snapshot != current_snapshot:
+                current_snapshot = snapshot
+                last_progress_at = time.monotonic()
+                first_hiccup_at = None
+                hiccup_restarts = 0
 
             idle_for = time.monotonic() - last_progress_at
             if idle_for >= float(idle_seconds):
                 log_line(
-                    f"Watchdog stall detected after {int(idle_for)}s without progress. Restart count={restart_count}."
+                    f"Watchdog stall detected after {int(idle_for)}s without progress. Restart count={restart_count}. "
+                    f"latest_path={current_snapshot.latest_path} epoch_events={current_snapshot.epoch_events} "
+                    f"candidate_epoch_total={current_snapshot.candidate_epoch_total} "
+                    f"method_progress_total={current_snapshot.method_progress_total} "
+                    f"task_progress_total={current_snapshot.task_progress_total}"
                 )
                 terminate_process(proc, grace_seconds)
                 restart_count += 1
