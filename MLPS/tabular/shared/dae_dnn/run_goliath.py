@@ -600,6 +600,7 @@ def training_loop(
     reconstruct: bool,
     resume: bool = True,
     batch_controller: Optional[AdaptiveBatchController] = None,
+    display_best_floor: Optional[float] = None,
 ) -> CandidateResult:
     candidate_dir.mkdir(parents=True, exist_ok=True)
     metadata_path = candidate_dir / "metadata.json"
@@ -741,8 +742,10 @@ def training_loop(
         for key in metric_keys:
             row[key] = metrics.get(key)
         logger.log_epoch_stats(row)
+        display_best = best_val if display_best_floor is None else min(best_val, float(display_best_floor))
         logger.log_console(
-            f"[{task.name}][{candidate_dir.parent.name}][{candidate_dir.name}] epoch={epoch} train_loss={tr_loss:.6f} val_loss={val_loss:.6f} best={best_val:.6f} es={es_counter}/{cfg.patience}"
+            f"[{task.name}][{candidate_dir.parent.name}][{candidate_dir.name}] epoch={epoch} "
+            f"train_loss={tr_loss:.6f} val_loss={val_loss:.6f} best={display_best:.6f} es={es_counter}/{cfg.patience}"
         )
 
         write_json(
@@ -1306,6 +1309,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
             reconstruct=reconstruct,
             resume=True,
             batch_controller=batch_controller,
+            display_best_floor=None if global_best_val >= 1e29 else global_best_val,
         )
         logger.close()
         state["candidate_index"] = candidate_idx + 1
@@ -1517,6 +1521,10 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
         candidate_idx = next_candidate_index
         candidate_dir = candidate_root_for(phase_root, candidate_idx, next_arch)
         logger = ContinuousLogger(candidate_dir, f"{task.name}_{phase_name}", phase_name)
+        logger.log_console(
+            f"[CANDIDATE] task={task.name} phase={phase_name} index={candidate_idx} "
+            f"search_phase={phase_for_candidate} architecture={format_architecture_for_report(next_arch)}"
+        )
         write_json(
             candidate_dir / "metadata.json",
             phase_metadata(
@@ -1540,6 +1548,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
             reconstruct=reconstruct,
             resume=True,
             batch_controller=batch_controller,
+            display_best_floor=None if global_best_val >= 1e29 else global_best_val,
         )
         logger.close()
 

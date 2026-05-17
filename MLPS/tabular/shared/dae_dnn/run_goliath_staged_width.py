@@ -120,6 +120,7 @@ def run_growth_phase(
             reconstruct=reconstruct,
             resume=True,
             batch_controller=batch_controller,
+            display_best_floor=None if global_best_val >= 1e29 else global_best_val,
         )
         logger.close()
         state["candidate_index"] = candidate_idx + 1
@@ -355,6 +356,10 @@ def run_growth_phase(
         candidate_idx = next_candidate_index
         candidate_dir = rg.candidate_root_for(phase_root, candidate_idx, next_arch)
         logger = ContinuousLogger(candidate_dir, f"{task.name}_{phase_name}", phase_name)
+        logger.log_console(
+            f"[CANDIDATE] task={task.name} phase={phase_name} index={candidate_idx} "
+            f"search_phase={phase_for_candidate} architecture={rg.format_architecture_for_report(next_arch)}"
+        )
         rg.write_json(
             candidate_dir / "metadata.json",
             rg.phase_metadata(
@@ -378,6 +383,7 @@ def run_growth_phase(
             reconstruct=reconstruct,
             resume=True,
             batch_controller=batch_controller,
+            display_best_floor=None if global_best_val >= 1e29 else global_best_val,
         )
         logger.close()
 
