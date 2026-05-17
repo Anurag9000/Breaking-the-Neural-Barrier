@@ -74,7 +74,7 @@ class ADPSemanticsTests(unittest.TestCase):
     def fake_training_loop_factory(self, values):
         values = list(values)
 
-        def fake_training_loop(*, task, model, candidate_dir, cfg, device, logger, reconstruct, resume=True, batch_controller=None):
+        def fake_training_loop(*, task, model, candidate_dir, cfg, device, logger, reconstruct, resume=True, batch_controller=None, display_best_floor=None):
             idx = int(candidate_dir.name.split("_")[1])
             val = float(values[idx])
             candidate_dir.mkdir(parents=True, exist_ok=True)

@@ -96,7 +96,7 @@ class StagedWidthTests(unittest.TestCase):
             )
             values = [1.0, 2.0, 0.5, 1.5, 2.5, 3.5]
 
-            def fake_training_loop(*, task, model, candidate_dir, cfg, device, logger, reconstruct, resume=True, batch_controller=None):
+            def fake_training_loop(*, task, model, candidate_dir, cfg, device, logger, reconstruct, resume=True, batch_controller=None, display_best_floor=None):
                 idx = int(candidate_dir.name.split("_")[1])
                 val = float(values[idx])
                 candidate_dir.mkdir(parents=True, exist_ok=True)
