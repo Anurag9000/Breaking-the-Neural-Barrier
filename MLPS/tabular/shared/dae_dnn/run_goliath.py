@@ -83,6 +83,8 @@ class RunConfig:
     max_width: int
     max_depth: int
     max_neurons: int
+    width_stage_margin_patience: int
+    width_stage_min_improve_pct: float
     use_bn: bool
     demo: bool
 
@@ -1952,6 +1954,8 @@ def main() -> None:
     p.add_argument("--max-width", type=int, default=512)
     p.add_argument("--max-depth", type=int, default=10)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
+    p.add_argument("--width-stage-margin-patience", type=int, default=5)
+    p.add_argument("--width-stage-min-improve-pct", type=float, default=0.0)
     p.add_argument("--no-bn", action="store_true")
     p.add_argument("--demo", action="store_true")
     p.add_argument("--demo-tasks", type=int, default=1)
@@ -1988,6 +1992,8 @@ def main() -> None:
         max_width=args.max_width,
         max_depth=args.max_depth,
         max_neurons=args.max_neurons,
+        width_stage_margin_patience=args.width_stage_margin_patience,
+        width_stage_min_improve_pct=args.width_stage_min_improve_pct,
         use_bn=not args.no_bn,
         demo=args.demo,
     )

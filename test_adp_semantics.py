@@ -67,6 +67,8 @@ class ADPSemanticsTests(unittest.TestCase):
             max_width=max_width,
             max_depth=max_depth,
             max_neurons=10_000,
+            width_stage_margin_patience=5,
+            width_stage_min_improve_pct=0.0,
             use_bn=False,
             demo=False,
         )
