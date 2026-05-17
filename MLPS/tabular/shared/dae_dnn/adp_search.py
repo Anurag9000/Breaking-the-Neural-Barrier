@@ -175,7 +175,10 @@ def train_with_early_stopping(
             improved = False
 
         display_best = best_val if display_best_floor is None else min(best_val, float(display_best_floor))
-        msg = f"Epoch {epoch} | train_loss={tr_loss:.6f} val_loss={val_loss:.6f} best={display_best:.6f} es={es_counter}/{cfg.patience}"
+        msg = (
+            f"Epoch {epoch} | architecture={_format_hidden_widths(list(model.hidden_widths))} "
+            f"train_loss={tr_loss:.6f} val_loss={val_loss:.6f} best={display_best:.6f} es={es_counter}/{cfg.patience}"
+        )
         if task.task_type == "classification" and tr_acc is not None and val_acc is not None:
             msg += f" train_acc={tr_acc:.4f} val_acc={val_acc:.4f}"
         if logger is not None:

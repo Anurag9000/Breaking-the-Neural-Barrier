@@ -745,6 +745,7 @@ def training_loop(
         display_best = best_val if display_best_floor is None else min(best_val, float(display_best_floor))
         logger.log_console(
             f"[{task.name}][{candidate_dir.parent.name}][{candidate_dir.name}] epoch={epoch} "
+            f"architecture={format_architecture_for_report(model.hidden_widths)} "
             f"train_loss={tr_loss:.6f} val_loss={val_loss:.6f} best={display_best:.6f} es={es_counter}/{cfg.patience}"
         )
 
