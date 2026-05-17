@@ -17,7 +17,12 @@
     "num_workers": 0,
     "patience": 5,
     "phases": [
-      "ae_width_to_depth"
+      "ae_width_only",
+      "ae_depth_only",
+      "ae_width_to_depth",
+      "ae_depth_to_width",
+      "ae_alt_width",
+      "ae_alt_depth"
     ],
     "results_dir": "DAE/DNN/results",
     "run_root": "DAE/DNN/results/goliath_w2d_20260516",
@@ -37,9 +42,7 @@
       "compression",
       "ranking",
       "multimodal",
-      "selfsupervised",
-      "simulation",
-      "misc"
+      "selfsupervised"
     ],
     "use_bn": true,
     "weight_decay": 0.0001
