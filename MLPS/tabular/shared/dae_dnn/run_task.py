@@ -42,7 +42,7 @@ def main() -> None:
     p.add_argument("--max-depth", type=int, default=10)
     p.add_argument("--max-neurons", type=int, default=10000000)
     p.add_argument("--width-stage-margin-patience", type=int, default=5)
-    p.add_argument("--width-stage-min-improve-pct", type=float, default=0.0)
+    p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
     p.add_argument("--metrics-interval", type=int, default=5)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--num-workers", type=int, default=0)
