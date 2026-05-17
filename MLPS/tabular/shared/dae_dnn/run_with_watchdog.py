@@ -306,6 +306,21 @@ def ensure_run_root_arg(command: Sequence[str], run_root: Path) -> List[str]:
     return prepared
 
 
+def register_hiccup(
+    *,
+    restart_count: int,
+    first_hiccup_at: Optional[float],
+    hiccup_restarts: int,
+    now: float,
+) -> tuple[int, float, int]:
+    restart_count += 1
+    if first_hiccup_at is None:
+        first_hiccup_at = now
+        hiccup_restarts = 0
+    hiccup_restarts += 1
+    return restart_count, first_hiccup_at, hiccup_restarts
+
+
 def run_supervised(command: Sequence[str], run_root: Path, idle_seconds: int, max_restarts: int, burst_limit: int, burst_window_seconds: int, poll_seconds: int, grace_seconds: int) -> int:
     if not command:
         raise ValueError("No command supplied to watchdog supervisor")
@@ -347,11 +362,12 @@ def run_supervised(command: Sequence[str], run_root: Path, idle_seconds: int, ma
                     f"task_progress_total={current_snapshot.task_progress_total}"
                 )
                 terminate_process(proc, grace_seconds)
-                restart_count += 1
-                if first_hiccup_at is None:
-                    first_hiccup_at = time.monotonic()
-                    hiccup_restarts = 0
-                hiccup_restarts += 1
+                restart_count, first_hiccup_at, hiccup_restarts = register_hiccup(
+                    restart_count=restart_count,
+                    first_hiccup_at=first_hiccup_at,
+                    hiccup_restarts=hiccup_restarts,
+                    now=time.monotonic(),
+                )
 
                 if restart_count >= int(max_restarts) or (
                     first_hiccup_at is not None
@@ -376,6 +392,12 @@ def run_supervised(command: Sequence[str], run_root: Path, idle_seconds: int, ma
             return 0
 
         log_line(f"Supervised command exited with code {exit_code}; restarting from saved state.")
+        restart_count, first_hiccup_at, hiccup_restarts = register_hiccup(
+            restart_count=restart_count,
+            first_hiccup_at=first_hiccup_at,
+            hiccup_restarts=hiccup_restarts,
+            now=time.monotonic(),
+        )
         if restart_count >= int(max_restarts):
             candidate_dir = latest_incomplete_candidate(run_root)
             if candidate_dir is not None:
