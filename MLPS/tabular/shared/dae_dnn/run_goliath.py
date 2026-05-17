@@ -955,11 +955,11 @@ def format_architecture_for_report(architecture: Any) -> str:
             in_dim = architecture.get("in_dim", "?")
             out_dim = architecture.get("out_dim", "?")
             use_bn = architecture.get("use_bn", "?")
-            hidden_str = ",".join(str(int(w)) for w in hidden_widths)
+            hidden_str = str([int(w) for w in hidden_widths])
             return f"in={in_dim} hidden={hidden_str} out={out_dim} bn={use_bn}"
         return json.dumps(architecture, sort_keys=True)
     if isinstance(architecture, (list, tuple)):
-        return ",".join(str(int(w)) for w in architecture)
+        return str([int(w) for w in architecture])
     return str(architecture)
 
 
