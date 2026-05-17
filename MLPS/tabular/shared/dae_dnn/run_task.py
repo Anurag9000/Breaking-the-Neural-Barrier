@@ -20,7 +20,7 @@ from DAE.DNN.train_utils import eval_epoch
 
 def main() -> None:
     def format_hidden(hidden):
-        return ",".join(str(int(w)) for w in hidden)
+        return str([int(w) for w in hidden])
 
     p = argparse.ArgumentParser(description="DNN STL/ADP task runner (plain MLP)")
     p.add_argument("--task", type=str, required=True)
