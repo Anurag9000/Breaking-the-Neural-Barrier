@@ -121,7 +121,7 @@ def main() -> None:
     p = argparse.ArgumentParser(description="Salt-and-pepper Conv DAE STL training on CIFAR")
     p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100"])
     p.add_argument("--data_dir", type=str, default="./data")
-    p.add_argument("--out_dir", type=str, default="./runs/dae_saltpepper_conv_stl")
+    p.add_argument("--out_dir", type=str, default="./Runs/dae_saltpepper_conv_stl")
     p.add_argument("--seed", type=int, default=1337)
     p.add_argument("--width", type=int, default=64)
     p.add_argument("--depth", type=int, default=4)
