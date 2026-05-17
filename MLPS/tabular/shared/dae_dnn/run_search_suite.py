@@ -79,6 +79,8 @@ class SuiteConfig:
     max_width: int
     max_depth: int
     max_neurons: int
+    width_stage_margin_patience: int
+    width_stage_min_improve_pct: float
     use_bn: bool
     candidate_budget: int
     bayes_warmup: int
@@ -305,6 +307,8 @@ def build_train_cfg(suite_cfg: SuiteConfig) -> RunConfig:
         max_width=suite_cfg.max_width,
         max_depth=suite_cfg.max_depth,
         max_neurons=suite_cfg.max_neurons,
+        width_stage_margin_patience=suite_cfg.width_stage_margin_patience,
+        width_stage_min_improve_pct=suite_cfg.width_stage_min_improve_pct,
         use_bn=suite_cfg.use_bn,
         demo=False,
     )
@@ -1029,6 +1033,8 @@ def run_adp_search_method(
         max_width=int(cfg.max_width),
         max_depth=int(cfg.max_depth),
         max_neurons=int(cfg.max_neurons),
+        width_stage_margin_patience=int(cfg.width_stage_margin_patience),
+        width_stage_min_improve_pct=float(cfg.width_stage_min_improve_pct),
         lr=float(cfg.lr),
         weight_decay=float(cfg.weight_decay),
         grad_clip=float(cfg.grad_clip),
@@ -1279,6 +1285,8 @@ def main() -> None:
     p.add_argument("--max-width", type=int, default=512)
     p.add_argument("--max-depth", type=int, default=10)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
+    p.add_argument("--width-stage-margin-patience", type=int, default=5)
+    p.add_argument("--width-stage-min-improve-pct", type=float, default=0.0)
     p.add_argument("--no-bn", action="store_true")
     p.add_argument("--candidate-budget", type=int, default=0, help="Max candidate trainings per method; 0 means exhaustive grid size")
     p.add_argument("--bayes-warmup", type=int, default=5)
@@ -1313,6 +1321,8 @@ def main() -> None:
         max_width=int(args.max_width),
         max_depth=int(args.max_depth),
         max_neurons=int(args.max_neurons),
+        width_stage_margin_patience=int(args.width_stage_margin_patience),
+        width_stage_min_improve_pct=float(args.width_stage_min_improve_pct),
         use_bn=not bool(args.no_bn),
         candidate_budget=int(args.candidate_budget),
         bayes_warmup=int(args.bayes_warmup),
