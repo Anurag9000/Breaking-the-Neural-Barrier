@@ -1,7 +1,7 @@
 # DAE/DNN Goliath Final Report
 
 - Run root: `DAE/DNN/results/goliath_w2d_20260516`
-- Git commit: `ae063cf34603af76bd877c6937c4090762c0b8c5`
+- Git commit: `62a1ab08faeece374c7fd13f1bcff8cb61ea35eb`
 - Device: `cuda`
 - Tasks completed: `['prediction', 'representation']`
 
