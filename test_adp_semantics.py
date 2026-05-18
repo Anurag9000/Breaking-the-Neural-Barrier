@@ -127,7 +127,7 @@ class ADPSemanticsTests(unittest.TestCase):
             cfg = self.make_cfg(root, patience=patience, max_width=max_width, max_depth=max_depth)
             task_root = root / "prediction"
             task_root.mkdir(parents=True, exist_ok=True)
-            phase_name = next(name for name, phase_mode in rg.GOLIATH_ADP_PHASES if phase_mode == mode)
+            phase_name = next((name for name, phase_mode in rg.GOLIATH_ADP_PHASES if phase_mode == mode), f"ae_{mode}")
             fake_training_loop = self.fake_training_loop_factory(values)
 
             with mock.patch.object(rg, "training_loop", side_effect=fake_training_loop), \
