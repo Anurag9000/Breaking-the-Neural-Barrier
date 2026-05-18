@@ -89,7 +89,7 @@ class StagedWidthTests(unittest.TestCase):
                 weight_decay=0.0,
                 grad_clip=1.0,
                 max_width=3,
-                max_depth=3,
+                max_depth=4,
                 max_neurons=10_000,
                 width_stage_margin_patience=5,
                 width_stage_min_improve_pct=0.0,
@@ -203,14 +203,14 @@ class StagedWidthTests(unittest.TestCase):
                 stl_depth=2,
                 alt_start_width=1,
                 alt_start_depth=1,
-                patience=50,
+                patience=1,
                 delta=1e-6,
                 max_epochs=1,
                 lr=1e-3,
                 weight_decay=0.0,
                 grad_clip=1.0,
                 max_width=4,
-                max_depth=3,
+                max_depth=4,
                 max_neurons=10_000,
                 width_stage_margin_patience=2,
                 width_stage_min_improve_pct=5.0,
@@ -290,6 +290,249 @@ class StagedWidthTests(unittest.TestCase):
                 ["width", "width", "width", "width", "width", "depth"],
             )
             self.assertEqual(rows[4]["width_stage_margin_fail"], "2")
+
+    def test_alt_width_switches_to_depth_when_uniform_width_stage_improves_too_little(self):
+        loader = DummyLoader()
+        task = SimpleNamespace(
+            name="prediction",
+            in_dim=2,
+            out_dim=1,
+            task_type="regression",
+            extra={},
+            loss_fn=None,
+            metrics_fn=None,
+            train_loader=loader,
+            val_loader=loader,
+            test_loader=loader,
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cfg = staged_runner.rg.RunConfig(
+                data_dir="./data",
+                results_dir=str(root),
+                run_root=str(root),
+                tasks=["prediction"],
+                phases=["ae_alt_width"],
+                batch_size=1,
+                num_workers=0,
+                seed=0,
+                stl_width=2,
+                stl_depth=2,
+                alt_start_width=1,
+                alt_start_depth=1,
+                patience=50,
+                delta=1e-6,
+                max_epochs=1,
+                lr=1e-3,
+                weight_decay=0.0,
+                grad_clip=1.0,
+                max_width=4,
+                max_depth=4,
+                max_neurons=10_000,
+                width_stage_margin_patience=1,
+                width_stage_min_improve_pct=5.0,
+                use_bn=False,
+                demo=False,
+            )
+            values = [
+                1.0, 0.99, 0.989, 1.1, 0.988, 0.987, 0.986, 0.985, 0.984, 0.983,
+                0.982, 0.981, 0.98, 0.979, 0.978, 0.977, 0.976, 0.975, 0.974, 0.973,
+            ]
+
+            def fake_training_loop(*, task, model, candidate_dir, cfg, device, logger, reconstruct, resume=True, batch_controller=None, display_best_floor=None):
+                idx = int(candidate_dir.name.split("_")[1])
+                val = float(values[idx])
+                candidate_dir.mkdir(parents=True, exist_ok=True)
+                state = model.state_dict()
+                payload = {
+                    "model_state": state,
+                    "best_state": state,
+                    "optimizer_state": {},
+                    "epoch": 1,
+                    "best_val": val,
+                    "best_epoch": 1,
+                    "es_counter": 0,
+                }
+                torch.save(payload, candidate_dir / "checkpoint_best.pt")
+                torch.save(payload, candidate_dir / "checkpoint_last.pt")
+                staged_runner.rg.write_json(
+                    candidate_dir / "candidate_state.json",
+                    {
+                        "completed": True,
+                        "task": task.name,
+                        "phase": candidate_dir.parent.name,
+                        "candidate_dir": str(candidate_dir),
+                        "best_val": val,
+                        "best_epoch": 1,
+                        "final_epoch": 1,
+                        "architecture": [int(w) for w in model.hidden_widths],
+                        "reconstruct": reconstruct,
+                        "checkpoint_best": str(candidate_dir / "checkpoint_best.pt"),
+                        "checkpoint_last": str(candidate_dir / "checkpoint_last.pt"),
+                    },
+                )
+                return staged_runner.rg.CandidateResult(
+                    best_val=val,
+                    best_epoch=1,
+                    final_epoch=1,
+                    best_checkpoint=candidate_dir / "checkpoint_best.pt",
+                    last_checkpoint=candidate_dir / "checkpoint_last.pt",
+                    candidate_dir=candidate_dir,
+                    architecture=[int(w) for w in model.hidden_widths],
+                )
+
+            task_root = root / "prediction"
+            task_root.mkdir(parents=True, exist_ok=True)
+            with mock.patch.object(staged_runner.rg, "training_loop", side_effect=fake_training_loop), \
+                mock.patch.object(staged_runner.rg, "eval_final", return_value={"test_loss": 0.0}), \
+                mock.patch.object(staged_runner.rg, "plot_candidate_stats", return_value=None):
+                staged_runner.run_growth_phase(
+                    task=task,
+                    task_root=task_root,
+                    cfg=cfg,
+                    device=torch.device("cpu"),
+                    base_hidden=[1],
+                    phase_name="ae_alt_width",
+                    mode="alt_width",
+                    reconstruct=False,
+                    batch_controller=None,
+                )
+
+            with (task_root / "ae_alt_width" / "phase_progress.csv").open("r", encoding="utf-8", newline="") as handle:
+                rows = list(csv.DictReader(handle))
+
+            self.assertEqual(
+                [row["architecture"] for row in rows[:8]],
+                ["[1]", "[2]", "[2, 2]", "[2, 2, 2]", "[2, 2, 2, 2]", "[3, 2, 2, 2]", "[3, 3, 2, 2]", "[3, 3, 3, 2]"],
+            )
+            self.assertEqual(
+                [row["search_phase"] for row in rows[:8]],
+                ["width", "width", "depth", "depth", "depth", "width", "width", "width"],
+            )
+            self.assertEqual(rows[8]["width_stage_margin_fail"], "1")
+            self.assertEqual(rows[8]["search_phase"], "width")
+
+    def test_alt_depth_switches_to_depth_when_uniform_width_stage_improves_too_little(self):
+        loader = DummyLoader()
+        task = SimpleNamespace(
+            name="prediction",
+            in_dim=2,
+            out_dim=1,
+            task_type="regression",
+            extra={},
+            loss_fn=None,
+            metrics_fn=None,
+            train_loader=loader,
+            val_loader=loader,
+            test_loader=loader,
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cfg = staged_runner.rg.RunConfig(
+                data_dir="./data",
+                results_dir=str(root),
+                run_root=str(root),
+                tasks=["prediction"],
+                phases=["ae_alt_depth"],
+                batch_size=1,
+                num_workers=0,
+                seed=0,
+                stl_width=2,
+                stl_depth=2,
+                alt_start_width=1,
+                alt_start_depth=1,
+                patience=1,
+                delta=1e-6,
+                max_epochs=1,
+                lr=1e-3,
+                weight_decay=0.0,
+                grad_clip=1.0,
+                max_width=4,
+                max_depth=4,
+                max_neurons=10_000,
+                width_stage_margin_patience=1,
+                width_stage_min_improve_pct=5.0,
+                use_bn=False,
+                demo=False,
+            )
+            values = [
+                1.0, 0.9, 1.1, 0.89, 0.889, 0.888, 0.887, 0.886, 0.885, 0.884,
+                0.883, 0.882, 0.881, 0.88, 0.879, 0.878, 0.877, 0.876, 0.875, 0.874,
+            ]
+
+            def fake_training_loop(*, task, model, candidate_dir, cfg, device, logger, reconstruct, resume=True, batch_controller=None, display_best_floor=None):
+                idx = int(candidate_dir.name.split("_")[1])
+                val = float(values[idx])
+                candidate_dir.mkdir(parents=True, exist_ok=True)
+                state = model.state_dict()
+                payload = {
+                    "model_state": state,
+                    "best_state": state,
+                    "optimizer_state": {},
+                    "epoch": 1,
+                    "best_val": val,
+                    "best_epoch": 1,
+                    "es_counter": 0,
+                }
+                torch.save(payload, candidate_dir / "checkpoint_best.pt")
+                torch.save(payload, candidate_dir / "checkpoint_last.pt")
+                staged_runner.rg.write_json(
+                    candidate_dir / "candidate_state.json",
+                    {
+                        "completed": True,
+                        "task": task.name,
+                        "phase": candidate_dir.parent.name,
+                        "candidate_dir": str(candidate_dir),
+                        "best_val": val,
+                        "best_epoch": 1,
+                        "final_epoch": 1,
+                        "architecture": [int(w) for w in model.hidden_widths],
+                        "reconstruct": reconstruct,
+                        "checkpoint_best": str(candidate_dir / "checkpoint_best.pt"),
+                        "checkpoint_last": str(candidate_dir / "checkpoint_last.pt"),
+                    },
+                )
+                return staged_runner.rg.CandidateResult(
+                    best_val=val,
+                    best_epoch=1,
+                    final_epoch=1,
+                    best_checkpoint=candidate_dir / "checkpoint_best.pt",
+                    last_checkpoint=candidate_dir / "checkpoint_last.pt",
+                    candidate_dir=candidate_dir,
+                    architecture=[int(w) for w in model.hidden_widths],
+                )
+
+            task_root = root / "prediction"
+            task_root.mkdir(parents=True, exist_ok=True)
+            with mock.patch.object(staged_runner.rg, "training_loop", side_effect=fake_training_loop), \
+                mock.patch.object(staged_runner.rg, "eval_final", return_value={"test_loss": 0.0}), \
+                mock.patch.object(staged_runner.rg, "plot_candidate_stats", return_value=None):
+                staged_runner.run_growth_phase(
+                    task=task,
+                    task_root=task_root,
+                    cfg=cfg,
+                    device=torch.device("cpu"),
+                    base_hidden=[1],
+                    phase_name="ae_alt_depth",
+                    mode="alt_depth",
+                    reconstruct=False,
+                    batch_controller=None,
+                )
+
+            with (task_root / "ae_alt_depth" / "phase_progress.csv").open("r", encoding="utf-8", newline="") as handle:
+                rows = list(csv.DictReader(handle))
+
+            self.assertEqual(
+                [row["search_phase"] for row in rows[:10]],
+                ["depth", "depth", "depth", "width", "width", "width", "width", "width", "width", "depth"],
+            )
+            self.assertEqual(
+                [row["architecture"] for row in rows[:10]],
+                ["[1]", "[1, 1]", "[1, 1, 1]", "[2, 1, 1]", "[2, 2, 1]", "[2, 2, 2]", "[3, 2, 2]", "[3, 3, 2]", "[3, 3, 3]", "[3, 3, 3, 3]"],
+            )
+            self.assertEqual(rows[8]["width_stage_margin_fail"], "1")
 
 
 if __name__ == "__main__":
