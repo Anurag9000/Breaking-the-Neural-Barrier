@@ -82,6 +82,95 @@ class StagedWidthTests(unittest.TestCase):
             self.assertEqual(meta["source"], "inferred_from_checkpoint_fallback")
             self.assertEqual(int(ckpt["best_epoch"]), 1)
 
+    def test_training_loop_resume_falls_back_to_last_checkpoint_shape(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            candidate_dir = Path(tmp) / "cand_001_d2_w2"
+            candidate_dir.mkdir(parents=True, exist_ok=True)
+            true_model = MLP(in_dim=2, hidden_widths=[2, 2], out_dim=1, use_bn=True)
+            optimizer = torch.optim.AdamW(true_model.parameters(), lr=1e-3, weight_decay=0.0)
+            payload = {
+                "model_state": true_model.state_dict(),
+                "best_state": true_model.state_dict(),
+                "optimizer_state": optimizer.state_dict(),
+                "epoch": 1,
+                "best_val": 0.123,
+                "best_epoch": 1,
+                "es_counter": 0,
+            }
+            torch.save(payload, candidate_dir / "checkpoint_last.pt")
+            staged_runner.rg.write_json(
+                candidate_dir / "metadata.json",
+                {
+                    "candidate_dir": str(candidate_dir),
+                    "model": {
+                        "in_dim": 2,
+                        "hidden_widths": [3, 2],
+                        "out_dim": 1,
+                        "use_bn": True,
+                    },
+                },
+            )
+
+            cfg = staged_runner.rg.RunConfig(
+                data_dir="./data",
+                results_dir=str(candidate_dir.parent),
+                run_root=str(candidate_dir.parent),
+                tasks=["prediction"],
+                phases=["ae_width_to_depth"],
+                batch_size=1,
+                num_workers=0,
+                seed=0,
+                stl_width=2,
+                stl_depth=2,
+                alt_start_width=1,
+                alt_start_depth=1,
+                patience=1,
+                delta=1e-6,
+                max_epochs=1,
+                lr=1e-3,
+                weight_decay=0.0,
+                grad_clip=1.0,
+                max_width=3,
+                max_depth=4,
+                max_neurons=10_000,
+                width_stage_margin_patience=5,
+                width_stage_min_improve_pct=0.0,
+                use_bn=True,
+                demo=False,
+            )
+            loader = DummyLoader()
+            task = SimpleNamespace(
+                name="prediction",
+                in_dim=2,
+                out_dim=1,
+                task_type="regression",
+                extra={},
+                loss_fn=None,
+                metrics_fn=None,
+                train_loader=loader,
+                val_loader=loader,
+                test_loader=loader,
+            )
+            wrong_model = MLP(in_dim=2, hidden_widths=[3, 2], out_dim=1, use_bn=True)
+            logger = staged_runner.rg.ContinuousLogger(candidate_dir, "prediction_ae_width_to_depth", "ae_width_to_depth")
+            try:
+                result = staged_runner.rg.training_loop(
+                    task=task,
+                    model=wrong_model,
+                    candidate_dir=candidate_dir,
+                    cfg=cfg,
+                    device=torch.device("cpu"),
+                    logger=logger,
+                    reconstruct=False,
+                    resume=True,
+                )
+            finally:
+                logger.close()
+
+            self.assertEqual(result.architecture, [2, 2])
+            metadata = staged_runner.rg.read_json(candidate_dir / "metadata.json")
+            self.assertEqual(metadata["source"], "inferred_from_resume_checkpoint_fallback")
+
     def test_can_widen_staged_allows_finishing_a_partially_filled_depth(self):
         model = MLP(in_dim=2, hidden_widths=[4, 3], out_dim=1, use_bn=False)
         self.assertTrue(can_widen_staged(model, 4, 10_000))
