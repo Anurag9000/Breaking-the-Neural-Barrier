@@ -554,6 +554,7 @@ def load_candidate_model(candidate_dir: Path, device) -> Tuple[MLP, Dict[str, An
     if state_dict is None:
         raise ValueError(f"Checkpoint at {candidate_dir} does not contain model weights")
 
+    inferred_signature = infer_model_signature_from_state_dict(state_dict)
     if meta_path.exists():
         meta = read_json(meta_path)
         model = make_model(
@@ -562,8 +563,24 @@ def load_candidate_model(candidate_dir: Path, device) -> Tuple[MLP, Dict[str, An
             meta["model"]["out_dim"],
             meta["model"]["use_bn"],
         ).to(device)
+        try:
+            model.load_state_dict(state_dict)
+        except RuntimeError:
+            inferred_in_dim, inferred_hidden_widths, inferred_out_dim, inferred_use_bn = inferred_signature
+            model = make_model(inferred_in_dim, inferred_hidden_widths, inferred_out_dim, inferred_use_bn).to(device)
+            model.load_state_dict(state_dict)
+            meta = {
+                **meta,
+                "model": {
+                    "in_dim": int(inferred_in_dim),
+                    "hidden_widths": [int(w) for w in inferred_hidden_widths],
+                    "out_dim": int(inferred_out_dim),
+                    "use_bn": bool(inferred_use_bn),
+                },
+                "source": "inferred_from_checkpoint_fallback",
+            }
     else:
-        in_dim, hidden_widths, out_dim, use_bn = infer_model_signature_from_state_dict(state_dict)
+        in_dim, hidden_widths, out_dim, use_bn = inferred_signature
         model = make_model(in_dim, hidden_widths, out_dim, use_bn).to(device)
         meta = {
             "candidate_dir": str(candidate_dir),
@@ -575,8 +592,8 @@ def load_candidate_model(candidate_dir: Path, device) -> Tuple[MLP, Dict[str, An
             },
             "source": "inferred_from_checkpoint",
         }
+        model.load_state_dict(state_dict)
 
-    model.load_state_dict(state_dict)
     return model, meta, ckpt
 
 
