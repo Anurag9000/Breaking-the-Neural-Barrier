@@ -597,6 +597,44 @@ def load_candidate_model(candidate_dir: Path, device) -> Tuple[MLP, Dict[str, An
     return model, meta, ckpt
 
 
+def resume_model_from_checkpoint(
+    *,
+    model: MLP,
+    ckpt: Dict[str, Any],
+    optimizer: torch.optim.Optimizer,
+    device,
+    metadata_path: Optional[Path] = None,
+) -> Tuple[MLP, torch.optim.Optimizer]:
+    state_dict = ckpt.get("model_state")
+    if state_dict is None:
+        raise ValueError("Resume checkpoint does not contain model_state")
+
+    try:
+        model.load_state_dict(state_dict)
+        optimizer.load_state_dict(ckpt["optimizer_state"])
+        return model, optimizer
+    except RuntimeError:
+        in_dim, hidden_widths, out_dim, use_bn = infer_model_signature_from_state_dict(state_dict)
+        model = make_model(in_dim, hidden_widths, out_dim, use_bn).to(device)
+        optimizer = torch.optim.AdamW(model.parameters(), lr=optimizer.param_groups[0]["lr"], weight_decay=optimizer.param_groups[0]["weight_decay"])
+        model.load_state_dict(state_dict)
+        optimizer.load_state_dict(ckpt["optimizer_state"])
+        if metadata_path is not None:
+            meta = read_json(metadata_path) if metadata_path.exists() else {}
+            meta = {
+                **meta,
+                "model": {
+                    "in_dim": int(in_dim),
+                    "hidden_widths": [int(w) for w in hidden_widths],
+                    "out_dim": int(out_dim),
+                    "use_bn": bool(use_bn),
+                },
+                "source": "inferred_from_resume_checkpoint_fallback",
+            }
+            write_json(metadata_path, meta)
+        return model, optimizer
+
+
 def resolve_candidate_dir(phase_root: Path, candidate_ref: Optional[str]) -> Optional[Path]:
     if not candidate_ref:
         return None
@@ -642,8 +680,13 @@ def training_loop(
 
     if resume and last_ckpt.exists():
         ckpt = load_checkpoint(last_ckpt, device)
-        model.load_state_dict(ckpt["model_state"])
-        optimizer.load_state_dict(ckpt["optimizer_state"])
+        model, optimizer = resume_model_from_checkpoint(
+            model=model,
+            ckpt=ckpt,
+            optimizer=optimizer,
+            device=device,
+            metadata_path=metadata_path,
+        )
         restore_rng_state(ckpt)
         start_epoch = int(ckpt["epoch"]) + 1
         best_val = float(ckpt["best_val"])
