@@ -48,6 +48,40 @@ class StagedWidthTests(unittest.TestCase):
         self.assertIsNotNone(widened)
         self.assertEqual(widened.hidden_widths, [3, 2])
 
+    def test_load_candidate_model_falls_back_to_checkpoint_shape(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            candidate_dir = Path(tmp) / "cand_001_d2_w2"
+            candidate_dir.mkdir(parents=True, exist_ok=True)
+            model = MLP(in_dim=2, hidden_widths=[2, 2], out_dim=1, use_bn=True)
+            payload = {
+                "model_state": model.state_dict(),
+                "best_state": model.state_dict(),
+                "optimizer_state": {},
+                "epoch": 1,
+                "best_val": 0.123,
+                "best_epoch": 1,
+                "es_counter": 0,
+            }
+            torch.save(payload, candidate_dir / "checkpoint_best.pt")
+            staged_runner.rg.write_json(
+                candidate_dir / "metadata.json",
+                {
+                    "candidate_dir": str(candidate_dir),
+                    "model": {
+                        "in_dim": 2,
+                        "hidden_widths": [3, 2],
+                        "out_dim": 1,
+                        "use_bn": True,
+                    },
+                },
+            )
+
+            loaded_model, meta, ckpt = staged_runner.rg.load_candidate_model(candidate_dir, torch.device("cpu"))
+
+            self.assertEqual([int(w) for w in loaded_model.hidden_widths], [2, 2])
+            self.assertEqual(meta["source"], "inferred_from_checkpoint_fallback")
+            self.assertEqual(int(ckpt["best_epoch"]), 1)
+
     def test_can_widen_staged_allows_finishing_a_partially_filled_depth(self):
         model = MLP(in_dim=2, hidden_widths=[4, 3], out_dim=1, use_bn=False)
         self.assertTrue(can_widen_staged(model, 4, 10_000))
