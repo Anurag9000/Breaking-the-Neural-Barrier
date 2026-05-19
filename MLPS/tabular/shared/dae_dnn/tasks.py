@@ -429,7 +429,6 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
 
 def task_names() -> List[str]:
     return [
-        "prediction",
         "representation",
         "autoencoding",
         "generation",
@@ -444,4 +443,5 @@ def task_names() -> List[str]:
         "selfsupervised",
         "simulation",
         "misc",
+        "prediction",
     ]
