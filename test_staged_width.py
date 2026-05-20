@@ -171,6 +171,23 @@ class StagedWidthTests(unittest.TestCase):
             metadata = staged_runner.rg.read_json(candidate_dir / "metadata.json")
             self.assertEqual(metadata["source"], "inferred_from_resume_checkpoint_fallback")
 
+    def test_restore_rng_state_coerces_torch_tensor_dtype(self):
+        original = torch.get_rng_state()
+        try:
+            payload = {
+                "rng_state": {
+                    "python": None,
+                    "numpy": None,
+                    "torch": original.to(dtype=torch.int64),
+                    "cuda": None,
+                }
+            }
+            staged_runner.rg.restore_rng_state(payload)
+            restored = torch.get_rng_state()
+            self.assertTrue(torch.equal(restored, original))
+        finally:
+            torch.set_rng_state(original)
+
     def test_can_widen_staged_allows_finishing_a_partially_filled_depth(self):
         model = MLP(in_dim=2, hidden_widths=[4, 3], out_dim=1, use_bn=False)
         self.assertTrue(can_widen_staged(model, 4, 10_000))
