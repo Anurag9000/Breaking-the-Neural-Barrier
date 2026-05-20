@@ -466,6 +466,17 @@ def load_checkpoint(path: Path, device) -> Dict[str, Any]:
         return torch.load(path, map_location=device)
 
 
+def _coerce_rng_tensor(state: Any) -> Optional[torch.ByteTensor]:
+    if state is None:
+        return None
+    if not isinstance(state, torch.Tensor):
+        try:
+            state = torch.as_tensor(state)
+        except Exception:
+            return None
+    return state.detach().to(device="cpu", dtype=torch.uint8)
+
+
 def restore_rng_state(payload: Dict[str, Any]) -> None:
     rng_state = payload.get("rng_state")
     if not isinstance(rng_state, dict):
@@ -479,10 +490,18 @@ def restore_rng_state(payload: Dict[str, Any]) -> None:
     if numpy_state is not None:
         np.random.set_state(numpy_state)
     if torch_state is not None:
-        torch.set_rng_state(torch_state)
+        normalized = _coerce_rng_tensor(torch_state)
+        if normalized is not None:
+            torch.set_rng_state(normalized)
     if cuda_state is not None and torch.cuda.is_available():
         try:
-            torch.cuda.set_rng_state_all(cuda_state)
+            normalized_cuda = []
+            for state in cuda_state:
+                coerced = _coerce_rng_tensor(state)
+                if coerced is not None:
+                    normalized_cuda.append(coerced)
+            if normalized_cuda:
+                torch.cuda.set_rng_state_all(normalized_cuda)
         except Exception:
             pass
 
