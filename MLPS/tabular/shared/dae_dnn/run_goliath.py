@@ -6,9 +6,11 @@ import copy
 import csv
 import datetime as _dt
 import json
+import os
 import random
 import subprocess
 import sys
+import tempfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
@@ -453,7 +455,17 @@ def save_checkpoint(
         },
     }
     path.parent.mkdir(parents=True, exist_ok=True)
-    torch.save(payload, path)
+    with tempfile.NamedTemporaryFile(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp", delete=False) as tmp:
+        tmp_path = Path(tmp.name)
+    try:
+        torch.save(payload, tmp_path)
+        os.replace(tmp_path, path)
+    finally:
+        if tmp_path.exists():
+            try:
+                tmp_path.unlink()
+            except OSError:
+                pass
 
 
 def load_checkpoint(path: Path, device) -> Dict[str, Any]:
@@ -464,6 +476,20 @@ def load_checkpoint(path: Path, device) -> Dict[str, Any]:
         return torch.load(path, map_location=device, weights_only=False)
     except TypeError:
         return torch.load(path, map_location=device)
+
+
+def load_candidate_checkpoint(candidate_dir: Path, device) -> Tuple[Dict[str, Any], str]:
+    errors: List[str] = []
+    for name in ("checkpoint_best.pt", "checkpoint_last.pt"):
+        path = candidate_dir / name
+        if not path.exists():
+            errors.append(f"{name}: missing")
+            continue
+        try:
+            return load_checkpoint(path, device), name
+        except Exception as exc:
+            errors.append(f"{name}: {type(exc).__name__}: {exc}")
+    raise OSError(f"Unable to load candidate checkpoint from {candidate_dir}: " + " | ".join(errors))
 
 
 def _coerce_rng_tensor(state: Any) -> Optional[torch.ByteTensor]:
@@ -568,7 +594,7 @@ def candidate_completed(candidate_dir: Path) -> bool:
 
 def load_candidate_model(candidate_dir: Path, device) -> Tuple[MLP, Dict[str, Any], Dict[str, Any]]:
     meta_path = candidate_dir / "metadata.json"
-    ckpt = load_checkpoint(candidate_dir / "checkpoint_best.pt", device)
+    ckpt, checkpoint_name = load_candidate_checkpoint(candidate_dir, device)
     state_dict = ckpt.get("best_state") or ckpt.get("model_state")
     if state_dict is None:
         raise ValueError(f"Checkpoint at {candidate_dir} does not contain model weights")
@@ -597,6 +623,7 @@ def load_candidate_model(candidate_dir: Path, device) -> Tuple[MLP, Dict[str, An
                     "use_bn": bool(inferred_use_bn),
                 },
                 "source": "inferred_from_checkpoint_fallback",
+                "checkpoint_source": checkpoint_name,
             }
     else:
         in_dim, hidden_widths, out_dim, use_bn = inferred_signature
@@ -610,9 +637,11 @@ def load_candidate_model(candidate_dir: Path, device) -> Tuple[MLP, Dict[str, An
                 "use_bn": bool(use_bn),
             },
             "source": "inferred_from_checkpoint",
+            "checkpoint_source": checkpoint_name,
         }
         model.load_state_dict(state_dict)
 
+    meta.setdefault("checkpoint_source", checkpoint_name)
     return model, meta, ckpt
 
 

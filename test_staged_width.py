@@ -82,6 +82,41 @@ class StagedWidthTests(unittest.TestCase):
             self.assertEqual(meta["source"], "inferred_from_checkpoint_fallback")
             self.assertEqual(int(ckpt["best_epoch"]), 1)
 
+    def test_load_candidate_model_falls_back_to_checkpoint_last_when_best_is_corrupt(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            candidate_dir = Path(tmp) / "cand_001_d2_w2"
+            candidate_dir.mkdir(parents=True, exist_ok=True)
+            model = MLP(in_dim=2, hidden_widths=[2, 2], out_dim=1, use_bn=True)
+            payload = {
+                "model_state": model.state_dict(),
+                "best_state": model.state_dict(),
+                "optimizer_state": {},
+                "epoch": 1,
+                "best_val": 0.123,
+                "best_epoch": 1,
+                "es_counter": 0,
+            }
+            torch.save(payload, candidate_dir / "checkpoint_last.pt")
+            (candidate_dir / "checkpoint_best.pt").write_text("corrupt", encoding="utf-8")
+            staged_runner.rg.write_json(
+                candidate_dir / "metadata.json",
+                {
+                    "candidate_dir": str(candidate_dir),
+                    "model": {
+                        "in_dim": 2,
+                        "hidden_widths": [2, 2],
+                        "out_dim": 1,
+                        "use_bn": True,
+                    },
+                },
+            )
+
+            loaded_model, meta, ckpt = staged_runner.rg.load_candidate_model(candidate_dir, torch.device("cpu"))
+
+            self.assertEqual([int(w) for w in loaded_model.hidden_widths], [2, 2])
+            self.assertEqual(meta["checkpoint_source"], "checkpoint_last.pt")
+            self.assertEqual(int(ckpt["best_epoch"]), 1)
+
     def test_training_loop_resume_falls_back_to_last_checkpoint_shape(self):
         with tempfile.TemporaryDirectory() as tmp:
             candidate_dir = Path(tmp) / "cand_001_d2_w2"
