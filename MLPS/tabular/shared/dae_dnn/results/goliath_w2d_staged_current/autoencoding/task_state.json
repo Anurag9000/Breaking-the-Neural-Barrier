@@ -1,0 +1,35 @@
+{
+  "completed": false,
+  "completed_phases": [
+    "ae_alt_depth",
+    "stl_from_ae_alt_depth",
+    "ae_alt_width",
+    "stl_from_ae_alt_width",
+    "ae_width_to_depth",
+    "stl_from_ae_width_to_depth"
+  ],
+  "next_phase_index": 6,
+  "phases": [
+    "ae_alt_depth",
+    "ae_alt_width",
+    "ae_width_to_depth",
+    "ae_depth_to_width"
+  ],
+  "task": "autoencoding",
+  "winner": {
+    "adp_architecture": [
+      81
+    ],
+    "adp_best_val": 0.0014818490814646724,
+    "adp_phase": "ae_width_to_depth",
+    "stl_architecture": [
+      81
+    ],
+    "stl_best_val": 0.0034839527938172305,
+    "stl_phase": "stl_from_ae_width_to_depth",
+    "task": "autoencoding",
+    "winner": "adp",
+    "winner_phase": "ae_width_to_depth",
+    "winner_value": 0.0014818490814646724
+  }
+}

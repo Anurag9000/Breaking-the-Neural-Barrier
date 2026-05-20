@@ -1,0 +1,646 @@
+{
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 32768,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 99999999999999999999999999999999999999999999999999999999999999999999999,
+    "max_neurons": 10000000,
+    "max_width": 512,
+    "num_workers": 0,
+    "patience": 5,
+    "phases": [
+      "ae_alt_depth",
+      "ae_alt_width",
+      "ae_width_to_depth",
+      "ae_depth_to_width"
+    ],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current",
+    "seed": 0,
+    "stl_depth": 2,
+    "stl_width": 128,
+    "tasks": [
+      "representation",
+      "autoencoding",
+      "generation",
+      "denoising",
+      "anomaly",
+      "inverse",
+      "control",
+      "clustering",
+      "compression",
+      "ranking",
+      "multimodal",
+      "selfsupervised",
+      "simulation",
+      "misc",
+      "prediction"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_stage_margin_patience": 5,
+    "width_stage_min_improve_pct": 1.0
+  },
+  "device": "cpu",
+  "git_commit": "48ed53e54b285d93efe4beecf1b97c9d991b294d",
+  "run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current",
+  "summary": {
+    "num_tasks_completed": 1,
+    "num_tasks_requested": 15,
+    "tasks_completed": [
+      "representation"
+    ],
+    "tasks_requested": [
+      "representation",
+      "autoencoding",
+      "generation",
+      "denoising",
+      "anomaly",
+      "inverse",
+      "control",
+      "clustering",
+      "compression",
+      "ranking",
+      "multimodal",
+      "selfsupervised",
+      "simulation",
+      "misc",
+      "prediction"
+    ]
+  },
+  "tasks": [
+    {
+      "adp_runs": [
+        {
+          "architecture": [
+            105,
+            105,
+            105,
+            104,
+            104,
+            104
+          ],
+          "best_epoch": 7,
+          "best_val": 0.08898697692691039,
+          "candidate_dir": "cand_626_d6_w105",
+          "final_epoch": 7,
+          "mode": "alt_depth",
+          "phase": "ae_alt_depth",
+          "test_metrics": null
+        },
+        {
+          "architecture": [
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            226,
+            226
+          ],
+          "best_epoch": 2,
+          "best_val": 0.09031726454395253,
+          "candidate_dir": "cand_278_d10_w227",
+          "final_epoch": 2,
+          "mode": "alt_width",
+          "phase": "ae_alt_width",
+          "test_metrics": null
+        },
+        {
+          "architecture": [
+            161,
+            160,
+            160,
+            160
+          ],
+          "best_epoch": 6,
+          "best_val": 0.08618749312472872,
+          "candidate_dir": "cand_348_d4_w161",
+          "final_epoch": 6,
+          "mode": "width_to_depth",
+          "phase": "ae_width_to_depth",
+          "test_metrics": null
+        },
+        {
+          "architecture": [
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            92,
+            92,
+            92
+          ],
+          "best_epoch": 6,
+          "best_val": 0.08750509213577258,
+          "candidate_dir": "cand_922_d10_w93",
+          "final_epoch": 6,
+          "mode": "depth_to_width",
+          "phase": "ae_depth_to_width",
+          "test_metrics": null
+        }
+      ],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [
+        {
+          "adp_architecture": [
+            105,
+            105,
+            105,
+            104,
+            104,
+            104
+          ],
+          "adp_best_val": 0.08898697692691039,
+          "adp_phase": "ae_alt_depth",
+          "stl_architecture": [
+            105,
+            105,
+            105,
+            104,
+            104,
+            104
+          ],
+          "stl_best_val": 0.18634911513076596,
+          "stl_phase": "stl_from_ae_alt_depth",
+          "task": "representation",
+          "winner": "adp",
+          "winner_phase": "ae_alt_depth",
+          "winner_value": 0.08898697692691039
+        },
+        {
+          "adp_architecture": [
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            226,
+            226
+          ],
+          "adp_best_val": 0.09031726454395253,
+          "adp_phase": "ae_alt_width",
+          "stl_architecture": [
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            226,
+            226
+          ],
+          "stl_best_val": 0.14570796492767568,
+          "stl_phase": "stl_from_ae_alt_width",
+          "task": "representation",
+          "winner": "adp",
+          "winner_phase": "ae_alt_width",
+          "winner_value": 0.09031726454395253
+        },
+        {
+          "adp_architecture": [
+            161,
+            160,
+            160,
+            160
+          ],
+          "adp_best_val": 0.08618749312472872,
+          "adp_phase": "ae_width_to_depth",
+          "stl_architecture": [
+            161,
+            160,
+            160,
+            160
+          ],
+          "stl_best_val": 0.2009544138106579,
+          "stl_phase": "stl_from_ae_width_to_depth",
+          "task": "representation",
+          "winner": "adp",
+          "winner_phase": "ae_width_to_depth",
+          "winner_value": 0.08618749312472872
+        },
+        {
+          "adp_architecture": [
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            92,
+            92,
+            92
+          ],
+          "adp_best_val": 0.08750509213577258,
+          "adp_phase": "ae_depth_to_width",
+          "stl_architecture": [
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            92,
+            92,
+            92
+          ],
+          "stl_best_val": 0.16479575640055377,
+          "stl_phase": "stl_from_ae_depth_to_width",
+          "task": "representation",
+          "winner": "adp",
+          "winner_phase": "ae_depth_to_width",
+          "winner_value": 0.08750509213577258
+        }
+      ],
+      "paired_stl_runs": [
+        {
+          "adp_architecture": [
+            105,
+            105,
+            105,
+            104,
+            104,
+            104
+          ],
+          "adp_best_val": 0.08898697692691039,
+          "adp_phase": "ae_alt_depth",
+          "stl_architecture": [
+            105,
+            105,
+            105,
+            104,
+            104,
+            104
+          ],
+          "stl_best_val": 0.18634911513076596,
+          "stl_phase": "stl_from_ae_alt_depth",
+          "stl_run": {
+            "architecture": [
+              105,
+              105,
+              105,
+              104,
+              104,
+              104
+            ],
+            "best_epoch": 60,
+            "best_val": 0.18634911513076596,
+            "candidate_dir": "cand_000_d6_w105",
+            "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_alt_depth/cand_000_d6_w105/checkpoint_best.pt",
+            "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_alt_depth/cand_000_d6_w105/checkpoint_last.pt",
+            "final_epoch": 65,
+            "phase": "stl_from_ae_alt_depth",
+            "resumed": false,
+            "source_phase": "ae_alt_depth",
+            "task": "representation",
+            "test_metrics": {
+              "knn_acc": 0.9501901860553175,
+              "test_acc": 0.92750555067899,
+              "test_loss": 0.18737022728263913
+            }
+          },
+          "winner": "adp",
+          "winner_phase": "ae_alt_depth",
+          "winner_value": 0.08898697692691039
+        },
+        {
+          "adp_architecture": [
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            226,
+            226
+          ],
+          "adp_best_val": 0.09031726454395253,
+          "adp_phase": "ae_alt_width",
+          "stl_architecture": [
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            226,
+            226
+          ],
+          "stl_best_val": 0.14570796492767568,
+          "stl_phase": "stl_from_ae_alt_width",
+          "stl_run": {
+            "architecture": [
+              227,
+              227,
+              227,
+              227,
+              227,
+              227,
+              227,
+              227,
+              226,
+              226
+            ],
+            "best_epoch": 31,
+            "best_val": 0.14570796492767568,
+            "candidate_dir": "cand_000_d10_w227",
+            "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_alt_width/cand_000_d10_w227/checkpoint_best.pt",
+            "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_alt_width/cand_000_d10_w227/checkpoint_last.pt",
+            "final_epoch": 36,
+            "phase": "stl_from_ae_alt_width",
+            "resumed": false,
+            "source_phase": "ae_alt_width",
+            "task": "representation",
+            "test_metrics": {
+              "knn_acc": 0.9619455775287861,
+              "test_acc": 0.9431851431128552,
+              "test_loss": 0.14881777614485886
+            }
+          },
+          "winner": "adp",
+          "winner_phase": "ae_alt_width",
+          "winner_value": 0.09031726454395253
+        },
+        {
+          "adp_architecture": [
+            161,
+            160,
+            160,
+            160
+          ],
+          "adp_best_val": 0.08618749312472872,
+          "adp_phase": "ae_width_to_depth",
+          "stl_architecture": [
+            161,
+            160,
+            160,
+            160
+          ],
+          "stl_best_val": 0.2009544138106579,
+          "stl_phase": "stl_from_ae_width_to_depth",
+          "stl_run": {
+            "architecture": [
+              161,
+              160,
+              160,
+              160
+            ],
+            "best_epoch": 62,
+            "best_val": 0.2009544138106579,
+            "candidate_dir": "cand_000_d4_w161",
+            "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_width_to_depth/cand_000_d4_w161/checkpoint_best.pt",
+            "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_width_to_depth/cand_000_d4_w161/checkpoint_last.pt",
+            "final_epoch": 67,
+            "phase": "stl_from_ae_width_to_depth",
+            "resumed": false,
+            "source_phase": "ae_width_to_depth",
+            "task": "representation",
+            "test_metrics": {
+              "knn_acc": 0.9440629249066281,
+              "test_acc": 0.9196227259427548,
+              "test_loss": 0.20391259318541846
+            }
+          },
+          "winner": "adp",
+          "winner_phase": "ae_width_to_depth",
+          "winner_value": 0.08618749312472872
+        },
+        {
+          "adp_architecture": [
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            92,
+            92,
+            92
+          ],
+          "adp_best_val": 0.08750509213577258,
+          "adp_phase": "ae_depth_to_width",
+          "stl_architecture": [
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            92,
+            92,
+            92
+          ],
+          "stl_best_val": 0.16479575640055377,
+          "stl_phase": "stl_from_ae_depth_to_width",
+          "stl_run": {
+            "architecture": [
+              93,
+              93,
+              93,
+              93,
+              93,
+              93,
+              93,
+              92,
+              92,
+              92
+            ],
+            "best_epoch": 60,
+            "best_val": 0.16479575640055377,
+            "candidate_dir": "cand_000_d10_w93",
+            "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_depth_to_width/cand_000_d10_w93/checkpoint_best.pt",
+            "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_depth_to_width/cand_000_d10_w93/checkpoint_last.pt",
+            "final_epoch": 65,
+            "phase": "stl_from_ae_depth_to_width",
+            "resumed": false,
+            "source_phase": "ae_depth_to_width",
+            "task": "representation",
+            "test_metrics": {
+              "knn_acc": 0.9563174472040068,
+              "test_acc": 0.9358530834236932,
+              "test_loss": 0.16542206570534052
+            }
+          },
+          "winner": "adp",
+          "winner_phase": "ae_depth_to_width",
+          "winner_value": 0.08750509213577258
+        }
+      ],
+      "task": "representation",
+      "winner": {
+        "adp_architecture": [
+          161,
+          160,
+          160,
+          160
+        ],
+        "adp_best_val": 0.08618749312472872,
+        "adp_phase": "ae_width_to_depth",
+        "stl_architecture": [
+          161,
+          160,
+          160,
+          160
+        ],
+        "stl_best_val": 0.2009544138106579,
+        "stl_phase": "stl_from_ae_width_to_depth",
+        "task": "representation",
+        "winner": "adp",
+        "winner_phase": "ae_width_to_depth",
+        "winner_value": 0.08618749312472872
+      }
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "autoencoding",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "generation",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "denoising",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "anomaly",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "inverse",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "control",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "clustering",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "compression",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "ranking",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "multimodal",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "selfsupervised",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "simulation",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "misc",
+      "winner": null
+    },
+    {
+      "adp_runs": [],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [],
+      "paired_stl_runs": [],
+      "task": "prediction",
+      "winner": null
+    }
+  ]
+}
