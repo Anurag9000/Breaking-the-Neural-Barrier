@@ -39,7 +39,9 @@ class ADPConfig:
     patience: int = 20
     trials_width: int = 2
     trials_depth: int = 2
-    ex_k: int = 128
+    ex_k: int = 1
+    width_stage_margin_patience: int = 5
+    width_stage_min_improve_pct: float = 1.0
     max_width: int = 4096
     max_depth: int = 10
     max_neurons: int = 10_000_000
@@ -88,8 +90,21 @@ def rebuild_projector(ph: ProjectionHead, in_dim: int):
     ph.fc2 = _resize_linear(ph.fc2, ph.fc2.out_features, in_dim)
 
 
+def _next_staged_widths(hidden_widths: List[int], max_width: int, ex_k: int) -> List[int]:
+    widths = [int(w) for w in hidden_widths]
+    if not widths:
+        return widths
+    target = min(max(widths) + max(1, int(ex_k)), int(max_width)) if len(set(widths)) == 1 else max(widths)
+    next_widths = list(widths)
+    for idx, width in enumerate(next_widths):
+        if width < target:
+            next_widths[idx] = width + 1
+            break
+    return next_widths
+
+
 def expand_width(model: MLPSSL, ex_k: int, max_width: int) -> Optional[MLPSSL]:
-    new_h = [min(max_width, w + ex_k) for w in model.encoder.hidden_widths]
+    new_h = _next_staged_widths(model.encoder.hidden_widths, max_width, ex_k)
     if new_h == model.encoder.hidden_widths:
         return None
     rebuild_encoder(model.encoder, new_h)
@@ -99,6 +114,8 @@ def expand_width(model: MLPSSL, ex_k: int, max_width: int) -> Optional[MLPSSL]:
 
 def expand_depth(model: MLPSSL, max_depth: int) -> Optional[MLPSSL]:
     if len(model.encoder.hidden_widths) >= max_depth:
+        return None
+    if len(set(int(w) for w in model.encoder.hidden_widths)) != 1:
         return None
     new_h = model.encoder.hidden_widths + [model.encoder.hidden_widths[-1]]
     rebuild_encoder(model.encoder, new_h)
@@ -234,7 +251,9 @@ def main():
     p.add_argument("--patience", type=int, default=20)
     p.add_argument("--trials-width", type=int, default=2)
     p.add_argument("--trials-depth", type=int, default=2)
-    p.add_argument("--ex-k", type=int, default=128)
+    p.add_argument("--ex-k", type=int, default=1)
+    p.add_argument("--width-stage-margin-patience", type=int, default=5)
+    p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
     p.add_argument("--max-width", type=int, default=4096)
     p.add_argument("--max-depth", type=int, default=10)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
@@ -253,6 +272,8 @@ def main():
         trials_width=args.trials_width,
         trials_depth=args.trials_depth,
         ex_k=args.ex_k,
+        width_stage_margin_patience=args.width_stage_margin_patience,
+        width_stage_min_improve_pct=args.width_stage_min_improve_pct,
         max_width=args.max_width,
         max_depth=args.max_depth,
         max_neurons=args.max_neurons,

@@ -16,6 +16,7 @@ import sys
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 from utils.adp_logging import ContinuousLogger
 from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_from_csv  # type: ignore
+from utils.adp_contract import run_module_adp
 
 # Load baseline
 BASELINE_PATH = Path(__file__).with_name("mlp_ae_stl.py").resolve()
@@ -33,7 +34,9 @@ class ADPConfig:
     patience: int = 20  # early-stopping patience (per single-shot training)
     trials_width: int = 2  # <=0 => infinite
     trials_depth: int = 2  # <=0 => infinite
-    ex_k: int = 128
+    ex_k: int = 1
+    width_stage_margin_patience: int = 5
+    width_stage_min_improve_pct: float = 1.0
     max_width: int = 4096
     max_depth: int = 10
     max_neurons: int = 10_000_000
@@ -96,8 +99,21 @@ def _rebuild_mlp_ae(model: MLPAutoencoder, hidden_widths: List[int]) -> None:
     model.out = _resize_linear(model.out, model.out.out_features, prev_dec)
 
 
+def _next_staged_widths(hidden_widths: List[int], max_width: int, ex_k: int) -> List[int]:
+    widths = [int(w) for w in hidden_widths]
+    if not widths:
+        return widths
+    target = min(max(widths) + max(1, int(ex_k)), int(max_width)) if len(set(widths)) == 1 else max(widths)
+    next_widths = list(widths)
+    for idx, width in enumerate(next_widths):
+        if width < target:
+            next_widths[idx] = width + 1
+            break
+    return next_widths
+
+
 def expand_width(model: MLPAutoencoder, ex_k: int, max_width: int) -> Optional[MLPAutoencoder]:
-    new_h = [min(max_width, w + ex_k) for w in model.hidden_widths]
+    new_h = _next_staged_widths(model.hidden_widths, max_width, ex_k)
     if new_h == model.hidden_widths:
         return None
     _rebuild_mlp_ae(model, new_h)
@@ -108,6 +124,8 @@ def expand_depth(model: MLPAutoencoder, max_depth: int) -> Optional[MLPAutoencod
     if len(model.hidden_widths) >= max_depth:
         return None
     if not model.hidden_widths:
+        return None
+    if len(set(int(w) for w in model.hidden_widths)) != 1:
         return None
     new_h = model.hidden_widths + [model.hidden_widths[-1]]
     _rebuild_mlp_ae(model, new_h)
@@ -278,177 +296,15 @@ def adp_search(
     *,
     logger: Optional[ContinuousLogger] = None,
 ):
-    best_val, best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device, logger=logger)
-    model.load_state_dict(best_state)
-
-    global_best_val = best_val
-    global_best_snap = snapshot_arch_and_state(model, best_state)
-
-    def can_widen(m: MLPAutoencoder) -> bool:
-        if not m.hidden_widths:
-            return False
-        return max(m.hidden_widths) + acfg.ex_k <= acfg.max_width and total_neurons(m) < acfg.max_neurons
-
-    def can_deepen(m: MLPAutoencoder) -> bool:
-        if not m.hidden_widths:
-            return False
-        return len(m.hidden_widths) + 1 <= acfg.max_depth and (total_neurons(m) + m.hidden_widths[-1]) <= acfg.max_neurons
-
-    def optimize_width_at_fixed_depth(curr_model: MLPAutoencoder) -> Tuple[MLPAutoencoder, float, Dict[str, Any]]:
-        local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, logger=logger)
-        local_best_val = local_val
-        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
-
-        width_failure_count = 0
-        width_fail_limit = None if acfg.trials_width <= 0 else int(acfg.trials_width)
-
-        while width_fail_limit is None or width_failure_count < width_fail_limit:
-            if not can_widen(curr_model):
-                break
-
-            next_model = expand_width(curr_model, acfg.ex_k, acfg.max_width)
-            if next_model is None:
-                break
-            curr_model = next_model
-
-            v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, logger=logger)
-            if v < local_best_val - acfg.delta:
-                local_best_val = v
-                local_best_snap = snapshot_arch_and_state(curr_model, s)
-                width_failure_count = 0
-                if logger is not None:
-                    logger.log_console(f"[OPT][WIDTH] improvement val={v:.6f} widths={curr_model.hidden_widths}")
-            else:
-                width_failure_count += 1
-                if logger is not None:
-                    logger.log_console(
-                        f"[OPT][WIDTH] no_improve val={v:.6f} widths={curr_model.hidden_widths} fail={width_failure_count}/{width_fail_limit if width_fail_limit is not None else 'inf'}"
-                    )
-
-        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
-        return final_model, local_best_val, local_best_snap
-
-    def optimize_depth_at_fixed_width(curr_model: MLPAutoencoder) -> Tuple[MLPAutoencoder, float, Dict[str, Any]]:
-        local_val, local_state = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, logger=logger)
-        local_best_val = local_val
-        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
-
-        depth_failure_count = 0
-        depth_fail_limit = None if acfg.trials_depth <= 0 else int(acfg.trials_depth)
-
-        while depth_fail_limit is None or depth_failure_count < depth_fail_limit:
-            if not can_deepen(curr_model):
-                break
-
-            next_model = expand_depth(curr_model, acfg.max_depth)
-            if next_model is None:
-                break
-            curr_model = next_model
-
-            v, s = train_with_early_stopping(curr_model, dl_train, dl_val, acfg, device, logger=logger)
-            if v < local_best_val - acfg.delta:
-                local_best_val = v
-                local_best_snap = snapshot_arch_and_state(curr_model, s)
-                depth_failure_count = 0
-                if logger is not None:
-                    logger.log_console(f"[OPT][DEPTH] improvement val={v:.6f} depth={len(curr_model.hidden_widths)}")
-            else:
-                depth_failure_count += 1
-                if logger is not None:
-                    logger.log_console(
-                        f"[OPT][DEPTH] no_improve val={v:.6f} depth={len(curr_model.hidden_widths)} fail={depth_failure_count}/{depth_fail_limit if depth_fail_limit is not None else 'inf'}"
-                    )
-
-        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
-        return final_model, local_best_val, local_best_snap
-
-    mode = acfg.adp_mode
-
-    if mode in ["width_only", "width"]:
-        model, global_best_val, global_best_snap = optimize_width_at_fixed_depth(model)
-
-    elif mode in ["depth_only", "depth"]:
-        model, global_best_val, global_best_snap = optimize_depth_at_fixed_width(model)
-
-    elif mode == "depth_to_width":
-        model, base_val, base_snap = optimize_depth_at_fixed_width(model)
-        global_best_val = base_val
-        global_best_snap = base_snap
-
-        depth_failure_count = 0
-        depth_fail_limit = None if acfg.trials_depth <= 0 else int(acfg.trials_depth)
-        while (depth_fail_limit is None or depth_failure_count < depth_fail_limit) and len(model.hidden_widths) < acfg.max_depth:
-            if not can_deepen(model):
-                break
-            next_model = expand_depth(model, acfg.max_depth)
-            if next_model is None:
-                break
-            model = next_model
-
-            model, val_d, snap_d = optimize_width_at_fixed_depth(model)
-            if val_d < global_best_val - acfg.delta:
-                global_best_val = val_d
-                global_best_snap = snap_d
-                depth_failure_count = 0
-            else:
-                depth_failure_count += 1
-
-        model = restore_arch_and_state(model, global_best_snap, device)
-
-    elif mode == "width_to_depth":
-        model, base_val, base_snap = optimize_width_at_fixed_depth(model)
-        global_best_val = base_val
-        global_best_snap = base_snap
-
-        width_failure_count = 0
-        width_fail_limit = None if acfg.trials_width <= 0 else int(acfg.trials_width)
-        while (width_fail_limit is None or width_failure_count < width_fail_limit) and model_width(model) < acfg.max_width:
-            if not can_widen(model):
-                break
-            next_model = expand_width(model, acfg.ex_k, acfg.max_width)
-            if next_model is None:
-                break
-            model = next_model
-
-            model, val_w, snap_w = optimize_depth_at_fixed_width(model)
-            if val_w < global_best_val - acfg.delta:
-                global_best_val = val_w
-                global_best_snap = snap_w
-                width_failure_count = 0
-            else:
-                width_failure_count += 1
-
-        model = restore_arch_and_state(model, global_best_snap, device)
-
-    elif mode in ["alt_width", "alt_depth"]:
-        depth_saturated = False
-        width_saturated = False
-        current_phase = "width" if mode == "alt_width" else "depth"
-
-        while not (depth_saturated and width_saturated):
-            improved_in_phase = False
-            if current_phase == "width":
-                model, val, snap = optimize_width_at_fixed_depth(model)
-                if val < global_best_val - acfg.delta:
-                    global_best_val = val
-                    global_best_snap = snap
-                    improved_in_phase = True
-                width_saturated = not improved_in_phase
-                model = restore_arch_and_state(model, global_best_snap, device)
-                current_phase = "depth"
-            else:
-                model, val, snap = optimize_depth_at_fixed_width(model)
-                if val < global_best_val - acfg.delta:
-                    global_best_val = val
-                    global_best_snap = snap
-                    improved_in_phase = True
-                depth_saturated = not improved_in_phase
-                model = restore_arch_and_state(model, global_best_snap, device)
-                current_phase = "width"
-
-        model = restore_arch_and_state(model, global_best_snap, device)
-
-    return global_best_val, model
+    return run_module_adp(
+        globals(),
+        model,
+        dl_train,
+        dl_val,
+        acfg,
+        device,
+        logger=logger,
+    )
 
 
 def main() -> None:
@@ -472,7 +328,9 @@ def main() -> None:
     p.add_argument("--patience", type=int, default=20, help="Early-stopping patience per (single-shot) training run")
     p.add_argument("--trials-width", type=int, default=2, help="Expansion patience for width; <=0 means infinite")
     p.add_argument("--trials-depth", type=int, default=2, help="Expansion patience for depth; <=0 means infinite")
-    p.add_argument("--ex-k", type=int, default=128)
+    p.add_argument("--ex-k", type=int, default=1)
+    p.add_argument("--width-stage-margin-patience", type=int, default=5)
+    p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
     p.add_argument("--max-width", type=int, default=4096)
     p.add_argument("--max-depth", type=int, default=10)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
@@ -496,7 +354,9 @@ def main() -> None:
     logger = ContinuousLogger(results_dir, "mlp_ae_stl", args.adp_mode)
     logger.log_console(f"Config: dataset={args.dataset} img_size={tuple(args.img_size)} hidden={args.hidden} bottleneck={args.bottleneck}")
     logger.log_console(
-        f"ADP: mode={args.adp_mode} ex_k={args.ex_k} trials_width={args.trials_width} trials_depth={args.trials_depth} max_width={args.max_width} max_depth={args.max_depth} max_neurons={args.max_neurons}"
+        f"ADP: mode={args.adp_mode} ex_k={args.ex_k} trials_width={args.trials_width} trials_depth={args.trials_depth} "
+        f"width_stage_margin_patience={args.width_stage_margin_patience} width_stage_min_improve_pct={args.width_stage_min_improve_pct} "
+        f"max_width={args.max_width} max_depth={args.max_depth} max_neurons={args.max_neurons}"
     )
     logger.log_console(
         f"Train: batch_size={args.batch_size} lr=1e-3 weight_decay=1e-4 es_patience={args.patience} max_epochs={args.max_epochs}"
@@ -510,6 +370,8 @@ def main() -> None:
         trials_width=args.trials_width,
         trials_depth=args.trials_depth,
         ex_k=args.ex_k,
+        width_stage_margin_patience=args.width_stage_margin_patience,
+        width_stage_min_improve_pct=args.width_stage_min_improve_pct,
         max_width=args.max_width,
         max_depth=args.max_depth,
         max_neurons=args.max_neurons,
