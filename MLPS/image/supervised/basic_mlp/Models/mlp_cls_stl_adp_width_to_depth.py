@@ -167,7 +167,15 @@ def make_loaders(
 ):
     tf = transforms.Compose([transforms.Resize(img_size), transforms.ToTensor()])
     name = dataset.lower()
-    if name == "cifar10":
+    if name == "mnist":
+        ds = datasets.MNIST(root=data_dir, train=True, download=True, transform=tf)
+        in_ch = 1
+        num_classes = 10
+    elif name == "fashionmnist":
+        ds = datasets.FashionMNIST(root=data_dir, train=True, download=True, transform=tf)
+        in_ch = 1
+        num_classes = 10
+    elif name == "cifar10":
         ds = datasets.CIFAR10(root=data_dir, train=True, download=True, transform=tf)
         in_ch = 3
         num_classes = 10
@@ -314,7 +322,7 @@ def main() -> None:
         default="width_only",
         choices=["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth", "width", "depth"],
     )
-    p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100"])
+    p.add_argument("--dataset", type=str, default="mnist", choices=["mnist", "fashionmnist", "cifar10", "cifar100"])
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--img-size", type=int, nargs=2, default=[28, 28])
     p.add_argument("--seed", type=int, default=0)
@@ -333,6 +341,9 @@ def main() -> None:
     p.add_argument("--batch-size", type=int, default=256)
     p.add_argument("--num-workers", type=int, default=0)
     args = p.parse_args()
+
+    if tuple(args.img_size) == (28, 28) and args.dataset.lower() in {"cifar10", "cifar100"}:
+        args.img_size = [32, 32]
 
     torch.manual_seed(int(args.seed))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
