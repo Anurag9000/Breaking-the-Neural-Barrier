@@ -79,7 +79,7 @@ def run_growth_phase(
     if state.get("completed", False) and summary_path.exists():
         return rg.read_json(summary_path)
 
-    candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+    candidate_dirs = rg.list_candidate_dirs(phase_root)
     if not had_state and candidate_dirs:
         next_candidate_index = max(int(p.name.split("_")[1]) for p in candidate_dirs) + 1
     else:
@@ -147,7 +147,7 @@ def run_growth_phase(
         state["best_val"] = global_best_val
         state["current_phase"] = current_phase
         rg.save_phase_state(phase_root, state)
-        candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+        candidate_dirs = rg.list_candidate_dirs(phase_root)
 
     while True:
         completed_dirs = [p for p in candidate_dirs if rg.candidate_completed(p)]
@@ -582,7 +582,7 @@ def run_growth_phase(
         if mode == "depth_to_width" and width_fail >= int(cfg.patience) and is_uniform_width(next_model):
             break
 
-        candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+        candidate_dirs = rg.list_candidate_dirs(phase_root)
 
     if global_best_candidate_dir is None or global_best_checkpoint is None:
         raise RuntimeError(f"No completed candidates found for phase {phase_name}")

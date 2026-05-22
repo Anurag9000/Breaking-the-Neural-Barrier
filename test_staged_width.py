@@ -32,6 +32,19 @@ class DummyLoader:
 
 
 class StagedWidthTests(unittest.TestCase):
+    def test_candidate_directories_are_sorted_by_numeric_index(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name in ["cand_9_d1_w9", "cand_10_d1_w10", "cand_2_d1_w2", "cand_100_d1_w100"]:
+                (root / name).mkdir(parents=True, exist_ok=True)
+
+            ordered = [path.name for path in staged_runner.rg.list_candidate_dirs(root)]
+
+            self.assertEqual(
+                ordered,
+                ["cand_2_d1_w2", "cand_9_d1_w9", "cand_10_d1_w10", "cand_100_d1_w100"],
+            )
+
     def test_next_staged_widths_fills_one_layer_at_a_time(self):
         self.assertEqual(next_staged_widths([2, 2], 1, 10), [3, 2])
         self.assertEqual(next_staged_widths([3, 2], 1, 10), [3, 3])
