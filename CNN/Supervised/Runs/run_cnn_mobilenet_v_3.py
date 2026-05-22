@@ -54,23 +54,42 @@ def evaluate(model: nn.Module, loader: DataLoader, device: torch.device, criteri
 def train(args):
     set_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() and not args.cpu else "cpu")
+    if tuple(args.img_size) == (28, 28) and args.dataset.lower() in {"cifar10", "cifar100"}:
+        args.img_size = [32, 32]
 
-    # Transforms (CIFAR aug + normalize; disable with --no-augment)
-    train_tfms, eval_tfms = make_cifar_transforms(
-        args.dataset, use_augment=not args.no_augment
-    )
+    name = args.dataset.lower()
+    if name in {"mnist", "fashionmnist"}:
+        train_tfms = T.Compose([T.Resize(tuple(args.img_size)), T.ToTensor()])
+        eval_tfms = T.Compose([T.Resize(tuple(args.img_size)), T.ToTensor()])
+        in_channels = 1
+        num_classes = 10
+        if name == "mnist":
+            full_train = torchvision.datasets.MNIST(root=args.data_root, train=True, transform=train_tfms, download=True)
+            full_train_eval = torchvision.datasets.MNIST(root=args.data_root, train=True, transform=eval_tfms, download=True)
+            test_set = torchvision.datasets.MNIST(root=args.data_root, train=False, transform=eval_tfms, download=True)
+        else:
+            full_train = torchvision.datasets.FashionMNIST(root=args.data_root, train=True, transform=train_tfms, download=True)
+            full_train_eval = torchvision.datasets.FashionMNIST(root=args.data_root, train=True, transform=eval_tfms, download=True)
+            test_set = torchvision.datasets.FashionMNIST(root=args.data_root, train=False, transform=eval_tfms, download=True)
+    else:
+        # Transforms (CIFAR aug + normalize; disable with --no-augment)
+        train_tfms, eval_tfms = make_cifar_transforms(
+            args.dataset, use_augment=not args.no_augment
+        )
 
     # Dataset selection
-    if args.dataset.lower() == "cifar100":
+    if name == "cifar100":
         full_train = torchvision.datasets.CIFAR100(root=args.data_root, train=True, transform=train_tfms, download=True)
         full_train_eval = torchvision.datasets.CIFAR100(root=args.data_root, train=True, transform=eval_tfms, download=True)
         test_set = torchvision.datasets.CIFAR100(root=args.data_root, train=False, transform=eval_tfms, download=True)
         num_classes = 100
-    else:
+        in_channels = 3
+    elif name == "cifar10":
         full_train = torchvision.datasets.CIFAR10(root=args.data_root, train=True, transform=train_tfms, download=True)
         full_train_eval = torchvision.datasets.CIFAR10(root=args.data_root, train=True, transform=eval_tfms, download=True)
         test_set = torchvision.datasets.CIFAR10(root=args.data_root, train=False, transform=eval_tfms, download=True)
         num_classes = 10
+        in_channels = 3
 
     # Deterministic split train/val from the TRAIN set
     n_total = len(full_train)
@@ -84,7 +103,7 @@ def train(args):
     test_loader  = DataLoader(test_set, batch_size=args.test_batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True)
 
     # Model/opt/loss
-    model = make_mobilenet_v3_cifar(num_classes=num_classes, in_channels=3, version=args.version,
+    model = make_mobilenet_v3_cifar(num_classes=num_classes, in_channels=in_channels, version=args.version,
                                     width_mult=args.width_mult, dropout=args.dropout).to(device)
 
     # Label smoothing optional
@@ -161,7 +180,7 @@ def train(args):
 
 def build_argparser():
     p = argparse.ArgumentParser(description="Train MobileNet V3 (CIFAR) with early stopping (single-model).")
-    p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100"])
+    p.add_argument("--dataset", type=str, default="cifar10", choices=["mnist", "fashionmnist", "cifar10", "cifar100"])
     p.add_argument("--no-augment", dest="no_augment", action="store_true",
                    help="Disable CIFAR crop/flip augmentation (normalization stays)")
     p.add_argument("--data_root", type=str, default="./data")
@@ -170,6 +189,7 @@ def build_argparser():
     p.add_argument("--version", type=str, default="small", choices=["small","large"])
     p.add_argument("--width_mult", type=float, default=1.0)
     p.add_argument("--dropout", type=float, default=0.0)
+    p.add_argument("--img_size", type=int, nargs=2, default=[28, 28])
 
     p.add_argument("--batch_size", type=int, default=128)
     p.add_argument("--test_batch_size", type=int, default=256)
