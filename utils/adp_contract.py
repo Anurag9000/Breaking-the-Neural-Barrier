@@ -50,8 +50,11 @@ def _call_best_effort(fn: Callable[..., Any], pool: Dict[str, Any]) -> Any:
 def _shape_from_snapshot(snapshot: Any, model: Any) -> Tuple[int, int, Optional[Tuple[int, ...]]]:
     widths = None
     if isinstance(snapshot, dict):
-        if "widths" in snapshot and snapshot["widths"] is not None:
-            widths = tuple(int(w) for w in snapshot["widths"])
+        width_values = snapshot.get("widths")
+        if width_values is None:
+            width_values = snapshot.get("hidden_widths")
+        if width_values is not None:
+            widths = tuple(int(w) for w in width_values)
             if widths:
                 return max(widths), len(widths), widths
         width = snapshot.get("width")
@@ -62,9 +65,9 @@ def _shape_from_snapshot(snapshot: Any, model: Any) -> Tuple[int, int, Optional[
         if isinstance(arch, dict):
             width = arch.get("width", width)
             depth = arch.get("depth", depth)
-            widths = arch.get("widths", widths)
-            if widths is not None:
-                widths = tuple(int(w) for w in widths)
+            arch_widths = arch.get("widths", arch.get("hidden_widths", widths))
+            if arch_widths is not None:
+                widths = tuple(int(w) for w in arch_widths)
                 if widths:
                     return max(widths), len(widths), widths
             if width is not None and depth is not None:
@@ -104,6 +107,17 @@ def _total_neurons(module_globals: Dict[str, Any], model: Any, width: int, depth
     if widths is not None:
         return int(sum(widths))
     return int(width) * max(1, int(depth))
+
+
+def _widths_are_uniform(widths: Optional[Tuple[int, ...]]) -> bool:
+    return bool(widths) and len(set(int(w) for w in widths)) == 1
+
+
+def _pct_improvement(prev_val: float, current_val: float) -> float:
+    denom = abs(float(prev_val))
+    if denom <= 1e-12:
+        return 0.0 if current_val >= prev_val else float("inf")
+    return ((float(prev_val) - float(current_val)) / denom) * 100.0
 
 
 def _snapshot(module_globals: Dict[str, Any], model: Any) -> Any:
@@ -229,7 +243,7 @@ def _try_expand_once(
     next_model = _invoke_expand(expand_fn, module_globals, model, acfg, device, kind)
     new_width, new_depth, new_widths = _shape_from_snapshot(_snapshot(module_globals, next_model), next_model)
     new_total = _total_neurons(module_globals, next_model, new_width, new_depth, new_widths)
-    if kind == "width" and new_width <= current_width:
+    if kind == "width" and new_total <= current_total:
         return _restore(module_globals, model, before, device)
     if kind == "depth" and new_depth <= current_depth:
         return _restore(module_globals, model, before, device)
@@ -240,7 +254,7 @@ def _try_expand_once(
     ex_k_width = getattr(acfg, "ex_k_width", getattr(acfg, "ex_k", 1))
     ex_k_depth = getattr(acfg, "ex_k_depth", 1)
 
-    if kind == "width" and max_width is not None and current_width + int(ex_k_width) > int(max_width):
+    if kind == "width" and max_width is not None and new_width > int(max_width):
         return _restore(module_globals, model, before, device)
     if kind == "depth" and max_depth is not None and current_depth + int(ex_k_depth) > int(max_depth):
         return _restore(module_globals, model, before, device)
@@ -283,14 +297,10 @@ def run_module_adp(
 
     delta_width = float(getattr(acfg, "delta_width", getattr(acfg, "delta", 0.0) or 0.0))
     delta_depth = float(getattr(acfg, "delta_depth", getattr(acfg, "delta", 0.0) or 0.0))
-    patience_es = int(getattr(acfg, "patience_es", getattr(acfg, "patience", 20)))
     patience_width = int(getattr(acfg, "patience_width_exp", getattr(acfg, "trials_width", 5)))
     patience_depth = int(getattr(acfg, "patience_depth_exp", getattr(acfg, "trials_depth", 5)))
-    ex_k_width = int(getattr(acfg, "ex_k_width", getattr(acfg, "ex_k", 1)))
-    ex_k_depth = int(getattr(acfg, "ex_k_depth", 1))
-    max_width = int(getattr(acfg, "max_width", getattr(acfg, "max_neurons", 10_000_000)))
-    max_depth = int(getattr(acfg, "max_depth", 10_000_000))
-    max_neurons = int(getattr(acfg, "max_neurons", 10_000_000))
+    width_stage_margin_patience = int(getattr(acfg, "width_stage_margin_patience", 5))
+    width_stage_min_improve_pct = float(getattr(acfg, "width_stage_min_improve_pct", 1.0))
 
     def snapshot_shape(cur_model: Any) -> Tuple[int, int, Optional[Tuple[int, ...]]]:
         return _shape_from_snapshot(_snapshot(module_globals, cur_model), cur_model)
@@ -298,6 +308,13 @@ def run_module_adp(
     def total_neurons(cur_model: Any) -> int:
         width, depth, widths = snapshot_shape(cur_model)
         return _total_neurons(module_globals, cur_model, width, depth, widths)
+
+    def describe(cur_model: Any) -> str:
+        _, _, widths = snapshot_shape(cur_model)
+        if widths is not None:
+            return str(list(widths))
+        width, depth, _ = snapshot_shape(cur_model)
+        return f"width={width}, depth={depth}"
 
     def train(cur_model: Any) -> Tuple[float, Any]:
         val = _invoke_train(train_fn, cur_model, dl_train, dl_val, acfg, device, val_history, logger=logger)
@@ -307,62 +324,6 @@ def run_module_adp(
     def restore(cur_model: Any, snap: Any) -> Any:
         return _restore(module_globals, cur_model, snap, device)
 
-    def inner_width_search(cur_model: Any) -> Tuple[Any, float, Any]:
-        best_val, best_snap = train(cur_model)
-        best_model = restore(cur_model, best_snap)
-        best_width, best_depth, _ = snapshot_shape(best_model)
-        width_fail = 0
-        while width_fail < patience_width:
-            candidate = _try_expand_once(module_globals, best_model, acfg, device, "width", expand_width_fn)
-            if candidate is None:
-                break
-            cand_val, cand_snap = train(candidate)
-            cand_width, cand_depth, _ = snapshot_shape(candidate)
-            if cand_val < best_val - delta_width:
-                best_val = cand_val
-                best_snap = cand_snap
-                best_model = restore(candidate, best_snap)
-                best_width, best_depth, _ = snapshot_shape(best_model)
-                width_fail = 0
-                improvements.append((total_neurons(best_model), best_val))
-            else:
-                width_fail += 1
-                best_model = candidate
-        best_model = restore(best_model, best_snap)
-        if log_loss and plot_loss_vs_epoch is not None:
-            plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{module_globals.get('__name__', 'adp')} ({getattr(acfg, 'adp_mode', 'adp')})")
-        if log_neurons and improvements and plot_loss_vs_neurons is not None:
-            plot_loss_vs_neurons([n for n, _ in improvements], [v for _, v in improvements], results_dir / "loss_vs_neurons.png", title=f"{module_globals.get('__name__', 'adp')} ({getattr(acfg, 'adp_mode', 'adp')})")
-        return best_model, best_val, best_snap
-
-    def inner_depth_search(cur_model: Any) -> Tuple[Any, float, Any]:
-        best_val, best_snap = train(cur_model)
-        best_model = restore(cur_model, best_snap)
-        best_width, best_depth, _ = snapshot_shape(best_model)
-        depth_fail = 0
-        while depth_fail < patience_depth:
-            candidate = _try_expand_once(module_globals, best_model, acfg, device, "depth", expand_depth_fn)
-            if candidate is None:
-                break
-            cand_val, cand_snap = train(candidate)
-            cand_width, cand_depth, _ = snapshot_shape(candidate)
-            if cand_val < best_val - delta_depth:
-                best_val = cand_val
-                best_snap = cand_snap
-                best_model = restore(candidate, best_snap)
-                best_width, best_depth, _ = snapshot_shape(best_model)
-                depth_fail = 0
-                improvements.append((total_neurons(best_model), best_val))
-            else:
-                depth_fail += 1
-                best_model = candidate
-        best_model = restore(best_model, best_snap)
-        if log_loss and plot_loss_vs_epoch is not None:
-            plot_loss_vs_epoch(val_history, results_dir / "loss_vs_epoch.png", title=f"{module_globals.get('__name__', 'adp')} ({getattr(acfg, 'adp_mode', 'adp')})")
-        if log_neurons and improvements and plot_loss_vs_neurons is not None:
-            plot_loss_vs_neurons([n for n, _ in improvements], [v for _, v in improvements], results_dir / "loss_vs_neurons.png", title=f"{module_globals.get('__name__', 'adp')} ({getattr(acfg, 'adp_mode', 'adp')})")
-        return best_model, best_val, best_snap
-
     mode = getattr(acfg, "adp_mode", "width_to_depth")
 
     best_val, best_snap = train(model)
@@ -371,70 +332,149 @@ def run_module_adp(
     global_best_snap = best_snap
     improvements.append((total_neurons(model), best_val))
 
+    def update_global_best(cur_model: Any, cand_val: float, cand_snap: Any, delta: float) -> bool:
+        nonlocal global_best_val, global_best_snap
+        if cand_val < global_best_val - delta:
+            global_best_val = cand_val
+            global_best_snap = cand_snap
+            improvements.append((total_neurons(cur_model), global_best_val))
+            return True
+        return False
+
+    def ensure_uniform_width(cur_model: Any) -> Tuple[Any, bool]:
+        progressed = False
+        while True:
+            _, _, widths = snapshot_shape(cur_model)
+            if _widths_are_uniform(widths):
+                return cur_model, progressed
+            candidate = _try_expand_once(module_globals, cur_model, acfg, device, "width", expand_width_fn)
+            if candidate is None:
+                return cur_model, progressed
+            if logger is not None:
+                logger.log_console(f"[STAGED][WIDTH-FILL] {describe(cur_model)} -> {describe(candidate)}")
+            cand_val, cand_snap = train(candidate)
+            cur_model = restore(candidate, cand_snap)
+            update_global_best(cur_model, cand_val, cand_snap, delta_width)
+            progressed = True
+
+    def run_width_stage(cur_model: Any) -> Tuple[Any, bool, bool, float]:
+        stage_anchor = float(global_best_val)
+        progressed = False
+        while True:
+            candidate = _try_expand_once(module_globals, cur_model, acfg, device, "width", expand_width_fn)
+            if candidate is None:
+                return cur_model, False, False, 0.0
+            if logger is not None:
+                logger.log_console(f"[STAGED][WIDTH] {describe(cur_model)} -> {describe(candidate)}")
+            cand_val, cand_snap = train(candidate)
+            cur_model = restore(candidate, cand_snap)
+            improved_global = update_global_best(cur_model, cand_val, cand_snap, delta_width)
+            progressed = True
+            _, _, widths = snapshot_shape(cur_model)
+            if _widths_are_uniform(widths):
+                stage_pct = _pct_improvement(stage_anchor, global_best_val)
+                return cur_model, progressed, (global_best_val < stage_anchor - delta_width), stage_pct
+
+    def run_width_phase(cur_model: Any) -> Tuple[Any, bool]:
+        width_fail = 0
+        margin_fail = 0
+        any_phase_improvement = False
+        while True:
+            before_val = float(global_best_val)
+            cur_model, completed, stage_improved, stage_pct = run_width_stage(cur_model)
+            if not completed:
+                break
+            any_phase_improvement = any_phase_improvement or stage_improved
+            width_fail = 0 if stage_improved else width_fail + 1
+            margin_fail = 0 if stage_pct >= width_stage_min_improve_pct else margin_fail + 1
+            if logger is not None:
+                logger.log_console(
+                    f"[STAGED][WIDTH] completed arch={describe(cur_model)} "
+                    f"stage_improved={stage_improved} stage_pct={stage_pct:.4f} "
+                    f"global_best={global_best_val:.6f} width_fail={width_fail}/{patience_width} "
+                    f"margin_fail={margin_fail}/{width_stage_margin_patience}"
+                )
+            if width_fail >= patience_width or margin_fail >= width_stage_margin_patience:
+                break
+            if float(global_best_val) >= before_val and not stage_improved and margin_fail >= width_stage_margin_patience:
+                break
+        cur_model, _ = ensure_uniform_width(cur_model)
+        return cur_model, any_phase_improvement
+
+    def run_depth_step(cur_model: Any) -> Tuple[Any, bool]:
+        cur_model, _ = ensure_uniform_width(cur_model)
+        candidate = _try_expand_once(module_globals, cur_model, acfg, device, "depth", expand_depth_fn)
+        if candidate is None:
+            return cur_model, False
+        if logger is not None:
+            logger.log_console(f"[STAGED][DEPTH] {describe(cur_model)} -> {describe(candidate)}")
+        cand_val, cand_snap = train(candidate)
+        cur_model = restore(candidate, cand_snap)
+        return cur_model, update_global_best(cur_model, cand_val, cand_snap, delta_depth)
+
+    def run_depth_phase(cur_model: Any) -> Tuple[Any, bool]:
+        cur_model, _ = ensure_uniform_width(cur_model)
+        depth_fail = 0
+        any_phase_improvement = False
+        while depth_fail < patience_depth:
+            cur_model, improved = run_depth_step(cur_model)
+            if logger is not None:
+                logger.log_console(
+                    f"[STAGED][DEPTH] arch={describe(cur_model)} improved={improved} "
+                    f"global_best={global_best_val:.6f} depth_fail={depth_fail if improved else depth_fail + 1}/{patience_depth}"
+                )
+            if not improved:
+                probe_snap = _snapshot(module_globals, cur_model)
+                if _try_expand_once(module_globals, cur_model, acfg, device, "depth", expand_depth_fn) is None:
+                    break
+                cur_model = restore(cur_model, probe_snap)
+            if not improved:
+                depth_fail += 1
+            else:
+                depth_fail = 0
+                any_phase_improvement = True
+        return cur_model, any_phase_improvement
+
     if mode in ("width_only", "width"):
-        model, global_best_val, global_best_snap = inner_width_search(model)
+        model, _ = run_width_phase(model)
     elif mode in ("depth_only", "depth"):
-        model, global_best_val, global_best_snap = inner_depth_search(model)
+        model, _ = run_depth_phase(model)
     elif mode == "width_to_depth":
-        model, base_val, base_snap = inner_width_search(model)
-        global_best_val = base_val
-        global_best_snap = base_snap
         depth_fail = 0
         while depth_fail < patience_depth:
-            candidate = _try_expand_once(module_globals, model, acfg, device, "depth", expand_depth_fn)
-            if candidate is None:
-                break
-            cand_model, cand_val, cand_snap = inner_width_search(candidate)
-            if cand_val < global_best_val - delta_depth:
-                global_best_val = cand_val
-                global_best_snap = cand_snap
-                model = cand_model
-                depth_fail = 0
-            else:
+            model, _ = run_width_phase(model)
+            before_cycle = float(global_best_val)
+            model, improved = run_depth_step(model)
+            if not improved:
                 depth_fail += 1
-                model = cand_model
+            else:
+                depth_fail = 0
+            if float(global_best_val) >= before_cycle and not improved:
+                break
     elif mode == "depth_to_width":
-        model, base_val, base_snap = inner_depth_search(model)
-        global_best_val = base_val
-        global_best_snap = base_snap
         width_fail = 0
         while width_fail < patience_width:
-            candidate = _try_expand_once(module_globals, model, acfg, device, "width", expand_width_fn)
-            if candidate is None:
-                break
-            cand_model, cand_val, cand_snap = inner_depth_search(candidate)
-            if cand_val < global_best_val - delta_width:
-                global_best_val = cand_val
-                global_best_snap = cand_snap
-                model = cand_model
+            model, _ = run_depth_phase(model)
+            before_cycle = float(global_best_val)
+            model, width_improved = run_width_phase(model)
+            if float(global_best_val) < before_cycle - delta_width or width_improved:
                 width_fail = 0
             else:
                 width_fail += 1
-                model = cand_model
     elif mode == "alt_width":
         width_done = False
         depth_done = False
         phase = "width"
         while not (width_done and depth_done):
             if phase == "width":
-                cand_model, cand_val, cand_snap = inner_width_search(model)
-                if cand_val < global_best_val - delta_width:
-                    global_best_val = cand_val
-                    global_best_snap = cand_snap
-                    width_done = False
-                else:
-                    width_done = True
-                model = restore(cand_model, global_best_snap)
+                before = float(global_best_val)
+                model, improved = run_width_phase(model)
+                width_done = not (improved or float(global_best_val) < before - delta_width)
                 phase = "depth"
             else:
-                cand_model, cand_val, cand_snap = inner_depth_search(model)
-                if cand_val < global_best_val - delta_depth:
-                    global_best_val = cand_val
-                    global_best_snap = cand_snap
-                    depth_done = False
-                else:
-                    depth_done = True
-                model = restore(cand_model, global_best_snap)
+                before = float(global_best_val)
+                model, improved = run_depth_phase(model)
+                depth_done = not (improved or float(global_best_val) < before - delta_depth)
                 phase = "width"
     elif mode == "alt_depth":
         width_done = False
@@ -442,24 +482,14 @@ def run_module_adp(
         phase = "depth"
         while not (width_done and depth_done):
             if phase == "depth":
-                cand_model, cand_val, cand_snap = inner_depth_search(model)
-                if cand_val < global_best_val - delta_depth:
-                    global_best_val = cand_val
-                    global_best_snap = cand_snap
-                    depth_done = False
-                else:
-                    depth_done = True
-                model = restore(cand_model, global_best_snap)
+                before = float(global_best_val)
+                model, improved = run_depth_phase(model)
+                depth_done = not (improved or float(global_best_val) < before - delta_depth)
                 phase = "width"
             else:
-                cand_model, cand_val, cand_snap = inner_width_search(model)
-                if cand_val < global_best_val - delta_width:
-                    global_best_val = cand_val
-                    global_best_snap = cand_snap
-                    width_done = False
-                else:
-                    width_done = True
-                model = restore(cand_model, global_best_snap)
+                before = float(global_best_val)
+                model, improved = run_width_phase(model)
+                width_done = not (improved or float(global_best_val) < before - delta_width)
                 phase = "depth"
     else:
         raise ValueError(f"Unsupported ADP mode: {mode}")
