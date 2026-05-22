@@ -1522,3 +1522,23 @@
 [2026-05-20 16:46:28] [TASK:autoencoding] ADP phase start: ae_width_to_depth
 [2026-05-20 16:46:28] [TASK:autoencoding] ADP=ae_width_to_depth best_val=0.001482 STL=stl_from_ae_width_to_depth best_val=0.003484 winner=adp
 [2026-05-20 16:46:28] [TASK:autoencoding] ADP phase start: ae_depth_to_width
+[2026-05-22 10:19:15] Initialized ContinuousLogger for goliath (Mode: sequential)
+[2026-05-22 10:19:15] Logs: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/training_log.txt
+[2026-05-22 10:19:15] CSV: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/training_stats.csv
+[2026-05-22 10:19:15] Run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-05-22 10:19:15] Tasks: ['representation', 'autoencoding', 'generation', 'denoising', 'anomaly', 'inverse', 'control', 'clustering', 'compression', 'ranking', 'multimodal', 'selfsupervised', 'simulation']
+[2026-05-22 10:19:15] Phases: ['ae_alt_depth', 'ae_alt_width', 'ae_width_to_depth', 'ae_depth_to_width']
+[2026-05-22 10:19:15] Device: cuda
+[2026-05-22 10:19:15] Git commit: 338cf805dc13f0d8d9943124973b96f851dafa10
+[2026-05-22 10:19:37] === Task start: representation ===
+[2026-05-22 10:19:37] === Task done: representation ===
+[2026-05-22 10:19:37] === Task start: autoencoding ===
+[2026-05-22 10:19:37] [TASK] start autoencoding
+[2026-05-22 10:19:37] [TASK:autoencoding] ADP phase start: ae_alt_depth
+[2026-05-22 10:19:37] [TASK:autoencoding] ADP=ae_alt_depth best_val=0.001903 STL=stl_from_ae_alt_depth best_val=0.013283 winner=adp
+[2026-05-22 10:19:37] [TASK:autoencoding] ADP phase start: ae_alt_width
+[2026-05-22 10:19:37] [TASK:autoencoding] ADP=ae_alt_width best_val=0.001727 STL=stl_from_ae_alt_width best_val=0.003410 winner=adp
+[2026-05-22 10:19:37] [TASK:autoencoding] ADP phase start: ae_width_to_depth
+[2026-05-22 10:19:37] [TASK:autoencoding] ADP=ae_width_to_depth best_val=0.001482 STL=stl_from_ae_width_to_depth best_val=0.003484 winner=adp
+[2026-05-22 10:19:37] [TASK:autoencoding] ADP phase start: ae_depth_to_width
+[2026-05-22 10:20:09] Final report written to MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/final_report.json

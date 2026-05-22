@@ -1,7 +1,7 @@
 # DAE/DNN Goliath Final Report
 
 - Run root: `MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current`
-- Git commit: `33c0c9ee32e1dd1c806d9c4d8ff1b4749fb9fba7`
+- Git commit: `338cf805dc13f0d8d9943124973b96f851dafa10`
 - Device: `cuda`
 - Tasks completed: `['representation']`
 
@@ -84,18 +84,6 @@
 |---|---|---:|---|---:|---|
 
 ## Task: simulation
-- Overall winner: `n/a` via `n/a` at `n/a`
-
-| ADP variant | ADP best arch | ADP best val | STL refit arch | STL refit best val | Winner |
-|---|---|---:|---|---:|---|
-
-## Task: misc
-- Overall winner: `n/a` via `n/a` at `n/a`
-
-| ADP variant | ADP best arch | ADP best val | STL refit arch | STL refit best val | Winner |
-|---|---|---:|---|---:|---|
-
-## Task: prediction
 - Overall winner: `n/a` via `n/a` at `n/a`
 
 | ADP variant | ADP best arch | ADP best val | STL refit arch | STL refit best val | Winner |
