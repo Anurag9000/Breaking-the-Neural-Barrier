@@ -372,6 +372,20 @@ def candidate_root_for(phase_root: Path, candidate_index: int, hidden_widths: Se
     return phase_root / candidate_slug(candidate_index, hidden_widths)
 
 
+def candidate_index_from_name(name: str) -> int:
+    try:
+        return int(str(name).split("_")[1])
+    except Exception:
+        return -1
+
+
+def list_candidate_dirs(phase_root: Path) -> List[Path]:
+    return sorted(
+        [p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")],
+        key=lambda path: candidate_index_from_name(path.name),
+    )
+
+
 def reconstruction_train_epoch(
     model: torch.nn.Module,
     loader: torch.utils.data.DataLoader,
@@ -850,11 +864,13 @@ def training_loop(
         for key in metric_keys:
             row[key] = metrics.get(key)
         logger.log_epoch_stats(row)
-        display_best = best_val if display_best_floor is None else min(best_val, float(display_best_floor))
+        display_global_best = best_val if display_best_floor is None else min(best_val, float(display_best_floor))
         logger.log_console(
             f"[{task.name}][{candidate_dir.parent.name}][{candidate_dir.name}] epoch={epoch} "
             f"architecture={format_architecture_for_report(model.hidden_widths)} "
-            f"train_loss={tr_loss:.6f} val_loss={val_loss:.6f} best={display_best:.6f} es={es_counter}/{cfg.patience}"
+            f"train_loss={tr_loss:.6f} val_loss={val_loss:.6f} "
+            f"candidate_best={best_val:.6f} global_best={display_global_best:.6f} "
+            f"es={es_counter}/{cfg.patience}"
         )
 
         write_json(
@@ -963,7 +979,7 @@ def eval_final(model: MLP, task: Task, device, reconstruct: bool) -> Dict[str, A
 
 
 def latest_completed_candidate(phase_root: Path) -> Optional[Path]:
-    candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+    candidate_dirs = list_candidate_dirs(phase_root)
     for cand in reversed(candidate_dirs):
         state_path = cand / "candidate_state.json"
         if state_path.exists() and read_json(state_path).get("completed", False):
@@ -972,7 +988,7 @@ def latest_completed_candidate(phase_root: Path) -> Optional[Path]:
 
 
 def incomplete_candidate(phase_root: Path) -> Optional[Path]:
-    candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+    candidate_dirs = list_candidate_dirs(phase_root)
     for cand in reversed(candidate_dirs):
         state_path = cand / "candidate_state.json"
         if state_path.exists() and not read_json(state_path).get("completed", False):
@@ -1377,7 +1393,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
     if state.get("completed", False) and summary_path.exists():
         return read_json(summary_path)
 
-    candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+    candidate_dirs = list_candidate_dirs(phase_root)
     if not had_state and candidate_dirs:
         next_candidate_index = max(int(p.name.split("_")[1]) for p in candidate_dirs) + 1
     else:
@@ -1441,7 +1457,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
         state["best_val"] = global_best_val
         state["current_phase"] = current_phase
         save_phase_state(phase_root, state)
-        candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+        candidate_dirs = list_candidate_dirs(phase_root)
 
     # Recompute after any resumed candidate.
     while True:
@@ -1824,7 +1840,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
         if mode == "depth_to_width" and width_fail >= int(cfg.patience):
             break
 
-        candidate_dirs = sorted([p for p in phase_root.iterdir() if p.is_dir() and p.name.startswith("cand_")])
+        candidate_dirs = list_candidate_dirs(phase_root)
 
     final_model = current_base_model()
     if global_best_candidate_dir is not None and global_best_checkpoint is not None and Path(global_best_checkpoint).exists():

@@ -1,6 +1,5 @@
 {
-  "batch_size": 32768,
-  "batch_size_policy": "override",
+  "candidate_index": 4557,
   "config": {
     "alt_start_depth": 1,
     "alt_start_width": 1,
@@ -47,9 +46,46 @@
     "width_stage_margin_patience": 5,
     "width_stage_min_improve_pct": 1.0
   },
-  "extra": {},
-  "in_dim": 54,
-  "out_dim": 7,
-  "task": "clustering",
-  "task_type": "classification"
+  "dataset_sizes": {
+    "test": 58101,
+    "train": 464810,
+    "val": 58101
+  },
+  "git_commit": "338cf805dc13f0d8d9943124973b96f851dafa10",
+  "hidden_widths": [
+    101,
+    101,
+    101,
+    101,
+    101,
+    100,
+    100,
+    100,
+    100,
+    100
+  ],
+  "model": {
+    "hidden_widths": [
+      101,
+      101,
+      101,
+      101,
+      101,
+      100,
+      100,
+      100,
+      100,
+      100
+    ],
+    "in_dim": 54,
+    "out_dim": 54,
+    "use_bn": true
+  },
+  "phase_kind": "depth_to_width",
+  "phase_name": "ae_depth_to_width",
+  "reconstruct": true,
+  "search_phase": "width",
+  "task": "autoencoding",
+  "task_extra": {},
+  "task_type": "reconstruction"
 }
