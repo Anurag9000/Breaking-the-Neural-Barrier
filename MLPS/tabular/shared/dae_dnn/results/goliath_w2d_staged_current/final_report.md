@@ -1,8 +1,8 @@
 # DAE/DNN Goliath Final Report
 
 - Run root: `MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current`
-- Git commit: `48ed53e54b285d93efe4beecf1b97c9d991b294d`
-- Device: `cpu`
+- Git commit: `33c0c9ee32e1dd1c806d9c4d8ff1b4749fb9fba7`
+- Device: `cuda`
 - Tasks completed: `['representation']`
 
 ## Task: representation
