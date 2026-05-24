@@ -46,6 +46,29 @@
       "phase": "ae_width_to_depth",
       "reconstruct": true,
       "task": "autoencoding"
+    },
+    {
+      "architecture": [
+        101,
+        101,
+        101,
+        101,
+        101,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "best_candidate_dir": "cand_1047_d10_w101",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/ae_depth_to_width/cand_1047_d10_w101/checkpoint_best.pt",
+      "best_epoch": 4,
+      "best_val": 0.0015207532007559686,
+      "final_epoch": 4,
+      "mode": "depth_to_width",
+      "phase": "ae_depth_to_width",
+      "reconstruct": true,
+      "task": "autoencoding"
     }
   ],
   "comparisons": [
@@ -106,6 +129,40 @@
       "winner": "adp",
       "winner_phase": "ae_width_to_depth",
       "winner_value": 0.0014818490814646724
+    },
+    {
+      "adp_architecture": [
+        101,
+        101,
+        101,
+        101,
+        101,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "adp_best_val": 0.0015207532007559686,
+      "adp_phase": "ae_depth_to_width",
+      "stl_architecture": [
+        101,
+        101,
+        101,
+        101,
+        101,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "stl_best_val": 0.023918251889941972,
+      "stl_phase": "stl_from_ae_depth_to_width",
+      "task": "autoencoding",
+      "winner": "adp",
+      "winner_phase": "ae_depth_to_width",
+      "winner_value": 0.0015207532007559686
     }
   ],
   "paired_stl_runs": [
@@ -166,6 +223,33 @@
       "task": "autoencoding",
       "test_metrics": {
         "test_loss": 0.0037896797777222974
+      }
+    },
+    {
+      "architecture": [
+        101,
+        101,
+        101,
+        101,
+        101,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "best_epoch": 32,
+      "best_val": 0.023918251889941972,
+      "candidate_dir": "cand_000_d10_w101",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/stl_from_ae_depth_to_width/cand_000_d10_w101/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/stl_from_ae_depth_to_width/cand_000_d10_w101/checkpoint_last.pt",
+      "final_epoch": 37,
+      "phase": "stl_from_ae_depth_to_width",
+      "resumed": false,
+      "source_phase": "ae_depth_to_width",
+      "task": "autoencoding",
+      "test_metrics": {
+        "test_loss": 0.027878579285287978
       }
     }
   ],
@@ -274,6 +358,56 @@
       "task": "autoencoding",
       "test_metrics": {
         "test_loss": 0.0037896797777222974
+      }
+    },
+    {
+      "architecture": [
+        101,
+        101,
+        101,
+        101,
+        101,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "best_candidate_dir": "cand_1047_d10_w101",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/ae_depth_to_width/cand_1047_d10_w101/checkpoint_best.pt",
+      "best_epoch": 4,
+      "best_val": 0.0015207532007559686,
+      "final_epoch": 4,
+      "mode": "depth_to_width",
+      "phase": "ae_depth_to_width",
+      "reconstruct": true,
+      "task": "autoencoding"
+    },
+    {
+      "architecture": [
+        101,
+        101,
+        101,
+        101,
+        101,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "best_epoch": 32,
+      "best_val": 0.023918251889941972,
+      "candidate_dir": "cand_000_d10_w101",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/stl_from_ae_depth_to_width/cand_000_d10_w101/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/stl_from_ae_depth_to_width/cand_000_d10_w101/checkpoint_last.pt",
+      "final_epoch": 37,
+      "phase": "stl_from_ae_depth_to_width",
+      "resumed": false,
+      "source_phase": "ae_depth_to_width",
+      "task": "autoencoding",
+      "test_metrics": {
+        "test_loss": 0.027878579285287978
       }
     }
   ],
