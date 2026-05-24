@@ -1542,3 +1542,69 @@
 [2026-05-22 10:19:37] [TASK:autoencoding] ADP=ae_width_to_depth best_val=0.001482 STL=stl_from_ae_width_to_depth best_val=0.003484 winner=adp
 [2026-05-22 10:19:37] [TASK:autoencoding] ADP phase start: ae_depth_to_width
 [2026-05-22 10:20:09] Final report written to MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/final_report.json
+[2026-05-22 10:52:38] Initialized ContinuousLogger for goliath (Mode: sequential)
+[2026-05-22 10:52:38] Logs: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/training_log.txt
+[2026-05-22 10:52:38] CSV: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/training_stats.csv
+[2026-05-22 10:52:38] Run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-05-22 10:52:38] Tasks: ['representation', 'autoencoding', 'generation', 'denoising', 'anomaly', 'inverse', 'control', 'clustering', 'compression', 'ranking', 'multimodal', 'selfsupervised', 'simulation']
+[2026-05-22 10:52:38] Phases: ['ae_alt_depth', 'ae_alt_width', 'ae_width_to_depth', 'ae_depth_to_width']
+[2026-05-22 10:52:38] Device: cuda
+[2026-05-22 10:52:38] Git commit: fe2db557aa4b7dff5bad2cbfdd0c67bde4dab113
+[2026-05-22 10:52:57] === Task start: representation ===
+[2026-05-22 10:52:57] === Task done: representation ===
+[2026-05-22 10:52:57] === Task start: autoencoding ===
+[2026-05-22 10:52:57] [TASK] start autoencoding
+[2026-05-22 10:52:57] [TASK:autoencoding] ADP phase start: ae_alt_depth
+[2026-05-22 10:52:57] [TASK:autoencoding] ADP=ae_alt_depth best_val=0.001903 STL=stl_from_ae_alt_depth best_val=0.013283 winner=adp
+[2026-05-22 10:52:57] [TASK:autoencoding] ADP phase start: ae_alt_width
+[2026-05-22 10:52:57] [TASK:autoencoding] ADP=ae_alt_width best_val=0.001727 STL=stl_from_ae_alt_width best_val=0.003410 winner=adp
+[2026-05-22 10:52:57] [TASK:autoencoding] ADP phase start: ae_width_to_depth
+[2026-05-22 10:52:57] [TASK:autoencoding] ADP=ae_width_to_depth best_val=0.001482 STL=stl_from_ae_width_to_depth best_val=0.003484 winner=adp
+[2026-05-22 10:52:57] [TASK:autoencoding] ADP phase start: ae_depth_to_width
+[2026-05-22 10:55:34] [TASK:autoencoding] ADP=ae_depth_to_width best_val=0.001521 STL=stl_from_ae_depth_to_width best_val=0.023918 winner=adp
+[2026-05-22 10:55:34] [TASK] done autoencoding
+[2026-05-22 10:55:34] === Task done: autoencoding ===
+[2026-05-22 10:55:34] === Task start: generation ===
+[2026-05-22 10:55:34] [TASK] start generation
+[2026-05-22 10:55:34] [TASK:generation] ADP phase start: ae_alt_depth
+[2026-05-22 23:16:12] [TASK:generation] ADP=ae_alt_depth best_val=0.000699 STL=stl_from_ae_alt_depth best_val=1.008456 winner=adp
+[2026-05-22 23:16:12] [TASK:generation] ADP phase start: ae_alt_width
+[2026-05-23 04:32:08] [TASK:generation] ADP=ae_alt_width best_val=0.000248 STL=stl_from_ae_alt_width best_val=1.008655 winner=adp
+[2026-05-23 04:32:08] [TASK:generation] ADP phase start: ae_width_to_depth
+[2026-05-23 08:45:42] [TASK:generation] ADP=ae_width_to_depth best_val=0.000308 STL=stl_from_ae_width_to_depth best_val=1.008609 winner=adp
+[2026-05-23 08:45:42] [TASK:generation] ADP phase start: ae_depth_to_width
+[2026-05-24 00:23:50] [TASK:generation] ADP=ae_depth_to_width best_val=0.001788 STL=stl_from_ae_depth_to_width best_val=1.008333 winner=adp
+[2026-05-24 00:23:50] [TASK] done generation
+[2026-05-24 00:23:50] === Task done: generation ===
+[2026-05-24 00:23:50] === Task start: denoising ===
+[2026-05-24 00:23:50] [TASK] start denoising
+[2026-05-24 00:23:50] [TASK:denoising] ADP phase start: ae_alt_depth
+[2026-05-24 07:31:48] [TASK:denoising] ADP=ae_alt_depth best_val=0.002822 STL=stl_from_ae_alt_depth best_val=0.008895 winner=adp
+[2026-05-24 07:31:48] [TASK:denoising] ADP phase start: ae_alt_width
+[2026-05-24 08:21:22] [TASK:denoising] ADP=ae_alt_width best_val=0.000820 STL=stl_from_ae_alt_width best_val=0.028369 winner=adp
+[2026-05-24 08:21:22] [TASK:denoising] ADP phase start: ae_width_to_depth
+[2026-05-24 09:41:23] [TASK:denoising] ADP=ae_width_to_depth best_val=0.000947 STL=stl_from_ae_width_to_depth best_val=0.029187 winner=adp
+[2026-05-24 09:41:23] [TASK:denoising] ADP phase start: ae_depth_to_width
+[2026-05-24 12:47:14] Initialized ContinuousLogger for goliath (Mode: sequential)
+[2026-05-24 12:47:14] Logs: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/training_log.txt
+[2026-05-24 12:47:14] CSV: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/training_stats.csv
+[2026-05-24 12:47:14] Run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-05-24 12:47:14] Tasks: ['representation', 'autoencoding', 'generation', 'denoising', 'anomaly', 'inverse', 'control', 'clustering', 'compression', 'ranking', 'multimodal', 'selfsupervised', 'simulation']
+[2026-05-24 12:47:14] Phases: ['ae_alt_depth', 'ae_alt_width', 'ae_width_to_depth', 'ae_depth_to_width']
+[2026-05-24 12:47:14] Device: cuda
+[2026-05-24 12:47:14] Git commit: cfac4f8947fd800a67caf10757d8c2fb25902b0d
+[2026-05-24 12:47:25] === Task start: representation ===
+[2026-05-24 12:47:25] === Task done: representation ===
+[2026-05-24 12:47:25] === Task start: autoencoding ===
+[2026-05-24 12:47:25] === Task done: autoencoding ===
+[2026-05-24 12:47:25] === Task start: generation ===
+[2026-05-24 12:47:25] === Task done: generation ===
+[2026-05-24 12:47:25] === Task start: denoising ===
+[2026-05-24 12:47:25] [TASK] start denoising
+[2026-05-24 12:47:25] [TASK:denoising] ADP phase start: ae_alt_depth
+[2026-05-24 12:47:25] [TASK:denoising] ADP=ae_alt_depth best_val=0.002822 STL=stl_from_ae_alt_depth best_val=0.008895 winner=adp
+[2026-05-24 12:47:25] [TASK:denoising] ADP phase start: ae_alt_width
+[2026-05-24 12:47:25] [TASK:denoising] ADP=ae_alt_width best_val=0.000820 STL=stl_from_ae_alt_width best_val=0.028369 winner=adp
+[2026-05-24 12:47:25] [TASK:denoising] ADP phase start: ae_width_to_depth
+[2026-05-24 12:47:25] [TASK:denoising] ADP=ae_width_to_depth best_val=0.000947 STL=stl_from_ae_width_to_depth best_val=0.029187 winner=adp
+[2026-05-24 12:47:25] [TASK:denoising] ADP phase start: ae_depth_to_width
