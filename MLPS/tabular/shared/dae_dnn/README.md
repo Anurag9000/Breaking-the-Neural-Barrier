@@ -8,9 +8,10 @@ This folder provides plain-MLP baselines for the 15 non-vision tasks in
 
 Operational policy:
 
-- Supported ADP modes for new runs: `ae_alt_width`, `ae_width_to_depth`
+- Supported ADP modes for new runs:
+  `ae_alt_width`, `ae_alt_depth`, `ae_width_to_depth`, `ae_depth_to_width`
 - Legacy ADP modes retained in code but disabled in the active launchers:
-  `ae_width_only`, `ae_depth_only`, `ae_depth_to_width`, `ae_alt_depth`
+  `ae_width_only`, `ae_depth_only`
 
 The benchmarks are real public datasets, with the main task families centered
 on:
@@ -32,9 +33,11 @@ Files
   random search, Bayesian HPO, and greedy NAS-style growth; it can compare
   against a completed goliath reference run, but it does not run ADP variants
 
-`run_goliath.py` now runs only the two supported ADP phases:
+`run_goliath.py` now runs only the four supported ADP phases:
 - `ae_alt_width`
+- `ae_alt_depth`
 - `ae_width_to_depth`
+- `ae_depth_to_width`
 
 All ADP phases start from a fixed `2x2` seed and preserve the best checkpoint
 found during search, not just the last epoch. After each ADP phase, the runner
@@ -82,6 +85,16 @@ Run one task (ADP, alternating width-first)
 python DAE/DNN/run_task.py --task classification --mode adp --adp-mode alt_width --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
 ```
 
+Run one task (ADP, alternating depth-first)
+```bash
+python DAE/DNN/run_task.py --task classification --mode adp --adp-mode alt_depth --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
+```
+
+Run one task (ADP, depth then width)
+```bash
+python DAE/DNN/run_task.py --task classification --mode adp --adp-mode depth_to_width --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
+```
+
 Run all tasks (STL + ADP modes)
 ```bash
 python DAE/DNN/run_all.py --data-dir ./data --results-dir DAE/DNN/results --hidden 50 50
@@ -96,9 +109,9 @@ Then launch the sequential experiment:
 ```bash
 python DAE/DNN/run_goliath.py --tasks all --data-dir ./data --results-dir DAE/DNN/results --stl-width 128 --stl-depth 2 --alt-start-width 2 --alt-start-depth 2 --patience 5 --seed 0
 ```
-By default, `run_goliath.py` runs the two supported ADP phases first and then an STL refit on
-each ADP-discovered architecture. Include `stl` in `--phases` only if you also
-want a standalone baseline STL run.
+By default, `run_goliath.py` runs the four supported ADP phases first and then
+an STL refit on each ADP-discovered architecture. Include `stl` in `--phases`
+only if you also want a standalone baseline STL run.
 
 To run the broader benchmark-suite comparison:
 ```bash

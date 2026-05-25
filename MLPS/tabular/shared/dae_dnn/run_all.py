@@ -27,7 +27,7 @@ def main() -> None:
     args = p.parse_args()
 
     tasks = task_names() if "all" in [t.lower() for t in args.tasks] else args.tasks
-    adp_modes = ["alt_width", "width_to_depth"]
+    adp_modes = ["alt_width", "alt_depth", "width_to_depth", "depth_to_width"]
     shared_batch_state = Path(args.results_dir) / "_batch_size_state.json"
 
     def current_batch_size() -> int:

@@ -320,7 +320,7 @@ def main() -> None:
         "--adp-mode",
         type=str,
         default="width_to_depth",
-        choices=["alt_width", "width_to_depth"],
+        choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"],
     )
     p.add_argument("--dataset", type=str, default="mnist", choices=["mnist", "fashionmnist", "cifar10", "cifar100"])
     p.add_argument("--data-dir", type=str, default="./data")
