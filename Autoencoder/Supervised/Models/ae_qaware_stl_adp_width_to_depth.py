@@ -233,7 +233,7 @@ def main():
     p.add_argument("--per-channel", action="store_true", default=False)
     p.add_argument("--quant-everywhere", action="store_true", default=False)
     p.add_argument("--adp-mode", type=str, default="width_to_depth",
-                   choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth","width","depth"])
+                   choices=["alt_width", "width_to_depth"])
     p.add_argument("--delta", type=float, default=1e-3)
     p.add_argument("--patience", type=int, default=20)
     p.add_argument("--trials-width", type=int, default=2)
