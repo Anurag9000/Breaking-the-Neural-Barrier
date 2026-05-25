@@ -51,7 +51,8 @@ def exec_centralized_file(source_file: str, relative_target: str, extra_globals:
 
 
 def inject_default_cli_arg(flag: str, value: str) -> None:
-    if __name__ != "__main__":
+    caller_globals = sys._getframe(1).f_globals
+    if caller_globals.get("__name__") != "__main__":
         return
     if flag == "--adp-mode" and value not in SUPPORTED_ADP_MODES:
         supported = ", ".join(sorted(SUPPORTED_ADP_MODES))
