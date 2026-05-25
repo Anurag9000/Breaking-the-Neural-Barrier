@@ -1,1294 +1,414 @@
 {
   "models": [
     {
-      "architecture": "[89, 89, 89, 89, 88, 88]",
-      "best_val": 0.0019027519011730251,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/ae_alt_depth/cand_531_d6_w89/checkpoint_best.pt",
+      "architecture": "[101, 101, 101, 101, 101, 101]",
+      "best_val": 0.0028221183732265857,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/denoising/ae_alt_depth/cand_605_d6_w101/checkpoint_best.pt",
       "family": "ADP",
-      "label": "ADP | ae_alt_depth\n[89, 89, 89, 89, 88, 88]",
-      "parameter_count": 50547,
+      "label": "ADP | ae_alt_depth\n[101, 101, 101, 101, 101, 101]",
+      "parameter_count": 63785,
       "phase": "ae_alt_depth",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
-      "architecture": "[83]",
-      "best_val": 0.0017266004965750166,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/ae_alt_width/cand_082_d1_w83/checkpoint_best.pt",
+      "architecture": "[54]",
+      "best_val": 0.0008199942890532851,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/denoising/ae_alt_width/cand_053_d1_w54/checkpoint_best.pt",
       "family": "ADP",
-      "label": "ADP | ae_alt_width\n[83]",
-      "parameter_count": 9267,
+      "label": "ADP | ae_alt_width\n[54]",
+      "parameter_count": 6048,
       "phase": "ae_alt_width",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
-      "architecture": "[101, 101, 101, 101, 101, 100, 100, 100, 100, 100]",
-      "best_val": 0.0015207532007559686,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/ae_depth_to_width/cand_1047_d10_w101/checkpoint_best.pt",
+      "architecture": "[54]",
+      "best_val": 0.0009473693990331499,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/denoising/ae_width_to_depth/cand_053_d1_w54/checkpoint_best.pt",
       "family": "ADP",
-      "label": "ADP | ae_depth_to_width\n[101, 101, 101, 101, 101, 100, 100, 100, 100, 100]",
-      "parameter_count": 104827,
-      "phase": "ae_depth_to_width",
-      "task": "autoencoding"
-    },
-    {
-      "architecture": "[81]",
-      "best_val": 0.0014818490814646724,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/ae_width_to_depth/cand_080_d1_w81/checkpoint_best.pt",
-      "family": "ADP",
-      "label": "ADP | ae_width_to_depth\n[81]",
-      "parameter_count": 9045,
+      "label": "ADP | ae_width_to_depth\n[54]",
+      "parameter_count": 6048,
       "phase": "ae_width_to_depth",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[64, 64, 64]",
-      "best_val": 0.010044239059581626,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d03_w064_64_64_64/cand_000_d3_w64/checkpoint_best.pt",
+      "best_val": 0.018343819757361077,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d03_w064_64_64_64/cand_000_d3_w64/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d03_w064_64_64_64\n[64, 64, 64]",
       "parameter_count": 15734,
       "phase": "stl_ablation_d03_w064_64_64_64",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[96, 96, 96]",
-      "best_val": 0.005145322418037876,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d03_w096_96_96_96/cand_000_d3_w96/checkpoint_best.pt",
+      "best_val": 0.016931667664187355,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d03_w096_96_96_96/cand_000_d3_w96/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d03_w096_96_96_96\n[96, 96, 96]",
       "parameter_count": 29718,
       "phase": "stl_ablation_d03_w096_96_96_96",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[128, 128, 128]",
-      "best_val": 0.0045945258866481676,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d03_w128_128_128_128/cand_000_d3_w128/checkpoint_best.pt",
+      "best_val": 0.013715540220887657,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d03_w128_128_128_128/cand_000_d3_w128/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d03_w128_128_128_128\n[128, 128, 128]",
       "parameter_count": 47798,
       "phase": "stl_ablation_d03_w128_128_128_128",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[160, 160, 160]",
-      "best_val": 0.002996892265961562,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d03_w160_160_160_160/cand_000_d3_w160/checkpoint_best.pt",
+      "best_val": 0.011012202066798413,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d03_w160_160_160_160/cand_000_d3_w160/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d03_w160_160_160_160\n[160, 160, 160]",
       "parameter_count": 69974,
       "phase": "stl_ablation_d03_w160_160_160_160",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[192, 192, 192]",
-      "best_val": 0.0028774359026397275,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d03_w192_192_192_192/cand_000_d3_w192/checkpoint_best.pt",
+      "best_val": 0.011983931744555667,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d03_w192_192_192_192/cand_000_d3_w192/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d03_w192_192_192_192\n[192, 192, 192]",
       "parameter_count": 96246,
       "phase": "stl_ablation_d03_w192_192_192_192",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[224, 224, 224]",
-      "best_val": 0.0027212365501297887,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d03_w224_224_224_224/cand_000_d3_w224/checkpoint_best.pt",
+      "best_val": 0.013645905956463209,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d03_w224_224_224_224/cand_000_d3_w224/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d03_w224_224_224_224\n[224, 224, 224]",
       "parameter_count": 126614,
       "phase": "stl_ablation_d03_w224_224_224_224",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[256, 256, 256]",
-      "best_val": 0.001856492212890022,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d03_w256_256_256_256/cand_000_d3_w256/checkpoint_best.pt",
+      "best_val": 0.012647527383074219,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d03_w256_256_256_256/cand_000_d3_w256/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d03_w256_256_256_256\n[256, 256, 256]",
       "parameter_count": 161078,
       "phase": "stl_ablation_d03_w256_256_256_256",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[64, 64, 64, 64]",
-      "best_val": 0.012035178403345862,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d04_w064_64_64_64_64/cand_000_d4_w64/checkpoint_best.pt",
+      "best_val": 0.02073382834244015,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d04_w064_64_64_64_64/cand_000_d4_w64/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d04_w064_64_64_64_64\n[64, 64, 64, 64]",
       "parameter_count": 20022,
       "phase": "stl_ablation_d04_w064_64_64_64_64",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[96, 96, 96, 96]",
-      "best_val": 0.006139894437314922,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d04_w096_96_96_96_96/cand_000_d4_w96/checkpoint_best.pt",
+      "best_val": 0.013977514147051012,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d04_w096_96_96_96_96/cand_000_d4_w96/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d04_w096_96_96_96_96\n[96, 96, 96, 96]",
       "parameter_count": 39222,
       "phase": "stl_ablation_d04_w096_96_96_96_96",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[128, 128, 128, 128]",
-      "best_val": 0.004605427719847249,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d04_w128_128_128_128_128/cand_000_d4_w128/checkpoint_best.pt",
+      "best_val": 0.015552201089653361,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d04_w128_128_128_128_128/cand_000_d4_w128/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d04_w128_128_128_128_128\n[128, 128, 128, 128]",
       "parameter_count": 64566,
       "phase": "stl_ablation_d04_w128_128_128_128_128",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[160, 160, 160, 160]",
-      "best_val": 0.0037252596917615676,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d04_w160_160_160_160_160/cand_000_d4_w160/checkpoint_best.pt",
+      "best_val": 0.013449196591462289,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d04_w160_160_160_160_160/cand_000_d4_w160/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d04_w160_160_160_160_160\n[160, 160, 160, 160]",
       "parameter_count": 96054,
       "phase": "stl_ablation_d04_w160_160_160_160_160",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[192, 192, 192, 192]",
-      "best_val": 0.003218432498466132,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d04_w192_192_192_192_192/cand_000_d4_w192/checkpoint_best.pt",
+      "best_val": 0.013894787076619905,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d04_w192_192_192_192_192/cand_000_d4_w192/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d04_w192_192_192_192_192\n[192, 192, 192, 192]",
       "parameter_count": 133686,
       "phase": "stl_ablation_d04_w192_192_192_192_192",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[224, 224, 224, 224]",
-      "best_val": 0.003282162342821967,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d04_w224_224_224_224_224/cand_000_d4_w224/checkpoint_best.pt",
+      "best_val": 0.012899840644549165,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d04_w224_224_224_224_224/cand_000_d4_w224/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d04_w224_224_224_224_224\n[224, 224, 224, 224]",
       "parameter_count": 177462,
       "phase": "stl_ablation_d04_w224_224_224_224_224",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[256, 256, 256, 256]",
-      "best_val": 0.0030984271689153036,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d04_w256_256_256_256_256/cand_000_d4_w256/checkpoint_best.pt",
+      "best_val": 0.01196492790068982,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d04_w256_256_256_256_256/cand_000_d4_w256/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d04_w256_256_256_256_256\n[256, 256, 256, 256]",
       "parameter_count": 227382,
       "phase": "stl_ablation_d04_w256_256_256_256_256",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[64, 64, 64, 64, 64, 64]",
-      "best_val": 0.026351283089102787,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d06_w064_64_64_64_64_64_64/cand_000_d6_w64/checkpoint_best.pt",
+      "best_val": 0.03485941987758667,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d06_w064_64_64_64_64_64_64/cand_000_d6_w64/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d06_w064_64_64_64_64_64_64\n[64, 64, 64, 64, 64, 64]",
       "parameter_count": 28598,
       "phase": "stl_ablation_d06_w064_64_64_64_64_64_64",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[96, 96, 96, 96, 96, 96]",
-      "best_val": 0.015317022431721899,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d06_w096_96_96_96_96_96_96/cand_000_d6_w96/checkpoint_best.pt",
+      "best_val": 0.019958572743901313,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d06_w096_96_96_96_96_96_96/cand_000_d6_w96/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d06_w096_96_96_96_96_96_96\n[96, 96, 96, 96, 96, 96]",
       "parameter_count": 58230,
       "phase": "stl_ablation_d06_w096_96_96_96_96_96_96",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[128, 128, 128, 128, 128, 128]",
-      "best_val": 0.009686878328036806,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d06_w128_128_128_128_128_128_128/cand_000_d6_w128/checkpoint_best.pt",
+      "best_val": 0.025857145753635492,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d06_w128_128_128_128_128_128_128/cand_000_d6_w128/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d06_w128_128_128_128_128_128_128\n[128, 128, 128, 128, 128, 128]",
       "parameter_count": 98102,
       "phase": "stl_ablation_d06_w128_128_128_128_128_128_128",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[160, 160, 160, 160, 160, 160]",
-      "best_val": 0.005772569190796188,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d06_w160_160_160_160_160_160_160/cand_000_d6_w160/checkpoint_best.pt",
+      "best_val": 0.014600501144758022,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d06_w160_160_160_160_160_160_160/cand_000_d6_w160/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d06_w160_160_160_160_160_160_160\n[160, 160, 160, 160, 160, 160]",
       "parameter_count": 148214,
       "phase": "stl_ablation_d06_w160_160_160_160_160_160_160",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[192, 192, 192, 192, 192, 192]",
-      "best_val": 0.006141794238669947,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d06_w192_192_192_192_192_192_192/cand_000_d6_w192/checkpoint_best.pt",
+      "best_val": 0.013877666935786187,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d06_w192_192_192_192_192_192_192/cand_000_d6_w192/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d06_w192_192_192_192_192_192_192\n[192, 192, 192, 192, 192, 192]",
       "parameter_count": 208566,
       "phase": "stl_ablation_d06_w192_192_192_192_192_192_192",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[224, 224, 224, 224, 224, 224]",
-      "best_val": 0.0055064918528007056,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d06_w224_224_224_224_224_224_224/cand_000_d6_w224/checkpoint_best.pt",
+      "best_val": 0.011524175988055883,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d06_w224_224_224_224_224_224_224/cand_000_d6_w224/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d06_w224_224_224_224_224_224_224\n[224, 224, 224, 224, 224, 224]",
       "parameter_count": 279158,
       "phase": "stl_ablation_d06_w224_224_224_224_224_224_224",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[256, 256, 256, 256, 256, 256]",
-      "best_val": 0.004333186955502726,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d06_w256_256_256_256_256_256_256/cand_000_d6_w256/checkpoint_best.pt",
+      "best_val": 0.012930187292979081,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d06_w256_256_256_256_256_256_256/cand_000_d6_w256/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d06_w256_256_256_256_256_256_256\n[256, 256, 256, 256, 256, 256]",
       "parameter_count": 359990,
       "phase": "stl_ablation_d06_w256_256_256_256_256_256_256",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[64, 64, 64, 64, 64, 64, 64, 64]",
-      "best_val": 0.025315877246969997,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d08_w064_64_64_64_64_64_64_64_64/cand_000_d8_w64/checkpoint_best.pt",
+      "best_val": 0.04193833084959957,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d08_w064_64_64_64_64_64_64_64_64/cand_000_d8_w64/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d08_w064_64_64_64_64_64_64_64_64\n[64, 64, 64, 64, 64, 64, 64, 64]",
       "parameter_count": 37174,
       "phase": "stl_ablation_d08_w064_64_64_64_64_64_64_64_64",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[96, 96, 96, 96, 96, 96, 96, 96]",
-      "best_val": 0.014290652536010934,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d08_w096_96_96_96_96_96_96_96_96/cand_000_d8_w96/checkpoint_best.pt",
+      "best_val": 0.02410615762673774,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d08_w096_96_96_96_96_96_96_96_96/cand_000_d8_w96/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d08_w096_96_96_96_96_96_96_96_96\n[96, 96, 96, 96, 96, 96, 96, 96]",
       "parameter_count": 77238,
       "phase": "stl_ablation_d08_w096_96_96_96_96_96_96_96_96",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[128, 128, 128, 128, 128, 128, 128, 128]",
-      "best_val": 0.01020359831680587,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d08_w128_128_128_128_128_128_128_128_128/cand_000_d8_w128/checkpoint_best.pt",
+      "best_val": 0.020101449317581666,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d08_w128_128_128_128_128_128_128_128_128/cand_000_d8_w128/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d08_w128_128_128_128_128_128_128_128_128\n[128, 128, 128, 128, 128, 128, 128, 128]",
       "parameter_count": 131638,
       "phase": "stl_ablation_d08_w128_128_128_128_128_128_128_128_128",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[160, 160, 160, 160, 160, 160, 160, 160]",
-      "best_val": 0.0072433830700636866,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d08_w160_160_160_160_160_160_160_160_160/cand_000_d8_w160/checkpoint_best.pt",
+      "best_val": 0.014385182537351075,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d08_w160_160_160_160_160_160_160_160_160/cand_000_d8_w160/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d08_w160_160_160_160_160_160_160_160_160\n[160, 160, 160, 160, 160, 160, 160, 160]",
       "parameter_count": 200374,
       "phase": "stl_ablation_d08_w160_160_160_160_160_160_160_160_160",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[192, 192, 192, 192, 192, 192, 192, 192]",
-      "best_val": 0.007437025081526979,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d08_w192_192_192_192_192_192_192_192_192/cand_000_d8_w192/checkpoint_best.pt",
+      "best_val": 0.015659820094672698,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d08_w192_192_192_192_192_192_192_192_192/cand_000_d8_w192/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d08_w192_192_192_192_192_192_192_192_192\n[192, 192, 192, 192, 192, 192, 192, 192]",
       "parameter_count": 283446,
       "phase": "stl_ablation_d08_w192_192_192_192_192_192_192_192_192",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[224, 224, 224, 224, 224, 224, 224, 224]",
-      "best_val": 0.0036507875019312326,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d08_w224_224_224_224_224_224_224_224_224/cand_000_d8_w224/checkpoint_best.pt",
+      "best_val": 0.010973225980922069,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d08_w224_224_224_224_224_224_224_224_224/cand_000_d8_w224/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d08_w224_224_224_224_224_224_224_224_224\n[224, 224, 224, 224, 224, 224, 224, 224]",
       "parameter_count": 380854,
       "phase": "stl_ablation_d08_w224_224_224_224_224_224_224_224_224",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[256, 256, 256, 256, 256, 256, 256, 256]",
-      "best_val": 0.0064927563869112935,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d08_w256_256_256_256_256_256_256_256_256/cand_000_d8_w256/checkpoint_best.pt",
+      "best_val": 0.010857255169545213,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d08_w256_256_256_256_256_256_256_256_256/cand_000_d8_w256/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d08_w256_256_256_256_256_256_256_256_256\n[256, 256, 256, 256, 256, 256, 256, 256]",
       "parameter_count": 492598,
       "phase": "stl_ablation_d08_w256_256_256_256_256_256_256_256_256",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[64, 64, 64, 64, 64, 64, 64, 64, 64, 64]",
-      "best_val": 0.03837101512106445,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d10_w064_64_64_64_64_64_64_64_64_64_64/cand_000_d10_w64/checkpoint_best.pt",
+      "best_val": 0.036985869385935934,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d10_w064_64_64_64_64_64_64_64_64_64_64/cand_000_d10_w64/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d10_w064_64_64_64_64_64_64_64_64_64_64\n[64, 64, 64, 64, 64, 64, 64, 64, 64, 64]",
       "parameter_count": 45750,
       "phase": "stl_ablation_d10_w064_64_64_64_64_64_64_64_64_64_64",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[96, 96, 96, 96, 96, 96, 96, 96, 96, 96]",
-      "best_val": 0.010693092687881846,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d10_w096_96_96_96_96_96_96_96_96_96_96/cand_000_d10_w96/checkpoint_best.pt",
+      "best_val": 0.027294027703041738,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d10_w096_96_96_96_96_96_96_96_96_96_96/cand_000_d10_w96/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d10_w096_96_96_96_96_96_96_96_96_96_96\n[96, 96, 96, 96, 96, 96, 96, 96, 96, 96]",
       "parameter_count": 96246,
       "phase": "stl_ablation_d10_w096_96_96_96_96_96_96_96_96_96_96",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[128, 128, 128, 128, 128, 128, 128, 128, 128, 128]",
-      "best_val": 0.010997509196833693,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d10_w128_128_128_128_128_128_128_128_128_128_128/cand_000_d10_w128/checkpoint_best.pt",
+      "best_val": 0.018493105844958387,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d10_w128_128_128_128_128_128_128_128_128_128_128/cand_000_d10_w128/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d10_w128_128_128_128_128_128_128_128_128_128_128\n[128, 128, 128, 128, 128, 128, 128, 128, 128, 128]",
       "parameter_count": 165174,
       "phase": "stl_ablation_d10_w128_128_128_128_128_128_128_128_128_128_128",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[160, 160, 160, 160, 160, 160, 160, 160, 160, 160]",
-      "best_val": 0.008367755080430552,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d10_w160_160_160_160_160_160_160_160_160_160_160/cand_000_d10_w160/checkpoint_best.pt",
+      "best_val": 0.02126525164884646,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d10_w160_160_160_160_160_160_160_160_160_160_160/cand_000_d10_w160/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d10_w160_160_160_160_160_160_160_160_160_160_160\n[160, 160, 160, 160, 160, 160, 160, 160, 160, 160]",
       "parameter_count": 252534,
       "phase": "stl_ablation_d10_w160_160_160_160_160_160_160_160_160_160_160",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[192, 192, 192, 192, 192, 192, 192, 192, 192, 192]",
-      "best_val": 0.010096093055460777,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d10_w192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_best.pt",
+      "best_val": 0.015563439971082543,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d10_w192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d10_w192_192_192_192_192_192_192_192_192_192_192\n[192, 192, 192, 192, 192, 192, 192, 192, 192, 192]",
       "parameter_count": 358326,
       "phase": "stl_ablation_d10_w192_192_192_192_192_192_192_192_192_192_192",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[224, 224, 224, 224, 224, 224, 224, 224, 224, 224]",
-      "best_val": 0.005834360472602188,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224/cand_000_d10_w224/checkpoint_best.pt",
+      "best_val": 0.018430291001589157,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224/cand_000_d10_w224/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224\n[224, 224, 224, 224, 224, 224, 224, 224, 224, 224]",
       "parameter_count": 482550,
       "phase": "stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
       "architecture": "[256, 256, 256, 256, 256, 256, 256, 256, 256, 256]",
-      "best_val": 0.009938427495113481,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/autoencoding/stl_ablation_d10_w256_256_256_256_256_256_256_256_256_256_256/cand_000_d10_w256/checkpoint_best.pt",
+      "best_val": 0.011211411192892907,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/denoising/stl_ablation_d10_w256_256_256_256_256_256_256_256_256_256_256/cand_000_d10_w256/checkpoint_best.pt",
       "family": "STL_ablation",
       "label": "STL_ablation | stl_ablation_d10_w256_256_256_256_256_256_256_256_256_256_256\n[256, 256, 256, 256, 256, 256, 256, 256, 256, 256]",
       "parameter_count": 625206,
       "phase": "stl_ablation_d10_w256_256_256_256_256_256_256_256_256_256_256",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
-      "architecture": "[89, 89, 89, 89, 88, 88]",
-      "best_val": 0.013283320477495891,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/stl_from_ae_alt_depth/cand_000_d6_w89/checkpoint_best.pt",
+      "architecture": "[101, 101, 101, 101, 101, 101]",
+      "best_val": 0.008895457736336465,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/denoising/stl_from_ae_alt_depth/cand_000_d6_w101/checkpoint_best.pt",
       "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_alt_depth\n[89, 89, 89, 89, 88, 88]",
-      "parameter_count": 50547,
+      "label": "STL_paired | stl_from_ae_alt_depth\n[101, 101, 101, 101, 101, 101]",
+      "parameter_count": 63785,
       "phase": "stl_from_ae_alt_depth",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
-      "architecture": "[83]",
-      "best_val": 0.0034103280351211124,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/stl_from_ae_alt_width/cand_000_d1_w83/checkpoint_best.pt",
+      "architecture": "[54]",
+      "best_val": 0.02836939498250111,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/denoising/stl_from_ae_alt_width/cand_000_d1_w54/checkpoint_best.pt",
       "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_alt_width\n[83]",
-      "parameter_count": 9267,
+      "label": "STL_paired | stl_from_ae_alt_width\n[54]",
+      "parameter_count": 6048,
       "phase": "stl_from_ae_alt_width",
-      "task": "autoencoding"
+      "task": "denoising"
     },
     {
-      "architecture": "[101, 101, 101, 101, 101, 100, 100, 100, 100, 100]",
-      "best_val": 0.023918251889941972,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/stl_from_ae_depth_to_width/cand_000_d10_w101/checkpoint_best.pt",
+      "architecture": "[54]",
+      "best_val": 0.02918747294844156,
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/denoising/stl_from_ae_width_to_depth/cand_000_d1_w54/checkpoint_best.pt",
       "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_depth_to_width\n[101, 101, 101, 101, 101, 100, 100, 100, 100, 100]",
-      "parameter_count": 104827,
-      "phase": "stl_from_ae_depth_to_width",
-      "task": "autoencoding"
-    },
-    {
-      "architecture": "[81]",
-      "best_val": 0.0034839527938172305,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/stl_from_ae_width_to_depth/cand_000_d1_w81/checkpoint_best.pt",
-      "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_width_to_depth\n[81]",
-      "parameter_count": 9045,
+      "label": "STL_paired | stl_from_ae_width_to_depth\n[54]",
+      "parameter_count": 6048,
       "phase": "stl_from_ae_width_to_depth",
-      "task": "autoencoding"
-    },
-    {
-      "architecture": "[96, 96, 96, 95, 95, 95]",
-      "best_val": 0.0006986494569825253,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_alt_depth/cand_572_d6_w96/checkpoint_best.pt",
-      "family": "ADP",
-      "label": "ADP | ae_alt_depth\n[96, 96, 96, 95, 95, 95]",
-      "parameter_count": 57689,
-      "phase": "ae_alt_depth",
-      "task": "generation"
-    },
-    {
-      "architecture": "[59]",
-      "best_val": 0.0002478960616071772,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_alt_width/cand_058_d1_w59/checkpoint_best.pt",
-      "family": "ADP",
-      "label": "ADP | ae_alt_width\n[59]",
-      "parameter_count": 6603,
-      "phase": "ae_alt_width",
-      "task": "generation"
-    },
-    {
-      "architecture": "[140, 140, 140, 140, 140, 139, 139, 139, 139, 139]",
-      "best_val": 0.0017876370103866402,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_depth_to_width/cand_1390_d10_w140/checkpoint_best.pt",
-      "family": "ADP",
-      "label": "ADP | ae_depth_to_width\n[140, 140, 140, 140, 140, 139, 139, 139, 139, 139]",
-      "parameter_count": 194449,
-      "phase": "ae_depth_to_width",
-      "task": "generation"
-    },
-    {
-      "architecture": "[56]",
-      "best_val": 0.00030846853092664195,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_width_to_depth/cand_055_d1_w56/checkpoint_best.pt",
-      "family": "ADP",
-      "label": "ADP | ae_width_to_depth\n[56]",
-      "parameter_count": 6270,
-      "phase": "ae_width_to_depth",
-      "task": "generation"
-    },
-    {
-      "architecture": "[64, 64, 64]",
-      "best_val": 1.0085170053033967,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d03_w064_64_64_64/cand_000_d3_w64/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w064_64_64_64\n[64, 64, 64]",
-      "parameter_count": 15734,
-      "phase": "stl_ablation_d03_w064_64_64_64",
-      "task": "generation"
-    },
-    {
-      "architecture": "[96, 96, 96]",
-      "best_val": 1.0088299125039544,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d03_w096_96_96_96/cand_000_d3_w96/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w096_96_96_96\n[96, 96, 96]",
-      "parameter_count": 29718,
-      "phase": "stl_ablation_d03_w096_96_96_96",
-      "task": "generation"
-    },
-    {
-      "architecture": "[128, 128, 128]",
-      "best_val": 1.0089622873578437,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d03_w128_128_128_128/cand_000_d3_w128/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w128_128_128_128\n[128, 128, 128]",
-      "parameter_count": 47798,
-      "phase": "stl_ablation_d03_w128_128_128_128",
-      "task": "generation"
-    },
-    {
-      "architecture": "[160, 160, 160]",
-      "best_val": 1.0094375936304365,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d03_w160_160_160_160/cand_000_d3_w160/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w160_160_160_160\n[160, 160, 160]",
-      "parameter_count": 69974,
-      "phase": "stl_ablation_d03_w160_160_160_160",
-      "task": "generation"
-    },
-    {
-      "architecture": "[192, 192, 192]",
-      "best_val": 1.0094935594824854,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d03_w192_192_192_192/cand_000_d3_w192/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w192_192_192_192\n[192, 192, 192]",
-      "parameter_count": 96246,
-      "phase": "stl_ablation_d03_w192_192_192_192",
-      "task": "generation"
-    },
-    {
-      "architecture": "[224, 224, 224]",
-      "best_val": 1.0102027109926148,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d03_w224_224_224_224/cand_000_d3_w224/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w224_224_224_224\n[224, 224, 224]",
-      "parameter_count": 126614,
-      "phase": "stl_ablation_d03_w224_224_224_224",
-      "task": "generation"
-    },
-    {
-      "architecture": "[256, 256, 256]",
-      "best_val": 1.0104810059397842,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d03_w256_256_256_256/cand_000_d3_w256/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w256_256_256_256\n[256, 256, 256]",
-      "parameter_count": 161078,
-      "phase": "stl_ablation_d03_w256_256_256_256",
-      "task": "generation"
-    },
-    {
-      "architecture": "[64, 64, 64, 64]",
-      "best_val": 1.0084379768056022,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d04_w064_64_64_64_64/cand_000_d4_w64/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w064_64_64_64_64\n[64, 64, 64, 64]",
-      "parameter_count": 20022,
-      "phase": "stl_ablation_d04_w064_64_64_64_64",
-      "task": "generation"
-    },
-    {
-      "architecture": "[96, 96, 96, 96]",
-      "best_val": 1.0086562507659464,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d04_w096_96_96_96_96/cand_000_d4_w96/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w096_96_96_96_96\n[96, 96, 96, 96]",
-      "parameter_count": 39222,
-      "phase": "stl_ablation_d04_w096_96_96_96_96",
-      "task": "generation"
-    },
-    {
-      "architecture": "[128, 128, 128, 128]",
-      "best_val": 1.0089335622021103,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d04_w128_128_128_128_128/cand_000_d4_w128/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w128_128_128_128_128\n[128, 128, 128, 128]",
-      "parameter_count": 64566,
-      "phase": "stl_ablation_d04_w128_128_128_128_128",
-      "task": "generation"
-    },
-    {
-      "architecture": "[160, 160, 160, 160]",
-      "best_val": 1.0088417024711405,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d04_w160_160_160_160_160/cand_000_d4_w160/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w160_160_160_160_160\n[160, 160, 160, 160]",
-      "parameter_count": 96054,
-      "phase": "stl_ablation_d04_w160_160_160_160_160",
-      "task": "generation"
-    },
-    {
-      "architecture": "[192, 192, 192, 192]",
-      "best_val": 1.0090246266628184,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d04_w192_192_192_192_192/cand_000_d4_w192/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w192_192_192_192_192\n[192, 192, 192, 192]",
-      "parameter_count": 133686,
-      "phase": "stl_ablation_d04_w192_192_192_192_192",
-      "task": "generation"
-    },
-    {
-      "architecture": "[224, 224, 224, 224]",
-      "best_val": 1.0092564413640708,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d04_w224_224_224_224_224/cand_000_d4_w224/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w224_224_224_224_224\n[224, 224, 224, 224]",
-      "parameter_count": 177462,
-      "phase": "stl_ablation_d04_w224_224_224_224_224",
-      "task": "generation"
-    },
-    {
-      "architecture": "[256, 256, 256, 256]",
-      "best_val": 1.0096479920999857,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d04_w256_256_256_256_256/cand_000_d4_w256/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w256_256_256_256_256\n[256, 256, 256, 256]",
-      "parameter_count": 227382,
-      "phase": "stl_ablation_d04_w256_256_256_256_256",
-      "task": "generation"
-    },
-    {
-      "architecture": "[64, 64, 64, 64, 64, 64]",
-      "best_val": 1.008415324765186,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d06_w064_64_64_64_64_64_64/cand_000_d6_w64/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w064_64_64_64_64_64_64\n[64, 64, 64, 64, 64, 64]",
-      "parameter_count": 28598,
-      "phase": "stl_ablation_d06_w064_64_64_64_64_64_64",
-      "task": "generation"
-    },
-    {
-      "architecture": "[96, 96, 96, 96, 96, 96]",
-      "best_val": 1.0085975145684678,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d06_w096_96_96_96_96_96_96/cand_000_d6_w96/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w096_96_96_96_96_96_96\n[96, 96, 96, 96, 96, 96]",
-      "parameter_count": 58230,
-      "phase": "stl_ablation_d06_w096_96_96_96_96_96_96",
-      "task": "generation"
-    },
-    {
-      "architecture": "[128, 128, 128, 128, 128, 128]",
-      "best_val": 1.0084074269666337,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d06_w128_128_128_128_128_128_128/cand_000_d6_w128/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w128_128_128_128_128_128_128\n[128, 128, 128, 128, 128, 128]",
-      "parameter_count": 98102,
-      "phase": "stl_ablation_d06_w128_128_128_128_128_128_128",
-      "task": "generation"
-    },
-    {
-      "architecture": "[160, 160, 160, 160, 160, 160]",
-      "best_val": 1.0086488863920846,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d06_w160_160_160_160_160_160_160/cand_000_d6_w160/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w160_160_160_160_160_160_160\n[160, 160, 160, 160, 160, 160]",
-      "parameter_count": 148214,
-      "phase": "stl_ablation_d06_w160_160_160_160_160_160_160",
-      "task": "generation"
-    },
-    {
-      "architecture": "[192, 192, 192, 192, 192, 192]",
-      "best_val": 1.0085640201712063,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d06_w192_192_192_192_192_192_192/cand_000_d6_w192/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w192_192_192_192_192_192_192\n[192, 192, 192, 192, 192, 192]",
-      "parameter_count": 208566,
-      "phase": "stl_ablation_d06_w192_192_192_192_192_192_192",
-      "task": "generation"
-    },
-    {
-      "architecture": "[224, 224, 224, 224, 224, 224]",
-      "best_val": 1.0085369159353759,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d06_w224_224_224_224_224_224_224/cand_000_d6_w224/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w224_224_224_224_224_224_224\n[224, 224, 224, 224, 224, 224]",
-      "parameter_count": 279158,
-      "phase": "stl_ablation_d06_w224_224_224_224_224_224_224",
-      "task": "generation"
-    },
-    {
-      "architecture": "[256, 256, 256, 256, 256, 256]",
-      "best_val": 1.0084959256782586,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d06_w256_256_256_256_256_256_256/cand_000_d6_w256/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w256_256_256_256_256_256_256\n[256, 256, 256, 256, 256, 256]",
-      "parameter_count": 359990,
-      "phase": "stl_ablation_d06_w256_256_256_256_256_256_256",
-      "task": "generation"
-    },
-    {
-      "architecture": "[64, 64, 64, 64, 64, 64, 64, 64]",
-      "best_val": 1.0084469474580098,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d08_w064_64_64_64_64_64_64_64_64/cand_000_d8_w64/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w064_64_64_64_64_64_64_64_64\n[64, 64, 64, 64, 64, 64, 64, 64]",
-      "parameter_count": 37174,
-      "phase": "stl_ablation_d08_w064_64_64_64_64_64_64_64_64",
-      "task": "generation"
-    },
-    {
-      "architecture": "[96, 96, 96, 96, 96, 96, 96, 96]",
-      "best_val": 1.0083859133799595,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d08_w096_96_96_96_96_96_96_96_96/cand_000_d8_w96/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w096_96_96_96_96_96_96_96_96\n[96, 96, 96, 96, 96, 96, 96, 96]",
-      "parameter_count": 77238,
-      "phase": "stl_ablation_d08_w096_96_96_96_96_96_96_96_96",
-      "task": "generation"
-    },
-    {
-      "architecture": "[128, 128, 128, 128, 128, 128, 128, 128]",
-      "best_val": 1.0084120943618886,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d08_w128_128_128_128_128_128_128_128_128/cand_000_d8_w128/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w128_128_128_128_128_128_128_128_128\n[128, 128, 128, 128, 128, 128, 128, 128]",
-      "parameter_count": 131638,
-      "phase": "stl_ablation_d08_w128_128_128_128_128_128_128_128_128",
-      "task": "generation"
-    },
-    {
-      "architecture": "[160, 160, 160, 160, 160, 160, 160, 160]",
-      "best_val": 1.0083165386782191,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d08_w160_160_160_160_160_160_160_160_160/cand_000_d8_w160/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w160_160_160_160_160_160_160_160_160\n[160, 160, 160, 160, 160, 160, 160, 160]",
-      "parameter_count": 200374,
-      "phase": "stl_ablation_d08_w160_160_160_160_160_160_160_160_160",
-      "task": "generation"
-    },
-    {
-      "architecture": "[192, 192, 192, 192, 192, 192, 192, 192]",
-      "best_val": 1.0084579712109292,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d08_w192_192_192_192_192_192_192_192_192/cand_000_d8_w192/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w192_192_192_192_192_192_192_192_192\n[192, 192, 192, 192, 192, 192, 192, 192]",
-      "parameter_count": 283446,
-      "phase": "stl_ablation_d08_w192_192_192_192_192_192_192_192_192",
-      "task": "generation"
-    },
-    {
-      "architecture": "[224, 224, 224, 224, 224, 224, 224, 224]",
-      "best_val": 1.0084094486280315,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d08_w224_224_224_224_224_224_224_224_224/cand_000_d8_w224/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w224_224_224_224_224_224_224_224_224\n[224, 224, 224, 224, 224, 224, 224, 224]",
-      "parameter_count": 380854,
-      "phase": "stl_ablation_d08_w224_224_224_224_224_224_224_224_224",
-      "task": "generation"
-    },
-    {
-      "architecture": "[256, 256, 256, 256, 256, 256, 256, 256]",
-      "best_val": 1.0084091335003131,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d08_w256_256_256_256_256_256_256_256_256/cand_000_d8_w256/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w256_256_256_256_256_256_256_256_256\n[256, 256, 256, 256, 256, 256, 256, 256]",
-      "parameter_count": 492598,
-      "phase": "stl_ablation_d08_w256_256_256_256_256_256_256_256_256",
-      "task": "generation"
-    },
-    {
-      "architecture": "[64, 64, 64, 64, 64, 64, 64, 64, 64, 64]",
-      "best_val": 1.0084660592691572,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d10_w064_64_64_64_64_64_64_64_64_64_64/cand_000_d10_w64/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w064_64_64_64_64_64_64_64_64_64_64\n[64, 64, 64, 64, 64, 64, 64, 64, 64, 64]",
-      "parameter_count": 45750,
-      "phase": "stl_ablation_d10_w064_64_64_64_64_64_64_64_64_64_64",
-      "task": "generation"
-    },
-    {
-      "architecture": "[96, 96, 96, 96, 96, 96, 96, 96, 96, 96]",
-      "best_val": 1.0083682066753985,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d10_w096_96_96_96_96_96_96_96_96_96_96/cand_000_d10_w96/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w096_96_96_96_96_96_96_96_96_96_96\n[96, 96, 96, 96, 96, 96, 96, 96, 96, 96]",
-      "parameter_count": 96246,
-      "phase": "stl_ablation_d10_w096_96_96_96_96_96_96_96_96_96_96",
-      "task": "generation"
-    },
-    {
-      "architecture": "[128, 128, 128, 128, 128, 128, 128, 128, 128, 128]",
-      "best_val": 1.0083838507131184,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d10_w128_128_128_128_128_128_128_128_128_128_128/cand_000_d10_w128/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w128_128_128_128_128_128_128_128_128_128_128\n[128, 128, 128, 128, 128, 128, 128, 128, 128, 128]",
-      "parameter_count": 165174,
-      "phase": "stl_ablation_d10_w128_128_128_128_128_128_128_128_128_128_128",
-      "task": "generation"
-    },
-    {
-      "architecture": "[160, 160, 160, 160, 160, 160, 160, 160, 160, 160]",
-      "best_val": 1.0082621260380036,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d10_w160_160_160_160_160_160_160_160_160_160_160/cand_000_d10_w160/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w160_160_160_160_160_160_160_160_160_160_160\n[160, 160, 160, 160, 160, 160, 160, 160, 160, 160]",
-      "parameter_count": 252534,
-      "phase": "stl_ablation_d10_w160_160_160_160_160_160_160_160_160_160_160",
-      "task": "generation"
-    },
-    {
-      "architecture": "[192, 192, 192, 192, 192, 192, 192, 192, 192, 192]",
-      "best_val": 1.0083358720506879,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d10_w192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w192_192_192_192_192_192_192_192_192_192_192\n[192, 192, 192, 192, 192, 192, 192, 192, 192, 192]",
-      "parameter_count": 358326,
-      "phase": "stl_ablation_d10_w192_192_192_192_192_192_192_192_192_192_192",
-      "task": "generation"
-    },
-    {
-      "architecture": "[224, 224, 224, 224, 224, 224, 224, 224, 224, 224]",
-      "best_val": 1.0084104722150333,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224/cand_000_d10_w224/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224\n[224, 224, 224, 224, 224, 224, 224, 224, 224, 224]",
-      "parameter_count": 482550,
-      "phase": "stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224",
-      "task": "generation"
-    },
-    {
-      "architecture": "[256, 256, 256, 256, 256, 256, 256, 256, 256, 256]",
-      "best_val": 1.0083754788472836,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/generation/stl_ablation_d10_w256_256_256_256_256_256_256_256_256_256_256/cand_000_d10_w256/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w256_256_256_256_256_256_256_256_256_256_256\n[256, 256, 256, 256, 256, 256, 256, 256, 256, 256]",
-      "parameter_count": 625206,
-      "phase": "stl_ablation_d10_w256_256_256_256_256_256_256_256_256_256_256",
-      "task": "generation"
-    },
-    {
-      "architecture": "[96, 96, 96, 95, 95, 95]",
-      "best_val": 1.0084564424632525,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_alt_depth/cand_000_d6_w96/checkpoint_best.pt",
-      "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_alt_depth\n[96, 96, 96, 95, 95, 95]",
-      "parameter_count": 57689,
-      "phase": "stl_from_ae_alt_depth",
-      "task": "generation"
-    },
-    {
-      "architecture": "[59]",
-      "best_val": 1.0086552017443058,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_alt_width/cand_000_d1_w59/checkpoint_best.pt",
-      "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_alt_width\n[59]",
-      "parameter_count": 6603,
-      "phase": "stl_from_ae_alt_width",
-      "task": "generation"
-    },
-    {
-      "architecture": "[140, 140, 140, 140, 140, 139, 139, 139, 139, 139]",
-      "best_val": 1.008332533725857,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_depth_to_width/cand_000_d10_w140/checkpoint_best.pt",
-      "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_depth_to_width\n[140, 140, 140, 140, 140, 139, 139, 139, 139, 139]",
-      "parameter_count": 194449,
-      "phase": "stl_from_ae_depth_to_width",
-      "task": "generation"
-    },
-    {
-      "architecture": "[56]",
-      "best_val": 1.0086094048092533,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_width_to_depth/cand_000_d1_w56/checkpoint_best.pt",
-      "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_width_to_depth\n[56]",
-      "parameter_count": 6270,
-      "phase": "stl_from_ae_width_to_depth",
-      "task": "generation"
-    },
-    {
-      "architecture": "[105, 105, 105, 104, 104, 104]",
-      "best_val": 0.08898697692691039,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/ae_alt_depth/cand_626_d6_w105/checkpoint_best.pt",
-      "family": "ADP",
-      "label": "ADP | ae_alt_depth\n[105, 105, 105, 104, 104, 104]",
-      "parameter_count": 62888,
-      "phase": "ae_alt_depth",
-      "task": "representation"
-    },
-    {
-      "architecture": "[227, 227, 227, 227, 227, 227, 227, 227, 226, 226]",
-      "best_val": 0.09031726454395253,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/ae_alt_width/cand_278_d10_w227/checkpoint_best.pt",
-      "family": "ADP",
-      "label": "ADP | ae_alt_width\n[227, 227, 227, 227, 227, 227, 227, 227, 226, 226]",
-      "parameter_count": 483732,
-      "phase": "ae_alt_width",
-      "task": "representation"
-    },
-    {
-      "architecture": "[93, 93, 93, 93, 93, 93, 93, 92, 92, 92]",
-      "best_val": 0.08750509213577258,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/ae_depth_to_width/cand_922_d10_w93/checkpoint_best.pt",
-      "family": "ADP",
-      "label": "ADP | ae_depth_to_width\n[93, 93, 93, 93, 93, 93, 93, 92, 92, 92]",
-      "parameter_count": 85832,
-      "phase": "ae_depth_to_width",
-      "task": "representation"
-    },
-    {
-      "architecture": "[161, 160, 160, 160]",
-      "best_val": 0.08618749312472872,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/ae_width_to_depth/cand_348_d4_w161/checkpoint_best.pt",
-      "family": "ADP",
-      "label": "ADP | ae_width_to_depth\n[161, 160, 160, 160]",
-      "parameter_count": 88704,
-      "phase": "ae_width_to_depth",
-      "task": "representation"
-    },
-    {
-      "architecture": "[64, 64, 64]",
-      "best_val": 0.30542102837104607,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d03_w064_64_64_64/cand_000_d3_w64/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w064_64_64_64\n[64, 64, 64]",
-      "parameter_count": 12679,
-      "phase": "stl_ablation_d03_w064_64_64_64",
-      "task": "representation"
-    },
-    {
-      "architecture": "[96, 96, 96]",
-      "best_val": 0.2585177361884135,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d03_w096_96_96_96/cand_000_d3_w96/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w096_96_96_96\n[96, 96, 96]",
-      "parameter_count": 25159,
-      "phase": "stl_ablation_d03_w096_96_96_96",
-      "task": "representation"
-    },
-    {
-      "architecture": "[128, 128, 128]",
-      "best_val": 0.2512279202784362,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d03_w128_128_128_128/cand_000_d3_w128/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w128_128_128_128\n[128, 128, 128]",
-      "parameter_count": 41735,
-      "phase": "stl_ablation_d03_w128_128_128_128",
-      "task": "representation"
-    },
-    {
-      "architecture": "[160, 160, 160]",
-      "best_val": 0.25172888078931027,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d03_w160_160_160_160/cand_000_d3_w160/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w160_160_160_160\n[160, 160, 160]",
-      "parameter_count": 62407,
-      "phase": "stl_ablation_d03_w160_160_160_160",
-      "task": "representation"
-    },
-    {
-      "architecture": "[192, 192, 192]",
-      "best_val": 0.22023146868093693,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d03_w192_192_192_192/cand_000_d3_w192/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w192_192_192_192\n[192, 192, 192]",
-      "parameter_count": 87175,
-      "phase": "stl_ablation_d03_w192_192_192_192",
-      "task": "representation"
-    },
-    {
-      "architecture": "[224, 224, 224]",
-      "best_val": 0.2295195092951947,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d03_w224_224_224_224/cand_000_d3_w224/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w224_224_224_224\n[224, 224, 224]",
-      "parameter_count": 116039,
-      "phase": "stl_ablation_d03_w224_224_224_224",
-      "task": "representation"
-    },
-    {
-      "architecture": "[256, 256, 256]",
-      "best_val": 0.2092157300511719,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d03_w256_256_256_256/cand_000_d3_w256/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d03_w256_256_256_256\n[256, 256, 256]",
-      "parameter_count": 148999,
-      "phase": "stl_ablation_d03_w256_256_256_256",
-      "task": "representation"
-    },
-    {
-      "architecture": "[64, 64, 64, 64]",
-      "best_val": 0.2754223306223857,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d04_w064_64_64_64_64/cand_000_d4_w64/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w064_64_64_64_64\n[64, 64, 64, 64]",
-      "parameter_count": 16967,
-      "phase": "stl_ablation_d04_w064_64_64_64_64",
-      "task": "representation"
-    },
-    {
-      "architecture": "[96, 96, 96, 96]",
-      "best_val": 0.24066188776993291,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d04_w096_96_96_96_96/cand_000_d4_w96/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w096_96_96_96_96\n[96, 96, 96, 96]",
-      "parameter_count": 34663,
-      "phase": "stl_ablation_d04_w096_96_96_96_96",
-      "task": "representation"
-    },
-    {
-      "architecture": "[128, 128, 128, 128]",
-      "best_val": 0.2222438145196983,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d04_w128_128_128_128_128/cand_000_d4_w128/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w128_128_128_128_128\n[128, 128, 128, 128]",
-      "parameter_count": 58503,
-      "phase": "stl_ablation_d04_w128_128_128_128_128",
-      "task": "representation"
-    },
-    {
-      "architecture": "[160, 160, 160, 160]",
-      "best_val": 0.21775596534978506,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d04_w160_160_160_160_160/cand_000_d4_w160/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w160_160_160_160_160\n[160, 160, 160, 160]",
-      "parameter_count": 88487,
-      "phase": "stl_ablation_d04_w160_160_160_160_160",
-      "task": "representation"
-    },
-    {
-      "architecture": "[192, 192, 192, 192]",
-      "best_val": 0.2107421139685747,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d04_w192_192_192_192_192/cand_000_d4_w192/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w192_192_192_192_192\n[192, 192, 192, 192]",
-      "parameter_count": 124615,
-      "phase": "stl_ablation_d04_w192_192_192_192_192",
-      "task": "representation"
-    },
-    {
-      "architecture": "[224, 224, 224, 224]",
-      "best_val": 0.19641964207903878,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d04_w224_224_224_224_224/cand_000_d4_w224/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w224_224_224_224_224\n[224, 224, 224, 224]",
-      "parameter_count": 166887,
-      "phase": "stl_ablation_d04_w224_224_224_224_224",
-      "task": "representation"
-    },
-    {
-      "architecture": "[256, 256, 256, 256]",
-      "best_val": 0.17418516722513913,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d04_w256_256_256_256_256/cand_000_d4_w256/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d04_w256_256_256_256_256\n[256, 256, 256, 256]",
-      "parameter_count": 215303,
-      "phase": "stl_ablation_d04_w256_256_256_256_256",
-      "task": "representation"
-    },
-    {
-      "architecture": "[64, 64, 64, 64, 64, 64]",
-      "best_val": 0.22261346594632525,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d06_w064_64_64_64_64_64_64/cand_000_d6_w64/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w064_64_64_64_64_64_64\n[64, 64, 64, 64, 64, 64]",
-      "parameter_count": 25543,
-      "phase": "stl_ablation_d06_w064_64_64_64_64_64_64",
-      "task": "representation"
-    },
-    {
-      "architecture": "[96, 96, 96, 96, 96, 96]",
-      "best_val": 0.19835008727677528,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d06_w096_96_96_96_96_96_96/cand_000_d6_w96/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w096_96_96_96_96_96_96\n[96, 96, 96, 96, 96, 96]",
-      "parameter_count": 53671,
-      "phase": "stl_ablation_d06_w096_96_96_96_96_96_96",
-      "task": "representation"
-    },
-    {
-      "architecture": "[128, 128, 128, 128, 128, 128]",
-      "best_val": 0.19251240835952294,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d06_w128_128_128_128_128_128_128/cand_000_d6_w128/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w128_128_128_128_128_128_128\n[128, 128, 128, 128, 128, 128]",
-      "parameter_count": 92039,
-      "phase": "stl_ablation_d06_w128_128_128_128_128_128_128",
-      "task": "representation"
-    },
-    {
-      "architecture": "[160, 160, 160, 160, 160, 160]",
-      "best_val": 0.16211466004468042,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d06_w160_160_160_160_160_160_160/cand_000_d6_w160/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w160_160_160_160_160_160_160\n[160, 160, 160, 160, 160, 160]",
-      "parameter_count": 140647,
-      "phase": "stl_ablation_d06_w160_160_160_160_160_160_160",
-      "task": "representation"
-    },
-    {
-      "architecture": "[192, 192, 192, 192, 192, 192]",
-      "best_val": 0.14901119815009825,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d06_w192_192_192_192_192_192_192/cand_000_d6_w192/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w192_192_192_192_192_192_192\n[192, 192, 192, 192, 192, 192]",
-      "parameter_count": 199495,
-      "phase": "stl_ablation_d06_w192_192_192_192_192_192_192",
-      "task": "representation"
-    },
-    {
-      "architecture": "[224, 224, 224, 224, 224, 224]",
-      "best_val": 0.14650343214431868,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d06_w224_224_224_224_224_224_224/cand_000_d6_w224/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w224_224_224_224_224_224_224\n[224, 224, 224, 224, 224, 224]",
-      "parameter_count": 268583,
-      "phase": "stl_ablation_d06_w224_224_224_224_224_224_224",
-      "task": "representation"
-    },
-    {
-      "architecture": "[256, 256, 256, 256, 256, 256]",
-      "best_val": 0.1530013402534396,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d06_w256_256_256_256_256_256_256/cand_000_d6_w256/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d06_w256_256_256_256_256_256_256\n[256, 256, 256, 256, 256, 256]",
-      "parameter_count": 347911,
-      "phase": "stl_ablation_d06_w256_256_256_256_256_256_256",
-      "task": "representation"
-    },
-    {
-      "architecture": "[64, 64, 64, 64, 64, 64, 64, 64]",
-      "best_val": 0.1857988435572879,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d08_w064_64_64_64_64_64_64_64_64/cand_000_d8_w64/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w064_64_64_64_64_64_64_64_64\n[64, 64, 64, 64, 64, 64, 64, 64]",
-      "parameter_count": 34119,
-      "phase": "stl_ablation_d08_w064_64_64_64_64_64_64_64_64",
-      "task": "representation"
-    },
-    {
-      "architecture": "[96, 96, 96, 96, 96, 96, 96, 96]",
-      "best_val": 0.1613953873614896,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d08_w096_96_96_96_96_96_96_96_96/cand_000_d8_w96/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w096_96_96_96_96_96_96_96_96\n[96, 96, 96, 96, 96, 96, 96, 96]",
-      "parameter_count": 72679,
-      "phase": "stl_ablation_d08_w096_96_96_96_96_96_96_96_96",
-      "task": "representation"
-    },
-    {
-      "architecture": "[128, 128, 128, 128, 128, 128, 128, 128]",
-      "best_val": 0.15327302497230694,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d08_w128_128_128_128_128_128_128_128_128/cand_000_d8_w128/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w128_128_128_128_128_128_128_128_128\n[128, 128, 128, 128, 128, 128, 128, 128]",
-      "parameter_count": 125575,
-      "phase": "stl_ablation_d08_w128_128_128_128_128_128_128_128_128",
-      "task": "representation"
-    },
-    {
-      "architecture": "[160, 160, 160, 160, 160, 160, 160, 160]",
-      "best_val": 0.14383182086727464,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d08_w160_160_160_160_160_160_160_160_160/cand_000_d8_w160/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w160_160_160_160_160_160_160_160_160\n[160, 160, 160, 160, 160, 160, 160, 160]",
-      "parameter_count": 192807,
-      "phase": "stl_ablation_d08_w160_160_160_160_160_160_160_160_160",
-      "task": "representation"
-    },
-    {
-      "architecture": "[192, 192, 192, 192, 192, 192, 192, 192]",
-      "best_val": 0.15823118069527228,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d08_w192_192_192_192_192_192_192_192_192/cand_000_d8_w192/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w192_192_192_192_192_192_192_192_192\n[192, 192, 192, 192, 192, 192, 192, 192]",
-      "parameter_count": 274375,
-      "phase": "stl_ablation_d08_w192_192_192_192_192_192_192_192_192",
-      "task": "representation"
-    },
-    {
-      "architecture": "[224, 224, 224, 224, 224, 224, 224, 224]",
-      "best_val": 0.14246149557743448,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d08_w224_224_224_224_224_224_224_224_224/cand_000_d8_w224/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w224_224_224_224_224_224_224_224_224\n[224, 224, 224, 224, 224, 224, 224, 224]",
-      "parameter_count": 370279,
-      "phase": "stl_ablation_d08_w224_224_224_224_224_224_224_224_224",
-      "task": "representation"
-    },
-    {
-      "architecture": "[256, 256, 256, 256, 256, 256, 256, 256]",
-      "best_val": 0.1426603563605782,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d08_w256_256_256_256_256_256_256_256_256/cand_000_d8_w256/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d08_w256_256_256_256_256_256_256_256_256\n[256, 256, 256, 256, 256, 256, 256, 256]",
-      "parameter_count": 480519,
-      "phase": "stl_ablation_d08_w256_256_256_256_256_256_256_256_256",
-      "task": "representation"
-    },
-    {
-      "architecture": "[64, 64, 64, 64, 64, 64, 64, 64, 64, 64]",
-      "best_val": 0.19756630283492876,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d10_w064_64_64_64_64_64_64_64_64_64_64/cand_000_d10_w64/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w064_64_64_64_64_64_64_64_64_64_64\n[64, 64, 64, 64, 64, 64, 64, 64, 64, 64]",
-      "parameter_count": 42695,
-      "phase": "stl_ablation_d10_w064_64_64_64_64_64_64_64_64_64_64",
-      "task": "representation"
-    },
-    {
-      "architecture": "[96, 96, 96, 96, 96, 96, 96, 96, 96, 96]",
-      "best_val": 0.16678078392954718,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d10_w096_96_96_96_96_96_96_96_96_96_96/cand_000_d10_w96/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w096_96_96_96_96_96_96_96_96_96_96\n[96, 96, 96, 96, 96, 96, 96, 96, 96, 96]",
-      "parameter_count": 91687,
-      "phase": "stl_ablation_d10_w096_96_96_96_96_96_96_96_96_96_96",
-      "task": "representation"
-    },
-    {
-      "architecture": "[128, 128, 128, 128, 128, 128, 128, 128, 128, 128]",
-      "best_val": 0.15064050648681712,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d10_w128_128_128_128_128_128_128_128_128_128_128/cand_000_d10_w128/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w128_128_128_128_128_128_128_128_128_128_128\n[128, 128, 128, 128, 128, 128, 128, 128, 128, 128]",
-      "parameter_count": 159111,
-      "phase": "stl_ablation_d10_w128_128_128_128_128_128_128_128_128_128_128",
-      "task": "representation"
-    },
-    {
-      "architecture": "[160, 160, 160, 160, 160, 160, 160, 160, 160, 160]",
-      "best_val": 0.178949126048629,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d10_w160_160_160_160_160_160_160_160_160_160_160/cand_000_d10_w160/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w160_160_160_160_160_160_160_160_160_160_160\n[160, 160, 160, 160, 160, 160, 160, 160, 160, 160]",
-      "parameter_count": 244967,
-      "phase": "stl_ablation_d10_w160_160_160_160_160_160_160_160_160_160_160",
-      "task": "representation"
-    },
-    {
-      "architecture": "[192, 192, 192, 192, 192, 192, 192, 192, 192, 192]",
-      "best_val": 0.15468879496725418,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d10_w192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w192_192_192_192_192_192_192_192_192_192_192\n[192, 192, 192, 192, 192, 192, 192, 192, 192, 192]",
-      "parameter_count": 349255,
-      "phase": "stl_ablation_d10_w192_192_192_192_192_192_192_192_192_192_192",
-      "task": "representation"
-    },
-    {
-      "architecture": "[224, 224, 224, 224, 224, 224, 224, 224, 224, 224]",
-      "best_val": 0.12744512650040726,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224/cand_000_d10_w224/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224\n[224, 224, 224, 224, 224, 224, 224, 224, 224, 224]",
-      "parameter_count": 471975,
-      "phase": "stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224",
-      "task": "representation"
-    },
-    {
-      "architecture": "[256, 256, 256, 256, 256, 256, 256, 256, 256, 256]",
-      "best_val": 0.1240249558190951,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/representation/stl_ablation_d10_w256_256_256_256_256_256_256_256_256_256_256/cand_000_d10_w256/checkpoint_best.pt",
-      "family": "STL_ablation",
-      "label": "STL_ablation | stl_ablation_d10_w256_256_256_256_256_256_256_256_256_256_256\n[256, 256, 256, 256, 256, 256, 256, 256, 256, 256]",
-      "parameter_count": 613127,
-      "phase": "stl_ablation_d10_w256_256_256_256_256_256_256_256_256_256_256",
-      "task": "representation"
-    },
-    {
-      "architecture": "[105, 105, 105, 104, 104, 104]",
-      "best_val": 0.18634911513076596,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_alt_depth/cand_000_d6_w105/checkpoint_best.pt",
-      "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_alt_depth\n[105, 105, 105, 104, 104, 104]",
-      "parameter_count": 62888,
-      "phase": "stl_from_ae_alt_depth",
-      "task": "representation"
-    },
-    {
-      "architecture": "[227, 227, 227, 227, 227, 227, 227, 227, 226, 226]",
-      "best_val": 0.14570796492767568,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_alt_width/cand_000_d10_w227/checkpoint_best.pt",
-      "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_alt_width\n[227, 227, 227, 227, 227, 227, 227, 227, 226, 226]",
-      "parameter_count": 483732,
-      "phase": "stl_from_ae_alt_width",
-      "task": "representation"
-    },
-    {
-      "architecture": "[93, 93, 93, 93, 93, 93, 93, 92, 92, 92]",
-      "best_val": 0.16479575640055377,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_depth_to_width/cand_000_d10_w93/checkpoint_best.pt",
-      "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_depth_to_width\n[93, 93, 93, 93, 93, 93, 93, 92, 92, 92]",
-      "parameter_count": 85832,
-      "phase": "stl_from_ae_depth_to_width",
-      "task": "representation"
-    },
-    {
-      "architecture": "[161, 160, 160, 160]",
-      "best_val": 0.2009544138106579,
-      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_width_to_depth/cand_000_d4_w161/checkpoint_best.pt",
-      "family": "STL_paired",
-      "label": "STL_paired | stl_from_ae_width_to_depth\n[161, 160, 160, 160]",
-      "parameter_count": 88704,
-      "phase": "stl_from_ae_width_to_depth",
-      "task": "representation"
+      "task": "denoising"
     }
   ]
 }
