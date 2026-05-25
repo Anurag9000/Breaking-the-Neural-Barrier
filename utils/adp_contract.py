@@ -113,6 +113,14 @@ def _widths_are_uniform(widths: Optional[Tuple[int, ...]]) -> bool:
     return bool(widths) and len(set(int(w) for w in widths)) == 1
 
 
+def _can_spawn_new_depth_layer(widths: Optional[Tuple[int, ...]], min_new_layer_width: int) -> bool:
+    if not _widths_are_uniform(widths):
+        return False
+    if not widths:
+        return False
+    return int(widths[0]) > int(min_new_layer_width)
+
+
 def _pct_improvement(prev_val: float, current_val: float) -> float:
     denom = abs(float(prev_val))
     if denom <= 1e-12:
@@ -163,11 +171,14 @@ def _invoke_train(
     device: Any,
     history: list,
     logger: Any = None,
+    batch_controller: Any = None,
+    measure_throughput: bool = False,
 ) -> float:
     result = _call_best_effort(train_fn, {
         "model": model,
         "local_model": model,
         "curr_model": model,
+        "task": dl_train,
         "train_loader": dl_train,
         "dl_train": dl_train,
         "train_data": dl_train,
@@ -181,6 +192,8 @@ def _invoke_train(
         "history": history,
         "val_history": history,
         "logger": logger,
+        "batch_controller": batch_controller,
+        "measure_throughput": measure_throughput,
         "verbose": True,
     })
     if isinstance(result, tuple):
@@ -275,6 +288,8 @@ def run_module_adp(
     log_neurons: bool = False,
     results_dir: Optional[Path] = None,
     logger: Any = None,
+    batch_controller: Any = None,
+    measure_throughput: bool = False,
 ) -> Tuple[float, Any]:
     results_dir = Path(results_dir) if results_dir is not None else Path("results_adp")
     results_dir.mkdir(parents=True, exist_ok=True)
@@ -297,10 +312,11 @@ def run_module_adp(
 
     delta_width = float(getattr(acfg, "delta_width", getattr(acfg, "delta", 0.0) or 0.0))
     delta_depth = float(getattr(acfg, "delta_depth", getattr(acfg, "delta", 0.0) or 0.0))
-    patience_width = int(getattr(acfg, "patience_width_exp", getattr(acfg, "trials_width", 5)))
+    patience_width = int(getattr(acfg, "patience_width_exp", getattr(acfg, "trials_width", 10)))
     patience_depth = int(getattr(acfg, "patience_depth_exp", getattr(acfg, "trials_depth", 5)))
     width_stage_margin_patience = int(getattr(acfg, "width_stage_margin_patience", 5))
     width_stage_min_improve_pct = float(getattr(acfg, "width_stage_min_improve_pct", 1.0))
+    min_new_layer_width = int(getattr(acfg, "min_new_layer_width", 10))
 
     def snapshot_shape(cur_model: Any) -> Tuple[int, int, Optional[Tuple[int, ...]]]:
         return _shape_from_snapshot(_snapshot(module_globals, cur_model), cur_model)
@@ -317,7 +333,18 @@ def run_module_adp(
         return f"width={width}, depth={depth}"
 
     def train(cur_model: Any) -> Tuple[float, Any]:
-        val = _invoke_train(train_fn, cur_model, dl_train, dl_val, acfg, device, val_history, logger=logger)
+        val = _invoke_train(
+            train_fn,
+            cur_model,
+            dl_train,
+            dl_val,
+            acfg,
+            device,
+            val_history,
+            logger=logger,
+            batch_controller=batch_controller,
+            measure_throughput=measure_throughput,
+        )
         snap = _snapshot(module_globals, cur_model)
         return val, snap
 
@@ -341,20 +368,25 @@ def run_module_adp(
             return True
         return False
 
-    def ensure_uniform_width(cur_model: Any) -> Tuple[Any, bool]:
+    def ensure_uniform_width(cur_model: Any, *, update_global: bool = True) -> Tuple[Any, bool, Optional[float], Any]:
         progressed = False
+        last_val: Optional[float] = None
+        last_snap: Any = None
         while True:
             _, _, widths = snapshot_shape(cur_model)
             if _widths_are_uniform(widths):
-                return cur_model, progressed
+                return cur_model, progressed, last_val, last_snap
             candidate = _try_expand_once(module_globals, cur_model, acfg, device, "width", expand_width_fn)
             if candidate is None:
-                return cur_model, progressed
+                return cur_model, progressed, last_val, last_snap
             if logger is not None:
                 logger.log_console(f"[STAGED][WIDTH-FILL] {describe(cur_model)} -> {describe(candidate)}")
             cand_val, cand_snap = train(candidate)
             cur_model = restore(candidate, cand_snap)
-            update_global_best(cur_model, cand_val, cand_snap, delta_width)
+            last_val = cand_val
+            last_snap = cand_snap
+            if update_global:
+                update_global_best(cur_model, cand_val, cand_snap, delta_width)
             progressed = True
 
     def run_width_stage(cur_model: Any) -> Tuple[Any, bool, bool, float]:
@@ -398,22 +430,32 @@ def run_module_adp(
                 break
             if float(global_best_val) >= before_val and not stage_improved and margin_fail >= width_stage_margin_patience:
                 break
-        cur_model, _ = ensure_uniform_width(cur_model)
+        cur_model, _, _, _ = ensure_uniform_width(cur_model)
         return cur_model, any_phase_improvement
 
     def run_depth_step(cur_model: Any) -> Tuple[Any, bool]:
-        cur_model, _ = ensure_uniform_width(cur_model)
+        cur_model, _, _, _ = ensure_uniform_width(cur_model)
+        _, _, widths = snapshot_shape(cur_model)
+        if not _can_spawn_new_depth_layer(widths, min_new_layer_width):
+            return cur_model, False
         candidate = _try_expand_once(module_globals, cur_model, acfg, device, "depth", expand_depth_fn)
         if candidate is None:
             return cur_model, False
         if logger is not None:
             logger.log_console(f"[STAGED][DEPTH] {describe(cur_model)} -> {describe(candidate)}")
-        cand_val, cand_snap = train(candidate)
-        cur_model = restore(candidate, cand_snap)
-        return cur_model, update_global_best(cur_model, cand_val, cand_snap, delta_depth)
+        _, _, candidate_widths = snapshot_shape(candidate)
+        if _widths_are_uniform(candidate_widths):
+            cand_val, cand_snap = train(candidate)
+            cur_model = restore(candidate, cand_snap)
+            return cur_model, update_global_best(cur_model, cand_val, cand_snap, delta_depth)
+        warmed_model, _, warmed_val, warmed_snap = ensure_uniform_width(candidate, update_global=False)
+        if warmed_val is None or warmed_snap is None:
+            return cur_model, False
+        cur_model = restore(warmed_model, warmed_snap)
+        return cur_model, update_global_best(cur_model, warmed_val, warmed_snap, delta_depth)
 
     def run_depth_phase(cur_model: Any) -> Tuple[Any, bool]:
-        cur_model, _ = ensure_uniform_width(cur_model)
+        cur_model, _, _, _ = ensure_uniform_width(cur_model)
         depth_fail = 0
         any_phase_improvement = False
         while depth_fail < patience_depth:
@@ -425,6 +467,9 @@ def run_module_adp(
                 )
             if not improved:
                 probe_snap = _snapshot(module_globals, cur_model)
+                _, _, probe_widths = snapshot_shape(cur_model)
+                if not _can_spawn_new_depth_layer(probe_widths, min_new_layer_width):
+                    break
                 if _try_expand_once(module_globals, cur_model, acfg, device, "depth", expand_depth_fn) is None:
                     break
                 cur_model = restore(cur_model, probe_snap)

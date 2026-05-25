@@ -31,15 +31,16 @@ MLPAutoencoder = baseline_module.MLPAutoencoder  # type: ignore
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 20  # early-stopping patience (per single-shot training)
-    trials_width: int = 2  # <=0 => infinite
-    trials_depth: int = 2  # <=0 => infinite
+    patience: int = 5  # early-stopping patience (per single-shot training)
+    trials_width: int = 10  # <=0 => infinite
+    trials_depth: int = 5  # <=0 => infinite
     ex_k: int = 1
     width_stage_margin_patience: int = 5
     width_stage_min_improve_pct: float = 1.0
     max_width: int = 4096
     max_depth: int = 10
     max_neurons: int = 10_000_000
+    min_new_layer_width: int = 10
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
@@ -127,7 +128,9 @@ def expand_depth(model: MLPAutoencoder, max_depth: int) -> Optional[MLPAutoencod
         return None
     if len(set(int(w) for w in model.hidden_widths)) != 1:
         return None
-    new_h = model.hidden_widths + [model.hidden_widths[-1]]
+    if int(model.hidden_widths[-1]) <= 10:
+        return None
+    new_h = model.hidden_widths + [10]
     _rebuild_mlp_ae(model, new_h)
     return model
 
@@ -325,9 +328,9 @@ def main() -> None:
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--results-dir", type=str, default="results_adp/mlp_ae_stl")
     p.add_argument("--delta", type=float, default=1e-3)
-    p.add_argument("--patience", type=int, default=20, help="Early-stopping patience per (single-shot) training run")
-    p.add_argument("--trials-width", type=int, default=2, help="Expansion patience for width; <=0 means infinite")
-    p.add_argument("--trials-depth", type=int, default=2, help="Expansion patience for depth; <=0 means infinite")
+    p.add_argument("--patience", type=int, default=5, help="Early-stopping patience per (single-shot) training run")
+    p.add_argument("--trials-width", type=int, default=10, help="Expansion patience for width; <=0 means infinite")
+    p.add_argument("--trials-depth", type=int, default=5, help="Expansion patience for depth; <=0 means infinite")
     p.add_argument("--ex-k", type=int, default=1)
     p.add_argument("--width-stage-margin-patience", type=int, default=5)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
