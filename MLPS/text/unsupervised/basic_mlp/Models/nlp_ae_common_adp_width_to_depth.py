@@ -11,6 +11,7 @@ import torch.nn.functional as F
 import sys
 sys.path.append(str(Path(__file__).resolve().parents[3]))
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
+from utils.adp_contract import run_module_adp
 from utils.adp_logging import ContinuousLogger
 from utils.text_benchmarks import load_ag_news_samples
 
@@ -61,13 +62,14 @@ class TextAE(nn.Module):
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 20
-    trials_width: int = 2
-    trials_depth: int = 2
+    patience: int = 5
+    trials_width: int = 10
+    trials_depth: int = 5
     ex_k: int = 64
     max_width: int = 4096
     max_depth: int = 12
     max_neurons: int = 5_000_000
+    min_new_layer_width: int = 10
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
@@ -103,8 +105,24 @@ def rebuild_backbone(model: TextAE, hidden: List[int]):
     model.hidden = list(hidden)
 
 
+def _next_staged_widths(hidden: List[int], max_width: int, ex_k: int) -> List[int]:
+    widths = [int(w) for w in hidden]
+    if not widths:
+        return widths
+    if len(set(widths)) == 1:
+        target = min(int(max_width), max(widths) + max(1, int(ex_k)))
+    else:
+        target = max(widths)
+    next_widths = list(widths)
+    for idx, width in enumerate(next_widths):
+        if width < target:
+            next_widths[idx] = width + 1
+            break
+    return next_widths
+
+
 def expand_width(model: TextAE, ex_k: int, max_width: int) -> Optional[TextAE]:
-    new_h = [min(max_width, w + ex_k) for w in model.hidden]
+    new_h = _next_staged_widths(model.hidden, max_width, ex_k)
     if new_h == model.hidden:
         return None
     rebuild_backbone(model, new_h)
@@ -114,7 +132,13 @@ def expand_width(model: TextAE, ex_k: int, max_width: int) -> Optional[TextAE]:
 def expand_depth(model: TextAE, max_depth: int) -> Optional[TextAE]:
     if len(model.hidden) >= max_depth:
         return None
-    new_h = model.hidden + [model.hidden[-1]]
+    if not model.hidden:
+        return None
+    if len(set(int(w) for w in model.hidden)) != 1:
+        return None
+    if int(model.hidden[-1]) <= 10:
+        return None
+    new_h = model.hidden + [10]
     rebuild_backbone(model, new_h)
     return model
 
@@ -231,69 +255,18 @@ def train_with_early_stopping(model: TextAE, dl_train, dl_val, acfg: ADPConfig, 
 
 
 def adp_search(model: TextAE, dl_train, dl_val, acfg: ADPConfig, device):
-    best_val, best_state = train_with_early_stopping(model, dl_train, dl_val, acfg, device)
-    model.load_state_dict(best_state)
-    best_snap = snapshot_arch_and_state(model, best_state)
-    global_best_val = best_val
-
-    def try_width_only(snap: Dict[str, Any], best_so_far: float) -> Tuple[Dict[str, Any], float]:
-        curr = snap
-        fail = 0
-        while fail < acfg.trials_width:
-            m = restore_arch_and_state(model, curr, device)
-            widened = expand_width(m, acfg.ex_k, acfg.max_width)
-            if widened is None:
-                break
-            v, s = train_with_early_stopping(widened, dl_train, dl_val, acfg, device)
-            if v < best_so_far - acfg.delta:
-                best_so_far = v
-                curr = snapshot_arch_and_state(widened, s)
-                fail = 0
-            else:
-                fail += 1
-        return curr, best_so_far
-
-    def try_depth_only(snap: Dict[str, Any], best_so_far: float) -> Tuple[Dict[str, Any], float]:
-        curr = snap
-        fail = 0
-        while fail < acfg.trials_depth:
-            m = restore_arch_and_state(model, curr, device)
-            deeper = expand_depth(m, acfg.max_depth)
-            if deeper is None:
-                break
-            v, s = train_with_early_stopping(deeper, dl_train, dl_val, acfg, device)
-            if v < best_so_far - acfg.delta:
-                best_so_far = v
-                curr = snapshot_arch_and_state(deeper, s)
-                fail = 0
-            else:
-                fail += 1
-        return curr, best_so_far
-
-    mode = acfg.adp_mode.lower()
-    if mode in ["width_only", "width"]:
-        best_snap, global_best_val = try_width_only(best_snap, global_best_val)
-    elif mode in ["depth_only", "depth"]:
-        best_snap, global_best_val = try_depth_only(best_snap, global_best_val)
-    elif mode == "width_to_depth":
-        best_snap, global_best_val = try_width_only(best_snap, global_best_val)
-        best_snap, global_best_val = try_depth_only(best_snap, global_best_val)
-    elif mode == "depth_to_width":
-        best_snap, global_best_val = try_depth_only(best_snap, global_best_val)
-        best_snap, global_best_val = try_width_only(best_snap, global_best_val)
-    elif mode == "alt_width":
-        for _ in range(max(acfg.trials_width, acfg.trials_depth)):
-            best_snap, global_best_val = try_width_only(best_snap, global_best_val)
-            best_snap, global_best_val = try_depth_only(best_snap, global_best_val)
-    elif mode == "alt_depth":
-        for _ in range(max(acfg.trials_width, acfg.trials_depth)):
-            best_snap, global_best_val = try_depth_only(best_snap, global_best_val)
-            best_snap, global_best_val = try_width_only(best_snap, global_best_val)
-    else:
-        raise ValueError(f"Unknown adp_mode={acfg.adp_mode}")
-
-    final_model = restore_arch_and_state(model, best_snap, device)
-    return global_best_val, final_model
+    return run_module_adp(
+        globals(),
+        model,
+        dl_train,
+        dl_val,
+        acfg,
+        device,
+        log_loss=False,
+        log_neurons=False,
+        results_dir=None,
+        logger=None,
+    )
 
 
 def main():
@@ -306,9 +279,9 @@ def main():
     p.add_argument("--adp-mode", type=str, default="width_to_depth",
                    choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"])
     p.add_argument("--delta", type=float, default=1e-3)
-    p.add_argument("--patience", type=int, default=20)
-    p.add_argument("--trials-width", type=int, default=2)
-    p.add_argument("--trials-depth", type=int, default=2)
+    p.add_argument("--patience", type=int, default=5)
+    p.add_argument("--trials-width", type=int, default=10)
+    p.add_argument("--trials-depth", type=int, default=5)
     p.add_argument("--ex-k", type=int, default=64)
     p.add_argument("--max-width", type=int, default=4096)
     p.add_argument("--max-depth", type=int, default=12)

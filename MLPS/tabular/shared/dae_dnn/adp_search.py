@@ -10,6 +10,7 @@ import torch.nn as nn
 from DAE.DNN.mlp import MLP
 from DAE.DNN.train_utils import eval_epoch, train_epoch
 from DAE.DNN.tasks import refresh_task_loaders
+from utils.adp_contract import run_module_adp
 from utils.adp_logging import ContinuousLogger
 from utils.adp_state import merge_state_preserving_init
 
@@ -18,15 +19,16 @@ from utils.adp_state import merge_state_preserving_init
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-4
-    patience: int = 10
-    trials_width: int = 0
-    trials_depth: int = 0
+    patience: int = 5
+    trials_width: int = 10
+    trials_depth: int = 5
     ex_k: int = 1
     max_width: int = 4096
     max_depth: int = 10
     max_neurons: int = 10_000_000
     width_stage_margin_patience: int = 5
     width_stage_min_improve_pct: float = 1.0
+    min_new_layer_width: int = 10
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
@@ -75,7 +77,18 @@ def _rebuild_mlp(model: MLP, hidden_widths: List[int]) -> MLP:
 
 
 def expand_width(model: MLP, ex_k: int, max_width: int) -> Optional[MLP]:
-    new_hidden = [min(int(max_width), int(width) + int(ex_k)) for width in model.hidden_widths]
+    widths = [int(width) for width in model.hidden_widths]
+    if not widths:
+        return None
+    if len(set(widths)) == 1:
+        target = min(int(max_width), max(widths) + max(1, int(ex_k)))
+    else:
+        target = max(widths)
+    new_hidden = list(widths)
+    for idx, width in enumerate(new_hidden):
+        if width < target:
+            new_hidden[idx] = width + 1
+            break
     if new_hidden == list(model.hidden_widths):
         return None
     return _rebuild_mlp(model, new_hidden)
@@ -84,7 +97,12 @@ def expand_width(model: MLP, ex_k: int, max_width: int) -> Optional[MLP]:
 def expand_depth(model: MLP, max_depth: int) -> Optional[MLP]:
     if not model.hidden_widths or len(model.hidden_widths) >= int(max_depth):
         return None
-    new_hidden = list(model.hidden_widths) + [int(model.hidden_widths[-1])]
+    widths = [int(width) for width in model.hidden_widths]
+    if len(set(widths)) != 1:
+        return None
+    if int(widths[-1]) <= 10:
+        return None
+    new_hidden = list(widths) + [10]
     return _rebuild_mlp(model, new_hidden)
 
 
@@ -230,353 +248,15 @@ def adp_search(
     batch_controller=None,
     max_candidates: Optional[int] = None,
 ):
-    candidate_evals = 0
-
-    def train_candidate(curr_model: MLP):
-        nonlocal candidate_evals
-        if max_candidates is not None and candidate_evals >= int(max_candidates):
-            return None
-        candidate_evals += 1
-        return train_with_early_stopping(
-            curr_model,
-            task,
-            cfg,
-            device,
-            logger,
-            measure_throughput,
-            batch_controller=batch_controller,
-            display_best_floor=None if candidate_evals <= 1 else global_best_val,
-        )
-
-    first_run = train_candidate(model)
-    if first_run is None:
-        return float("inf"), model
-    best_val, best_state, _ = first_run
-    model.load_state_dict(best_state)
-
-    global_best_val = best_val
-    global_best_snap = snapshot_arch_and_state(model, best_state)
-
-    def can_widen(m: MLP) -> bool:
-        if not m.hidden_widths:
-            return False
-        return model_width(m) + int(cfg.ex_k) <= int(cfg.max_width) and total_neurons(m) < int(cfg.max_neurons)
-
-    def can_deepen(m: MLP) -> bool:
-        if not m.hidden_widths:
-            return False
-        return len(m.hidden_widths) + 1 <= int(cfg.max_depth) and (total_neurons(m) + int(m.hidden_widths[-1])) <= int(cfg.max_neurons)
-
-    def optimize_width_at_fixed_depth(curr_model: MLP):
-        if logger is not None:
-            logger.log_console(f"[PHASE][WIDTH] start widths={_format_hidden_widths(list(curr_model.hidden_widths))}")
-
-        first_local = train_candidate(curr_model)
-        if first_local is None:
-            return curr_model, global_best_val, global_best_snap
-        local_val, local_state, _ = first_local
-        local_best_val = local_val
-        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
-
-        width_fail = 0
-        width_limit = int(cfg.trials_width) if int(cfg.trials_width) > 0 else max(int(cfg.patience), 1)
-
-        while width_fail < width_limit:
-            if not can_widen(curr_model):
-                break
-            next_model = expand_width(curr_model, cfg.ex_k, cfg.max_width)
-            if next_model is None:
-                break
-            prev_widths = list(curr_model.hidden_widths)
-            curr_model = next_model
-            if logger is not None:
-                logger.log_console(f"[EXPAND][WIDTH] {_format_hidden_widths(prev_widths)} -> {_format_hidden_widths(list(curr_model.hidden_widths))}")
-
-            next_run = train_candidate(curr_model)
-            if next_run is None:
-                break
-            v, s, _ = next_run
-            if v < local_best_val - cfg.delta:
-                local_best_val = v
-                local_best_snap = snapshot_arch_and_state(curr_model, s)
-                width_fail = 0
-                if logger is not None:
-                    logger.log_console(f"[OPT][WIDTH] improvement val_loss={v:.6f}")
-            else:
-                width_fail += 1
-                if logger is not None:
-                    logger.log_console(f"[OPT][WIDTH] no_improve val_loss={v:.6f} fail={width_fail}/{width_limit}")
-
-        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
-        if logger is not None:
-            logger.log_console(f"[PHASE][WIDTH] end best_val_loss={local_best_val:.6f} best_widths={_format_hidden_widths(list(final_model.hidden_widths))}")
-        return final_model, local_best_val, local_best_snap
-
-    def optimize_depth_at_fixed_width(curr_model: MLP):
-        if logger is not None:
-            logger.log_console(f"[PHASE][DEPTH] start widths={_format_hidden_widths(list(curr_model.hidden_widths))}")
-
-        first_local = train_candidate(curr_model)
-        if first_local is None:
-            return curr_model, global_best_val, global_best_snap
-        local_val, local_state, _ = first_local
-        local_best_val = local_val
-        local_best_snap = snapshot_arch_and_state(curr_model, local_state)
-
-        depth_fail = 0
-        depth_limit = int(cfg.trials_depth) if int(cfg.trials_depth) > 0 else max(int(cfg.patience), 1)
-
-        while depth_fail < depth_limit:
-            if not can_deepen(curr_model):
-                break
-            next_model = expand_depth(curr_model, cfg.max_depth)
-            if next_model is None:
-                break
-            prev_depth = len(curr_model.hidden_widths)
-            curr_model = next_model
-            if logger is not None:
-                logger.log_console(f"[EXPAND][DEPTH] depth {prev_depth} -> {len(curr_model.hidden_widths)}")
-
-            next_run = train_candidate(curr_model)
-            if next_run is None:
-                break
-            v, s, _ = next_run
-            if v < local_best_val - cfg.delta:
-                local_best_val = v
-                local_best_snap = snapshot_arch_and_state(curr_model, s)
-                depth_fail = 0
-                if logger is not None:
-                    logger.log_console(f"[OPT][DEPTH] improvement val_loss={v:.6f}")
-            else:
-                depth_fail += 1
-                if logger is not None:
-                    logger.log_console(f"[OPT][DEPTH] no_improve val_loss={v:.6f} fail={depth_fail}/{depth_limit}")
-
-        final_model = restore_arch_and_state(curr_model, local_best_snap, device)
-        if logger is not None:
-            logger.log_console(f"[PHASE][DEPTH] end best_val_loss={local_best_val:.6f} best_depth={len(final_model.hidden_widths)}")
-        return final_model, local_best_val, local_best_snap
-
-    def evaluate_candidate_model(curr_model: MLP):
-        trained = train_candidate(curr_model)
-        if trained is None:
-            return None
-        cand_val, cand_state, _ = trained
-        curr_model.load_state_dict(cand_state)
-        return curr_model, float(cand_val), snapshot_arch_and_state(curr_model, cand_state)
-
-    mode = cfg.adp_mode
-    current_phase = "width" if mode in ["width_only", "width", "alt_width", "width_to_depth"] else "depth"
-    width_fail = 0
-    depth_fail = 0
-    consecutive_fail = 0
-    width_stage_margin_fail = 0
-    width_stage_anchor_val: Optional[float] = float(global_best_val)
-    alt_consecutive_patience = max((2 * int(cfg.patience)) + 1, 10)
-    current_model = restore_arch_and_state(model, global_best_snap, device)
-
-    while True:
-        phase_for_candidate = current_phase
-        next_model: Optional[MLP] = None
-
-        if mode in ["width_only", "width"]:
-            if width_fail >= int(cfg.patience) or not can_widen(current_model):
-                break
-            next_model = expand_width(current_model, cfg.ex_k, cfg.max_width)
-        elif mode in ["depth_only", "depth"]:
-            if depth_fail >= int(cfg.patience) or not can_deepen(current_model):
-                break
-            next_model = expand_depth(current_model, cfg.max_depth)
-        elif mode == "width_to_depth":
-            if current_phase == "width":
-                if (
-                    width_fail >= int(cfg.patience)
-                    or (
-                        int(cfg.width_stage_margin_patience) > 0
-                        and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
-                    )
-                ):
-                    current_phase = "depth"
-                    continue
-                if not can_widen(current_model):
-                    current_phase = "depth"
-                    continue
-                next_model = expand_width(current_model, cfg.ex_k, cfg.max_width)
-            else:
-                if depth_fail >= int(cfg.patience) or not can_deepen(current_model):
-                    break
-                next_model = expand_depth(current_model, cfg.max_depth)
-        elif mode == "depth_to_width":
-            if current_phase == "depth":
-                if depth_fail >= int(cfg.patience):
-                    current_phase = "width"
-                    continue
-                if not can_deepen(current_model):
-                    current_phase = "width"
-                    continue
-                next_model = expand_depth(current_model, cfg.max_depth)
-            else:
-                if width_fail >= int(cfg.patience) or not can_widen(current_model):
-                    break
-                next_model = expand_width(current_model, cfg.ex_k, cfg.max_width)
-        elif mode == "alt_width":
-            if current_phase == "width":
-                if width_fail >= int(cfg.patience):
-                    if consecutive_fail >= alt_consecutive_patience:
-                        break
-                    if not can_deepen(current_model):
-                        break
-                    current_phase = "depth"
-                    width_fail = 0
-                    continue
-                if not can_widen(current_model):
-                    if not can_deepen(current_model):
-                        break
-                    current_phase = "depth"
-                    width_fail = 0
-                    continue
-                next_model = expand_width(current_model, cfg.ex_k, cfg.max_width)
-            else:
-                if depth_fail >= int(cfg.patience):
-                    if consecutive_fail >= alt_consecutive_patience:
-                        break
-                    if not can_widen(current_model):
-                        break
-                    current_phase = "width"
-                    depth_fail = 0
-                    continue
-                if not can_deepen(current_model):
-                    if not can_widen(current_model):
-                        break
-                    current_phase = "width"
-                    depth_fail = 0
-                    continue
-                next_model = expand_depth(current_model, cfg.max_depth)
-        elif mode == "alt_depth":
-            if current_phase == "depth":
-                if depth_fail >= int(cfg.patience):
-                    if not can_widen(current_model):
-                        break
-                    current_phase = "width"
-                    depth_fail = 0
-                    continue
-                if not can_deepen(current_model):
-                    if not can_widen(current_model):
-                        break
-                    current_phase = "width"
-                    depth_fail = 0
-                    continue
-                next_model = expand_depth(current_model, cfg.max_depth)
-            else:
-                if width_fail >= int(cfg.patience):
-                    if consecutive_fail >= alt_consecutive_patience:
-                        break
-                    if not can_deepen(current_model):
-                        break
-                    current_phase = "depth"
-                    width_fail = 0
-                    continue
-                if not can_widen(current_model):
-                    if not can_deepen(current_model):
-                        break
-                    current_phase = "depth"
-                    width_fail = 0
-                    continue
-                next_model = expand_width(current_model, cfg.ex_k, cfg.max_width)
-        else:
-            raise ValueError(f"Unknown ADP mode: {mode}")
-
-        if next_model is None:
-            break
-
-        evaluated = evaluate_candidate_model(next_model)
-        if evaluated is None:
-            break
-        current_model, cand_val, cand_snap = evaluated
-
-        improved = cand_val < global_best_val - cfg.delta
-        if improved:
-            global_best_val = cand_val
-            global_best_snap = cand_snap
-            consecutive_fail = 0
-            if phase_for_candidate == "width":
-                width_fail = 0
-            else:
-                depth_fail = 0
-        else:
-            consecutive_fail += 1
-            if phase_for_candidate == "width":
-                width_fail += 1
-            else:
-                depth_fail += 1
-
-        if phase_for_candidate == "width":
-            stage_margin_pct = _relative_improvement_pct(width_stage_anchor_val, global_best_val)
-            if width_stage_anchor_val is None:
-                width_stage_margin_fail = 0
-            elif stage_margin_pct >= float(cfg.width_stage_min_improve_pct):
-                width_stage_margin_fail = 0
-            else:
-                width_stage_margin_fail += 1
-            width_stage_anchor_val = float(global_best_val)
-
-        if mode == "alt_width":
-            if phase_for_candidate == "width" and (
-                width_fail >= int(cfg.patience)
-                or (
-                    int(cfg.width_stage_margin_patience) > 0
-                    and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
-                )
-            ):
-                current_phase = "depth"
-                width_fail = 0
-                width_stage_margin_fail = 0
-            elif phase_for_candidate == "depth" and depth_fail >= int(cfg.patience):
-                current_phase = "width"
-                depth_fail = 0
-                width_stage_margin_fail = 0
-        elif mode == "alt_depth":
-            if phase_for_candidate == "depth" and depth_fail >= int(cfg.patience):
-                current_phase = "width"
-                depth_fail = 0
-                width_stage_margin_fail = 0
-            elif phase_for_candidate == "width" and (
-                width_fail >= int(cfg.patience)
-                or (
-                    int(cfg.width_stage_margin_patience) > 0
-                    and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
-                )
-            ):
-                current_phase = "depth"
-                width_fail = 0
-        elif mode == "width_to_depth":
-            if phase_for_candidate == "depth":
-                current_phase = "width"
-                width_fail = 0
-                width_stage_margin_fail = 0
-            elif (
-                width_fail >= int(cfg.patience)
-                or (
-                    int(cfg.width_stage_margin_patience) > 0
-                    and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
-                )
-            ):
-                current_phase = "depth"
-        elif mode == "depth_to_width":
-            if phase_for_candidate == "width":
-                current_phase = "depth"
-                depth_fail = 0
-                width_stage_margin_fail = 0
-            elif depth_fail >= int(cfg.patience):
-                current_phase = "width"
-                width_stage_margin_fail = 0
-
-        if mode in ["alt_width", "alt_depth"] and consecutive_fail >= alt_consecutive_patience:
-            break
-        if mode == "width_to_depth" and depth_fail >= int(cfg.patience):
-            break
-        if mode == "depth_to_width" and width_fail >= int(cfg.patience):
-            break
-
-    model = restore_arch_and_state(current_model, global_best_snap, device)
-    return global_best_val, model
+    return run_module_adp(
+        globals(),
+        model,
+        task,
+        task.val_loader,
+        cfg,
+        device,
+        results_dir=None,
+        logger=logger,
+        batch_controller=batch_controller,
+        measure_throughput=measure_throughput,
+    )

@@ -36,15 +36,16 @@ ProjectionHead = baseline_module.ProjectionHead  # type: ignore
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 20
-    trials_width: int = 2
-    trials_depth: int = 2
+    patience: int = 5
+    trials_width: int = 10
+    trials_depth: int = 5
     ex_k: int = 1
     width_stage_margin_patience: int = 5
     width_stage_min_improve_pct: float = 1.0
     max_width: int = 4096
     max_depth: int = 10
     max_neurons: int = 10_000_000
+    min_new_layer_width: int = 10
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
@@ -248,9 +249,9 @@ def main():
     p.add_argument("--adp-mode", type=str, default="width_to_depth",
                    choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"])
     p.add_argument("--delta", type=float, default=1e-3)
-    p.add_argument("--patience", type=int, default=20)
-    p.add_argument("--trials-width", type=int, default=2)
-    p.add_argument("--trials-depth", type=int, default=2)
+    p.add_argument("--patience", type=int, default=5)
+    p.add_argument("--trials-width", type=int, default=10)
+    p.add_argument("--trials-depth", type=int, default=5)
     p.add_argument("--ex-k", type=int, default=1)
     p.add_argument("--width-stage-margin-patience", type=int, default=5)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
