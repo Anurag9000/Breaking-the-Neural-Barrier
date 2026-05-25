@@ -10,7 +10,7 @@ from DAE.DNN.tasks import task_names
 
 
 def main() -> None:
-    p = argparse.ArgumentParser(description="Run STL + 6 ADP modes for all DNN tasks")
+    p = argparse.ArgumentParser(description="Run STL + supported ADP modes for all DNN tasks")
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
     p.add_argument("--batch-size", type=int, default=2048)
@@ -27,7 +27,7 @@ def main() -> None:
     args = p.parse_args()
 
     tasks = task_names() if "all" in [t.lower() for t in args.tasks] else args.tasks
-    adp_modes = ["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth"]
+    adp_modes = ["alt_width", "width_to_depth"]
     shared_batch_state = Path(args.results_dir) / "_batch_size_state.json"
 
     def current_batch_size() -> int:
@@ -51,7 +51,7 @@ def main() -> None:
                 "--mode",
                 "adp" if mode != "stl" else "stl",
                 "--adp-mode",
-                mode if mode != "stl" else "width_only",
+                mode if mode != "stl" else "width_to_depth",
                 "--data-dir",
                 args.data_dir,
                 "--results-dir",

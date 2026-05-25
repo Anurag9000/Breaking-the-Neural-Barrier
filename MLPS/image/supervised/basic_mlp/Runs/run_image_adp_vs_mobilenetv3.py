@@ -17,7 +17,7 @@ MLP_ADP = ROOT / "MLPS/image/supervised/basic_mlp/Models/mlp_cls_stl_adp_width_t
 CNN_MOBILENETV3 = ROOT / "CNN/Supervised/Runs/run_cnn_mobilenet_v_3.py"
 
 
-ADP_MODES = ["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth"]
+ADP_MODES = ["alt_width", "width_to_depth"]
 
 
 def _dataset_image_shape(dataset: str) -> List[int]:

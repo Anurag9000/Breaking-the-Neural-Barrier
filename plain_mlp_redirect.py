@@ -6,6 +6,7 @@ from typing import Dict, Optional
 
 
 REPO_ROOT = Path(__file__).resolve().parent
+SUPPORTED_ADP_MODES = {"alt_width", "width_to_depth"}
 
 
 def _infer_package_name(source_path: Path) -> Optional[str]:
@@ -52,6 +53,11 @@ def exec_centralized_file(source_file: str, relative_target: str, extra_globals:
 def inject_default_cli_arg(flag: str, value: str) -> None:
     if __name__ != "__main__":
         return
+    if flag == "--adp-mode" and value not in SUPPORTED_ADP_MODES:
+        supported = ", ".join(sorted(SUPPORTED_ADP_MODES))
+        raise SystemExit(
+            f"ADP mode '{value}' is disabled by repo policy. Supported ADP modes are: {supported}."
+        )
     argv = sys.argv[1:]
     if flag in argv:
         return

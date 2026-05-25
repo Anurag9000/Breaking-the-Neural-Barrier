@@ -50,12 +50,8 @@ DEFAULT_VRAM_BUDGET_GB = 5.5
 BASE_WIDTH_CANDIDATES = [2, 4, 8, 16, 32, 64, 128, 256, 512]
 BASE_DEPTH_CANDIDATES = [2, 3, 4, 5]
 ADP_METHODS = [
-    "adp_width_only",
-    "adp_depth_only",
-    "adp_width_to_depth",
-    "adp_depth_to_width",
     "adp_alt_width",
-    "adp_alt_depth",
+    "adp_width_to_depth",
 ]
 DEFAULT_BASELINE_METHODS = ["grid", "random", "bayes", "nas"]
 
@@ -111,12 +107,8 @@ def is_adp_method(method: str) -> bool:
 
 def adp_mode_for_method(method: str) -> str:
     mapping = {
-        "adp_width_only": "width_only",
-        "adp_depth_only": "depth_only",
-        "adp_width_to_depth": "width_to_depth",
-        "adp_depth_to_width": "depth_to_width",
         "adp_alt_width": "alt_width",
-        "adp_alt_depth": "alt_depth",
+        "adp_width_to_depth": "width_to_depth",
     }
     if method not in mapping:
         raise ValueError(f"Unknown ADP method: {method}")
