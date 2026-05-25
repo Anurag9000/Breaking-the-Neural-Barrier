@@ -51,10 +51,8 @@ PER_TASK_BATCH_SIZES = {
 }
 
 GOLIATH_ADP_PHASES = [
-    ("ae_alt_depth", "alt_depth"),
     ("ae_alt_width", "alt_width"),
     ("ae_width_to_depth", "width_to_depth"),
-    ("ae_depth_to_width", "depth_to_width"),
 ]
 
 GOLIATH_PHASE_ORDER = [name for name, _ in GOLIATH_ADP_PHASES]
@@ -2094,7 +2092,7 @@ def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phas
             device,
             adp_seed_hidden(),
             phase_name,
-            phase_mode(phase_name) or "width_only",
+            phase_mode(phase_name) or "width_to_depth",
             reconstruct=task_reconstruct(task),
             batch_controller=batch_controller,
         )
@@ -2117,7 +2115,7 @@ def main() -> None:
         "--phases",
         type=str,
         nargs="+",
-        default=["ae_alt_depth", "ae_alt_width", "ae_width_to_depth", "ae_depth_to_width"],
+        default=["ae_alt_width", "ae_width_to_depth"],
     )
     p.add_argument("--batch-size", type=int, default=32768, help="Global batch-size default/override. The adaptive controller will shrink this if VRAM pressure rises.")
     p.add_argument("--num-workers", type=int, default=0)

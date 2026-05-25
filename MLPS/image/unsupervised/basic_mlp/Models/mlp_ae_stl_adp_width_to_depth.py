@@ -317,7 +317,7 @@ def main() -> None:
         "--adp-mode",
         type=str,
         default="width_to_depth",
-        choices=["width_only", "depth_only", "width_to_depth", "depth_to_width", "alt_width", "alt_depth", "width", "depth"],
+        choices=["alt_width", "width_to_depth"],
     )
     p.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100"])
     p.add_argument("--data-dir", type=str, default="./data")
