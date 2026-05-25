@@ -29,7 +29,7 @@ def main() -> None:
         "--adp-mode",
         type=str,
         default="width_to_depth",
-        choices=["alt_width", "width_to_depth"],
+        choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"],
     )
     p.add_argument("--hidden", type=int, nargs="+", default=[50, 50])
     p.add_argument("--batch-size", type=int, default=32768)

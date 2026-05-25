@@ -209,7 +209,7 @@ def main():
     p.add_argument("--sparsity-rho", type=float, default=0.05)
     p.add_argument("--sparsity-lambda", type=float, default=1e-3)
     p.add_argument("--adp-mode", type=str, default="width_to_depth",
-                   choices=["alt_width", "width_to_depth"])
+                   choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"])
     p.add_argument("--delta", type=float, default=1e-3)
     p.add_argument("--patience", type=int, default=20)
     p.add_argument("--trials-width", type=int, default=2)

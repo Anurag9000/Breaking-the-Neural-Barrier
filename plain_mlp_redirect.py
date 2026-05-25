@@ -6,7 +6,7 @@ from typing import Dict, Optional
 
 
 REPO_ROOT = Path(__file__).resolve().parent
-SUPPORTED_ADP_MODES = {"alt_width", "width_to_depth"}
+SUPPORTED_ADP_MODES = {"alt_width", "alt_depth", "width_to_depth", "depth_to_width"}
 
 
 def _infer_package_name(source_path: Path) -> Optional[str]:
