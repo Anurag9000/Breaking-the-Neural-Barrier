@@ -119,7 +119,7 @@ def main():
     p.add_argument("--max-total-epochs", type=int, default=None)
     p.add_argument("--inner-epochs", type=int, default=50)
     p.add_argument("--adp-mode", type=str, default="width_to_depth",
-                   choices=["alt_width", "width_to_depth"])
+                   choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"])
     p.add_argument("--device", type=str, default=None, help="force device, e.g. cpu or cuda")
     p.add_argument("--results-dir", type=Path, default=Path("results_adp_classical_ssl"))
     p.add_argument("--plot-loss", action="store_true", help="Save loss-vs-epoch (log scale)")
