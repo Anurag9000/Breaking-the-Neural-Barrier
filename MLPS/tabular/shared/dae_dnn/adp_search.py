@@ -16,7 +16,7 @@ from utils.adp_state import merge_state_preserving_init
 
 @dataclass
 class ADPConfig:
-    adp_mode: str = "width_only"
+    adp_mode: str = "width_to_depth"
     delta: float = 1e-4
     patience: int = 10
     trials_width: int = 0

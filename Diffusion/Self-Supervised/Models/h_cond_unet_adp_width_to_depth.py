@@ -358,7 +358,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--width", type=int, default=64)
     p.add_argument("--depth", type=int, default=4)
-    p.add_argument("--adp-mode", default="width_to_depth", choices=["width_only","depth_only","width_to_depth","depth_to_width","alt_width","alt_depth"])
+    p.add_argument("--adp-mode", default="width_to_depth", choices=["alt_width", "width_to_depth"])
     p.add_argument("--max-epochs", type=int, default=100000000)
     args = p.parse_args()
     
