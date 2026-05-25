@@ -34,6 +34,11 @@ TASK_DETAILS: Dict[str, Dict[str, str]] = {
         "summary": "Noise-to-data generation proxy using real Covertype samples as targets.",
         "target": "Input: Gaussian noise vector. Target: real 54-feature Covertype sample. Validation loss: MSE.",
     },
+    "denoising": {
+        "dataset": "Covertype",
+        "summary": "Tabular denoising autoencoding on standardized Covertype features.",
+        "target": "Input: 54-feature Covertype vector corrupted with Gaussian noise. Target: clean 54-feature vector. Validation loss: MSE.",
+    },
 }
 
 
@@ -66,6 +71,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--adp-run-root", default=DEFAULT_ADP_RUN_ROOT)
     p.add_argument("--stl-ablation-root", default=DEFAULT_STL_ABLATION_ROOT)
     p.add_argument("--output-root", default=DEFAULT_OUTPUT_ROOT)
+    p.add_argument("--task", default=None, help="Generate only for a specific task.")
+    p.add_argument("--allow-partial", action="store_true", help="Allow generating a task from completed ADP phases even if the task is not fully completed.")
     return p.parse_args()
 
 
@@ -132,6 +139,59 @@ def collect_adp_and_paired_stl(task_root: Path) -> List[ModelPoint]:
 
     for entry in summary.get("paired_stl_runs", []):
         phase = str(entry["phase"])
+        architecture = [int(v) for v in entry["architecture"]]
+        candidate_dir = task_root / phase / str(entry["candidate_dir"])
+        points.append(
+            ModelPoint(
+                task=task_name,
+                family="STL_paired",
+                phase=phase,
+                architecture=architecture,
+                best_val=float(entry["best_val"]),
+                checkpoint_best=str(candidate_dir / "checkpoint_best.pt"),
+                parameter_count=parameter_count_from_metadata(candidate_dir),
+                label=label_for_point("STL_paired", phase, architecture),
+            )
+        )
+
+    return points
+
+
+def collect_partial_adp_and_paired_stl(task_root: Path) -> List[ModelPoint]:
+    task_state = load_json(task_root / "task_state.json")
+    completed = set(task_state.get("completed_phases", []))
+    task_name = str(task_state["task"])
+    points: List[ModelPoint] = []
+
+    for phase in sorted(p.name for p in task_root.iterdir() if p.is_dir() and p.name.startswith("ae_")):
+        if phase not in completed:
+            continue
+        phase_summary_path = task_root / phase / "phase_summary.json"
+        if not phase_summary_path.exists():
+            continue
+        entry = load_json(phase_summary_path)
+        architecture = [int(v) for v in entry["architecture"]]
+        candidate_dir = task_root / phase / str(entry["best_candidate_dir"])
+        points.append(
+            ModelPoint(
+                task=task_name,
+                family="ADP",
+                phase=phase,
+                architecture=architecture,
+                best_val=float(entry["best_val"]),
+                checkpoint_best=str(candidate_dir / "checkpoint_best.pt"),
+                parameter_count=parameter_count_from_metadata(candidate_dir),
+                label=label_for_point("ADP", phase, architecture),
+            )
+        )
+
+    for phase in sorted(p.name for p in task_root.iterdir() if p.is_dir() and p.name.startswith("stl_from_")):
+        if phase not in completed:
+            continue
+        phase_summary_path = task_root / phase / "phase_summary.json"
+        if not phase_summary_path.exists():
+            continue
+        entry = load_json(phase_summary_path)
         architecture = [int(v) for v in entry["architecture"]]
         candidate_dir = task_root / phase / str(entry["candidate_dir"])
         points.append(
@@ -265,6 +325,10 @@ def main() -> None:
     output_root.mkdir(parents=True, exist_ok=True)
 
     both_completed = sorted(set(completed_adp_tasks(adp_root)).intersection(completed_stl_ablation_tasks(stl_root)))
+
+    if args.task:
+        both_completed = [args.task]
+
     if not both_completed:
         raise SystemExit("No tasks are completed in both the ADP run root and the STL ablation run root.")
 
@@ -272,7 +336,21 @@ def main() -> None:
     task_plot_paths: Dict[str, str] = {}
 
     for task_name in both_completed:
-        task_points = collect_adp_and_paired_stl(adp_root / task_name) + collect_ablation_stl(stl_root / task_name)
+        adp_task_root = adp_root / task_name
+        if (adp_task_root / "task_state.json").exists():
+            task_state = load_json(adp_task_root / "task_state.json")
+            adp_done = bool(task_state.get("completed"))
+        else:
+            adp_done = False
+
+        if adp_done:
+            task_points = collect_adp_and_paired_stl(adp_task_root)
+        elif args.allow_partial:
+            task_points = collect_partial_adp_and_paired_stl(adp_task_root)
+        else:
+            raise SystemExit(f"Task {task_name} is not fully completed in ADP run root; rerun with --allow-partial to include only completed phases.")
+
+        task_points += collect_ablation_stl(stl_root / task_name)
         task_points.sort(key=lambda p: (p.family, p.phase, p.parameter_count, p.best_val))
         all_points.extend(task_points)
         task_plot_paths[task_name] = str(plot_task(task_name, task_points, output_root))
