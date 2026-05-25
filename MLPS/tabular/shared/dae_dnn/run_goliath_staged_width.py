@@ -34,6 +34,14 @@ def width_stage_limit_hit(cfg: rg.RunConfig, width_stage_margin_fail: int) -> bo
     return int(cfg.width_stage_margin_patience) > 0 and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
 
 
+def width_expansion_patience(cfg: rg.RunConfig) -> int:
+    return int(getattr(cfg, "width_expansion_patience", 10))
+
+
+def depth_expansion_patience(cfg: rg.RunConfig) -> int:
+    return int(getattr(cfg, "depth_expansion_patience", 5))
+
+
 def _switch_to_width_until_uniform(
     *,
     mode: str,
@@ -93,7 +101,7 @@ def run_growth_phase(
     width_stage_margin_fail = int(state.get("width_stage_margin_fail", 0))
     width_stage_anchor_val = state.get("width_stage_anchor_val")
     width_stage_anchor_val = None if width_stage_anchor_val is None else float(width_stage_anchor_val)
-    alt_consecutive_patience = max((2 * int(cfg.patience)) + 1, 10)
+    alt_consecutive_patience = max((2 * max(width_expansion_patience(cfg), depth_expansion_patience(cfg))) + 1, 10)
     global_best_candidate_dir = rg.resolve_candidate_dir(phase_root, state.get("best_candidate_dir"))
     global_best_checkpoint = Path(state["best_checkpoint"]) if state.get("best_checkpoint") else None
 
@@ -176,14 +184,14 @@ def run_growth_phase(
             next_arch = [int(w) for w in next_model.hidden_widths]
         else:
             if mode == "width_only":
-                if not can_widen_staged(current_base, int(cfg.max_width), int(cfg.max_neurons)) or width_fail >= int(cfg.patience):
+                if not can_widen_staged(current_base, int(cfg.max_width), int(cfg.max_neurons)) or width_fail >= width_expansion_patience(cfg):
                     break
                 next_model = expand_width_staged(current_base, 1, int(cfg.max_width))
                 if next_model is None:
                     break
                 next_arch = [int(w) for w in next_model.hidden_widths]
             elif mode == "depth_only":
-                if not can_deepen_uniform(current_base, cfg) or depth_fail >= int(cfg.patience):
+                if not can_deepen_uniform(current_base, cfg) or depth_fail >= depth_expansion_patience(cfg):
                     break
                 next_model = rg.expand_depth(current_base, int(cfg.max_depth))
                 if next_model is None:
@@ -192,7 +200,7 @@ def run_growth_phase(
             elif mode == "alt_width":
                 if current_phase == "width":
                     if is_uniform_width(current_base) and (
-                        width_fail >= int(cfg.patience) or width_stage_limit_hit(cfg, width_stage_margin_fail)
+                        width_fail >= width_expansion_patience(cfg) or width_stage_limit_hit(cfg, width_stage_margin_fail)
                     ):
                         if not can_deepen_uniform(current_base, cfg):
                             break
@@ -241,7 +249,7 @@ def run_growth_phase(
                         continue
                     next_arch = [int(w) for w in next_model.hidden_widths]
                 else:
-                    if depth_fail >= int(cfg.patience):
+                    if depth_fail >= depth_expansion_patience(cfg):
                         if consecutive_fail >= alt_consecutive_patience:
                             break
                         if not can_widen_staged(current_base, int(cfg.max_width), int(cfg.max_neurons)):
@@ -271,7 +279,7 @@ def run_growth_phase(
                     next_arch = [int(w) for w in next_model.hidden_widths]
             elif mode == "alt_depth":
                 if current_phase == "depth":
-                    if depth_fail >= int(cfg.patience):
+                    if depth_fail >= depth_expansion_patience(cfg):
                         if not can_widen_staged(current_base, int(cfg.max_width), int(cfg.max_neurons)):
                             break
                         current_phase = "width"
@@ -299,7 +307,7 @@ def run_growth_phase(
                     next_arch = [int(w) for w in next_model.hidden_widths]
                 else:
                     if is_uniform_width(current_base) and (
-                        width_fail >= int(cfg.patience) or width_stage_limit_hit(cfg, width_stage_margin_fail)
+                        width_fail >= width_expansion_patience(cfg) or width_stage_limit_hit(cfg, width_stage_margin_fail)
                     ):
                         if consecutive_fail >= alt_consecutive_patience:
                             break
@@ -355,7 +363,7 @@ def run_growth_phase(
                         int(cfg.width_stage_margin_patience) > 0
                         and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
                     )
-                    if is_uniform_width(current_base) and (width_fail >= int(cfg.patience) or width_stage_margin_limit_hit):
+                    if is_uniform_width(current_base) and (width_fail >= width_expansion_patience(cfg) or width_stage_margin_limit_hit):
                         current_phase = "depth"
                         state["current_phase"] = current_phase
                         rg.save_phase_state(phase_root, state)
@@ -373,7 +381,7 @@ def run_growth_phase(
                         continue
                     next_arch = [int(w) for w in next_model.hidden_widths]
                 else:
-                    if depth_fail >= int(cfg.patience):
+                    if depth_fail >= depth_expansion_patience(cfg):
                         break
                     if not can_deepen_uniform(current_base, cfg):
                         if can_widen_staged(current_base, int(cfg.max_width), int(cfg.max_neurons)):
@@ -388,7 +396,7 @@ def run_growth_phase(
                     next_arch = [int(w) for w in next_model.hidden_widths]
             elif mode == "depth_to_width":
                 if current_phase == "depth":
-                    if depth_fail >= int(cfg.patience):
+                    if depth_fail >= depth_expansion_patience(cfg):
                         current_phase = "width"
                         state["current_phase"] = current_phase
                         rg.save_phase_state(phase_root, state)
@@ -406,7 +414,7 @@ def run_growth_phase(
                         continue
                     next_arch = [int(w) for w in next_model.hidden_widths]
                 else:
-                    if width_fail >= int(cfg.patience) and is_uniform_width(current_base):
+                    if width_fail >= width_expansion_patience(cfg) and is_uniform_width(current_base):
                         break
                     if not can_widen_staged(current_base, int(cfg.max_width), int(cfg.max_neurons)):
                         break
@@ -475,7 +483,9 @@ def run_growth_phase(
                 width_stage_anchor_val = float(global_best_val)
                 width_stage_improved = False
         else:
-            if improved:
+            if not is_uniform_width(next_model):
+                depth_fail = 0
+            elif improved:
                 depth_fail = 0
                 consecutive_fail = 0
             else:
@@ -511,22 +521,22 @@ def run_growth_phase(
 
         if mode == "alt_width":
             if phase_for_candidate == "width" and is_uniform_width(next_model) and (
-                width_fail >= int(cfg.patience) or width_stage_limit_hit(cfg, width_stage_margin_fail)
+                width_fail >= width_expansion_patience(cfg) or width_stage_limit_hit(cfg, width_stage_margin_fail)
             ):
                 current_phase = "depth"
                 width_fail = 0
                 width_stage_margin_fail = 0
-            elif phase_for_candidate == "depth" and depth_fail >= int(cfg.patience):
+            elif phase_for_candidate == "depth" and depth_fail >= depth_expansion_patience(cfg):
                 current_phase = "width"
                 depth_fail = 0
             else:
                 current_phase = "width" if phase_for_candidate == "width" else "depth"
         elif mode == "alt_depth":
-            if phase_for_candidate == "depth" and depth_fail >= int(cfg.patience):
+            if phase_for_candidate == "depth" and depth_fail >= depth_expansion_patience(cfg):
                 current_phase = "width"
                 depth_fail = 0
             elif phase_for_candidate == "width" and is_uniform_width(next_model) and (
-                width_fail >= int(cfg.patience) or width_stage_limit_hit(cfg, width_stage_margin_fail)
+                width_fail >= width_expansion_patience(cfg) or width_stage_limit_hit(cfg, width_stage_margin_fail)
             ):
                 current_phase = "depth"
                 width_fail = 0
@@ -539,7 +549,7 @@ def run_growth_phase(
                 width_fail = 0
                 width_stage_margin_fail = 0
             elif is_uniform_width(next_model) and (
-                width_fail >= int(cfg.patience)
+                width_fail >= width_expansion_patience(cfg)
                 or width_stage_limit_hit(cfg, width_stage_margin_fail)
             ):
                 current_phase = "depth"
@@ -549,7 +559,7 @@ def run_growth_phase(
             if phase_for_candidate == "width":
                 current_phase = "depth" if is_uniform_width(next_model) else "width"
                 depth_fail = 0 if current_phase == "depth" else depth_fail
-            elif depth_fail >= int(cfg.patience):
+            elif depth_fail >= depth_expansion_patience(cfg):
                 current_phase = "width"
 
         state.update(
@@ -571,15 +581,15 @@ def run_growth_phase(
         )
         rg.save_phase_state(phase_root, state)
 
-        if mode == "width_only" and width_fail >= int(cfg.patience):
+        if mode == "width_only" and width_fail >= width_expansion_patience(cfg):
             break
-        if mode == "depth_only" and depth_fail >= int(cfg.patience):
+        if mode == "depth_only" and depth_fail >= depth_expansion_patience(cfg):
             break
         if mode in ["alt_width", "alt_depth"] and consecutive_fail >= alt_consecutive_patience:
             break
-        if mode == "width_to_depth" and depth_fail >= int(cfg.patience):
+        if mode == "width_to_depth" and depth_fail >= depth_expansion_patience(cfg):
             break
-        if mode == "depth_to_width" and width_fail >= int(cfg.patience) and is_uniform_width(next_model):
+        if mode == "depth_to_width" and width_fail >= width_expansion_patience(cfg) and is_uniform_width(next_model):
             break
 
         candidate_dirs = rg.list_candidate_dirs(phase_root)

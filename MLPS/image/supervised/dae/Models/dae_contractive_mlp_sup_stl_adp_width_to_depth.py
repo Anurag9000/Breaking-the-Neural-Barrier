@@ -24,9 +24,9 @@ from ..Runs.run_dae_contractive_mlp_sup_stl import (  # type: ignore
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 20
-    trials_width: int = 2
-    trials_depth: int = 2
+    patience: int = 5
+    trials_width: int = 10
+    trials_depth: int = 5
     ex_k: int = 128
     max_width: int = 2048
     max_depth: int = 8
@@ -85,7 +85,7 @@ def expand_width(
     max_width: int,
     device: torch.device,
 ) -> Optional[SupDAEContractiveMLP]:
-    new_w = min(max_width, model.width + ex_k)
+    new_w = min(max_width, model.width + 1)
     if new_w == model.width:
         return None
     return rebuild_model(model, num_classes, new_w, model.depth, device)
@@ -98,6 +98,8 @@ def expand_depth(
     device: torch.device,
 ) -> Optional[SupDAEContractiveMLP]:
     if model.depth >= max_depth:
+        return None
+    if int(model.width) <= 10:
         return None
     return rebuild_model(model, num_classes, model.width, model.depth + 1, device)
 
@@ -411,9 +413,9 @@ def main() -> None:
     )
     p.add_argument("--max-epochs", type=int, default=200)
     p.add_argument("--delta", type=float, default=1e-3)
-    p.add_argument("--patience", type=int, default=20)
-    p.add_argument("--trials-width", type=int, default=2)
-    p.add_argument("--trials-depth", type=int, default=2)
+    p.add_argument("--patience", type=int, default=5)
+    p.add_argument("--trials-width", type=int, default=10)
+    p.add_argument("--trials-depth", type=int, default=5)
     p.add_argument("--ex-k", type=int, default=128)
     p.add_argument("--max-width", type=int, default=2048)
     p.add_argument("--max-depth", type=int, default=8)

@@ -72,13 +72,14 @@ class MLPTextSSL(nn.Module):
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 20
-    trials_width: int = 2
-    trials_depth: int = 2
+    patience: int = 5
+    trials_width: int = 10
+    trials_depth: int = 5
     ex_k: int = 64
     max_width: int = 4096
     max_depth: int = 12
     max_neurons: int = 5_000_000
+    min_new_layer_width: int = 10
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
@@ -116,8 +117,24 @@ def rebuild_backbone(model: MLPTextSSL, hidden: List[int]):
     model.hidden = list(hidden)
 
 
+def _next_staged_widths(hidden: List[int], max_width: int, ex_k: int) -> List[int]:
+    widths = [int(w) for w in hidden]
+    if not widths:
+        return widths
+    if len(set(widths)) == 1:
+        target = min(int(max_width), max(widths) + max(1, int(ex_k)))
+    else:
+        target = max(widths)
+    next_widths = list(widths)
+    for idx, width in enumerate(next_widths):
+        if width < target:
+            next_widths[idx] = width + 1
+            break
+    return next_widths
+
+
 def expand_width(model: MLPTextSSL, ex_k: int, max_width: int) -> Optional[MLPTextSSL]:
-    new_h = [min(max_width, w + ex_k) for w in model.hidden]
+    new_h = _next_staged_widths(model.hidden, max_width, ex_k)
     if new_h == model.hidden:
         return None
     rebuild_backbone(model, new_h)
@@ -127,7 +144,13 @@ def expand_width(model: MLPTextSSL, ex_k: int, max_width: int) -> Optional[MLPTe
 def expand_depth(model: MLPTextSSL, max_depth: int) -> Optional[MLPTextSSL]:
     if len(model.hidden) >= max_depth:
         return None
-    new_h = model.hidden + [model.hidden[-1]]
+    if not model.hidden:
+        return None
+    if len(set(int(w) for w in model.hidden)) != 1:
+        return None
+    if int(model.hidden[-1]) <= 10:
+        return None
+    new_h = model.hidden + [10]
     rebuild_backbone(model, new_h)
     return model
 
@@ -245,9 +268,9 @@ def main():
     p.add_argument("--adp-mode", type=str, default="width_to_depth",
                    choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"])
     p.add_argument("--delta", type=float, default=1e-3)
-    p.add_argument("--patience", type=int, default=20)
-    p.add_argument("--trials-width", type=int, default=2)
-    p.add_argument("--trials-depth", type=int, default=2)
+    p.add_argument("--patience", type=int, default=5)
+    p.add_argument("--trials-width", type=int, default=10)
+    p.add_argument("--trials-depth", type=int, default=5)
     p.add_argument("--ex-k", type=int, default=64)
     p.add_argument("--max-width", type=int, default=4096)
     p.add_argument("--max-depth", type=int, default=12)

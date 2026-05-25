@@ -20,9 +20,9 @@ from .dae_saltpepper_mlp_stl import DAESaltPepperMLP, dae_total_neurons
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-3
-    patience: int = 20
-    trials_width: int = 2
-    trials_depth: int = 2
+    patience: int = 5
+    trials_width: int = 10
+    trials_depth: int = 5
     ex_k: int = 128
     max_width: int = 2048
     max_depth: int = 8
@@ -66,7 +66,7 @@ def rebuild_model(model: DAESaltPepperMLP, width: int, depth: int, device: torch
 
 
 def expand_width(model: DAESaltPepperMLP, ex_k: int, max_width: int, device: torch.device) -> Optional[DAESaltPepperMLP]:
-    new_w = min(max_width, model.width + ex_k)
+    new_w = min(max_width, model.width + 1)
     if new_w == model.width:
         return None
     return rebuild_model(model, new_w, model.depth, device)
@@ -74,6 +74,8 @@ def expand_width(model: DAESaltPepperMLP, ex_k: int, max_width: int, device: tor
 
 def expand_depth(model: DAESaltPepperMLP, max_depth: int, device: torch.device) -> Optional[DAESaltPepperMLP]:
     if model.depth >= max_depth:
+        return None
+    if int(model.width) <= 10:
         return None
     return rebuild_model(model, model.width, model.depth + 1, device)
 
@@ -411,9 +413,9 @@ def main() -> None:
     )
     p.add_argument("--max-epochs", type=int, default=300)
     p.add_argument("--delta", type=float, default=1e-3)
-    p.add_argument("--patience", type=int, default=20)
-    p.add_argument("--trials-width", type=int, default=2)
-    p.add_argument("--trials-depth", type=int, default=2)
+    p.add_argument("--patience", type=int, default=5)
+    p.add_argument("--trials-width", type=int, default=10)
+    p.add_argument("--trials-depth", type=int, default=5)
     p.add_argument("--ex-k", type=int, default=128)
     p.add_argument("--max-width", type=int, default=2048)
     p.add_argument("--max-depth", type=int, default=8)

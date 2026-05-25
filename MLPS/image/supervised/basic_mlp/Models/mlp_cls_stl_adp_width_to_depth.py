@@ -31,15 +31,16 @@ MLPClassifier = baseline_module.MLPClassifier  # type: ignore
 class ADPConfig:
     adp_mode: str = "width_to_depth"
     delta: float = 1e-4
-    patience: int = 10  # early-stopping patience (per single-shot training)
-    trials_width: int = 2  # <=0 => infinite
-    trials_depth: int = 2  # <=0 => infinite
+    patience: int = 5  # early-stopping patience (per single-shot training)
+    trials_width: int = 10  # <=0 => infinite
+    trials_depth: int = 5  # <=0 => infinite
     ex_k: int = 1
     width_stage_margin_patience: int = 5
     width_stage_min_improve_pct: float = 1.0
     max_width: int = 4096
     max_depth: int = 10
     max_neurons: int = 10_000_000
+    min_new_layer_width: int = 10
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
@@ -328,9 +329,9 @@ def main() -> None:
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--results-dir", type=str, default="results_adp/mlp_cls_stl")
     p.add_argument("--delta", type=float, default=1e-4)
-    p.add_argument("--patience", type=int, default=10, help="Early-stopping patience per (single-shot) training run")
-    p.add_argument("--trials-width", type=int, default=0, help="Expansion patience for width; <=0 means infinite")
-    p.add_argument("--trials-depth", type=int, default=0, help="Expansion patience for depth; <=0 means infinite")
+    p.add_argument("--patience", type=int, default=5, help="Early-stopping patience per (single-shot) training run")
+    p.add_argument("--trials-width", type=int, default=10, help="Expansion patience for width; <=0 means infinite")
+    p.add_argument("--trials-depth", type=int, default=5, help="Expansion patience for depth; <=0 means infinite")
     p.add_argument("--ex-k", type=int, default=1)
     p.add_argument("--width-stage-margin-patience", type=int, default=5)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
