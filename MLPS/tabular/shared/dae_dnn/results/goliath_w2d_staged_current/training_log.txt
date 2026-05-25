@@ -1608,3 +1608,28 @@
 [2026-05-24 12:47:25] [TASK:denoising] ADP phase start: ae_width_to_depth
 [2026-05-24 12:47:25] [TASK:denoising] ADP=ae_width_to_depth best_val=0.000947 STL=stl_from_ae_width_to_depth best_val=0.029187 winner=adp
 [2026-05-24 12:47:25] [TASK:denoising] ADP phase start: ae_depth_to_width
+[2026-05-25 00:57:38] Final report written to MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/final_report.json
+[2026-05-25 10:28:31] Initialized ContinuousLogger for goliath (Mode: sequential)
+[2026-05-25 10:28:31] Logs: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/training_log.txt
+[2026-05-25 10:28:31] CSV: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/training_stats.csv
+[2026-05-25 10:28:31] Run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-05-25 10:28:31] Tasks: ['representation', 'autoencoding', 'generation', 'denoising', 'anomaly', 'inverse', 'control', 'clustering', 'compression', 'ranking', 'multimodal', 'selfsupervised', 'simulation']
+[2026-05-25 10:28:31] Phases: ['ae_alt_depth', 'ae_alt_width', 'ae_width_to_depth', 'ae_depth_to_width']
+[2026-05-25 10:28:31] Device: cpu
+[2026-05-25 10:28:31] Git commit: 7fb2f9b4091463e4f24bc808eca55fed48513922
+[2026-05-25 10:29:50] === Task start: representation ===
+[2026-05-25 10:29:50] === Task done: representation ===
+[2026-05-25 10:29:50] === Task start: autoencoding ===
+[2026-05-25 10:29:50] === Task done: autoencoding ===
+[2026-05-25 10:29:50] === Task start: generation ===
+[2026-05-25 10:29:50] === Task done: generation ===
+[2026-05-25 10:29:50] === Task start: denoising ===
+[2026-05-25 10:29:50] [TASK] start denoising
+[2026-05-25 10:29:50] [TASK:denoising] ADP phase start: ae_alt_depth
+[2026-05-25 10:29:50] [TASK:denoising] ADP=ae_alt_depth best_val=0.002822 STL=stl_from_ae_alt_depth best_val=0.008895 winner=adp
+[2026-05-25 10:29:50] [TASK:denoising] ADP phase start: ae_alt_width
+[2026-05-25 10:29:50] [TASK:denoising] ADP=ae_alt_width best_val=0.000820 STL=stl_from_ae_alt_width best_val=0.028369 winner=adp
+[2026-05-25 10:29:50] [TASK:denoising] ADP phase start: ae_width_to_depth
+[2026-05-25 10:29:50] [TASK:denoising] ADP=ae_width_to_depth best_val=0.000947 STL=stl_from_ae_width_to_depth best_val=0.029187 winner=adp
+[2026-05-25 10:29:50] [TASK:denoising] ADP phase start: ae_depth_to_width
+[2026-05-25 10:34:54] Final report written to MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/final_report.json
