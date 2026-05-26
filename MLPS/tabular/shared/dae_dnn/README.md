@@ -1,6 +1,6 @@
 # DNN STL + ADP (DAE/DNN)
 
-This folder provides plain-MLP baselines for the 15 non-vision tasks in
+This folder provides plain-MLP baselines for the 10 non-vision tasks in
 `DAE/DNN/tasks.py`. Each task runs in:
 
 - STL mode: fixed architecture
@@ -62,13 +62,8 @@ Tasks and default benchmark mappings
 - anomaly: Covertype
 - inverse: California Housing
 - control: California Housing
-- clustering: Covertype
-- compression: Covertype
-- ranking: YearPredictionMSD
-- multimodal: Covertype + parity scalar
 - selfsupervised: Covertype feature permutation prediction
 - simulation: California Housing
-- misc: California Housing residual regression
 
 Run one task (STL, fixed architecture)
 ```bash
