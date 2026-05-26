@@ -1238,6 +1238,8 @@ def render_report(report: Dict[str, Any]) -> str:
 def build_summary_rows(task_name: str, task_summary: Dict[str, Any]) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
     for comp in task_summary.get("comparisons", []):
+        search_metrics = comp.get("search_test_metrics") or {}
+        stl_metrics = comp.get("stl_test_metrics") or {}
         rows.append(
             {
                 "task": task_name,
@@ -1250,6 +1252,14 @@ def build_summary_rows(task_name: str, task_summary: Dict[str, Any]) -> List[Dic
                 "winner_value": comp.get("winner_value"),
                 "search_architecture": format_architecture_for_report(comp.get("search_architecture")),
                 "stl_architecture": format_architecture_for_report(comp.get("stl_architecture")),
+                "search_test_loss": search_metrics.get("test_loss"),
+                "search_test_acc": search_metrics.get("test_acc"),
+                "search_knn_acc": search_metrics.get("knn_acc"),
+                "search_cluster_nmi": search_metrics.get("cluster_nmi"),
+                "stl_test_loss": stl_metrics.get("test_loss"),
+                "stl_test_acc": stl_metrics.get("test_acc"),
+                "stl_knn_acc": stl_metrics.get("knn_acc"),
+                "stl_cluster_nmi": stl_metrics.get("cluster_nmi"),
             }
         )
     return rows
@@ -1399,6 +1409,14 @@ def main() -> None:
                         "winner_value",
                         "search_architecture",
                         "stl_architecture",
+                        "search_test_loss",
+                        "search_test_acc",
+                        "search_knn_acc",
+                        "search_cluster_nmi",
+                        "stl_test_loss",
+                        "stl_test_acc",
+                        "stl_knn_acc",
+                        "stl_cluster_nmi",
                     ],
                 )
     finally:
