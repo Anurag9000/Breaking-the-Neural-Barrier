@@ -1,6 +1,6 @@
 # DNN STL + ADP (DAE/DNN)
 
-This folder provides plain-MLP baselines for the 15 non-vision tasks in
+This folder provides plain-MLP baselines for the 10 non-vision tasks in
 `DAE/DNN/tasks.py`. Each task runs in:
 
 - STL mode: fixed architecture
@@ -26,13 +26,11 @@ Files
   random search, Bayesian HPO, and greedy NAS-style growth; it can compare
   against a completed goliath reference run, but it does not run ADP variants
 
-`run_goliath.py` exposes six ADP phases:
-- `ae_width_only`
-- `ae_depth_only`
-- `ae_width_to_depth`
-- `ae_depth_to_width`
+`run_goliath.py` runs the four supported ADP phases:
 - `ae_alt_width`
 - `ae_alt_depth`
+- `ae_width_to_depth`
+- `ae_depth_to_width`
 
 All ADP phases start from a fixed `2x2` seed and preserve the best checkpoint
 found during search, not just the last epoch. After each ADP phase, the runner
@@ -57,27 +55,12 @@ Tasks and default benchmark mappings
 - anomaly: Covertype
 - inverse: California Housing
 - control: California Housing
-- clustering: Covertype
-- compression: Covertype
-- ranking: YearPredictionMSD
-- multimodal: Covertype + parity scalar
 - selfsupervised: Covertype feature permutation prediction
 - simulation: California Housing
-- misc: California Housing residual regression
 
 Run one task (STL, fixed architecture)
 ```bash
 python DAE/DNN/run_task.py --task classification --mode stl --hidden 50 50 --data-dir ./data --results-dir DAE/DNN/results
-```
-
-Run one task (ADP, width only)
-```bash
-python DAE/DNN/run_task.py --task classification --mode adp --adp-mode width_only --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
-```
-
-Run one task (ADP, depth only)
-```bash
-python DAE/DNN/run_task.py --task classification --mode adp --adp-mode depth_only --hidden 50 50 --max-depth 10 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
 ```
 
 Run one task (ADP, width then depth)
@@ -90,9 +73,14 @@ Run one task (ADP, depth then width)
 python DAE/DNN/run_task.py --task classification --mode adp --adp-mode depth_to_width --hidden 50 50 --ex-k 1 --max-depth 10 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
 ```
 
-Run one task (ADP, alternating)
+Run one task (ADP, alternating width-first)
 ```bash
 python DAE/DNN/run_task.py --task classification --mode adp --adp-mode alt_width --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
+```
+
+Run one task (ADP, alternating depth-first)
+```bash
+python DAE/DNN/run_task.py --task classification --mode adp --adp-mode alt_depth --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
 ```
 
 Run all tasks (STL + ADP modes)
@@ -109,9 +97,9 @@ Then launch the sequential experiment:
 ```bash
 python DAE/DNN/run_goliath.py --tasks all --data-dir ./data --results-dir DAE/DNN/results --stl-width 128 --stl-depth 2 --alt-start-width 2 --alt-start-depth 2 --patience 5 --seed 0
 ```
-By default, `run_goliath.py` runs all ADP phases first and then an STL refit on
-each ADP-discovered architecture. Include `stl` in `--phases` only if you also
-want a standalone baseline STL run.
+By default, `run_goliath.py` runs the four supported ADP phases first and then
+an STL refit on each ADP-discovered architecture. Include `stl` in `--phases`
+only if you also want a standalone baseline STL run.
 
 To run the broader benchmark-suite comparison:
 ```bash

@@ -433,38 +433,44 @@ def run_module_adp(
         cur_model, _, _, _ = ensure_uniform_width(cur_model)
         return cur_model, any_phase_improvement
 
-    def run_depth_step(cur_model: Any) -> Tuple[Any, bool]:
+    def run_depth_step(cur_model: Any, *, compare_after_warmup: bool = True) -> Tuple[Any, bool, bool]:
         cur_model, _, _, _ = ensure_uniform_width(cur_model)
         _, _, widths = snapshot_shape(cur_model)
         if not _can_spawn_new_depth_layer(widths, min_new_layer_width):
-            return cur_model, False
+            return cur_model, False, False
         candidate = _try_expand_once(module_globals, cur_model, acfg, device, "depth", expand_depth_fn)
         if candidate is None:
-            return cur_model, False
+            return cur_model, False, False
         if logger is not None:
             logger.log_console(f"[STAGED][DEPTH] {describe(cur_model)} -> {describe(candidate)}")
         _, _, candidate_widths = snapshot_shape(candidate)
         if _widths_are_uniform(candidate_widths):
             cand_val, cand_snap = train(candidate)
             cur_model = restore(candidate, cand_snap)
-            return cur_model, update_global_best(cur_model, cand_val, cand_snap, delta_depth)
+            if compare_after_warmup:
+                return cur_model, True, update_global_best(cur_model, cand_val, cand_snap, delta_depth)
+            return cur_model, True, False
         warmed_model, _, warmed_val, warmed_snap = ensure_uniform_width(candidate, update_global=False)
         if warmed_val is None or warmed_snap is None:
-            return cur_model, False
+            return cur_model, False, False
         cur_model = restore(warmed_model, warmed_snap)
-        return cur_model, update_global_best(cur_model, warmed_val, warmed_snap, delta_depth)
+        if compare_after_warmup:
+            return cur_model, True, update_global_best(cur_model, warmed_val, warmed_snap, delta_depth)
+        return cur_model, True, False
 
     def run_depth_phase(cur_model: Any) -> Tuple[Any, bool]:
         cur_model, _, _, _ = ensure_uniform_width(cur_model)
         depth_fail = 0
         any_phase_improvement = False
         while depth_fail < patience_depth:
-            cur_model, improved = run_depth_step(cur_model)
+            cur_model, progressed, improved = run_depth_step(cur_model)
             if logger is not None:
                 logger.log_console(
-                    f"[STAGED][DEPTH] arch={describe(cur_model)} improved={improved} "
+                    f"[STAGED][DEPTH] arch={describe(cur_model)} progressed={progressed} improved={improved} "
                     f"global_best={global_best_val:.6f} depth_fail={depth_fail if improved else depth_fail + 1}/{patience_depth}"
                 )
+            if not progressed:
+                break
             if not improved:
                 probe_snap = _snapshot(module_globals, cur_model)
                 _, _, probe_widths = snapshot_shape(cur_model)
@@ -489,13 +495,10 @@ def run_module_adp(
         while depth_fail < patience_depth:
             model, _ = run_width_phase(model)
             before_cycle = float(global_best_val)
-            model, improved = run_depth_step(model)
-            if not improved:
-                depth_fail += 1
-            else:
-                depth_fail = 0
-            if float(global_best_val) >= before_cycle and not improved:
+            model, progressed, improved = run_depth_step(model, compare_after_warmup=False)
+            if not progressed:
                 break
+            depth_fail = 0
     elif mode == "depth_to_width":
         width_fail = 0
         while width_fail < patience_width:

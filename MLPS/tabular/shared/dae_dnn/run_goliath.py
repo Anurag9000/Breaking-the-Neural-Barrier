@@ -34,20 +34,15 @@ DEFAULT_VRAM_BUDGET_GB = 5.5
 
 PER_TASK_BATCH_SIZES = {
     "prediction": 32768,
-    "ranking": 32768,
     "representation": 32768,
     "autoencoding": 32768,
     "generation": 32768,
     "denoising": 32768,
     "anomaly": 32768,
-    "clustering": 32768,
-    "compression": 32768,
-    "multimodal": 32768,
     "selfsupervised": 32768,
     "inverse": 32768,
     "control": 32768,
     "simulation": 32768,
-    "misc": 32768,
 }
 
 GOLIATH_ADP_PHASES = [
@@ -1421,6 +1416,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
     width_stage_margin_fail = int(state.get("width_stage_margin_fail", 0))
     width_stage_anchor_val = state.get("width_stage_anchor_val")
     width_stage_anchor_val = None if width_stage_anchor_val is None else float(width_stage_anchor_val)
+    warmup_to_uniform = bool(state.get("warmup_to_uniform", False))
     alt_consecutive_patience = max((2 * max(width_expansion_patience(cfg), depth_expansion_patience(cfg))) + 1, 10)
     global_best_candidate_dir = resolve_candidate_dir(phase_root, state.get("best_candidate_dir"))
     global_best_checkpoint = Path(state["best_checkpoint"]) if state.get("best_checkpoint") else None
@@ -1714,8 +1710,11 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
         )
         logger.close()
 
-        improved = result.best_val < (global_best_val - float(cfg.delta))
-        if improved:
+        stage_margin_pct = ""
+        width_warmup_candidate = bool(mode == "width_to_depth" and phase_for_candidate == "width" and warmup_to_uniform)
+        improved = False
+        if not width_warmup_candidate and result.best_val < (global_best_val - float(cfg.delta)):
+            improved = True
             global_best_val = float(result.best_val)
             global_best_candidate_dir = candidate_dir
             global_best_checkpoint = candidate_dir / "checkpoint_best.pt"
@@ -1738,8 +1737,13 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 depth_fail += 1
             else:
                 if phase_for_candidate == "width":
-                    consecutive_fail += 1
-                    width_fail += 1
+                    if width_warmup_candidate:
+                        pass
+                    else:
+                        consecutive_fail += 1
+                        width_fail += 1
+                elif mode == "width_to_depth" and not is_uniform_width(next_model):
+                    depth_fail = 0
                 elif not is_uniform_width(next_model):
                     depth_fail = 0
                 else:
@@ -1747,13 +1751,25 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                     depth_fail += 1
 
         if phase_for_candidate == "width":
-            stage_margin_pct = relative_improvement_pct(width_stage_anchor_val, global_best_val)
-            if width_stage_anchor_val is None:
-                width_stage_margin_fail = 0
-            elif stage_margin_pct >= float(cfg.width_stage_min_improve_pct):
-                width_stage_margin_fail = 0
+            if width_warmup_candidate:
+                if is_uniform_width(next_model):
+                    warmup_to_uniform = False
+                    width_fail = 0
+                    width_stage_margin_fail = 0
+                    width_stage_anchor_val = float(global_best_val)
             else:
-                width_stage_margin_fail += 1
+                stage_margin_pct = relative_improvement_pct(width_stage_anchor_val, global_best_val)
+                if width_stage_anchor_val is None:
+                    width_stage_margin_fail = 0
+                elif stage_margin_pct >= float(cfg.width_stage_min_improve_pct):
+                    width_stage_margin_fail = 0
+                else:
+                    width_stage_margin_fail += 1
+                width_stage_anchor_val = float(global_best_val)
+        elif mode == "width_to_depth" and not is_uniform_width(next_model):
+            warmup_to_uniform = True
+            width_fail = 0
+            width_stage_margin_fail = 0
             width_stage_anchor_val = float(global_best_val)
 
         log_phase_progress(
@@ -1776,7 +1792,8 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 "consecutive_fail": consecutive_fail,
                 "width_stage_margin_fail": width_stage_margin_fail,
                 "width_stage_anchor_val": width_stage_anchor_val,
-                "width_stage_margin_pct": stage_margin_pct if phase_for_candidate == "width" else "",
+                "width_stage_margin_pct": stage_margin_pct if phase_for_candidate == "width" and not width_warmup_candidate else "",
+                "warmup_to_uniform": warmup_to_uniform,
             },
         )
 
@@ -1817,10 +1834,10 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 current_phase = "width"
                 width_fail = 0
                 width_stage_margin_fail = 0
-            elif width_fail >= width_expansion_patience(cfg) or (
+            elif not warmup_to_uniform and (width_fail >= width_expansion_patience(cfg) or (
                 int(cfg.width_stage_margin_patience) > 0
                 and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
-            ):
+            )):
                 current_phase = "depth"
         elif mode == "depth_to_width":
             if phase_for_candidate == "width":
@@ -1840,6 +1857,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 "consecutive_fail": consecutive_fail,
                 "width_stage_margin_fail": width_stage_margin_fail,
                 "width_stage_anchor_val": width_stage_anchor_val,
+                "warmup_to_uniform": warmup_to_uniform,
                 "best_val": global_best_val,
                 "candidate_index": next_candidate_index,
                 "completed": False,
