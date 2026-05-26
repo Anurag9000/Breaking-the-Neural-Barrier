@@ -138,12 +138,6 @@ def main() -> None:
                 logger.log_console(f"[METRICS] {metrics}")
                 logger.log_epoch_stats({"epoch": 0, **metrics})
 
-        if task.name == "compression" and model.hidden_widths:
-            latent = float(min(model.hidden_widths))
-            ratio = float(latent / max(task.in_dim, 1))
-            logger.log_console(f"[COMPRESSION] latent_dim={latent:.0f} ratio={ratio:.6f}")
-            logger.log_epoch_stats({"epoch": 0, "latent_dim": latent, "compression_ratio": ratio})
-
         plot_val_loss_from_csv(logger.csv_file, results_dir / "val_loss_vs_step.png", title=f"{run_name} - val_loss")
         plot_best_loss_per_neurons_from_csv(
             logger.csv_file, results_dir / "loss_vs_neurons_best.png", title=f"{run_name} - best val_loss per neurons"

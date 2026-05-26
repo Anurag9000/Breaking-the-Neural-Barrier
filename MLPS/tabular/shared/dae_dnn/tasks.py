@@ -6,9 +6,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
 
-from sklearn.cluster import KMeans
 from sklearn.datasets import fetch_california_housing, fetch_covtype, fetch_openml
-from sklearn.metrics import normalized_mutual_info_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 
@@ -189,16 +187,10 @@ def _knn_accuracy(embeddings: np.ndarray, labels: np.ndarray, k: int = 5) -> flo
     return float((preds == labels).mean())
 
 
-def _kmeans_nmi(embeddings: np.ndarray, labels: np.ndarray, n_clusters: int = 10) -> float:
-    km = KMeans(n_clusters=n_clusters, n_init=10, random_state=0)
-    clusters = km.fit_predict(embeddings)
-    return float(normalized_mutual_info_score(labels, clusters))
-
-
 def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int, seed: int) -> Task:
     name = task_name.lower()
 
-    if name in ["prediction", "regression", "sequence", "ranking"]:
+    if name in ["prediction", "regression", "sequence"]:
         train_x, train_y, val_x, val_y, test_x, test_y = _load_year_prediction(seed)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
         train_ds = ArrayDataset(train_x, train_y)
@@ -233,11 +225,11 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
             out_dim=1,
             task_type="regression",
             loss_fn=F.mse_loss,
-            metrics_fn=metrics_fn if name == "ranking" else None,
+            metrics_fn=None,
             extra={},
         )
 
-    if name in ["classification", "representation", "clustering", "selfsupervised", "edge"]:
+    if name in ["classification", "representation", "selfsupervised", "edge"]:
         train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
 
@@ -256,7 +248,7 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
             test_ds = ArrayDataset(test_x, test_y)
 
             metrics_fn = None
-            if name in {"representation", "clustering"}:
+            if name == "representation":
                 def metrics_fn(model, task, device):
                     model.eval()
                     feats = []
@@ -269,7 +261,7 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
                             labels.append(y.numpy())
                     feats_np = np.concatenate(feats, axis=0)
                     labels_np = np.concatenate(labels, axis=0)
-                    return {"knn_acc": _knn_accuracy(feats_np, labels_np)} if name == "representation" else {"nmi": _kmeans_nmi(feats_np, labels_np)}
+                    return {"knn_acc": _knn_accuracy(feats_np, labels_np)}
 
             task_type = "classification"
             out_dim = 7
@@ -289,7 +281,7 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
             extra={"max_width": 32} if name == "edge" else {},
         )
 
-    if name in ["autoencoding", "generation", "denoising", "compression", "multimodal"]:
+    if name in ["autoencoding", "generation", "denoising"]:
         train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
         if name == "generation":
@@ -303,14 +295,6 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
             val_ds = PairArrayDataset(val_x + np.random.randn(*val_x.shape).astype(np.float32) * noise_std, val_x)
             test_ds = PairArrayDataset(test_x + np.random.randn(*test_x.shape).astype(np.float32) * noise_std, test_x)
             in_dim = int(train_x.shape[1])
-        elif name == "multimodal":
-            parity_train = (train_y % 2).astype(np.float32).reshape(-1, 1)
-            parity_val = (val_y % 2).astype(np.float32).reshape(-1, 1)
-            parity_test = (test_y % 2).astype(np.float32).reshape(-1, 1)
-            train_ds = ArrayDataset(np.concatenate([train_x, parity_train], axis=1), train_y)
-            val_ds = ArrayDataset(np.concatenate([val_x, parity_val], axis=1), val_y)
-            test_ds = ArrayDataset(np.concatenate([test_x, parity_test], axis=1), test_y)
-            in_dim = int(train_x.shape[1] + 1)
         else:
             train_ds = PairArrayDataset(train_x, train_x)
             val_ds = PairArrayDataset(val_x, val_x)
@@ -323,11 +307,11 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
             val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
             test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
             in_dim=in_dim,
-            out_dim=in_dim if name != "multimodal" else 7,
-            task_type="reconstruction" if name != "multimodal" else "classification",
-            loss_fn=F.mse_loss if name != "multimodal" else F.cross_entropy,
+            out_dim=in_dim,
+            task_type="reconstruction",
+            loss_fn=F.mse_loss,
             metrics_fn=None,
-            extra={"compression_ratio": 0.0} if name == "compression" else {},
+            extra={},
         )
 
     if name == "anomaly":
@@ -376,7 +360,7 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
             extra={},
         )
 
-    if name in ["inverse", "control", "simulation", "misc"]:
+    if name in ["inverse", "control", "simulation"]:
         train_x, train_y, val_x, val_y, test_x, test_y = _load_california_housing(seed)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
         if name == "inverse":
@@ -400,13 +384,6 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
             out_y_train = (train_x[:, 0:1] * train_x[:, 1:2]).astype(np.float32)
             out_y_val = (val_x[:, 0:1] * val_x[:, 1:2]).astype(np.float32)
             out_y_test = (test_x[:, 0:1] * test_x[:, 1:2]).astype(np.float32)
-        else:
-            in_x_train = train_x
-            in_x_val = val_x
-            in_x_test = test_x
-            out_y_train = train_y
-            out_y_val = val_y
-            out_y_test = test_y
 
         train_ds = ArrayDataset(in_x_train, out_y_train)
         val_ds = ArrayDataset(in_x_val, out_y_val)
@@ -436,12 +413,7 @@ def task_names() -> List[str]:
         "anomaly",
         "inverse",
         "control",
-        "clustering",
-        "compression",
-        "ranking",
-        "multimodal",
         "selfsupervised",
         "simulation",
-        "misc",
         "prediction",
     ]

@@ -60,7 +60,7 @@ def _switch_to_width_until_uniform(
         return current_phase, width_fail, depth_fail, False
     current_phase = "width"
     depth_fail = 0
-    state.update({"current_phase": current_phase, "depth_fail": depth_fail, "width_fail": width_fail})
+    state.update({"current_phase": current_phase, "depth_fail": depth_fail, "width_fail": width_fail, "warmup_to_uniform": True})
     rg.save_phase_state(phase_root, state)
     return current_phase, width_fail, depth_fail, True
 
@@ -101,6 +101,7 @@ def run_growth_phase(
     width_stage_margin_fail = int(state.get("width_stage_margin_fail", 0))
     width_stage_anchor_val = state.get("width_stage_anchor_val")
     width_stage_anchor_val = None if width_stage_anchor_val is None else float(width_stage_anchor_val)
+    warmup_to_uniform = bool(state.get("warmup_to_uniform", False))
     alt_consecutive_patience = max((2 * max(width_expansion_patience(cfg), depth_expansion_patience(cfg))) + 1, 10)
     global_best_candidate_dir = rg.resolve_candidate_dir(phase_root, state.get("best_candidate_dir"))
     global_best_checkpoint = Path(state["best_checkpoint"]) if state.get("best_checkpoint") else None
@@ -459,31 +460,49 @@ def run_growth_phase(
         )
         logger.close()
 
-        improved = result.best_val < (global_best_val - float(cfg.delta))
-        if improved:
+        stage_margin_pct = ""
+        width_warmup_candidate = bool(mode == "width_to_depth" and phase_for_candidate == "width" and warmup_to_uniform)
+        improved = False
+        if not width_warmup_candidate and result.best_val < (global_best_val - float(cfg.delta)):
+            improved = True
             global_best_val = float(result.best_val)
             global_best_candidate_dir = candidate_dir
             global_best_checkpoint = candidate_dir / "checkpoint_best.pt"
         if phase_for_candidate == "width":
-            width_stage_improved = width_stage_improved or improved
-            if is_uniform_width(next_model):
-                stage_margin_pct = relative_improvement_pct(width_stage_anchor_val, global_best_val)
-                if width_stage_improved:
+            if width_warmup_candidate:
+                if is_uniform_width(next_model):
+                    warmup_to_uniform = False
                     width_fail = 0
-                    consecutive_fail = 0
-                else:
-                    width_fail += 1
-                    consecutive_fail += 1
-                if width_stage_anchor_val is None:
                     width_stage_margin_fail = 0
-                elif stage_margin_pct >= float(cfg.width_stage_min_improve_pct):
-                    width_stage_margin_fail = 0
-                else:
-                    width_stage_margin_fail += 1
-                width_stage_anchor_val = float(global_best_val)
-                width_stage_improved = False
+                    width_stage_improved = False
+                    width_stage_anchor_val = float(global_best_val)
+            else:
+                width_stage_improved = width_stage_improved or improved
+                if is_uniform_width(next_model):
+                    stage_margin_pct = relative_improvement_pct(width_stage_anchor_val, global_best_val)
+                    if width_stage_improved:
+                        width_fail = 0
+                        consecutive_fail = 0
+                    else:
+                        width_fail += 1
+                        consecutive_fail += 1
+                    if width_stage_anchor_val is None:
+                        width_stage_margin_fail = 0
+                    elif stage_margin_pct >= float(cfg.width_stage_min_improve_pct):
+                        width_stage_margin_fail = 0
+                    else:
+                        width_stage_margin_fail += 1
+                    width_stage_anchor_val = float(global_best_val)
+                    width_stage_improved = False
         else:
-            if not is_uniform_width(next_model):
+            if mode == "width_to_depth" and not is_uniform_width(next_model):
+                depth_fail = 0
+                warmup_to_uniform = True
+                width_fail = 0
+                width_stage_margin_fail = 0
+                width_stage_improved = False
+                width_stage_anchor_val = float(global_best_val)
+            elif not is_uniform_width(next_model):
                 depth_fail = 0
             elif improved:
                 depth_fail = 0
@@ -513,7 +532,8 @@ def run_growth_phase(
                 "width_stage_improved": width_stage_improved,
                 "width_stage_margin_fail": width_stage_margin_fail,
                 "width_stage_anchor_val": width_stage_anchor_val,
-                "width_stage_margin_pct": stage_margin_pct if phase_for_candidate == "width" and is_uniform_width(next_model) else "",
+                "width_stage_margin_pct": stage_margin_pct if phase_for_candidate == "width" and is_uniform_width(next_model) and not width_warmup_candidate else "",
+                "warmup_to_uniform": warmup_to_uniform,
             },
         )
 
@@ -548,7 +568,7 @@ def run_growth_phase(
                 current_phase = "width"
                 width_fail = 0
                 width_stage_margin_fail = 0
-            elif is_uniform_width(next_model) and (
+            elif not warmup_to_uniform and is_uniform_width(next_model) and (
                 width_fail >= width_expansion_patience(cfg)
                 or width_stage_limit_hit(cfg, width_stage_margin_fail)
             ):
@@ -572,6 +592,7 @@ def run_growth_phase(
                 "width_stage_improved": width_stage_improved,
                 "width_stage_margin_fail": width_stage_margin_fail,
                 "width_stage_anchor_val": width_stage_anchor_val,
+                "warmup_to_uniform": warmup_to_uniform,
                 "best_val": global_best_val,
                 "candidate_index": next_candidate_index,
                 "completed": False,
