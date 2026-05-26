@@ -6,7 +6,9 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
 
+from sklearn.cluster import KMeans
 from sklearn.datasets import fetch_california_housing, fetch_covtype, fetch_openml
+from sklearn.metrics import normalized_mutual_info_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 
@@ -187,6 +189,13 @@ def _knn_accuracy(embeddings: np.ndarray, labels: np.ndarray, k: int = 5) -> flo
     return float((preds == labels).mean())
 
 
+def _cluster_nmi(embeddings: np.ndarray, labels: np.ndarray) -> float:
+    n_clusters = int(np.unique(labels).shape[0])
+    km = KMeans(n_clusters=n_clusters, n_init=10, random_state=0)
+    clusters = km.fit_predict(embeddings)
+    return float(normalized_mutual_info_score(labels, clusters))
+
+
 def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int, seed: int) -> Task:
     name = task_name.lower()
 
@@ -261,7 +270,10 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
                             labels.append(y.numpy())
                     feats_np = np.concatenate(feats, axis=0)
                     labels_np = np.concatenate(labels, axis=0)
-                    return {"knn_acc": _knn_accuracy(feats_np, labels_np)}
+                    return {
+                        "knn_acc": _knn_accuracy(feats_np, labels_np),
+                        "cluster_nmi": _cluster_nmi(feats_np, labels_np),
+                    }
 
             task_type = "classification"
             out_dim = 7

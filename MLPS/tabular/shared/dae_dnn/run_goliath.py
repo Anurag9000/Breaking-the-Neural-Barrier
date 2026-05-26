@@ -18,6 +18,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 import numpy as np
 import torch
 import torch.nn.functional as F
+import matplotlib.pyplot as plt
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
@@ -189,6 +190,10 @@ def make_reconstruction_model(task: Task, hidden_widths: Sequence[int], use_bn: 
 
 def make_stl_model(task: Task, hidden_widths: Sequence[int], use_bn: bool) -> MLP:
     return make_model(task.in_dim, hidden_widths, task.out_dim, use_bn)
+
+
+def count_model_parameters(model: torch.nn.Module) -> int:
+    return int(sum(p.numel() for p in model.parameters()))
 
 
 def task_reconstruct(task: Task) -> bool:
@@ -1223,6 +1228,8 @@ def build_task_summary_csv_rows(task_name: str, task_summary: Dict[str, Any]) ->
         comp = comparisons.get(adp_phase_name)
         if comp is None:
             continue
+        adp_metrics = comp.get("adp_test_metrics") or {}
+        stl_metrics = comp.get("stl_test_metrics") or {}
         rows.append(
             {
                 "task": task_name,
@@ -1237,10 +1244,19 @@ def build_task_summary_csv_rows(task_name: str, task_summary: Dict[str, Any]) ->
                 "winner_value": comp.get("winner_value"),
                 "adp_architecture": format_architecture_for_report(comp.get("adp_architecture")),
                 "stl_architecture": format_architecture_for_report(comp.get("stl_architecture")),
+                "adp_test_loss": adp_metrics.get("test_loss"),
+                "adp_test_acc": adp_metrics.get("test_acc"),
+                "adp_knn_acc": adp_metrics.get("knn_acc"),
+                "adp_cluster_nmi": adp_metrics.get("cluster_nmi"),
+                "stl_test_loss": stl_metrics.get("test_loss"),
+                "stl_test_acc": stl_metrics.get("test_acc"),
+                "stl_knn_acc": stl_metrics.get("knn_acc"),
+                "stl_cluster_nmi": stl_metrics.get("cluster_nmi"),
             }
         )
 
     for baseline in task_summary.get("baseline_stl_runs", []):
+        baseline_metrics = baseline.get("test_metrics") or {}
         rows.append(
             {
                 "task": task_name,
@@ -1255,9 +1271,98 @@ def build_task_summary_csv_rows(task_name: str, task_summary: Dict[str, Any]) ->
                 "winner_value": baseline.get("best_val"),
                 "adp_architecture": "",
                 "stl_architecture": format_architecture_for_report(baseline.get("architecture")),
+                "adp_test_loss": "",
+                "adp_test_acc": "",
+                "adp_knn_acc": "",
+                "adp_cluster_nmi": "",
+                "stl_test_loss": baseline_metrics.get("test_loss"),
+                "stl_test_acc": baseline_metrics.get("test_acc"),
+                "stl_knn_acc": baseline_metrics.get("knn_acc"),
+                "stl_cluster_nmi": baseline_metrics.get("cluster_nmi"),
             }
         )
     return rows
+
+
+def _hidden_widths_from_summary_architecture(architecture: Any) -> List[int]:
+    if isinstance(architecture, dict):
+        widths = architecture.get("hidden_widths") or []
+        return [int(w) for w in widths]
+    if isinstance(architecture, (list, tuple)):
+        return [int(w) for w in architecture]
+    return []
+
+
+def write_representation_benchmark_artifacts(task_root: Path, task: Task, cfg: RunConfig, task_summary: Dict[str, Any]) -> None:
+    if task.name != "representation":
+        return
+
+    rows: List[Dict[str, Any]] = []
+
+    def add_row(family: str, phase: str, architecture: Any, best_val: Any, test_metrics: Optional[Dict[str, Any]]) -> None:
+        hidden_widths = _hidden_widths_from_summary_architecture(architecture)
+        if not hidden_widths:
+            return
+        model = make_stl_model(task, hidden_widths, cfg.use_bn)
+        metrics = test_metrics or {}
+        rows.append(
+            {
+                "task": task.name,
+                "family": family,
+                "phase": phase,
+                "architecture": format_architecture_for_report(hidden_widths),
+                "params": count_model_parameters(model),
+                "best_val": best_val,
+                "test_loss": metrics.get("test_loss"),
+                "test_acc": metrics.get("test_acc"),
+                "knn_acc": metrics.get("knn_acc"),
+                "cluster_nmi": metrics.get("cluster_nmi"),
+            }
+        )
+
+    for entry in task_summary.get("adp_runs", []):
+        add_row("ADP", str(entry.get("phase")), entry.get("architecture"), entry.get("best_val"), entry.get("test_metrics"))
+    for entry in task_summary.get("paired_stl_runs", []):
+        add_row("STL_paired", str(entry.get("phase")), entry.get("architecture"), entry.get("best_val"), entry.get("test_metrics"))
+    for entry in task_summary.get("baseline_stl_runs", []):
+        add_row("STL_baseline", str(entry.get("phase")), entry.get("architecture"), entry.get("best_val"), entry.get("test_metrics"))
+
+    if not rows:
+        return
+
+    rows.sort(key=lambda row: (str(row["family"]), str(row["phase"])))
+    fieldnames = ["task", "family", "phase", "architecture", "params", "best_val", "test_loss", "test_acc", "knn_acc", "cluster_nmi"]
+    write_csv(task_root / "representation_benchmark.csv", rows, fieldnames)
+    write_json(task_root / "representation_benchmark.json", {"task": task.name, "rows": rows})
+
+    def plot_metric(metric_key: str, ylabel: str, output_name: str) -> None:
+        metric_rows = [row for row in rows if row.get(metric_key) is not None]
+        if not metric_rows:
+            return
+        fig, ax = plt.subplots(figsize=(12, 7))
+        color_map = {"ADP": "#1f77b4", "STL_paired": "#ff7f0e", "STL_baseline": "#2ca02c"}
+        for row in metric_rows:
+            family = str(row["family"])
+            params = float(row["params"])
+            value = float(row[metric_key])
+            ax.scatter(params, value, color=color_map.get(family, "#444444"), s=60)
+            ax.annotate(
+                f"{family}:{row['phase']} {row['architecture']}",
+                (params, value),
+                textcoords="offset points",
+                xytext=(5, 5),
+                fontsize=8,
+            )
+        ax.set_title(f"{task.name} benchmark: {ylabel} vs parameter count")
+        ax.set_xlabel("Parameter count")
+        ax.set_ylabel(ylabel)
+        ax.grid(True, alpha=0.3)
+        fig.tight_layout()
+        fig.savefig(task_root / output_name, dpi=200)
+        plt.close(fig)
+
+    plot_metric("knn_acc", "kNN accuracy", "representation_knn_acc_vs_params.png")
+    plot_metric("cluster_nmi", "Cluster NMI", "representation_cluster_nmi_vs_params.png")
 
 
 def run_stl_phase(
@@ -2105,6 +2210,7 @@ def run_task_pipeline(
         write_json(task_state_path, task_state)
 
     task_summary["winner"] = best_overall
+    write_representation_benchmark_artifacts(task_root, task, cfg, task_summary)
     write_json(task_root / "task_summary.json", task_summary)
     task_state.update(
         {
@@ -2347,6 +2453,14 @@ def main() -> None:
                         "winner_value",
                         "adp_architecture",
                         "stl_architecture",
+                        "adp_test_loss",
+                        "adp_test_acc",
+                        "adp_knn_acc",
+                        "adp_cluster_nmi",
+                        "stl_test_loss",
+                        "stl_test_acc",
+                        "stl_knn_acc",
+                        "stl_cluster_nmi",
                     ],
                 )
             log.log_console(f"Final report written to {run_root / 'final_report.json'}")
