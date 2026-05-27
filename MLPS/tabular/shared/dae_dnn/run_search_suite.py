@@ -296,7 +296,7 @@ def build_train_cfg(suite_cfg: SuiteConfig) -> RunConfig:
         alt_start_depth=1,
         patience=suite_cfg.patience,
         width_expansion_patience=10,
-        depth_expansion_patience=5,
+        depth_expansion_patience=2,
         delta=suite_cfg.delta,
         max_epochs=suite_cfg.max_epochs,
         lr=suite_cfg.lr,
