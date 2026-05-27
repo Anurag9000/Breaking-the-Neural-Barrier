@@ -349,6 +349,12 @@ def adp_seed_hidden() -> List[int]:
     return [1]
 
 
+def adp_seed_hidden_for_mode(mode: Optional[str]) -> List[int]:
+    if mode in {"depth_only", "alt_depth", "depth_to_width"}:
+        return [20]
+    return adp_seed_hidden()
+
+
 def default_batch_size_for_task(task_name: str) -> int:
     return int(PER_TASK_BATCH_SIZES.get(task_name.lower(), 32768))
 
@@ -1073,7 +1079,7 @@ def phase_mode(phase_name: str) -> Optional[str]:
 def phase_seed_hidden(phase_name: str, task: Task, cfg: RunConfig) -> List[int]:
     if phase_name == "stl":
         return base_stl_hidden(task, cfg)
-    return adp_seed_hidden()
+    return adp_seed_hidden_for_mode(phase_mode(phase_name))
 
 
 def extract_hidden_widths(architecture: Any) -> List[int]:
@@ -1816,7 +1822,11 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
         logger.close()
 
         stage_margin_pct = ""
-        width_warmup_candidate = bool(mode == "width_to_depth" and phase_for_candidate == "width" and warmup_to_uniform)
+        width_warmup_candidate = bool(
+            mode in {"alt_width", "alt_depth", "width_to_depth", "depth_to_width"}
+            and phase_for_candidate == "width"
+            and warmup_to_uniform
+        )
         improved = False
         if not width_warmup_candidate and result.best_val < (global_best_val - float(cfg.delta)):
             improved = True
@@ -1847,7 +1857,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                     else:
                         consecutive_fail += 1
                         width_fail += 1
-                elif mode == "width_to_depth" and not is_uniform_width(next_model):
+                elif mode in {"alt_width", "alt_depth", "width_to_depth", "depth_to_width"} and not is_uniform_width(next_model):
                     depth_fail = 0
                 elif not is_uniform_width(next_model):
                     depth_fail = 0
@@ -1871,7 +1881,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 else:
                     width_stage_margin_fail += 1
                 width_stage_anchor_val = float(global_best_val)
-        elif mode == "width_to_depth" and not is_uniform_width(next_model):
+        elif mode in {"alt_width", "alt_depth", "width_to_depth", "depth_to_width"} and not is_uniform_width(next_model):
             warmup_to_uniform = True
             width_fail = 0
             width_stage_margin_fail = 0
@@ -2059,7 +2069,7 @@ def run_task_pipeline(
             task_root,
             cfg,
             device,
-            adp_seed_hidden(),
+            phase_seed_hidden(adp_phase_name, task, cfg),
             adp_phase_name,
             adp_mode,
             reconstruct=task_reconstruct(task),
@@ -2236,7 +2246,7 @@ def run_phase_for_task(task: Task, task_root: Path, cfg: RunConfig, device, phas
             task_root,
             cfg,
             device,
-            adp_seed_hidden(),
+            phase_seed_hidden(phase_name, task, cfg),
             phase_name,
             phase_mode(phase_name) or "width_to_depth",
             reconstruct=task_reconstruct(task),
