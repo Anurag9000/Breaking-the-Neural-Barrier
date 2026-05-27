@@ -316,7 +316,10 @@ def run_module_adp(
     patience_depth = int(getattr(acfg, "patience_depth_exp", getattr(acfg, "trials_depth", 5)))
     width_stage_margin_patience = int(getattr(acfg, "width_stage_margin_patience", 5))
     width_stage_min_improve_pct = float(getattr(acfg, "width_stage_min_improve_pct", 1.0))
+    depth_stage_margin_patience = int(getattr(acfg, "depth_stage_margin_patience", 5))
+    depth_stage_min_improve_pct = float(getattr(acfg, "depth_stage_min_improve_pct", 1.0))
     min_new_layer_width = int(getattr(acfg, "min_new_layer_width", 10))
+    depth_first_seed_width = int(getattr(acfg, "depth_first_seed_width", 20))
 
     def snapshot_shape(cur_model: Any) -> Tuple[int, int, Optional[Tuple[int, ...]]]:
         return _shape_from_snapshot(_snapshot(module_globals, cur_model), cur_model)
@@ -353,6 +356,23 @@ def run_module_adp(
 
     mode = getattr(acfg, "adp_mode", "width_to_depth")
 
+    def align_depth_first_seed(cur_model: Any) -> Any:
+        if mode not in ("depth_only", "depth", "alt_depth", "depth_to_width"):
+            return cur_model
+        while True:
+            _, _, widths = snapshot_shape(cur_model)
+            if not widths:
+                return cur_model
+            if len(widths) != 1:
+                return cur_model
+            if int(widths[0]) >= depth_first_seed_width:
+                return cur_model
+            candidate = _try_expand_once(module_globals, cur_model, acfg, device, "width", expand_width_fn)
+            if candidate is None:
+                return cur_model
+            cur_model = candidate
+
+    model = align_depth_first_seed(model)
     best_val, best_snap = train(model)
     model = restore(model, best_snap)
     global_best_val = best_val
@@ -450,9 +470,12 @@ def run_module_adp(
             if compare_after_warmup:
                 return cur_model, True, update_global_best(cur_model, cand_val, cand_snap, delta_depth)
             return cur_model, True, False
-        warmed_model, _, warmed_val, warmed_snap = ensure_uniform_width(candidate, update_global=False)
+        warmup_val, warmup_snap = train(candidate)
+        warm_model = restore(candidate, warmup_snap)
+        warmed_model, _, warmed_val, warmed_snap = ensure_uniform_width(warm_model, update_global=False)
         if warmed_val is None or warmed_snap is None:
-            return cur_model, False, False
+            cur_model = restore(warm_model, warmup_snap)
+            return cur_model, True, False
         cur_model = restore(warmed_model, warmed_snap)
         if compare_after_warmup:
             return cur_model, True, update_global_best(cur_model, warmed_val, warmed_snap, delta_depth)
@@ -461,13 +484,19 @@ def run_module_adp(
     def run_depth_phase(cur_model: Any) -> Tuple[Any, bool]:
         cur_model, _, _, _ = ensure_uniform_width(cur_model)
         depth_fail = 0
+        depth_margin_fail = 0
+        depth_stage_anchor = float(global_best_val)
         any_phase_improvement = False
-        while depth_fail < patience_depth:
+        while depth_fail < patience_depth and depth_margin_fail < depth_stage_margin_patience:
+            before_val = float(global_best_val)
             cur_model, progressed, improved = run_depth_step(cur_model)
+            stage_pct = _pct_improvement(depth_stage_anchor, global_best_val)
             if logger is not None:
                 logger.log_console(
                     f"[STAGED][DEPTH] arch={describe(cur_model)} progressed={progressed} improved={improved} "
-                    f"global_best={global_best_val:.6f} depth_fail={depth_fail if improved else depth_fail + 1}/{patience_depth}"
+                    f"global_best={global_best_val:.6f} depth_fail={depth_fail if improved else depth_fail + 1}/{patience_depth} "
+                    f"depth_margin_fail={depth_margin_fail if stage_pct >= depth_stage_min_improve_pct else depth_margin_fail + 1}/{depth_stage_margin_patience} "
+                    f"stage_pct={stage_pct:.4f}"
                 )
             if not progressed:
                 break
@@ -484,6 +513,10 @@ def run_module_adp(
             else:
                 depth_fail = 0
                 any_phase_improvement = True
+            depth_margin_fail = 0 if stage_pct >= depth_stage_min_improve_pct else depth_margin_fail + 1
+            depth_stage_anchor = float(global_best_val)
+            if float(global_best_val) >= before_val and not improved and depth_margin_fail >= depth_stage_margin_patience:
+                break
         return cur_model, any_phase_improvement
 
     if mode in ("width_only", "width"):

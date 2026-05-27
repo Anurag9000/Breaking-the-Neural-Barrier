@@ -461,7 +461,11 @@ def run_growth_phase(
         logger.close()
 
         stage_margin_pct = ""
-        width_warmup_candidate = bool(mode == "width_to_depth" and phase_for_candidate == "width" and warmup_to_uniform)
+        width_warmup_candidate = bool(
+            mode in {"alt_width", "alt_depth", "width_to_depth", "depth_to_width"}
+            and phase_for_candidate == "width"
+            and warmup_to_uniform
+        )
         improved = False
         if not width_warmup_candidate and result.best_val < (global_best_val - float(cfg.delta)):
             improved = True
@@ -495,7 +499,7 @@ def run_growth_phase(
                     width_stage_anchor_val = float(global_best_val)
                     width_stage_improved = False
         else:
-            if mode == "width_to_depth" and not is_uniform_width(next_model):
+            if mode in {"alt_width", "alt_depth", "width_to_depth", "depth_to_width"} and not is_uniform_width(next_model):
                 depth_fail = 0
                 warmup_to_uniform = True
                 width_fail = 0
