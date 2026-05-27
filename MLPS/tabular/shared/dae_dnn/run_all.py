@@ -15,7 +15,7 @@ def main() -> None:
     p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
     p.add_argument("--batch-size", type=int, default=2048)
     p.add_argument("--max-epochs", type=int, default=100000000)
-    p.add_argument("--patience", type=int, default=5)
+    p.add_argument("--patience", type=int, default=10)
     p.add_argument("--ex-k", type=int, default=1)
     p.add_argument("--trials-width", type=int, default=10)
     p.add_argument("--trials-depth", type=int, default=2)
