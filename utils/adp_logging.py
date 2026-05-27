@@ -13,11 +13,12 @@ class ContinuousLogger:
         
         self.log_file = self.results_dir / "training_log.txt"
         self.csv_file = self.results_dir / "training_stats.csv"
-        
-        self.txt_handle = open(self.log_file, "a", encoding="utf-8")
-        
+        file_mode = "a" if resume else "w"
+
+        self.txt_handle = open(self.log_file, file_mode, encoding="utf-8")
+
         # CSV handling
-        self.csv_handle = open(self.csv_file, "a", newline="", encoding="utf-8")
+        self.csv_handle = open(self.csv_file, file_mode, newline="", encoding="utf-8")
         self.csv_writer = None 
         # We don't init writer yet because we need to know columns from first log call
         

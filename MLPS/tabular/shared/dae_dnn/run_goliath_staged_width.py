@@ -106,16 +106,20 @@ def run_growth_phase(
     global_best_candidate_dir = rg.resolve_candidate_dir(phase_root, state.get("best_candidate_dir"))
     global_best_checkpoint = Path(state["best_checkpoint"]) if state.get("best_checkpoint") else None
 
-    if global_best_candidate_dir is None:
-        completed_dirs = [p for p in candidate_dirs if rg.candidate_completed(p)]
-        if completed_dirs:
-            scored: List[Tuple[float, Path]] = []
-            for cand in completed_dirs:
-                cand_state = rg.read_json(cand / "candidate_state.json")
-                scored.append((float(cand_state.get("best_val", 1e30)), cand))
-            scored.sort(key=lambda item: item[0])
-            global_best_val, global_best_candidate_dir = scored[0]
-            global_best_checkpoint = global_best_candidate_dir / "checkpoint_best.pt"
+    recovered_best_val, recovered_best_candidate_dir, recovered_best_checkpoint = rg.recover_best_candidate_state(phase_root)
+    state_best_missing = (
+        global_best_candidate_dir is None
+        or global_best_checkpoint is None
+        or not global_best_checkpoint.exists()
+    )
+    if recovered_best_candidate_dir is not None and (state_best_missing or recovered_best_val < global_best_val):
+        global_best_val = recovered_best_val
+        global_best_candidate_dir = recovered_best_candidate_dir
+        global_best_checkpoint = recovered_best_checkpoint
+        state["best_val"] = global_best_val
+        state["best_candidate_dir"] = global_best_candidate_dir.name if global_best_candidate_dir is not None else None
+        state["best_checkpoint"] = str(global_best_checkpoint) if global_best_checkpoint is not None else None
+        rg.save_phase_state(phase_root, state)
 
     def current_base_model() -> MLP:
         latest = rg.latest_completed_candidate(phase_root)
@@ -132,7 +136,7 @@ def run_growth_phase(
     if incomplete is not None:
         candidate_idx = int(incomplete.name.split("_")[1])
         candidate_model, _, _ = rg.load_candidate_model(incomplete, device)
-        logger = ContinuousLogger(incomplete, f"{task.name}_{phase_name}", phase_name)
+        logger = ContinuousLogger(incomplete, f"{task.name}_{phase_name}", phase_name, resume=True)
         result = rg.training_loop(
             task=task,
             model=candidate_model,
@@ -433,7 +437,7 @@ def run_growth_phase(
 
         candidate_idx = next_candidate_index
         candidate_dir = rg.candidate_root_for(phase_root, candidate_idx, next_arch)
-        logger = ContinuousLogger(candidate_dir, f"{task.name}_{phase_name}", phase_name)
+        logger = ContinuousLogger(candidate_dir, f"{task.name}_{phase_name}", phase_name, resume=False)
         logger.log_console(
             f"[CANDIDATE] task={task.name} phase={phase_name} index={candidate_idx} "
             f"search_phase={phase_for_candidate} architecture={rg.format_architecture_for_report(next_arch)}"
