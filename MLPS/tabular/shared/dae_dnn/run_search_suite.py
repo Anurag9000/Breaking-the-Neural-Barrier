@@ -1293,7 +1293,7 @@ def main() -> None:
     p.add_argument("--max-width", type=int, default=512)
     p.add_argument("--max-depth", type=int, default=10)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
-    p.add_argument("--width-stage-margin-patience", type=int, default=5)
+    p.add_argument("--width-stage-margin-patience", type=int, default=10)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
     p.add_argument("--no-bn", action="store_true")
     p.add_argument("--candidate-budget", type=int, default=0, help="Max candidate trainings per method; 0 means exhaustive grid size")
