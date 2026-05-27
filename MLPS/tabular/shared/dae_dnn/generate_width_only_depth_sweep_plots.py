@@ -17,8 +17,16 @@ REPO_ROOT = Path(__file__).resolve().parents[4]
 DEFAULT_RESULTS_ROOT = "MLPS/tabular/shared/dae_dnn/results"
 DEFAULT_STL_ABLATION_ROOT = "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus"
 DEFAULT_OUTPUT_SUBDIR = "analysis/width_only_depth_sweep_loglog"
-DEFAULT_TASKS = ["inverse", "control", "selfsupervised", "simulation", "prediction"]
-DEPTHS = [1, 2, 3, 4]
+DEFAULT_TASKS = [
+    "representation",
+    "autoencoding",
+    "generation",
+    "denoising",
+    "anomaly",
+    "simulation",
+    "prediction",
+]
+DEPTHS = [1, 2, 3, 4, 5]
 
 
 @dataclass

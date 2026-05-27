@@ -12,7 +12,15 @@ from utils.adp_logging import ContinuousLogger
 import run_goliath as rg
 
 
-DEFAULT_TASKS = ["representation", "autoencoding", "generation"]
+DEFAULT_TASKS = [
+    "representation",
+    "autoencoding",
+    "generation",
+    "denoising",
+    "anomaly",
+    "simulation",
+    "prediction",
+]
 
 # Quick but still broad: tiny, medium, wide, shallow, and deep.
 QUICK_ARCHITECTURES = [
