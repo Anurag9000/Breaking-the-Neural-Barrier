@@ -121,6 +121,14 @@ def candidate_index_from_name(name: str) -> int:
     return int(name.split("_", 2)[1])
 
 
+def is_forced_depth_warmup(architecture: Sequence[int]) -> bool:
+    if len(architecture) < 2:
+        return False
+    prefix = [int(v) for v in architecture[:-1]]
+    last = int(architecture[-1])
+    return len(set(prefix)) == 1 and last < prefix[0]
+
+
 def collect_old_adp_points(task: str, recovered_root: Path) -> List[SeriesPoint]:
     df = read_recovered_summary(recovered_root)
     df = df[(df["task"] == task) & (df["phase"] == "ae_width_to_depth")].copy()
@@ -129,6 +137,8 @@ def collect_old_adp_points(task: str, recovered_root: Path) -> List[SeriesPoint]
     points: List[SeriesPoint] = []
     for row in df.to_dict(orient="records"):
         architecture = parse_architecture(row["architecture"])
+        if is_forced_depth_warmup(architecture):
+            continue
         candidate_name = str(row["candidate_name"])
         points.append(
             SeriesPoint(
@@ -180,6 +190,8 @@ def collect_current_anomaly_adp_points(current_run_root: Path) -> List[SeriesPoi
         candidate_state = load_json(state_path)
         metadata = load_json(candidate_dir / "metadata.json")
         architecture = [int(v) for v in metadata["model"]["hidden_widths"]]
+        if is_forced_depth_warmup(architecture):
+            continue
         parameter_count = int(sum(p.numel() for p in rg.make_model(
             int(metadata["model"]["in_dim"]),
             architecture,
