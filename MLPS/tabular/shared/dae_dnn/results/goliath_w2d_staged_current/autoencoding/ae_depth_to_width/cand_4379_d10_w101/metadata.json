@@ -1,0 +1,93 @@
+{
+  "candidate_index": 4379,
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 32768,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 99999999999999999999999999999999999999999999999999999999999999999999999,
+    "max_neurons": 10000000,
+    "max_width": 512,
+    "num_workers": 0,
+    "patience": 5,
+    "phases": [
+      "ae_alt_depth",
+      "ae_alt_width",
+      "ae_width_to_depth",
+      "ae_depth_to_width"
+    ],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current",
+    "seed": 0,
+    "stl_depth": 2,
+    "stl_width": 128,
+    "tasks": [
+      "representation",
+      "autoencoding",
+      "generation",
+      "denoising",
+      "anomaly",
+      "inverse",
+      "control",
+      "clustering",
+      "compression",
+      "ranking",
+      "multimodal",
+      "selfsupervised",
+      "simulation",
+      "misc",
+      "prediction"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_stage_margin_patience": 5,
+    "width_stage_min_improve_pct": 1.0
+  },
+  "dataset_sizes": {
+    "test": 58101,
+    "train": 464810,
+    "val": 58101
+  },
+  "git_commit": "699848f143ca5b5ab74291c3b0949506394e055d",
+  "hidden_widths": [
+    101,
+    101,
+    101,
+    101,
+    101,
+    100,
+    100,
+    100,
+    100,
+    100
+  ],
+  "model": {
+    "hidden_widths": [
+      101,
+      101,
+      101,
+      101,
+      101,
+      100,
+      100,
+      100,
+      100,
+      100
+    ],
+    "in_dim": 54,
+    "out_dim": 54,
+    "use_bn": true
+  },
+  "phase_kind": "depth_to_width",
+  "phase_name": "ae_depth_to_width",
+  "reconstruct": true,
+  "search_phase": "width",
+  "task": "autoencoding",
+  "task_extra": {},
+  "task_type": "reconstruction"
+}

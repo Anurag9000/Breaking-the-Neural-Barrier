@@ -365,21 +365,26 @@ def run_growth_phase(
                         and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
                     )
                     if is_uniform_width(current_base) and (width_fail >= width_expansion_patience(cfg) or width_stage_margin_limit_hit):
-                        current_phase = "depth"
-                        state["current_phase"] = current_phase
-                        rg.save_phase_state(phase_root, state)
-                        continue
+                        if can_deepen_uniform(current_base, cfg):
+                            current_phase = "depth"
+                            state["current_phase"] = current_phase
+                            rg.save_phase_state(phase_root, state)
+                            continue
                     if not can_widen_staged(current_base, int(cfg.max_width), int(cfg.max_neurons)):
-                        current_phase = "depth"
-                        state.update({"current_phase": current_phase, "width_fail": width_fail})
-                        rg.save_phase_state(phase_root, state)
-                        continue
+                        if can_deepen_uniform(current_base, cfg):
+                            current_phase = "depth"
+                            state.update({"current_phase": current_phase, "width_fail": width_fail})
+                            rg.save_phase_state(phase_root, state)
+                            continue
+                        break
                     next_model = expand_width_staged(current_base, 1, int(cfg.max_width))
                     if next_model is None:
-                        current_phase = "depth"
-                        state.update({"current_phase": current_phase, "width_fail": width_fail})
-                        rg.save_phase_state(phase_root, state)
-                        continue
+                        if can_deepen_uniform(current_base, cfg):
+                            current_phase = "depth"
+                            state.update({"current_phase": current_phase, "width_fail": width_fail})
+                            rg.save_phase_state(phase_root, state)
+                            continue
+                        break
                     next_arch = [int(w) for w in next_model.hidden_widths]
                 else:
                     if depth_fail >= depth_expansion_patience(cfg):
@@ -576,7 +581,7 @@ def run_growth_phase(
                 width_fail >= width_expansion_patience(cfg)
                 or width_stage_limit_hit(cfg, width_stage_margin_fail)
             ):
-                current_phase = "depth"
+                current_phase = "depth" if can_deepen_uniform(next_model, cfg) else "width"
             else:
                 current_phase = "width"
         elif mode == "depth_to_width":

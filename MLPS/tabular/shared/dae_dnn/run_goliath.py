@@ -1730,25 +1730,31 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                     next_arch = [int(w) for w in next_model.hidden_widths]
             elif mode == "width_to_depth":
                 if current_phase == "width":
-                    if width_fail >= width_expansion_patience(cfg) or (
+                    width_stage_limit_hit = (
                         int(cfg.width_stage_margin_patience) > 0
                         and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
-                    ):
-                        current_phase = "depth"
-                        state["current_phase"] = current_phase
-                        save_phase_state(phase_root, state)
-                        continue
+                    )
+                    if width_fail >= width_expansion_patience(cfg) or width_stage_limit_hit:
+                        if can_deepen(current_base, cfg):
+                            current_phase = "depth"
+                            state["current_phase"] = current_phase
+                            save_phase_state(phase_root, state)
+                            continue
                     if not can_widen(current_base, cfg):
-                        current_phase = "depth"
-                        state.update({"current_phase": current_phase, "width_fail": width_fail})
-                        save_phase_state(phase_root, state)
-                        continue
+                        if can_deepen(current_base, cfg):
+                            current_phase = "depth"
+                            state.update({"current_phase": current_phase, "width_fail": width_fail})
+                            save_phase_state(phase_root, state)
+                            continue
+                        break
                     next_model = expand_width(current_base, 1, int(cfg.max_width))
                     if next_model is None:
-                        current_phase = "depth"
-                        state.update({"current_phase": current_phase, "width_fail": width_fail})
-                        save_phase_state(phase_root, state)
-                        continue
+                        if can_deepen(current_base, cfg):
+                            current_phase = "depth"
+                            state.update({"current_phase": current_phase, "width_fail": width_fail})
+                            save_phase_state(phase_root, state)
+                            continue
+                        break
                     next_arch = [int(w) for w in next_model.hidden_widths]
                 else:
                     if depth_fail >= depth_expansion_patience(cfg):
@@ -1959,7 +1965,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
                 int(cfg.width_stage_margin_patience) > 0
                 and width_stage_margin_fail >= int(cfg.width_stage_margin_patience)
             )):
-                current_phase = "depth"
+                current_phase = "depth" if can_deepen(next_model, cfg) else "width"
         elif mode == "depth_to_width":
             if phase_for_candidate == "width":
                 current_phase = "depth"
