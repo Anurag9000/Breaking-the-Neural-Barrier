@@ -39,7 +39,7 @@ def width_expansion_patience(cfg: rg.RunConfig) -> int:
 
 
 def depth_expansion_patience(cfg: rg.RunConfig) -> int:
-    return int(getattr(cfg, "depth_expansion_patience", 5))
+    return int(getattr(cfg, "depth_expansion_patience", 2))
 
 
 def _switch_to_width_until_uniform(

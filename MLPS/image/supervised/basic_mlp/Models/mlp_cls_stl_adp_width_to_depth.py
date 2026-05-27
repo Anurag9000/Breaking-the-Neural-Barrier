@@ -337,7 +337,7 @@ def main() -> None:
     p.add_argument("--delta", type=float, default=1e-4)
     p.add_argument("--patience", type=int, default=5, help="Early-stopping patience per (single-shot) training run")
     p.add_argument("--trials-width", type=int, default=10, help="Expansion patience for width; <=0 means infinite")
-    p.add_argument("--trials-depth", type=int, default=5, help="Expansion patience for depth; <=0 means infinite")
+    p.add_argument("--trials-depth", type=int, default=2, help="Expansion patience for depth; <=0 means infinite")
     p.add_argument("--ex-k", type=int, default=1)
     p.add_argument("--width-stage-margin-patience", type=int, default=5)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)

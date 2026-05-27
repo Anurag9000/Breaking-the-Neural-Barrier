@@ -124,7 +124,7 @@ def make_cfg(args, tasks: List[str], run_root: Path) -> rg.RunConfig:
         alt_start_depth=1,
         patience=int(args.patience),
         width_expansion_patience=10,
-        depth_expansion_patience=5,
+        depth_expansion_patience=2,
         delta=float(args.delta),
         max_epochs=int(args.max_epochs),
         lr=float(args.lr),
