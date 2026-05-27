@@ -18,7 +18,7 @@ def main() -> None:
     p.add_argument("--patience", type=int, default=5)
     p.add_argument("--ex-k", type=int, default=1)
     p.add_argument("--trials-width", type=int, default=10)
-    p.add_argument("--trials-depth", type=int, default=5)
+    p.add_argument("--trials-depth", type=int, default=2)
     p.add_argument("--max-width", type=int, default=4096)
     p.add_argument("--max-depth", type=int, default=10)
     p.add_argument("--max-neurons", type=int, default=10000000)

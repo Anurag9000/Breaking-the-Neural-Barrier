@@ -1053,7 +1053,7 @@ def width_expansion_patience(cfg: RunConfig) -> int:
 
 
 def depth_expansion_patience(cfg: RunConfig) -> int:
-    return int(getattr(cfg, "depth_expansion_patience", 5))
+    return int(getattr(cfg, "depth_expansion_patience", 2))
 
 
 def infer_hidden_from_checkpoint(candidate_dir: Path) -> List[int]:
@@ -2294,7 +2294,7 @@ def main() -> None:
     p.add_argument("--alt-start-depth", type=int, default=1)
     p.add_argument("--patience", type=int, default=5)
     p.add_argument("--width-expansion-patience", type=int, default=10)
-    p.add_argument("--depth-expansion-patience", type=int, default=5)
+    p.add_argument("--depth-expansion-patience", type=int, default=2)
     p.add_argument("--delta", type=float, default=1e-4)
     p.add_argument("--max-epochs", type=int, default=DEFAULT_MAX_EPOCHS)
     p.add_argument("--lr", type=float, default=1e-3)

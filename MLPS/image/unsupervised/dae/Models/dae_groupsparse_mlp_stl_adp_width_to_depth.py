@@ -234,7 +234,7 @@ def main() -> None:
     p.add_argument("--delta", type=float, default=1e-3)
     p.add_argument("--patience", type=int, default=5)
     p.add_argument("--trials-width", type=int, default=10)
-    p.add_argument("--trials-depth", type=int, default=5)
+    p.add_argument("--trials-depth", type=int, default=2)
     p.add_argument("--ex-k", type=int, default=128)
     p.add_argument("--max-width", type=int, default=2048)
     p.add_argument("--max-depth", type=int, default=8)
