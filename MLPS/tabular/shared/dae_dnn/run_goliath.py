@@ -716,6 +716,34 @@ def resolve_candidate_dir(phase_root: Path, candidate_ref: Optional[str]) -> Opt
     return phase_root / candidate_ref
 
 
+def recover_best_candidate_state(phase_root: Path) -> Tuple[float, Optional[Path], Optional[Path]]:
+    best_val = float("inf")
+    best_candidate_dir: Optional[Path] = None
+    best_checkpoint: Optional[Path] = None
+    for cand in list_candidate_dirs(phase_root):
+        state_path = cand / "candidate_state.json"
+        if not state_path.exists():
+            continue
+        try:
+            cand_state = read_json(state_path)
+        except Exception:
+            continue
+        cand_best = cand_state.get("best_val")
+        if cand_best is None:
+            continue
+        checkpoint = cand / "checkpoint_best.pt"
+        if not checkpoint.exists():
+            checkpoint = cand / "checkpoint_last.pt"
+        if not checkpoint.exists():
+            continue
+        cand_best = float(cand_best)
+        if cand_best < best_val:
+            best_val = cand_best
+            best_candidate_dir = cand
+            best_checkpoint = checkpoint
+    return best_val, best_candidate_dir, best_checkpoint
+
+
 def training_loop(
     *,
     task: Task,
@@ -1401,7 +1429,12 @@ def run_stl_phase(
     candidate_dir.mkdir(parents=True, exist_ok=True)
 
     model = make_stl_model(task, base_hidden, cfg.use_bn).to(device)
-    logger = ContinuousLogger(candidate_dir, f"{task.name}_{phase_name}", phase_name)
+    logger = ContinuousLogger(
+        candidate_dir,
+        f"{task.name}_{phase_name}",
+        phase_name,
+        resume=bool((candidate_dir / "checkpoint_last.pt").exists()),
+    )
     write_json(
         phase_root / "phase_metadata.json",
         phase_metadata(
@@ -1538,16 +1571,20 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
     global_best_candidate_dir = resolve_candidate_dir(phase_root, state.get("best_candidate_dir"))
     global_best_checkpoint = Path(state["best_checkpoint"]) if state.get("best_checkpoint") else None
 
-    if global_best_candidate_dir is None:
-        completed_dirs = [p for p in candidate_dirs if candidate_completed(p)]
-        if completed_dirs:
-            scored: List[Tuple[float, Path]] = []
-            for cand in completed_dirs:
-                cand_state = read_json(cand / "candidate_state.json")
-                scored.append((float(cand_state.get("best_val", 1e30)), cand))
-            scored.sort(key=lambda item: item[0])
-            global_best_val, global_best_candidate_dir = scored[0]
-            global_best_checkpoint = global_best_candidate_dir / "checkpoint_best.pt"
+    recovered_best_val, recovered_best_candidate_dir, recovered_best_checkpoint = recover_best_candidate_state(phase_root)
+    state_best_missing = (
+        global_best_candidate_dir is None
+        or global_best_checkpoint is None
+        or not global_best_checkpoint.exists()
+    )
+    if recovered_best_candidate_dir is not None and (state_best_missing or recovered_best_val < global_best_val):
+        global_best_val = recovered_best_val
+        global_best_candidate_dir = recovered_best_candidate_dir
+        global_best_checkpoint = recovered_best_checkpoint
+        state["best_val"] = global_best_val
+        state["best_candidate_dir"] = global_best_candidate_dir.name if global_best_candidate_dir is not None else None
+        state["best_checkpoint"] = str(global_best_checkpoint) if global_best_checkpoint is not None else None
+        save_phase_state(phase_root, state)
 
     def current_base_model() -> MLP:
         latest = latest_completed_candidate(phase_root)
@@ -1561,7 +1598,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
     if incomplete is not None:
         candidate_idx = int(incomplete.name.split("_")[1])
         candidate_model, meta, ckpt = load_candidate_model(incomplete, device)
-        logger = ContinuousLogger(incomplete, f"{task.name}_{phase_name}", phase_name)
+        logger = ContinuousLogger(incomplete, f"{task.name}_{phase_name}", phase_name, resume=True)
         result = training_loop(
             task=task,
             model=candidate_model,
@@ -1801,7 +1838,7 @@ def run_growth_phase(task: Task, task_root: Path, cfg: RunConfig, device, base_h
 
         candidate_idx = next_candidate_index
         candidate_dir = candidate_root_for(phase_root, candidate_idx, next_arch)
-        logger = ContinuousLogger(candidate_dir, f"{task.name}_{phase_name}", phase_name)
+        logger = ContinuousLogger(candidate_dir, f"{task.name}_{phase_name}", phase_name, resume=False)
         logger.log_console(
             f"[CANDIDATE] task={task.name} phase={phase_name} index={candidate_idx} "
             f"search_phase={phase_for_candidate} architecture={format_architecture_for_report(next_arch)}"
@@ -2368,7 +2405,7 @@ def main() -> None:
     )
 
     progress_path = run_root / "run_progress.csv"
-    log = ContinuousLogger(run_root, "goliath", "sequential")
+    log = ContinuousLogger(run_root, "goliath", "sequential", resume=(progress_path.exists()))
     log.log_console(f"Run root: {run_root}")
     log.log_console(f"Tasks: {tasks}")
     log.log_console(f"Phases: {cfg.phases}")

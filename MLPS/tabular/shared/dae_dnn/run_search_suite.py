@@ -406,7 +406,12 @@ def train_candidate(
         return summary
 
     model = make_candidate_model(task, hidden_widths, train_cfg.use_bn, reconstruct).to(device)
-    logger = ContinuousLogger(candidate_dir, f"{task.name}_{method}", method)
+    logger = ContinuousLogger(
+        candidate_dir,
+        f"{task.name}_{method}",
+        method,
+        resume=bool((candidate_dir / "checkpoint_last.pt").exists()),
+    )
     write_json(
         candidate_dir / "metadata.json",
         phase_metadata(
@@ -1040,7 +1045,13 @@ def run_adp_search_method(
         metrics_interval=5,
     )
     model = make_candidate_model(task, [1], train_cfg.use_bn, reconstruct).to(device)
-    logger = ContinuousLogger(method_root_for(task_root, method), f"{task.name}_{method}", method)
+    method_root = method_root_for(task_root, method)
+    logger = ContinuousLogger(
+        method_root,
+        f"{task.name}_{method}",
+        method,
+        resume=(method_state_path(task_root, method).exists()),
+    )
     best_val, best_model = adp_search(
         model,
         task,
