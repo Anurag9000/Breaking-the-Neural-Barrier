@@ -7,6 +7,7 @@
     "data_dir": "./data",
     "delta": 0.0001,
     "demo": false,
+    "depth_expansion_patience": 5,
     "grad_clip": 1.0,
     "lr": 0.001,
     "max_depth": 10,
@@ -29,17 +30,13 @@
       "anomaly",
       "inverse",
       "control",
-      "clustering",
-      "compression",
-      "ranking",
-      "multimodal",
       "selfsupervised",
       "simulation",
-      "misc",
       "prediction"
     ],
     "use_bn": true,
     "weight_decay": 0.0001,
+    "width_expansion_patience": 10,
     "width_stage_margin_patience": 5,
     "width_stage_min_improve_pct": 1.0
   },
@@ -48,7 +45,7 @@
     "train": 169386,
     "val": 21156
   },
-  "git_commit": "a860877aea66f7f6630abaaed093b8aa4f6ca062",
+  "git_commit": "f0c0f018cb35cd4e2809f37f2c5ecd3e956275d4",
   "hidden_widths": [
     96,
     96,
