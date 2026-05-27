@@ -1,8 +1,8 @@
 # DNN Defaults (STL + ADP)
 
-This folder implements plain MLP baselines for 10 non-vision tasks.
+This folder implements plain MLP baselines for the active non-vision task set.
 All tasks use real public benchmark datasets and can be executed in STL or ADP
-mode (4 supported ADP variants).
+mode.
 
 Default task mapping
 
@@ -43,31 +43,13 @@ Default task mapping
    - Loss: MSE
    - Metric: AUROC based on reconstruction error
 
-7) Inverse problems / scientific modeling
-   - Dataset: California Housing
-   - Input: observed features -> Output: held-out features
+7) Simulation / digital twin
+   - Dataset: California Housing derived transform
+   - Input: feature vector -> Output: synthetic target transform
    - Loss: MSE
    - Metric: MSE
-
-8) Control / optimization approximation
-   - Dataset: California Housing
-   - Input: conditioned features -> Output: target-side features
-   - Loss: MSE
-   - Metric: MSE
-
-9) Self-supervised / weakly-supervised pretext
-    - Dataset: Covertype feature permutation prediction
-    - Input: permuted feature vector -> Output: permutation ID
-    - Loss: cross-entropy
-    - Metric: accuracy
-
-10) Simulation / digital twin
-    - Dataset: California Housing derived transform
-    - Input: feature vector -> Output: synthetic target transform
-    - Loss: MSE
-    - Metric: MSE
 
 Notes
 - All tasks use the same plain MLP backbone.
-- STL = fixed architecture; ADP = width/depth adaptive (4 supported modes).
+- STL = fixed architecture; ADP = width/depth adaptive.
 - Logging: per-run `training_log.txt`, `training_stats.csv`, and plots.

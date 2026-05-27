@@ -1,17 +1,10 @@
 # DNN STL + ADP (DAE/DNN)
 
-This folder provides plain-MLP baselines for the 10 non-vision tasks in
+This folder provides plain-MLP baselines for the 7 active non-vision tasks in
 `DAE/DNN/tasks.py`. Each task runs in:
 
 - STL mode: fixed architecture
 - ADP mode: adaptive width/depth search
-
-Operational policy:
-
-- Supported ADP modes for new runs:
-  `ae_alt_width`, `ae_alt_depth`, `ae_width_to_depth`, `ae_depth_to_width`
-- Legacy ADP modes retained in code but disabled in the active launchers:
-  `ae_width_only`, `ae_depth_only`
 
 The benchmarks are real public datasets, with the main task families centered
 on:
@@ -19,6 +12,12 @@ on:
 - `Covertype`
 - `YearPredictionMSD`
 - `California Housing`
+
+Supported ADP phases for active runs:
+- `ae_alt_width`
+- `ae_alt_depth`
+- `ae_width_to_depth`
+- `ae_depth_to_width`
 
 Files
 - `DEFAULT_TASKS.md`: default task/dataset mapping
@@ -60,9 +59,6 @@ Tasks and default benchmark mappings
 - generation: Covertype
 - denoising: Covertype
 - anomaly: Covertype
-- inverse: California Housing
-- control: California Housing
-- selfsupervised: Covertype feature permutation prediction
 - simulation: California Housing
 
 Run one task (STL, fixed architecture)
