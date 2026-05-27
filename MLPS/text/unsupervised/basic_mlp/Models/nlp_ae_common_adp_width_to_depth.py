@@ -68,6 +68,12 @@ class ADPConfig:
     ex_k: int = 64
     max_width: int = 4096
     max_depth: int = 12
+    width_stage_margin_patience: int = 5
+    width_stage_min_improve_pct: float = 1.0
+    depth_stage_margin_patience: int = 5
+    depth_stage_min_improve_pct: float = 1.0
+    min_new_layer_width: int = 10
+    depth_first_seed_width: int = 20
     max_neurons: int = 5_000_000
     min_new_layer_width: int = 10
     lr: float = 1e-3
