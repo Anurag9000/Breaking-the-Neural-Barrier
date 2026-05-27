@@ -34,7 +34,7 @@ def main() -> None:
     p.add_argument("--hidden", type=int, nargs="+", default=[50, 50])
     p.add_argument("--batch-size", type=int, default=32768)
     p.add_argument("--max-epochs", type=int, default=100000000)
-    p.add_argument("--patience", type=int, default=5)
+    p.add_argument("--patience", type=int, default=10)
     p.add_argument("--trials-width", type=int, default=10)
     p.add_argument("--trials-depth", type=int, default=2)
     p.add_argument("--ex-k", type=int, default=1)
