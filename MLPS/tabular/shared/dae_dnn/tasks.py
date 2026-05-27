@@ -140,22 +140,6 @@ class OneClassAnomalyDataset(Dataset):
         return self.x[idx], self.y[idx], torch.tensor(self.anomaly_label, dtype=torch.long)
 
 
-class FeaturePermutationDataset(Dataset):
-    def __init__(self, x: np.ndarray, seed: int = 0, n_perms: int = 4):
-        self.x = torch.as_tensor(x, dtype=torch.float32)
-        self.n_perms = int(n_perms)
-        rng = np.random.default_rng(int(seed))
-        base = np.arange(self.x.shape[1])
-        self.perms = [torch.as_tensor(rng.permutation(base), dtype=torch.long) for _ in range(self.n_perms)]
-
-    def __len__(self):
-        return int(self.x.size(0))
-
-    def __getitem__(self, idx):
-        label = int(idx % self.n_perms)
-        return self.x[idx][self.perms[label]], torch.tensor(label, dtype=torch.long)
-
-
 def _load_covtype(seed: int):
     data = fetch_covtype(download_if_missing=True)
     x = np.asarray(data.data, dtype=np.float32)
@@ -238,47 +222,36 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
             extra={},
         )
 
-    if name in ["classification", "representation", "selfsupervised", "edge"]:
+    if name in ["classification", "representation", "edge"]:
         train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
+        train_ds = ArrayDataset(train_x, train_y)
+        val_ds = ArrayDataset(val_x, val_y)
+        test_ds = ArrayDataset(test_x, test_y)
 
-        if name == "selfsupervised":
-            train_ds = FeaturePermutationDataset(train_x, seed=seed)
-            val_ds = FeaturePermutationDataset(val_x, seed=seed + 1)
-            test_ds = FeaturePermutationDataset(test_x, seed=seed + 2)
-            task_type = "classification"
-            out_dim = 4
-            in_dim = int(train_x.shape[1])
-            loss_fn = F.cross_entropy
-            metrics_fn = None
-        else:
-            train_ds = ArrayDataset(train_x, train_y)
-            val_ds = ArrayDataset(val_x, val_y)
-            test_ds = ArrayDataset(test_x, test_y)
+        metrics_fn = None
+        if name == "representation":
+            def metrics_fn(model, task, device):
+                model.eval()
+                feats = []
+                labels = []
+                with torch.no_grad():
+                    for x, y in task.val_loader:
+                        x = x.to(device)
+                        _, emb = model(x, return_embedding=True)
+                        feats.append(emb.cpu().numpy())
+                        labels.append(y.numpy())
+                feats_np = np.concatenate(feats, axis=0)
+                labels_np = np.concatenate(labels, axis=0)
+                return {
+                    "knn_acc": _knn_accuracy(feats_np, labels_np),
+                    "cluster_nmi": _cluster_nmi(feats_np, labels_np),
+                }
 
-            metrics_fn = None
-            if name == "representation":
-                def metrics_fn(model, task, device):
-                    model.eval()
-                    feats = []
-                    labels = []
-                    with torch.no_grad():
-                        for x, y in task.val_loader:
-                            x = x.to(device)
-                            _, emb = model(x, return_embedding=True)
-                            feats.append(emb.cpu().numpy())
-                            labels.append(y.numpy())
-                    feats_np = np.concatenate(feats, axis=0)
-                    labels_np = np.concatenate(labels, axis=0)
-                    return {
-                        "knn_acc": _knn_accuracy(feats_np, labels_np),
-                        "cluster_nmi": _cluster_nmi(feats_np, labels_np),
-                    }
-
-            task_type = "classification"
-            out_dim = 7
-            in_dim = int(train_x.shape[1])
-            loss_fn = F.cross_entropy
+        task_type = "classification"
+        out_dim = 7
+        in_dim = int(train_x.shape[1])
+        loss_fn = F.cross_entropy
 
         return Task(
             name=name,
@@ -372,30 +345,15 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
             extra={},
         )
 
-    if name in ["inverse", "control", "simulation"]:
+    if name == "simulation":
         train_x, train_y, val_x, val_y, test_x, test_y = _load_california_housing(seed)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
-        if name == "inverse":
-            in_x_train = train_x[:, 4:]
-            out_y_train = train_x[:, :4]
-            in_x_val = val_x[:, 4:]
-            out_y_val = val_x[:, :4]
-            in_x_test = test_x[:, 4:]
-            out_y_test = test_x[:, :4]
-        elif name == "control":
-            in_x_train = np.concatenate([train_x[:, :4], train_y], axis=1)
-            in_x_val = np.concatenate([val_x[:, :4], val_y], axis=1)
-            in_x_test = np.concatenate([test_x[:, :4], test_y], axis=1)
-            out_y_train = train_x[:, 4:]
-            out_y_val = val_x[:, 4:]
-            out_y_test = test_x[:, 4:]
-        elif name == "simulation":
-            in_x_train = train_x
-            in_x_val = val_x
-            in_x_test = test_x
-            out_y_train = (train_x[:, 0:1] * train_x[:, 1:2]).astype(np.float32)
-            out_y_val = (val_x[:, 0:1] * val_x[:, 1:2]).astype(np.float32)
-            out_y_test = (test_x[:, 0:1] * test_x[:, 1:2]).astype(np.float32)
+        in_x_train = train_x
+        in_x_val = val_x
+        in_x_test = test_x
+        out_y_train = (train_x[:, 0:1] * train_x[:, 1:2]).astype(np.float32)
+        out_y_val = (val_x[:, 0:1] * val_x[:, 1:2]).astype(np.float32)
+        out_y_test = (test_x[:, 0:1] * test_x[:, 1:2]).astype(np.float32)
 
         train_ds = ArrayDataset(in_x_train, out_y_train)
         val_ds = ArrayDataset(in_x_val, out_y_val)
@@ -423,9 +381,6 @@ def task_names() -> List[str]:
         "generation",
         "denoising",
         "anomaly",
-        "inverse",
-        "control",
-        "selfsupervised",
         "simulation",
         "prediction",
     ]

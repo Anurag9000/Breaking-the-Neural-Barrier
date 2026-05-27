@@ -40,9 +40,6 @@ PER_TASK_BATCH_SIZES = {
     "generation": 32768,
     "denoising": 32768,
     "anomaly": 32768,
-    "selfsupervised": 32768,
-    "inverse": 32768,
-    "control": 32768,
     "simulation": 32768,
 }
 
