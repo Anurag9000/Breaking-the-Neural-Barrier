@@ -47,6 +47,8 @@ PER_TASK_BATCH_SIZES = {
 }
 
 GOLIATH_ADP_PHASES = [
+    ("ae_width_only", "width_only"),
+    ("ae_depth_only", "depth_only"),
     ("ae_alt_width", "alt_width"),
     ("ae_alt_depth", "alt_depth"),
     ("ae_width_to_depth", "width_to_depth"),
@@ -1079,6 +1081,10 @@ def phase_mode(phase_name: str) -> Optional[str]:
 def phase_seed_hidden(phase_name: str, task: Task, cfg: RunConfig) -> List[int]:
     if phase_name == "stl":
         return base_stl_hidden(task, cfg)
+    if phase_name == "ae_width_only":
+        width = max(1, int(cfg.alt_start_width))
+        depth = max(1, int(cfg.stl_depth))
+        return [width for _ in range(depth)]
     return adp_seed_hidden_for_mode(phase_mode(phase_name))
 
 

@@ -5,7 +5,14 @@ from typing import List
 
 from MLPS.tabular.shared.dae_dnn.run_goliath_staged_width import main as staged_main
 
-SUPPORTED_STAGED_PHASES = {"ae_alt_width", "ae_alt_depth", "ae_width_to_depth", "ae_depth_to_width"}
+SUPPORTED_STAGED_PHASES = {
+    "ae_width_only",
+    "ae_depth_only",
+    "ae_alt_width",
+    "ae_alt_depth",
+    "ae_width_to_depth",
+    "ae_depth_to_width",
+}
 
 
 def _force_single_phase(argv: List[str], phase_name: str) -> List[str]:
