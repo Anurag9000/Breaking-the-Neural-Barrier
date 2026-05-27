@@ -2292,7 +2292,7 @@ def main() -> None:
     p.add_argument("--stl-depth", type=int, default=2)
     p.add_argument("--alt-start-width", type=int, default=1)
     p.add_argument("--alt-start-depth", type=int, default=1)
-    p.add_argument("--patience", type=int, default=5)
+    p.add_argument("--patience", type=int, default=10)
     p.add_argument("--width-expansion-patience", type=int, default=10)
     p.add_argument("--depth-expansion-patience", type=int, default=2)
     p.add_argument("--delta", type=float, default=1e-4)

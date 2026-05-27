@@ -6,7 +6,7 @@
     "data_dir": "./data",
     "delta": 0.0001,
     "demo": false,
-    "depth_expansion_patience": 5,
+    "depth_expansion_patience": 2,
     "grad_clip": 1.0,
     "lr": 0.001,
     "max_depth": 10,
@@ -24,7 +24,6 @@
     "stl_depth": 2,
     "stl_width": 128,
     "tasks": [
-      "inverse",
       "control",
       "selfsupervised",
       "simulation",
@@ -33,18 +32,17 @@
     "use_bn": true,
     "weight_decay": 0.0001,
     "width_expansion_patience": 10,
-    "width_stage_margin_patience": 5,
+    "width_stage_margin_patience": 10,
     "width_stage_min_improve_pct": 1.0
   },
   "device": "cuda",
-  "git_commit": "b3f3a0b5ddc9e8ab358a63a7b81e9bd77bdcdb93",
+  "git_commit": "413561427616c4a4582f8cffe7e0f3cf128970c1",
   "run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_remaining_tasks_gpu",
   "summary": {
     "num_tasks_completed": 0,
-    "num_tasks_requested": 5,
+    "num_tasks_requested": 4,
     "tasks_completed": [],
     "tasks_requested": [
-      "inverse",
       "control",
       "selfsupervised",
       "simulation",
@@ -52,15 +50,6 @@
     ]
   },
   "tasks": [
-    {
-      "adp_runs": [],
-      "baseline_comparisons": [],
-      "baseline_stl_runs": [],
-      "comparisons": [],
-      "paired_stl_runs": [],
-      "task": "inverse",
-      "winner": null
-    },
     {
       "adp_runs": [],
       "baseline_comparisons": [],
