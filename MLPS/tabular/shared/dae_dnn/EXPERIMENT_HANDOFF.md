@@ -56,8 +56,8 @@ The candidate metadata and `phase_progress.csv` will be reused. If the matching 
 
 To parallelize across laptops without overlapping work, split the depth range into waves:
 
-- wave 1: depths `1 2 3 4`
-- wave 2: depths `5 6 7 8`
+- wave 1: depths `1 2 3 4 5`
+- wave 2: depths `6 7 8`
 - wave 3: depths `9 10`
 
 Tasks stay sequential within a machine unless you intentionally split them further.
@@ -70,7 +70,7 @@ git checkout main
 git pull origin main
 
 tasks=(representation autoencoding generation denoising anomaly simulation prediction)
-depths=(1 2 3 4)
+depths=(1 2 3 4 5)
 
 for task in "${tasks[@]}"; do
   for depth in "${depths[@]}"; do
@@ -91,7 +91,7 @@ done
 
 Use the same shape for the other waves by swapping the depth list:
 
-- `depths=(5 6 7 8)`
+- `depths=(6 7 8)`
 - `depths=(9 10)`
 
 If you want strict single-process execution per depth, remove the trailing `&` and `wait`.
