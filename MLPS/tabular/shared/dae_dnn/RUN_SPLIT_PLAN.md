@@ -7,8 +7,8 @@ It is written so another Codex agent can pick it up without guessing.
 
 Run the active tabular tasks in depth waves:
 
-- wave 1: depths `1 2 3 4`
-- wave 2: depths `5 6 7 8`
+- wave 1: depths `1 2 3 4 5`
+- wave 2: depths `6 7 8`
 - wave 3: depths `9 10`
 
 Run each task independently on its own machine when possible.
@@ -24,8 +24,8 @@ Task:
 
 Execution order:
 
-1. depths `1 2 3 4`
-2. depths `5 6 7 8`
+1. depths `1 2 3 4 5`
+2. depths `6 7 8`
 3. depths `9 10`
 
 Use the same run root prefix for all three waves:
@@ -40,8 +40,8 @@ Task:
 
 Execution order:
 
-1. depths `1 2 3 4`
-2. depths `5 6 7 8`
+1. depths `1 2 3 4 5`
+2. depths `6 7 8`
 3. depths `9 10`
 
 ### Other laptop 2
@@ -52,8 +52,8 @@ Task:
 
 Execution order:
 
-1. depths `1 2 3 4`
-2. depths `5 6 7 8`
+1. depths `1 2 3 4 5`
+2. depths `6 7 8`
 3. depths `9 10`
 
 ### Other laptop 3
@@ -64,8 +64,8 @@ Task:
 
 Execution order:
 
-1. depths `1 2 3 4`
-2. depths `5 6 7 8`
+1. depths `1 2 3 4 5`
+2. depths `6 7 8`
 3. depths `9 10`
 
 ## Exact command template
@@ -95,7 +95,7 @@ For a wave, launch the four or two depth jobs in parallel, then wait for them to
 
 ### Wave 1
 
-Depths `1 2 3 4`:
+Depths `1 2 3 4 5`:
 
 ```bash
 cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
@@ -104,7 +104,7 @@ git pull origin main
 
 tasks=(representation)
 for task in "${tasks[@]}"; do
-  for depth in 1 2 3 4; do
+  for depth in 1 2 3 4 5; do
     .venv/bin/python MLPS/tabular/shared/dae_dnn/run_goliath_staged_width_only.py \
       --data-dir ./data \
       --results-dir MLPS/tabular/shared/dae_dnn/results \
@@ -122,7 +122,7 @@ done
 
 ### Wave 2
 
-Depths `5 6 7 8`:
+Depths `6 7 8`:
 
 ```bash
 cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
@@ -131,7 +131,7 @@ git pull origin main
 
 tasks=(representation)
 for task in "${tasks[@]}"; do
-  for depth in 5 6 7 8; do
+  for depth in 6 7 8; do
     .venv/bin/python MLPS/tabular/shared/dae_dnn/run_goliath_staged_width_only.py \
       --data-dir ./data \
       --results-dir MLPS/tabular/shared/dae_dnn/results \
@@ -201,4 +201,3 @@ These are already preserved in the repo state and should stay visible to future 
 - `prediction`
 - STL ablations for all tasks
 - archived width-to-depth and STL comparison artifacts
-
