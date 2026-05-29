@@ -1,0 +1,431 @@
+{
+  "adp_runs": [
+    {
+      "architecture": [
+        96,
+        96,
+        96,
+        95,
+        95,
+        95
+      ],
+      "best_candidate_dir": "cand_572_d6_w96",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_alt_depth/cand_572_d6_w96/checkpoint_best.pt",
+      "best_epoch": 6,
+      "best_val": 0.0006986494569825253,
+      "final_epoch": 6,
+      "mode": "alt_depth",
+      "phase": "ae_alt_depth",
+      "reconstruct": true,
+      "task": "generation"
+    },
+    {
+      "architecture": [
+        59
+      ],
+      "best_candidate_dir": "cand_058_d1_w59",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_alt_width/cand_058_d1_w59/checkpoint_best.pt",
+      "best_epoch": 9,
+      "best_val": 0.0002478960616071772,
+      "final_epoch": 9,
+      "mode": "alt_width",
+      "phase": "ae_alt_width",
+      "reconstruct": true,
+      "task": "generation"
+    },
+    {
+      "architecture": [
+        56
+      ],
+      "best_candidate_dir": "cand_055_d1_w56",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_width_to_depth/cand_055_d1_w56/checkpoint_best.pt",
+      "best_epoch": 10,
+      "best_val": 0.00030846853092664195,
+      "final_epoch": 10,
+      "mode": "width_to_depth",
+      "phase": "ae_width_to_depth",
+      "reconstruct": true,
+      "task": "generation"
+    },
+    {
+      "architecture": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        139,
+        139,
+        139,
+        139,
+        139
+      ],
+      "best_candidate_dir": "cand_1390_d10_w140",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_depth_to_width/cand_1390_d10_w140/checkpoint_best.pt",
+      "best_epoch": 9,
+      "best_val": 0.0017876370103866402,
+      "final_epoch": 9,
+      "mode": "depth_to_width",
+      "phase": "ae_depth_to_width",
+      "reconstruct": true,
+      "task": "generation"
+    }
+  ],
+  "comparisons": [
+    {
+      "adp_architecture": [
+        96,
+        96,
+        96,
+        95,
+        95,
+        95
+      ],
+      "adp_best_val": 0.0006986494569825253,
+      "adp_phase": "ae_alt_depth",
+      "stl_architecture": [
+        96,
+        96,
+        96,
+        95,
+        95,
+        95
+      ],
+      "stl_best_val": 1.0084564424632525,
+      "stl_phase": "stl_from_ae_alt_depth",
+      "task": "generation",
+      "winner": "adp",
+      "winner_phase": "ae_alt_depth",
+      "winner_value": 0.0006986494569825253
+    },
+    {
+      "adp_architecture": [
+        59
+      ],
+      "adp_best_val": 0.0002478960616071772,
+      "adp_phase": "ae_alt_width",
+      "stl_architecture": [
+        59
+      ],
+      "stl_best_val": 1.0086552017443058,
+      "stl_phase": "stl_from_ae_alt_width",
+      "task": "generation",
+      "winner": "adp",
+      "winner_phase": "ae_alt_width",
+      "winner_value": 0.0002478960616071772
+    },
+    {
+      "adp_architecture": [
+        56
+      ],
+      "adp_best_val": 0.00030846853092664195,
+      "adp_phase": "ae_width_to_depth",
+      "stl_architecture": [
+        56
+      ],
+      "stl_best_val": 1.0086094048092533,
+      "stl_phase": "stl_from_ae_width_to_depth",
+      "task": "generation",
+      "winner": "adp",
+      "winner_phase": "ae_width_to_depth",
+      "winner_value": 0.00030846853092664195
+    },
+    {
+      "adp_architecture": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        139,
+        139,
+        139,
+        139,
+        139
+      ],
+      "adp_best_val": 0.0017876370103866402,
+      "adp_phase": "ae_depth_to_width",
+      "stl_architecture": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        139,
+        139,
+        139,
+        139,
+        139
+      ],
+      "stl_best_val": 1.008332533725857,
+      "stl_phase": "stl_from_ae_depth_to_width",
+      "task": "generation",
+      "winner": "adp",
+      "winner_phase": "ae_depth_to_width",
+      "winner_value": 0.0017876370103866402
+    }
+  ],
+  "paired_stl_runs": [
+    {
+      "architecture": [
+        96,
+        96,
+        96,
+        95,
+        95,
+        95
+      ],
+      "best_epoch": 11,
+      "best_val": 1.0084564424632525,
+      "candidate_dir": "cand_000_d6_w96",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_alt_depth/cand_000_d6_w96/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_alt_depth/cand_000_d6_w96/checkpoint_last.pt",
+      "final_epoch": 16,
+      "phase": "stl_from_ae_alt_depth",
+      "resumed": false,
+      "source_phase": "ae_alt_depth",
+      "task": "generation",
+      "test_metrics": {
+        "test_loss": 1.0676026928578923
+      }
+    },
+    {
+      "architecture": [
+        59
+      ],
+      "best_epoch": 36,
+      "best_val": 1.0086552017443058,
+      "candidate_dir": "cand_000_d1_w59",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_alt_width/cand_000_d1_w59/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_alt_width/cand_000_d1_w59/checkpoint_last.pt",
+      "final_epoch": 41,
+      "phase": "stl_from_ae_alt_width",
+      "resumed": false,
+      "source_phase": "ae_alt_width",
+      "task": "generation",
+      "test_metrics": {
+        "test_loss": 1.0677970166428032
+      }
+    },
+    {
+      "architecture": [
+        56
+      ],
+      "best_epoch": 36,
+      "best_val": 1.0086094048092533,
+      "candidate_dir": "cand_000_d1_w56",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_width_to_depth/cand_000_d1_w56/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_width_to_depth/cand_000_d1_w56/checkpoint_last.pt",
+      "final_epoch": 41,
+      "phase": "stl_from_ae_width_to_depth",
+      "resumed": false,
+      "source_phase": "ae_width_to_depth",
+      "task": "generation",
+      "test_metrics": {
+        "test_loss": 1.0678252137258615
+      }
+    },
+    {
+      "architecture": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        139,
+        139,
+        139,
+        139,
+        139
+      ],
+      "best_epoch": 5,
+      "best_val": 1.008332533725857,
+      "candidate_dir": "cand_000_d10_w140",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_depth_to_width/cand_000_d10_w140/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_depth_to_width/cand_000_d10_w140/checkpoint_last.pt",
+      "final_epoch": 10,
+      "phase": "stl_from_ae_depth_to_width",
+      "resumed": false,
+      "source_phase": "ae_depth_to_width",
+      "task": "generation",
+      "test_metrics": {
+        "test_loss": 1.0675521797962404
+      }
+    }
+  ],
+  "phases": [
+    {
+      "architecture": [
+        96,
+        96,
+        96,
+        95,
+        95,
+        95
+      ],
+      "best_candidate_dir": "cand_572_d6_w96",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_alt_depth/cand_572_d6_w96/checkpoint_best.pt",
+      "best_epoch": 6,
+      "best_val": 0.0006986494569825253,
+      "final_epoch": 6,
+      "mode": "alt_depth",
+      "phase": "ae_alt_depth",
+      "reconstruct": true,
+      "task": "generation"
+    },
+    {
+      "architecture": [
+        96,
+        96,
+        96,
+        95,
+        95,
+        95
+      ],
+      "best_epoch": 11,
+      "best_val": 1.0084564424632525,
+      "candidate_dir": "cand_000_d6_w96",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_alt_depth/cand_000_d6_w96/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_alt_depth/cand_000_d6_w96/checkpoint_last.pt",
+      "final_epoch": 16,
+      "phase": "stl_from_ae_alt_depth",
+      "resumed": false,
+      "source_phase": "ae_alt_depth",
+      "task": "generation",
+      "test_metrics": {
+        "test_loss": 1.0676026928578923
+      }
+    },
+    {
+      "architecture": [
+        59
+      ],
+      "best_candidate_dir": "cand_058_d1_w59",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_alt_width/cand_058_d1_w59/checkpoint_best.pt",
+      "best_epoch": 9,
+      "best_val": 0.0002478960616071772,
+      "final_epoch": 9,
+      "mode": "alt_width",
+      "phase": "ae_alt_width",
+      "reconstruct": true,
+      "task": "generation"
+    },
+    {
+      "architecture": [
+        59
+      ],
+      "best_epoch": 36,
+      "best_val": 1.0086552017443058,
+      "candidate_dir": "cand_000_d1_w59",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_alt_width/cand_000_d1_w59/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_alt_width/cand_000_d1_w59/checkpoint_last.pt",
+      "final_epoch": 41,
+      "phase": "stl_from_ae_alt_width",
+      "resumed": false,
+      "source_phase": "ae_alt_width",
+      "task": "generation",
+      "test_metrics": {
+        "test_loss": 1.0677970166428032
+      }
+    },
+    {
+      "architecture": [
+        56
+      ],
+      "best_candidate_dir": "cand_055_d1_w56",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_width_to_depth/cand_055_d1_w56/checkpoint_best.pt",
+      "best_epoch": 10,
+      "best_val": 0.00030846853092664195,
+      "final_epoch": 10,
+      "mode": "width_to_depth",
+      "phase": "ae_width_to_depth",
+      "reconstruct": true,
+      "task": "generation"
+    },
+    {
+      "architecture": [
+        56
+      ],
+      "best_epoch": 36,
+      "best_val": 1.0086094048092533,
+      "candidate_dir": "cand_000_d1_w56",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_width_to_depth/cand_000_d1_w56/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_width_to_depth/cand_000_d1_w56/checkpoint_last.pt",
+      "final_epoch": 41,
+      "phase": "stl_from_ae_width_to_depth",
+      "resumed": false,
+      "source_phase": "ae_width_to_depth",
+      "task": "generation",
+      "test_metrics": {
+        "test_loss": 1.0678252137258615
+      }
+    },
+    {
+      "architecture": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        139,
+        139,
+        139,
+        139,
+        139
+      ],
+      "best_candidate_dir": "cand_1390_d10_w140",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/ae_depth_to_width/cand_1390_d10_w140/checkpoint_best.pt",
+      "best_epoch": 9,
+      "best_val": 0.0017876370103866402,
+      "final_epoch": 9,
+      "mode": "depth_to_width",
+      "phase": "ae_depth_to_width",
+      "reconstruct": true,
+      "task": "generation"
+    },
+    {
+      "architecture": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        139,
+        139,
+        139,
+        139,
+        139
+      ],
+      "best_epoch": 5,
+      "best_val": 1.008332533725857,
+      "candidate_dir": "cand_000_d10_w140",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_depth_to_width/cand_000_d10_w140/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/stl_from_ae_depth_to_width/cand_000_d10_w140/checkpoint_last.pt",
+      "final_epoch": 10,
+      "phase": "stl_from_ae_depth_to_width",
+      "resumed": false,
+      "source_phase": "ae_depth_to_width",
+      "task": "generation",
+      "test_metrics": {
+        "test_loss": 1.0675521797962404
+      }
+    }
+  ],
+  "task": "generation",
+  "winner": {
+    "adp_architecture": [
+      59
+    ],
+    "adp_best_val": 0.0002478960616071772,
+    "adp_phase": "ae_alt_width",
+    "stl_architecture": [
+      59
+    ],
+    "stl_best_val": 1.0086552017443058,
+    "stl_phase": "stl_from_ae_alt_width",
+    "task": "generation",
+    "winner": "adp",
+    "winner_phase": "ae_alt_width",
+    "winner_value": 0.0002478960616071772
+  }
+}
