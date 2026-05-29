@@ -128,8 +128,12 @@ def slug(text: str) -> str:
 
 def write_json(path: Path, payload: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
+    tmp_path = path.with_name(f"{path.name}.tmp")
+    with tmp_path.open("w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, sort_keys=True)
+        f.flush()
+        os.fsync(f.fileno())
+    tmp_path.replace(path)
 
 
 def write_text(path: Path, content: str) -> None:
@@ -149,6 +153,36 @@ def load_json_if_exists(path: Path) -> Optional[Dict[str, Any]]:
         return read_json(path)
     except Exception:
         return None
+
+
+def load_candidate_state(candidate_dir: Path) -> Optional[Dict[str, Any]]:
+    state_path = candidate_dir / "candidate_state.json"
+    state = load_json_if_exists(state_path)
+    if state is not None:
+        return state
+    ckpt_path = candidate_dir / "checkpoint_last.pt"
+    if not ckpt_path.exists():
+        return None
+    try:
+        ckpt = load_checkpoint(ckpt_path, device="cpu")
+    except Exception:
+        return None
+    meta_path = candidate_dir / "metadata.json"
+    meta = load_json_if_exists(meta_path) or (ckpt.get("metadata", {}) if isinstance(ckpt, dict) else {})
+    architecture = meta.get("hidden_widths") or meta.get("architecture")
+    if architecture is None and ckpt.get("best_state") is not None:
+        architecture = meta.get("hidden_widths")
+    return {
+        "completed": False,
+        "best_val": float(ckpt.get("best_val", float("inf"))),
+        "best_epoch": int(ckpt.get("best_epoch", 0)),
+        "final_epoch": int(ckpt.get("epoch", 0)),
+        "candidate_dir": str(candidate_dir),
+        "checkpoint_best": str(candidate_dir / "checkpoint_best.pt"),
+        "checkpoint_last": str(candidate_dir / "checkpoint_last.pt"),
+        "architecture": [int(w) for w in architecture] if architecture is not None else None,
+        "reconstruct": bool(meta.get("reconstruct", False)),
+    }
 
 
 def append_csv_row(path: Path, row: Dict[str, Any]) -> None:
@@ -603,14 +637,14 @@ def phase_metadata(
 
 
 def checkpoint_resume_ready(candidate_dir: Path) -> bool:
-    state_path = candidate_dir / "candidate_state.json"
     ckpt = candidate_dir / "checkpoint_last.pt"
-    return state_path.exists() and ckpt.exists() and read_json(state_path).get("completed", False) is False
+    state = load_candidate_state(candidate_dir)
+    return ckpt.exists() and state is not None and state.get("completed", False) is False
 
 
 def candidate_completed(candidate_dir: Path) -> bool:
-    state_path = candidate_dir / "candidate_state.json"
-    return state_path.exists() and read_json(state_path).get("completed", False) is True
+    state = load_candidate_state(candidate_dir)
+    return state is not None and state.get("completed", False) is True
 
 
 def load_candidate_model(candidate_dir: Path, device) -> Tuple[MLP, Dict[str, Any], Dict[str, Any]]:
@@ -718,12 +752,8 @@ def recover_best_candidate_state(phase_root: Path) -> Tuple[float, Optional[Path
     best_candidate_dir: Optional[Path] = None
     best_checkpoint: Optional[Path] = None
     for cand in list_candidate_dirs(phase_root):
-        state_path = cand / "candidate_state.json"
-        if not state_path.exists():
-            continue
-        try:
-            cand_state = read_json(state_path)
-        except Exception:
+        cand_state = load_candidate_state(cand)
+        if cand_state is None:
             continue
         cand_best = cand_state.get("best_val")
         if cand_best is None:
@@ -1016,8 +1046,8 @@ def eval_final(model: MLP, task: Task, device, reconstruct: bool) -> Dict[str, A
 def latest_completed_candidate(phase_root: Path) -> Optional[Path]:
     candidate_dirs = list_candidate_dirs(phase_root)
     for cand in reversed(candidate_dirs):
-        state_path = cand / "candidate_state.json"
-        if state_path.exists() and read_json(state_path).get("completed", False):
+        state = load_candidate_state(cand)
+        if state is not None and state.get("completed", False):
             return cand
     return None
 
@@ -1025,8 +1055,8 @@ def latest_completed_candidate(phase_root: Path) -> Optional[Path]:
 def incomplete_candidate(phase_root: Path) -> Optional[Path]:
     candidate_dirs = list_candidate_dirs(phase_root)
     for cand in reversed(candidate_dirs):
-        state_path = cand / "candidate_state.json"
-        if state_path.exists() and not read_json(state_path).get("completed", False):
+        state = load_candidate_state(cand)
+        if state is not None and not state.get("completed", False):
             return cand
     return None
 
@@ -1034,7 +1064,9 @@ def incomplete_candidate(phase_root: Path) -> Optional[Path]:
 def ensure_phase_state(phase_root: Path, mode: str) -> Dict[str, Any]:
     state_path = phase_root / "search_state.json"
     if state_path.exists():
-        return read_json(state_path)
+        loaded = load_json_if_exists(state_path)
+        if loaded is not None:
+            return loaded
     initial_phase = "width" if mode in ["width_only", "alt_width", "width_to_depth"] else "depth"
     state = {
         "mode": mode,
