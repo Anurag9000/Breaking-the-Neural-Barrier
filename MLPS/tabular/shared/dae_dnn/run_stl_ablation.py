@@ -57,11 +57,14 @@ def dedupe_architectures(architectures: Iterable[Sequence[int]]) -> List[List[in
 
 
 def build_architectures(args) -> List[List[int]]:
-    if args.architecture:
-        return dedupe_architectures(parse_architectures(args.architecture))
-    if args.widths and args.depths:
-        widths = parse_csv_ints(args.widths)
-        depths = parse_csv_ints(args.depths)
+    architecture_arg = getattr(args, "architecture", None)
+    widths_arg = getattr(args, "widths", None)
+    depths_arg = getattr(args, "depths", None)
+    if architecture_arg:
+        return dedupe_architectures(parse_architectures(architecture_arg))
+    if widths_arg and depths_arg:
+        widths = parse_csv_ints(widths_arg)
+        depths = parse_csv_ints(depths_arg)
         return dedupe_architectures([[int(width)] * int(depth) for depth in depths for width in widths])
     min_depth = max(1, int(args.min_depth))
     max_depth = max(min_depth, int(args.max_depth))
