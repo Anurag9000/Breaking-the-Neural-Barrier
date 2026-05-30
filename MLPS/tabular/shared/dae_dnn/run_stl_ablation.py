@@ -168,6 +168,7 @@ def run_task_ablation(
     source_run_root: Path,
     architectures: Sequence[Sequence[int]],
     repeat_count: int,
+    repeat_index: Optional[int],
     device,
     log: ContinuousLogger,
     batch_controller,
@@ -193,10 +194,11 @@ def run_task_ablation(
     best_ablation: Optional[Dict[str, Any]] = None
     repeat_count = max(1, int(repeat_count))
     curve_rows: List[Dict[str, Any]] = []
+    repeat_indices = [int(repeat_index)] if repeat_index is not None else list(range(1, repeat_count + 1))
 
-    for repeat_index in range(1, repeat_count + 1):
+    for repeat_id in repeat_indices:
         for architecture in architectures:
-            phase_name = phase_name_for_architecture(architecture, repeat_index)
+            phase_name = phase_name_for_architecture(architecture, repeat_id)
             log.log_console(
                 f"[ABLATION:{task_name}] STL phase start: {phase_name} architecture={rg.format_architecture_for_report(architecture)}"
             )
@@ -216,7 +218,7 @@ def run_task_ablation(
             curve_rows.append(
                 {
                     "task": task_name,
-                    "repeat": int(repeat_index),
+                    "repeat": int(repeat_id),
                     "phase": phase_name,
                     "architecture": rg.format_architecture_for_report(architecture),
                     "parameter_count": int(parameter_count),
@@ -231,14 +233,14 @@ def run_task_ablation(
             if best_ablation is None or float(summary.get("best_val", float("inf"))) < float(best_ablation.get("best_val", float("inf"))):
                 best_ablation = {
                     **summary,
-                    "repeat": int(repeat_index),
+                    "repeat": int(repeat_id),
                     "parameter_count": int(parameter_count),
                 }
 
             rows.append(
                 {
                     "task": task_name,
-                    "repeat": int(repeat_index),
+                    "repeat": int(repeat_id),
                     "row_type": "ablation_stl",
                     "phase": phase_name,
                     "architecture": rg.format_architecture_for_report(architecture),
@@ -255,7 +257,7 @@ def run_task_ablation(
                 comparisons.append(
                     comparison_row(
                         task_name=task_name,
-                        repeat_index=repeat_index,
+                        repeat_index=repeat_id,
                         ablation_phase=phase_name,
                         ablation_architecture=architecture,
                         ablation_parameter_count=parameter_count,
@@ -366,6 +368,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--width-step", type=int, default=DEFAULT_WIDTH_STEP)
     p.add_argument("--min-depth", type=int, default=DEFAULT_MIN_DEPTH)
     p.add_argument("--repeat-count", type=int, default=DEFAULT_REPEAT_COUNT)
+    p.add_argument("--repeat-index", type=int, default=None, help="Run exactly one repeat index, useful for parallel fan-out.")
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
     p.add_argument("--use-bn", action="store_true", default=True)
@@ -413,6 +416,7 @@ def main() -> None:
             source_run_root=source_run_root,
             architectures=architectures,
             repeat_count=int(args.repeat_count),
+            repeat_index=args.repeat_index,
             device=device,
             log=logger,
             batch_controller=batch_controller,
