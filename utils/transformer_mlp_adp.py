@@ -594,36 +594,19 @@ def bind_legacy_wrapper(module_globals: Dict[str, Any]) -> None:
         log_neurons: bool = False,
         results_dir: Any = None,
     ) -> Tuple[float, nn.Module, int, int]:
-        del log_loss, log_neurons, results_dir
-        train_fn = module_globals.get("train_with_early_stopping")
-        if not callable(train_fn):
-            raise ValueError("Legacy wrapper does not define train_with_early_stopping")
-        history: List[float] = []
-        config = SearchConfig(
-            adp_mode=getattr(acfg, "adp_mode", "width_to_depth"),
-            delta=float(getattr(acfg, "delta", 1e-3)),
-            width_expansion_patience=int(getattr(acfg, "width_expansion_patience", getattr(acfg, "trials_width", 10))),
-            depth_expansion_patience=int(getattr(acfg, "depth_expansion_patience", getattr(acfg, "trials_depth", 2))),
-            width_stage_margin_patience=int(getattr(acfg, "width_stage_margin_patience", 10)),
-            width_stage_min_improve_pct=float(getattr(acfg, "width_stage_min_improve_pct", 1.0)),
-            ex_k_width=int(getattr(acfg, "ex_k_width", getattr(acfg, "ex_k", 1))),
-            max_width=int(getattr(acfg, "max_width", 4096)),
-            max_depth=int(getattr(acfg, "max_depth", 16)),
-            max_neurons=int(getattr(acfg, "max_neurons", 5_000_000)),
-            min_new_layer_width=int(getattr(acfg, "min_new_layer_width", 10)),
+        from utils.adp_contract import run_module_adp
+
+        value, final_model = run_module_adp(
+            module_globals,
+            model,
+            dl_train,
+            dl_val,
+            acfg,
+            device,
+            log_loss=log_loss,
+            log_neurons=log_neurons,
+            results_dir=results_dir,
         )
-
-        def train_candidate(candidate: nn.Module) -> float:
-            trained = candidate.to(device)
-            result = train_fn(trained, dl_train, dl_val, acfg, device, history)
-            if isinstance(result, tuple):
-                value = float(result[0])
-                if len(result) > 1 and isinstance(result[1], dict):
-                    trained.load_state_dict(result[1], strict=False)
-                return value
-            return float(result)
-
-        value, final_model, _ = run_staged_transformer_ffn_search(model, train_candidate, config)
         architectures = transformer_ffn_architectures(final_model)
         canonical = architectures[0]
         return value, final_model.to(device), max(canonical), len(canonical)
