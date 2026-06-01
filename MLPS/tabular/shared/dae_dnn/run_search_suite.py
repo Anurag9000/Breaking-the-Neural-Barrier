@@ -19,9 +19,9 @@ from sklearn.gaussian_process.kernels import ConstantKernel, Matern, WhiteKernel
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from DAE.DNN.adp_search import ADPConfig, adp_search, expand_depth, expand_width
-from DAE.DNN.mlp import MLP
-from DAE.DNN.run_goliath import (
+from MLPS.tabular.shared.dae_dnn.adp_search import ADPConfig, adp_search, expand_depth, expand_width
+from MLPS.tabular.shared.dae_dnn.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.run_goliath import (
     RunConfig,
     build_run_root,
     eval_final,
@@ -40,8 +40,8 @@ from DAE.DNN.run_goliath import (
     write_json,
     write_text,
 )
-from DAE.DNN.tasks import Task, build_task, refresh_task_loaders, task_names
-from DAE.DNN.train_utils import AdaptiveBatchController
+from MLPS.tabular.shared.dae_dnn.tasks import Task, build_task, refresh_task_loaders, task_names
+from MLPS.tabular.shared.dae_dnn.train_utils import AdaptiveBatchController
 from utils.adp_logging import ContinuousLogger
 
 
@@ -1281,7 +1281,7 @@ def build_summary_rows(task_name: str, task_summary: Dict[str, Any]) -> List[Dic
 def main() -> None:
     p = argparse.ArgumentParser(description="DAE/DNN exhaustive benchmark search suite")
     p.add_argument("--data-dir", type=str, default="./data")
-    p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
+    p.add_argument("--results-dir", type=str, default="MLPS/tabular/shared/dae_dnn/results")
     p.add_argument("--run-root", type=str, default=None)
     p.add_argument("--reference-run-root", type=str, default=None, help="Existing goliath run root to use as ADP/STL reference")
     p.add_argument("--tasks", type=str, nargs="+", default=["all"])

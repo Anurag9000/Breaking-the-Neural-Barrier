@@ -1,7 +1,7 @@
 # DNN STL + ADP (DAE/DNN)
 
 This folder provides plain-MLP baselines for the 7 active non-vision tasks in
-`DAE/DNN/tasks.py`. Each task runs in:
+`MLPS/tabular/shared/dae_dnn/tasks.py`. Each task runs in:
 
 - STL mode: fixed architecture
 - ADP mode: adaptive width/depth search
@@ -63,32 +63,32 @@ Tasks and default benchmark mappings
 
 Run one task (STL, fixed architecture)
 ```bash
-python DAE/DNN/run_task.py --task classification --mode stl --hidden 50 50 --data-dir ./data --results-dir DAE/DNN/results
+python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode stl --hidden 50 50 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
 ```
 
 Run one task (ADP, width then depth)
 ```bash
-python DAE/DNN/run_task.py --task classification --mode adp --adp-mode width_to_depth --hidden 50 50 --ex-k 1 --max-depth 10 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
+python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode adp --adp-mode width_to_depth --hidden 50 50 --ex-k 1 --max-depth 10 --patience 10 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
 ```
 
 Run one task (ADP, alternating width-first)
 ```bash
-python DAE/DNN/run_task.py --task classification --mode adp --adp-mode alt_width --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
+python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode adp --adp-mode alt_width --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
 ```
 
 Run one task (ADP, alternating depth-first)
 ```bash
-python DAE/DNN/run_task.py --task classification --mode adp --adp-mode alt_depth --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
+python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode adp --adp-mode alt_depth --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
 ```
 
 Run one task (ADP, depth then width)
 ```bash
-python DAE/DNN/run_task.py --task classification --mode adp --adp-mode depth_to_width --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir DAE/DNN/results
+python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode adp --adp-mode depth_to_width --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
 ```
 
 Run all tasks (STL + ADP modes)
 ```bash
-python DAE/DNN/run_all.py --data-dir ./data --results-dir DAE/DNN/results --hidden 50 50
+python MLPS/tabular/shared/dae_dnn/run_all.py --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results --hidden 50 50
 ```
 
 Linux CUDA setup
@@ -98,7 +98,7 @@ source .venv/bin/activate
 ```
 Then launch the sequential experiment:
 ```bash
-python DAE/DNN/run_goliath.py --tasks all --data-dir ./data --results-dir DAE/DNN/results --stl-width 128 --stl-depth 2 --alt-start-width 2 --alt-start-depth 2 --patience 5 --seed 0
+python MLPS/tabular/shared/dae_dnn/run_goliath.py --tasks all --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results --stl-width 128 --stl-depth 2 --alt-start-width 2 --alt-start-depth 2 --patience 5 --seed 0
 ```
 By default, `run_goliath.py` runs the four supported ADP phases first and then
 an STL refit on each ADP-discovered architecture. Include `stl` in `--phases`
@@ -106,7 +106,7 @@ only if you also want a standalone baseline STL run.
 
 To run the broader benchmark-suite comparison:
 ```bash
-python DAE/DNN/run_search_suite.py --tasks all --data-dir ./data --results-dir DAE/DNN/results --reference-run-root DAE/DNN/results/goliath_<timestamp> --batch-size 32768 --candidate-budget 0 --seed 0
+python MLPS/tabular/shared/dae_dnn/run_search_suite.py --tasks all --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results --reference-run-root MLPS/tabular/shared/dae_dnn/results/goliath_<timestamp> --batch-size 32768 --candidate-budget 0 --seed 0
 ```
 This evaluates grid search, random search, Bayesian HPO, and greedy NAS-style
 growth by default, then refits STL on the best architecture found by each
@@ -125,7 +125,7 @@ Common flags
 
 Where results go
 - Per-run folder:
-  `DAE/DNN/results/<task>_<mode>_<adp_mode>_d<d>_w<w>_exk<k>_<timestamp>/`
+  `MLPS/tabular/shared/dae_dnn/results/<task>_<mode>_<adp_mode>_d<d>_w<w>_exk<k>_<timestamp>/`
 - Files:
   `training_log.txt`, `training_stats.csv`, `val_loss_vs_step.png`,
   `loss_vs_neurons_best.png`

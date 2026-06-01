@@ -1,5 +1,5 @@
 import torch.nn as nn
-from models.unet_blocks import SimpleUNet
+from .unet_blocks import SimpleUNet
 
 
 # -----------------------------

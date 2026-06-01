@@ -7,9 +7,9 @@ from typing import Any, Dict, List, Optional, Tuple
 import torch
 import torch.nn as nn
 
-from DAE.DNN.mlp import MLP
-from DAE.DNN.train_utils import eval_epoch, train_epoch
-from DAE.DNN.tasks import refresh_task_loaders
+from MLPS.tabular.shared.dae_dnn.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.train_utils import eval_epoch, train_epoch
+from MLPS.tabular.shared.dae_dnn.tasks import refresh_task_loaders
 from utils.adp_contract import run_module_adp
 from utils.adp_logging import ContinuousLogger
 from utils.adp_state import merge_state_preserving_init

@@ -10,7 +10,7 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 
 import torch
 
-from DAE.DNN.tasks import build_task
+from MLPS.tabular.shared.dae_dnn.tasks import build_task
 from utils.adp_logging import ContinuousLogger
 
 import run_goliath as rg
