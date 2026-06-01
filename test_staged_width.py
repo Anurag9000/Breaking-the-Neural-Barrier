@@ -11,7 +11,7 @@ from unittest import mock
 
 import torch
 
-from DAE.DNN.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.mlp import MLP
 
 from MLPS.tabular.shared.dae_dnn.adp_staged_width import can_widen_staged, expand_width_staged, next_staged_widths
 

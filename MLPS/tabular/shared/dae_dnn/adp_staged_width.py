@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import List, Optional, Sequence
 
-from DAE.DNN.adp_search import _rebuild_mlp, total_neurons
-from DAE.DNN.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.adp_search import _rebuild_mlp, total_neurons
+from MLPS.tabular.shared.dae_dnn.mlp import MLP
 
 
 def next_staged_widths(hidden_widths: Sequence[int], ex_k: int, max_width: int) -> Optional[List[int]]:

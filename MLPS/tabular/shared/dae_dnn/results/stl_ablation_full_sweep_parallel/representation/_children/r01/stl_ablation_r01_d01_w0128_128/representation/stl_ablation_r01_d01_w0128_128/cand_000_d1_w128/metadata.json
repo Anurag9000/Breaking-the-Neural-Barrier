@@ -1,0 +1,54 @@
+{
+  "candidate_index": 0,
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 32768,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "depth_expansion_patience": 2,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 200,
+    "max_neurons": 10000000,
+    "max_width": 1024,
+    "num_workers": 0,
+    "patience": 10,
+    "phases": [],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS/tabular/shared/dae_dnn/results/stl_ablation_full_sweep_parallel/representation/_children/r01/stl_ablation_r01_d01_w0128_128",
+    "seed": 0,
+    "stl_depth": 2,
+    "stl_width": 128,
+    "tasks": [
+      "representation"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_expansion_patience": 10,
+    "width_stage_margin_patience": 10,
+    "width_stage_min_improve_pct": 1.0
+  },
+  "dataset_sizes": {
+    "test": 58101,
+    "train": 464810,
+    "val": 58101
+  },
+  "git_commit": "a84f4a61c4e2c60a456de13bc443a2243f05822d",
+  "model": {
+    "hidden_widths": [
+      128
+    ],
+    "in_dim": 54,
+    "out_dim": 7,
+    "use_bn": true
+  },
+  "phase_kind": "candidate",
+  "phase_name": "stl_ablation_r01_d01_w0128_128",
+  "reconstruct": false,
+  "task": "representation",
+  "task_extra": {},
+  "task_type": "classification"
+}

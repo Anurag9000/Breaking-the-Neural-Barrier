@@ -1,18 +1,18 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-This repository is organized by model family and training paradigm. Top-level folders such as `CNN/`, `Autoencoder/`, `Diffusion/`, `Transformer/`, `VAE/`, `Graph/`, `LSTM, GRU, RNN/`, and the `DNN FOR .../` suites contain model definitions under `Models/` and runnable entry points under `Runs/`. Shared helpers live in `utils/`. Generated outputs and experiment traces are written to `logs/` or per-run results folders.
+This repository is organized by backbone architecture first, then source family and training paradigm. Use `MLPS/` for fully connected models, `CONVS/` for convolutional families, `TRANSFORMERS/` for attention-based families, `RECURRENTS/` for LSTM/GRU/RNN families, and `Graph/` for graph-native models. `Diffusion/` remains separate because it contains a tightly coupled mix of U-Net, DiT, token, and hybrid diffusion implementations. Shared helpers live in `utils/`. Generated outputs and experiment traces are written to `logs/` or per-run results folders.
 
-ADP variants follow the naming pattern `*_adp_width_to_depth.py`, while base models usually keep a shorter name like `ae_plain.py` or `run_resnet_stl.py`. Keep new files in the matching domain folder so the original model and its ADP counterpart stay side by side.
+ADP variants follow the naming pattern `*_adp_width_to_depth.py`, while base models usually keep a shorter name like `ae_plain.py` or `run_resnet_stl.py`. Keep new files in the matching architecture and source-family folder so the original model and its ADP counterpart stay side by side.
 
 ## Build, Test, and Development Commands
 There is no project-wide build step. Run the relevant Python entry point directly:
 
 - `python test_gpu.py` - quick CUDA sanity check.
-- `python DAE/DNN/run_task.py --task classification --mode stl --hidden 50 50 --data-dir ./data --results-dir DAE/DNN/results` - run one baseline task.
-- `python DAE/DNN/run_task.py --task classification --mode adp --adp-mode width_to_depth --hidden 50 50` - run one ADP search.
-- `python DAE/DNN/run_all.py --data-dir ./data --results-dir DAE/DNN/results --hidden 50 50` - run the full DAE/DNN task suite.
-- `python CNN/ADP_ResNet/run_resnet_stl.py` - train the CNN STL baseline with its default arguments.
+- `python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode stl --hidden 50 50 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results` - run one baseline task.
+- `python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode adp --adp-mode width_to_depth --hidden 50 50` - run one ADP search.
+- `python MLPS/tabular/shared/dae_dnn/run_all.py --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results --hidden 50 50` - run the full tabular MLP task suite.
+- `python CONVS/CNN/ADP_ResNet/run_resnet_stl.py` - train the CNN STL baseline with its default arguments.
 
 ## Coding Style & Naming Conventions
 Use standard Python style: 4-space indentation, `snake_case` for functions and files, and `CamelCase` for classes/dataclasses. Keep model code explicit and readable; avoid clever abstractions that obscure architecture changes. Preserve the original model behavior when editing ADP wrappers, and keep CLI flags aligned with the existing runner conventions (`--adp-mode`, `--max-epochs`, `--results-dir`).

@@ -22,11 +22,11 @@ import matplotlib.pyplot as plt
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from DAE.DNN.adp_search import expand_depth, expand_width, model_depth, model_width
-from DAE.DNN.mlp import MLP
-from DAE.DNN.tasks import Task, build_task, refresh_task_loaders, task_names
-from DAE.DNN.train_utils import eval_epoch, forward_train_safe, train_epoch, unpack_batch
-from DAE.DNN.train_utils import AdaptiveBatchController
+from MLPS.tabular.shared.dae_dnn.adp_search import expand_depth, expand_width, model_depth, model_width
+from MLPS.tabular.shared.dae_dnn.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.tasks import Task, build_task, refresh_task_loaders, task_names
+from MLPS.tabular.shared.dae_dnn.train_utils import eval_epoch, forward_train_safe, train_epoch, unpack_batch
+from MLPS.tabular.shared.dae_dnn.train_utils import AdaptiveBatchController
 from utils.adp_logging import ContinuousLogger
 from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_from_csv
 
@@ -2342,7 +2342,7 @@ def build_run_root(cfg: RunConfig) -> Path:
 def main() -> None:
     p = argparse.ArgumentParser(description="Sequential ADP-first goliath runner for DAE/DNN tasks with paired STL refits")
     p.add_argument("--data-dir", type=str, default="./data")
-    p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
+    p.add_argument("--results-dir", type=str, default="MLPS/tabular/shared/dae_dnn/results")
     p.add_argument("--run-root", type=str, default=None)
     p.add_argument("--tasks", type=str, nargs="+", default=["all"])
     p.add_argument(
