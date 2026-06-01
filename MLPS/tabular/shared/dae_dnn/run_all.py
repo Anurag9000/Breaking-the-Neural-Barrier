@@ -6,13 +6,13 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from DAE.DNN.tasks import task_names
+from MLPS.tabular.shared.dae_dnn.tasks import task_names
 
 
 def main() -> None:
     p = argparse.ArgumentParser(description="Run STL + supported ADP modes for all DNN tasks")
     p.add_argument("--data-dir", type=str, default="./data")
-    p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
+    p.add_argument("--results-dir", type=str, default="MLPS/tabular/shared/dae_dnn/results")
     p.add_argument("--batch-size", type=int, default=2048)
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
@@ -45,7 +45,7 @@ def main() -> None:
         for task in tasks:
             cmd = [
                 sys.executable,
-                str(Path("DAE/DNN/run_task.py")),
+                str(Path("MLPS/tabular/shared/dae_dnn/run_task.py")),
                 "--task",
                 task,
                 "--mode",

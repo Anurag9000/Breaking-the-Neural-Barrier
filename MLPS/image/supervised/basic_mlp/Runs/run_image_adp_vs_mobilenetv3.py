@@ -14,7 +14,7 @@ from typing import Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parents[5]
 MLP_ADP = ROOT / "MLPS/image/supervised/basic_mlp/Models/mlp_cls_stl_adp_width_to_depth.py"
-CNN_MOBILENETV3 = ROOT / "CNN/Supervised/Runs/run_cnn_mobilenet_v_3.py"
+CNN_MOBILENETV3 = ROOT / "CONVS/CNN/Supervised/Runs/run_cnn_mobilenet_v_3.py"
 
 
 ADP_MODES = ["alt_width", "alt_depth", "width_to_depth", "depth_to_width"]

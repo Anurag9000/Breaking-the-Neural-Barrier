@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from core.diffusion_core import SinusoidalTimeEmbedding
+from .diffusion_core import SinusoidalTimeEmbedding
 
 
 # -----------------------------

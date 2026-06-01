@@ -1,0 +1,68 @@
+{
+  "candidate_index": 402,
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 32768,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "depth_expansion_patience": 2,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 99999999999999999999999999999999999999999999999999999999999999999999999,
+    "max_neurons": 10000000,
+    "max_width": 512,
+    "num_workers": 0,
+    "patience": 10,
+    "phases": [
+      "ae_width_only"
+    ],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d5",
+    "seed": 0,
+    "stl_depth": 5,
+    "stl_width": 128,
+    "tasks": [
+      "representation"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_expansion_patience": 10,
+    "width_stage_margin_patience": 10,
+    "width_stage_min_improve_pct": 1.0
+  },
+  "dataset_sizes": {
+    "test": 58101,
+    "train": 464810,
+    "val": 58101
+  },
+  "git_commit": "a84f4a61c4e2c60a456de13bc443a2243f05822d",
+  "hidden_widths": [
+    82,
+    82,
+    82,
+    81,
+    81
+  ],
+  "model": {
+    "hidden_widths": [
+      82,
+      82,
+      82,
+      81,
+      81
+    ],
+    "in_dim": 54,
+    "out_dim": 7,
+    "use_bn": true
+  },
+  "phase_kind": "width_only",
+  "phase_name": "ae_width_only",
+  "reconstruct": false,
+  "search_phase": "width",
+  "task": "representation",
+  "task_extra": {},
+  "task_type": "classification"
+}

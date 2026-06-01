@@ -11,11 +11,11 @@ import torch
 from utils.adp_logging import ContinuousLogger
 from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_from_csv
 
-from DAE.DNN.mlp import MLP
-from DAE.DNN.tasks import build_task, refresh_task_loaders
-from DAE.DNN.adp_search import ADPConfig, adp_search, train_with_early_stopping
-from DAE.DNN.train_utils import AdaptiveBatchController
-from DAE.DNN.train_utils import eval_epoch
+from MLPS.tabular.shared.dae_dnn.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.tasks import build_task, refresh_task_loaders
+from MLPS.tabular.shared.dae_dnn.adp_search import ADPConfig, adp_search, train_with_early_stopping
+from MLPS.tabular.shared.dae_dnn.train_utils import AdaptiveBatchController
+from MLPS.tabular.shared.dae_dnn.train_utils import eval_epoch
 
 
 def main() -> None:
@@ -47,7 +47,7 @@ def main() -> None:
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--data-dir", type=str, default="./data")
-    p.add_argument("--results-dir", type=str, default="DAE/DNN/results")
+    p.add_argument("--results-dir", type=str, default="MLPS/tabular/shared/dae_dnn/results")
     args = p.parse_args()
 
     torch.manual_seed(int(args.seed))

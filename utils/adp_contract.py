@@ -236,8 +236,7 @@ def _invoke_expand(
         "max_depth": getattr(acfg, "max_depth", None),
         "max_neurons": getattr(acfg, "max_neurons", None),
     }
-    result = _call_best_effort(expand_fn, pool)
-    return model if result is None else result
+    return _call_best_effort(expand_fn, pool)
 
 
 def _try_expand_once(
@@ -254,6 +253,8 @@ def _try_expand_once(
     current_width, current_depth, current_widths = _shape_from_snapshot(before, model)
     current_total = _total_neurons(module_globals, model, current_width, current_depth, current_widths)
     next_model = _invoke_expand(expand_fn, module_globals, model, acfg, device, kind)
+    if next_model is None:
+        return None
     new_width, new_depth, new_widths = _shape_from_snapshot(_snapshot(module_globals, next_model), next_model)
     new_total = _total_neurons(module_globals, next_model, new_width, new_depth, new_widths)
     if kind == "width" and new_total <= current_total:
@@ -312,11 +313,23 @@ def run_module_adp(
 
     delta_width = float(getattr(acfg, "delta_width", getattr(acfg, "delta", 0.0) or 0.0))
     delta_depth = float(getattr(acfg, "delta_depth", getattr(acfg, "delta", 0.0) or 0.0))
-    patience_width = int(getattr(acfg, "patience_width_exp", getattr(acfg, "trials_width", 10)))
-    patience_depth = int(getattr(acfg, "patience_depth_exp", getattr(acfg, "trials_depth", 5)))
-    width_stage_margin_patience = int(getattr(acfg, "width_stage_margin_patience", 5))
+    patience_width = int(
+        getattr(
+            acfg,
+            "width_expansion_patience",
+            getattr(acfg, "patience_width_exp", getattr(acfg, "trials_width", 10)),
+        )
+    )
+    patience_depth = int(
+        getattr(
+            acfg,
+            "depth_expansion_patience",
+            getattr(acfg, "patience_depth_exp", getattr(acfg, "trials_depth", 2)),
+        )
+    )
+    width_stage_margin_patience = int(getattr(acfg, "width_stage_margin_patience", 10))
     width_stage_min_improve_pct = float(getattr(acfg, "width_stage_min_improve_pct", 1.0))
-    depth_stage_margin_patience = int(getattr(acfg, "depth_stage_margin_patience", 5))
+    depth_stage_margin_patience = int(getattr(acfg, "depth_stage_margin_patience", patience_depth))
     depth_stage_min_improve_pct = float(getattr(acfg, "depth_stage_min_improve_pct", 1.0))
     min_new_layer_width = int(getattr(acfg, "min_new_layer_width", 10))
     depth_first_seed_width = int(getattr(acfg, "depth_first_seed_width", 20))
@@ -527,11 +540,13 @@ def run_module_adp(
         depth_fail = 0
         while depth_fail < patience_depth:
             model, _ = run_width_phase(model)
-            before_cycle = float(global_best_val)
             model, progressed, improved = run_depth_step(model, compare_after_warmup=False)
             if not progressed:
                 break
-            depth_fail = 0
+            if improved:
+                depth_fail = 0
+            else:
+                depth_fail += 1
     elif mode == "depth_to_width":
         width_fail = 0
         while width_fail < patience_width:

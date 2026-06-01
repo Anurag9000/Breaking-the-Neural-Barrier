@@ -5,10 +5,10 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 
-from DAE.DNN import adp_search as adp_search_module
-from DAE.DNN import run_goliath as rg
-from DAE.DNN.mlp import MLP
-from DAE.DNN.train_utils import AdaptiveBatchController
+from MLPS.tabular.shared.dae_dnn import adp_search as adp_search_module
+from MLPS.tabular.shared.dae_dnn import run_goliath as rg
+from MLPS.tabular.shared.dae_dnn.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.train_utils import AdaptiveBatchController
 from utils.adp_logging import ContinuousLogger
 
 from MLPS.tabular.shared.dae_dnn.adp_staged_width import can_widen_staged, expand_width_staged

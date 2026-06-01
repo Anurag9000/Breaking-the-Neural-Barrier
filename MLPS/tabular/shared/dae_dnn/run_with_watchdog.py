@@ -13,7 +13,7 @@ import torch
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from DAE.DNN.run_goliath import (
+from MLPS.tabular.shared.dae_dnn.run_goliath import (
     build_task,
     eval_final,
     extract_hidden_widths,
