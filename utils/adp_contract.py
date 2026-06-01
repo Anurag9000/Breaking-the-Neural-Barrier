@@ -6,7 +6,9 @@ import inspect
 import json
 import os
 from pathlib import Path
+import random
 import tempfile
+import threading
 import time
 from typing import Any, Callable, Dict, Iterable, Optional, Tuple
 
@@ -200,6 +202,94 @@ def _load_checkpoint(path: Path, device: Any = "cpu") -> Dict[str, Any]:
         return torch.load(path, map_location=device)
 
 
+def _json_safe(value: Any) -> Any:
+    if value is None or isinstance(value, (bool, int, float, str)):
+        return value
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_json_safe(item) for item in value]
+    return repr(value)
+
+
+def _config_snapshot(config: Any) -> Dict[str, Any]:
+    if hasattr(config, "__dict__"):
+        return {str(key): _json_safe(value) for key, value in vars(config).items()}
+    return {"repr": repr(config)}
+
+
+def _capture_rng_state() -> Dict[str, Any]:
+    state: Dict[str, Any] = {
+        "python": random.getstate(),
+        "torch": torch.get_rng_state(),
+    }
+    try:
+        import numpy as np
+
+        state["numpy"] = np.random.get_state()
+    except Exception:
+        pass
+    if torch.cuda.is_available():
+        state["cuda"] = torch.cuda.get_rng_state_all()
+    return state
+
+
+def _restore_rng_state(state: Optional[Dict[str, Any]]) -> None:
+    if not state:
+        return
+    if "python" in state:
+        random.setstate(state["python"])
+    if "torch" in state:
+        torch.set_rng_state(state["torch"])
+    if "numpy" in state:
+        try:
+            import numpy as np
+
+            np.random.set_state(state["numpy"])
+        except Exception:
+            pass
+    if "cuda" in state and torch.cuda.is_available():
+        torch.cuda.set_rng_state_all(state["cuda"])
+
+
+def _optimizer_to_device(optimizer: torch.optim.Optimizer, device: Any) -> None:
+    for values in optimizer.state.values():
+        for key, value in values.items():
+            if torch.is_tensor(value):
+                values[key] = value.to(device)
+
+
+class _AdamWResumeCapture:
+    def __init__(self, previous_state: Optional[Dict[str, Any]], device: Any) -> None:
+        self.previous_state = previous_state
+        self.device = device
+        self.optimizer: Optional[torch.optim.Optimizer] = None
+        self._original = torch.optim.AdamW
+
+    def __enter__(self) -> "_AdamWResumeCapture":
+        def factory(*args: Any, **kwargs: Any) -> torch.optim.Optimizer:
+            optimizer = self._original(*args, **kwargs)
+            if self.previous_state is not None:
+                optimizer.load_state_dict(self.previous_state)
+                _optimizer_to_device(optimizer, self.device)
+            self.optimizer = optimizer
+            return optimizer
+
+        torch.optim.AdamW = factory  # type: ignore[assignment]
+        return self
+
+    def __exit__(self, *_: Any) -> None:
+        torch.optim.AdamW = self._original  # type: ignore[assignment]
+
+    def state_dict(self) -> Optional[Dict[str, Any]]:
+        return copy.deepcopy(self.optimizer.state_dict()) if self.optimizer is not None else None
+
+
+_OPTIMIZER_CAPTURE_LOCK = threading.RLock()
+
+
 def _list_candidate_dirs(results_dir: Path) -> list[Path]:
     return sorted(
         [path for path in results_dir.iterdir() if path.is_dir() and path.name.startswith("cand_")],
@@ -213,6 +303,21 @@ def _latest_completed_candidate(results_dir: Path) -> Optional[Path]:
         if state is not None and bool(state.get("completed", False)):
             return candidate_dir
     return None
+
+
+def _latest_incomplete_candidate(results_dir: Path) -> Optional[Path]:
+    for candidate_dir in reversed(_list_candidate_dirs(results_dir)):
+        state = _load_json(candidate_dir / "candidate_state.json")
+        if state is not None and not bool(state.get("completed", False)):
+            return candidate_dir
+    return None
+
+
+def _candidate_index_from_dir(candidate_dir: Path) -> int:
+    try:
+        return int(candidate_dir.name.split("_", 2)[1])
+    except (IndexError, ValueError) as exc:
+        raise ValueError(f"Invalid candidate directory name: {candidate_dir.name}") from exc
 
 
 def _resolve_candidate_dir(results_dir: Path, candidate_ref: Optional[str]) -> Optional[Path]:
@@ -276,12 +381,14 @@ def _invoke_train(
     logger: Any = None,
     batch_controller: Any = None,
     measure_throughput: bool = False,
+    overrides: Optional[Dict[str, Any]] = None,
 ) -> Any:
-    return _call_best_effort(train_fn, {
+    pool = {
         "model": model,
         "local_model": model,
         "curr_model": model,
         "task": dl_train,
+        "data": dl_train,
         "train_loader": dl_train,
         "dl_train": dl_train,
         "train_data": dl_train,
@@ -298,7 +405,10 @@ def _invoke_train(
         "batch_controller": batch_controller,
         "measure_throughput": measure_throughput,
         "verbose": True,
-    })
+    }
+    if overrides:
+        pool.update(overrides)
+    return _call_best_effort(train_fn, pool)
 
 
 def _extract_train_value(result: Any) -> Tuple[float, Optional[Dict[str, Any]]]:
@@ -342,6 +452,113 @@ def _snapshot_from_state(module_globals: Dict[str, Any], model: Any, best_state:
         snap = copy.deepcopy(snap)
         snap["state"] = copy.deepcopy(best_state)
     return snap
+
+
+def _run_resumable_candidate_training(
+    *,
+    train_fn: Callable[..., Any],
+    module_globals: Dict[str, Any],
+    model: Any,
+    dl_train: Iterable,
+    dl_val: Iterable,
+    acfg: Any,
+    device: Any,
+    logger: Any,
+    batch_controller: Any,
+    measure_throughput: bool,
+    checkpoint_last: Path,
+    checkpoint_best: Path,
+    metadata: Dict[str, Any],
+    train_overrides: Optional[Dict[str, Any]] = None,
+    initial_payload: Optional[Dict[str, Any]] = None,
+) -> Tuple[float, Any, list[float], int, int]:
+    payload = initial_payload or {}
+    completed_epochs = int(payload.get("completed_epochs", payload.get("final_epoch", 0)))
+    history = [float(item) for item in payload.get("history", [])]
+    best_val = float(payload.get("best_val", float("inf")))
+    best_epoch = int(payload.get("best_epoch", 0))
+    best_snapshot = payload.get("best_snapshot")
+    es_counter = int(payload.get("es_counter", 0))
+    optimizer_state = payload.get("optimizer_state")
+    scheduler_state = payload.get("scheduler_state")
+    del scheduler_state  # Reserved for wrappers that add schedulers later.
+
+    if payload.get("model_state") is not None and hasattr(model, "load_state_dict"):
+        model.load_state_dict(payload["model_state"], strict=False)
+    _restore_rng_state(payload.get("rng_state"))
+
+    max_epochs = int(getattr(acfg, "max_epochs", 1))
+    patience = int(getattr(acfg, "patience", 1))
+    delta = float(getattr(acfg, "delta", 0.0) or 0.0)
+
+    while completed_epochs < max_epochs and es_counter < patience:
+        epoch_config = copy.copy(acfg)
+        if hasattr(epoch_config, "max_epochs"):
+            setattr(epoch_config, "max_epochs", 1)
+        epoch_history: list[float] = []
+        with _OPTIMIZER_CAPTURE_LOCK:
+            with _AdamWResumeCapture(optimizer_state, device) as optimizer_capture:
+                raw_result = _invoke_train(
+                    train_fn,
+                    model,
+                    dl_train,
+                    dl_val,
+                    epoch_config,
+                    device,
+                    epoch_history,
+                    logger=logger,
+                    batch_controller=batch_controller,
+                    measure_throughput=measure_throughput,
+                    overrides={
+                        **(train_overrides or {}),
+                        "max_epochs": 1,
+                        "patience": max(1, patience),
+                    },
+                )
+                optimizer_state = optimizer_capture.state_dict()
+
+        epoch_val, epoch_best_state = _extract_train_value(raw_result)
+        completed_epochs += 1
+        if epoch_history:
+            epoch_val = float(epoch_history[-1])
+            history.extend(float(item) for item in epoch_history)
+        else:
+            history.append(float(epoch_val))
+
+        improved = float(epoch_val) < float(best_val) - delta
+        if improved or best_snapshot is None:
+            best_val = float(epoch_val)
+            best_epoch = int(completed_epochs)
+            best_snapshot = _snapshot_from_state(module_globals, model, epoch_best_state)
+            es_counter = 0
+        else:
+            es_counter += 1
+
+        epoch_payload = {
+            "version": 2,
+            "completed": False,
+            "completed_epochs": int(completed_epochs),
+            "final_epoch": int(completed_epochs),
+            "best_epoch": int(best_epoch),
+            "best_val": float(best_val),
+            "es_counter": int(es_counter),
+            "best_snapshot": best_snapshot,
+            "model_state": copy.deepcopy(model.state_dict()) if hasattr(model, "state_dict") else None,
+            "optimizer_state": optimizer_state,
+            "scheduler_state": None,
+            "rng_state": _capture_rng_state(),
+            "history": history,
+            "hyperparameters": _config_snapshot(acfg),
+            "training_overrides": _json_safe(train_overrides or {}),
+            "metadata": metadata,
+        }
+        _save_checkpoint(checkpoint_last, epoch_payload)
+        if improved or not checkpoint_best.exists():
+            _save_checkpoint(checkpoint_best, epoch_payload)
+
+    if best_snapshot is None:
+        best_snapshot = _snapshot(module_globals, model)
+    return float(best_val), best_snapshot, history, int(best_epoch), int(completed_epochs)
 
 
 def _invoke_expand(
@@ -422,6 +639,7 @@ def run_module_adp(
     logger: Any = None,
     batch_controller: Any = None,
     measure_throughput: bool = False,
+    train_overrides: Optional[Dict[str, Any]] = None,
 ) -> Tuple[float, Any]:
     results_dir = Path(results_dir) if results_dir is not None else Path("results_adp")
     results_dir.mkdir(parents=True, exist_ok=True)
@@ -533,22 +751,22 @@ def run_module_adp(
         candidate_logger = None
         created_candidate_logger = False
         if ContinuousLogger is not None:
-            candidate_logger = ContinuousLogger(candidate_dir, module_name, mode, resume=False)
+            candidate_logger = ContinuousLogger(candidate_dir, module_name, mode, resume=last_ckpt.exists())
             created_candidate_logger = True
 
-        _write_json(
-            metadata_path,
-            {
-                "module": module_name,
-                "mode": mode,
-                "candidate_index": int(candidate_index),
-                "search_phase": search_phase,
-                "architecture": widths if widths is not None else [int(width)] * max(1, int(depth)),
-                "width": int(width),
-                "depth": int(depth),
-                "results_dir": str(results_dir),
-            },
-        )
+        metadata = {
+            "module": module_name,
+            "mode": mode,
+            "candidate_index": int(candidate_index),
+            "search_phase": search_phase,
+            "architecture": widths if widths is not None else [int(width)] * max(1, int(depth)),
+            "width": int(width),
+            "depth": int(depth),
+            "results_dir": str(results_dir),
+            "hyperparameters": _config_snapshot(acfg),
+            "resume_granularity": "last_completed_epoch",
+        }
+        _write_json(metadata_path, metadata)
         _write_json(
             candidate_state_path,
             {
@@ -561,41 +779,41 @@ def run_module_adp(
                 "checkpoint_last": str(last_ckpt),
             },
         )
-        raw_result = _invoke_train(
-            train_fn,
-            cur_model,
-            dl_train,
-            dl_val,
-            acfg,
-            device,
-            candidate_history,
-            logger=candidate_logger or phase_logger,
-            batch_controller=batch_controller,
-            measure_throughput=measure_throughput,
-        )
-        val, best_state = _extract_train_value(raw_result)
-        snap = _snapshot_from_state(module_globals, cur_model, best_state)
+        initial_payload = _load_checkpoint(last_ckpt, device=device) if last_ckpt.exists() else None
+        try:
+            val, snap, candidate_history, best_epoch, final_epoch = _run_resumable_candidate_training(
+                train_fn=train_fn,
+                module_globals=module_globals,
+                model=cur_model,
+                dl_train=dl_train,
+                dl_val=dl_val,
+                acfg=acfg,
+                device=device,
+                logger=candidate_logger or phase_logger,
+                batch_controller=batch_controller,
+                measure_throughput=measure_throughput,
+                checkpoint_last=last_ckpt,
+                checkpoint_best=best_ckpt,
+                metadata={
+                    "module": module_name,
+                    "mode": mode,
+                    "candidate_index": int(candidate_index),
+                    "search_phase": search_phase,
+                },
+                train_overrides=train_overrides,
+                initial_payload=initial_payload,
+            )
+        except BaseException:
+            if created_candidate_logger and candidate_logger is not None:
+                candidate_logger.close()
+            if created_phase_logger and phase_logger is not None:
+                phase_logger.close()
+            raise
         cur_model = _restore(module_globals, cur_model, snap, device)
-        final_epoch = len(candidate_history)
-        best_epoch = 0
-        if candidate_history:
-            best_epoch = min(range(len(candidate_history)), key=lambda idx: float(candidate_history[idx])) + 1
         val_history.extend(float(item) for item in candidate_history)
-        checkpoint_payload = {
-            "best_val": float(val),
-            "best_epoch": int(best_epoch),
-            "final_epoch": int(final_epoch),
-            "best_snapshot": snap,
-            "model_state": copy.deepcopy(cur_model.state_dict()) if hasattr(cur_model, "state_dict") else None,
-            "history": [float(item) for item in candidate_history],
-            "metadata": {
-                "module": module_name,
-                "mode": mode,
-                "candidate_index": int(candidate_index),
-                "search_phase": search_phase,
-            },
-        }
-        _save_checkpoint(best_ckpt, checkpoint_payload)
+        checkpoint_payload = _load_checkpoint(last_ckpt, device="cpu")
+        checkpoint_payload["completed"] = True
+        checkpoint_payload["best_snapshot"] = snap
         _save_checkpoint(last_ckpt, checkpoint_payload)
         _write_json(
             candidate_state_path,
@@ -607,9 +825,11 @@ def run_module_adp(
                 "best_val": float(val),
                 "best_epoch": int(best_epoch),
                 "final_epoch": int(final_epoch),
+                "es_counter": int(checkpoint_payload.get("es_counter", 0)),
                 "architecture": widths if widths is not None else [int(width)] * max(1, int(depth)),
                 "checkpoint_best": str(best_ckpt),
                 "checkpoint_last": str(last_ckpt),
+                "resume_granularity": "last_completed_epoch",
             },
         )
         if created_candidate_logger and candidate_logger is not None:
@@ -651,7 +871,13 @@ def run_module_adp(
         model = align_depth_first_seed(model)
 
     existing_candidates = _list_candidate_dirs(results_dir)
-    candidate_index = int(initial_state.get("candidate_index", len(existing_candidates)))
+    incomplete_candidate = _latest_incomplete_candidate(results_dir)
+    candidate_index = int(
+        initial_state.get(
+            "candidate_index",
+            _candidate_index_from_dir(incomplete_candidate) if incomplete_candidate is not None else len(existing_candidates),
+        )
+    )
     current_phase = str(
         initial_state.get(
             "current_phase",

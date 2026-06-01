@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import copy
+from pathlib import Path
+import tempfile
 import unittest
 
 import torch
@@ -89,17 +91,126 @@ class ADPContractTest(unittest.TestCase):
         DEPTH_EXPANSIONS = 0
 
     def test_width_to_depth_stops_after_depth_patience_without_improvement(self) -> None:
-        best_val, best_model = run_module_adp(
-            globals(),
-            DummyModel(),
-            dl_train=[],
-            dl_val=[],
-            acfg=DummyConfig(),
-            device="cpu",
-        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            best_val, best_model = run_module_adp(
+                globals(),
+                DummyModel(),
+                dl_train=[],
+                dl_val=[],
+                acfg=DummyConfig(),
+                device="cpu",
+                results_dir=Path(tmpdir),
+            )
         self.assertEqual(best_val, 1.0)
         self.assertEqual(best_model.depth, 1)
         self.assertEqual(DEPTH_EXPANSIONS, 2)
+
+
+class ResumeModel(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.width = 1
+        self.depth = 1
+        self.weight = nn.Parameter(torch.tensor([1.0]))
+
+
+class ResumeConfig:
+    adp_mode = "width_only"
+    delta = 0.0
+    patience = 10
+    width_expansion_patience = 1
+    width_stage_margin_patience = 1
+    ex_k = 1
+    max_width = 1
+    max_depth = 1
+    max_neurons = 10
+    max_epochs = 3
+    lr = 0.1
+    weight_decay = 0.0
+
+
+RESUME_CALLS = 0
+RESUME_INTERRUPT = True
+RESUME_INITIAL_STEPS = []
+
+
+def resume_total_neurons(model: ResumeModel, width: int, depth: int, widths=None) -> int:
+    del model, widths
+    return int(width) * int(depth)
+
+
+def resume_snapshot(model: ResumeModel, state_dict=None):
+    return {
+        "width": model.width,
+        "depth": model.depth,
+        "widths": [model.width],
+        "model": copy.deepcopy(model),
+        "state": copy.deepcopy(state_dict if state_dict is not None else model.state_dict()),
+    }
+
+
+def resume_restore(model: ResumeModel, snap, device=None):
+    del model
+    restored = copy.deepcopy(snap["model"])
+    restored.load_state_dict(snap["state"])
+    return restored.to(device) if device is not None else restored
+
+
+def resume_train(model, dl_train, dl_val, acfg, device, history):
+    del dl_train, dl_val, acfg, device
+    global RESUME_CALLS
+    RESUME_CALLS += 1
+    optimizer = torch.optim.AdamW(model.parameters(), lr=0.1)
+    state = optimizer.state.get(model.weight, {})
+    step = state.get("step", 0)
+    RESUME_INITIAL_STEPS.append(int(step.item()) if torch.is_tensor(step) else int(step))
+    if RESUME_INTERRUPT and RESUME_CALLS == 2:
+        raise RuntimeError("simulated interruption")
+    optimizer.zero_grad(set_to_none=True)
+    model.weight.grad = torch.ones_like(model.weight)
+    optimizer.step()
+    value = float(model.weight.item())
+    history.append(value)
+    return value, copy.deepcopy(model.state_dict())
+
+
+class ResumeContractTest(unittest.TestCase):
+    def test_interrupted_candidate_restores_last_epoch_and_optimizer_state(self) -> None:
+        global RESUME_CALLS, RESUME_INTERRUPT
+        RESUME_CALLS = 0
+        RESUME_INTERRUPT = True
+        RESUME_INITIAL_STEPS.clear()
+        module_globals = {
+            "__name__": "resume_contract_test",
+            "train_with_early_stopping": resume_train,
+            "snapshot_arch_and_state": resume_snapshot,
+            "restore_arch_and_state": resume_restore,
+            "total_neurons": resume_total_neurons,
+        }
+        with tempfile.TemporaryDirectory() as tmpdir:
+            results_dir = Path(tmpdir)
+            with self.assertRaisesRegex(RuntimeError, "simulated interruption"):
+                run_module_adp(module_globals, ResumeModel(), [], [], ResumeConfig(), "cpu", results_dir=results_dir)
+
+            checkpoint = torch.load(results_dir / "cand_000_d1_w1" / "checkpoint_last.pt", weights_only=False)
+            self.assertEqual(checkpoint["completed_epochs"], 1)
+            self.assertIn("optimizer_state", checkpoint)
+            self.assertIn("rng_state", checkpoint)
+            self.assertIn("hyperparameters", checkpoint)
+
+            RESUME_INTERRUPT = False
+            best_val, _ = run_module_adp(
+                module_globals,
+                ResumeModel(),
+                [],
+                [],
+                ResumeConfig(),
+                "cpu",
+                results_dir=results_dir,
+            )
+            self.assertLess(best_val, 1.0)
+            self.assertEqual(RESUME_CALLS, 4)
+            self.assertEqual(RESUME_INITIAL_STEPS, [0, 1, 1, 2])
 
 
 if __name__ == "__main__":

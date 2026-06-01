@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 from dataclasses import asdict, dataclass
+import inspect
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
 
 import torch
@@ -548,6 +549,8 @@ def infer_top_level_model_class(baseline_module: Any) -> Optional[type[nn.Module
 
 def bind_legacy_wrapper(module_globals: Dict[str, Any]) -> None:
     """Make an existing transformer wrapper delegate its FFN growth to this module."""
+    legacy_adp_search = module_globals.get("adp_search")
+    legacy_adp_signature = inspect.signature(legacy_adp_search) if callable(legacy_adp_search) else None
     baseline_module = module_globals.get("baseline_module")
     if baseline_module is not None:
         inferred_class = infer_top_level_model_class(baseline_module)
@@ -564,7 +567,7 @@ def bind_legacy_wrapper(module_globals: Dict[str, Any]) -> None:
         )
 
     def expand_depth(model: nn.Module, max_depth: int = 16, device: Any = None, cfg: Any = None) -> Optional[nn.Module]:
-        del device, cfg
+        del device
         return expand_transformer_ffn_depth(
             model,
             max_depth,
@@ -590,12 +593,28 @@ def bind_legacy_wrapper(module_globals: Dict[str, Any]) -> None:
         dl_val: Iterable,
         acfg: Any,
         device: Any,
-        log_loss: bool = False,
-        log_neurons: bool = False,
-        results_dir: Any = None,
+        *args: Any,
+        **kwargs: Any,
     ) -> Tuple[float, nn.Module, int, int]:
         from utils.adp_contract import run_module_adp
 
+        bound_args: Dict[str, Any] = {}
+        if legacy_adp_signature is not None:
+            try:
+                bound_args = dict(
+                    legacy_adp_signature.bind_partial(model, dl_train, dl_val, acfg, device, *args, **kwargs).arguments
+                )
+            except TypeError:
+                bound_args = {}
+        log_loss = bool(kwargs.get("log_loss", bound_args.get("log_loss", False)))
+        log_neurons = bool(kwargs.get("log_neurons", bound_args.get("log_neurons", False)))
+        results_dir = kwargs.get("results_dir", bound_args.get("results_dir"))
+        logger = kwargs.get("logger", bound_args.get("logger"))
+        train_overrides = {
+            key: value
+            for key, value in bound_args.items()
+            if key in {"mask_id", "pad_id"}
+        }
         value, final_model = run_module_adp(
             module_globals,
             model,
@@ -606,6 +625,8 @@ def bind_legacy_wrapper(module_globals: Dict[str, Any]) -> None:
             log_loss=log_loss,
             log_neurons=log_neurons,
             results_dir=results_dir,
+            logger=logger,
+            train_overrides=train_overrides,
         )
         architectures = transformer_ffn_architectures(final_model)
         canonical = architectures[0]

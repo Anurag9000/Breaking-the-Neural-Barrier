@@ -4,7 +4,8 @@ import torch
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[4]))
-from utils.adp_logging import ContinuousLogger.nn as nn
+import torch.nn as nn
+from utils.adp_logging import ContinuousLogger
 from torch.utils.data import Dataset, DataLoader
 
 from model_t5_style import T5Style

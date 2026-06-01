@@ -3,17 +3,18 @@ import torch
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[4]))
-from utils.adp_logging import ContinuousLogger.nn as nn
+import torch.nn as nn
+from utils.adp_logging import ContinuousLogger
 import torch
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[4]))
-from utils.adp_logging import ContinuousLoggervision as tv
+import torchvision as tv
 import torch
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[4]))
-from utils.adp_logging import ContinuousLoggervision.transforms as T
+import torchvision.transforms as T
 from torch.utils.data import DataLoader, random_split
 
 from model_vit import ViT
