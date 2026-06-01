@@ -355,6 +355,23 @@ def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log
     
     return global_best_val, model, model.dim, 0
 
+
+def adp_search(model: ModelClass, dl_train, dl_val, acfg: ADPConfig, device, log_loss: bool = False, log_neurons: bool = False, results_dir: Path = Path("results_adp")):
+    from utils.adp_contract import run_module_adp
+
+    best_val, best_model = run_module_adp(
+        globals(),
+        model,
+        dl_train,
+        dl_val,
+        acfg,
+        device,
+        log_loss=log_loss,
+        log_neurons=log_neurons,
+        results_dir=results_dir,
+    )
+    return best_val, best_model, int(getattr(best_model, "dim", 0)), int(getattr(best_model, "depth", 0))
+
 def main():
     import argparse
     p = argparse.ArgumentParser()
