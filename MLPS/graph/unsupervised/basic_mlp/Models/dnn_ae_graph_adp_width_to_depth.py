@@ -223,6 +223,7 @@ def adp_search(model: DNNNodeAE, data, tcfg: TrainCfg, acfg: ADPConfig, logger: 
         log_neurons=log_neurons,
         results_dir=results_dir,
         logger=logger,
+        train_overrides={"cfg": tcfg},
     )
 
     return best_val, model
