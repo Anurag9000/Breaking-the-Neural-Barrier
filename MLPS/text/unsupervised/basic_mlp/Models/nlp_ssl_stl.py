@@ -1,7 +1,10 @@
 
 import torch
 import torch.nn as nn
-from nlp_ssl_common import MLPBlock, TextAvgEmbed, nt_xent_loss
+try:
+    from .nlp_ssl_common import MLPBlock, TextAvgEmbed, nt_xent_loss
+except ImportError:
+    from nlp_ssl_common import MLPBlock, TextAvgEmbed, nt_xent_loss
 
 class MLPTextSSL(nn.Module):
     def __init__(self, vocab_size: int, emb_dim: int, hidden: list, rep_dim: int, proj_dim: int, use_bn: bool=True):

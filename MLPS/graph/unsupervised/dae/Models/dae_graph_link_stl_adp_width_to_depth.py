@@ -12,7 +12,10 @@ sys.path.append(str(Path(__file__).resolve().parents[4]))
 from utils.adp_logging import ContinuousLogger  # type: ignore
 from utils.adp_plot import plot_loss_vs_epoch, plot_loss_vs_neurons  # type: ignore
 
-from dae_graph_link_stl import DAEGraphLink, graph_link_dae_total_neurons
+try:
+    from .dae_graph_link_stl import DAEGraphLink, graph_link_dae_total_neurons
+except ImportError:
+    from dae_graph_link_stl import DAEGraphLink, graph_link_dae_total_neurons
 
 
 @dataclass

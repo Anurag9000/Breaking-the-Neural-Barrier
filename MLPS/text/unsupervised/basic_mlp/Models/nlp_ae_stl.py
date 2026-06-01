@@ -1,6 +1,9 @@
 
 import torch.nn as nn
-from nlp_ae_common import MLPBlock, TextAvgEmbed
+try:
+    from .nlp_ae_common import MLPBlock, TextAvgEmbed
+except ImportError:
+    from nlp_ae_common import MLPBlock, TextAvgEmbed
 
 class MLPTextAE(nn.Module):
     def __init__(self, vocab_size: int, emb_dim: int, hidden: list, rep_dim: int, use_bn: bool=True):

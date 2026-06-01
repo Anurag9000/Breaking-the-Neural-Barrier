@@ -4,7 +4,8 @@ import torch
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[4]))
-from utils.adp_logging import ContinuousLogger.nn as nn
+import torch.nn as nn
+from utils.adp_logging import ContinuousLogger
 from torch.utils.data import Dataset, DataLoader
 
 from model_bart_style import BARTStyle
@@ -101,14 +102,14 @@ def main():
             opt.zero_grad(); logits = model(src, sp, tgt_in, tp); loss = crit(logits.view(-1, logits.size(-1)), tgt_out.view(-1)); loss.backward();
             nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
         val = eval(model, val_loader, crit, args.device, vocab['<pad>'])
-        ppl = math.exp(val); # Log
- msg = f"Epoch {epoch}: val_ppl={ppl:.3f}"
- logger.log_console(msg)
- logger.log_epoch_stats({
-     "epoch": epoch,
-     "val_loss": val_loss if 'val_loss' in locals() else (loss.item() if 'loss' in locals() else 0),
-     "train_loss": loss.item() if 'loss' in locals() else 0
- })
+        ppl = math.exp(val)
+        msg = f"Epoch {epoch}: val_ppl={ppl:.3f}"
+        logger.log_console(msg)
+        logger.log_epoch_stats({
+            "epoch": epoch,
+            "val_loss": val,
+            "train_loss": loss.item() if 'loss' in locals() else 0,
+        })
         if val + 1e-6 < best:
             best=val; bad=0; torch.save({'model': model.state_dict(),'vocab':vocab}, 'BARTStyle_best.pth')
         else:

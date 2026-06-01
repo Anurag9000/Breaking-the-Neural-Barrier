@@ -15,6 +15,7 @@ from utils.text_benchmarks import make_ag_news_ssl_loaders
 
 # Load baseline
 BASE_PATH = Path(__file__).with_name("nlp_ssl_stl.py").resolve()
+sys.path.insert(0, str(BASE_PATH.parent))
 _spec = importlib.util.spec_from_file_location("baseline_module", BASE_PATH)
 baseline_module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(baseline_module)
