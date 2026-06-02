@@ -24,9 +24,9 @@ sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from MLPS.tabular.shared.dae_dnn.adp_search import expand_depth, expand_width, model_depth, model_width
 from MLPS.tabular.shared.dae_dnn.mlp import MLP
-from MLPS.tabular.shared.dae_dnn.tasks import Task, build_task, refresh_task_loaders, task_names
-from MLPS.tabular.shared.dae_dnn.train_utils import eval_epoch, forward_train_safe, train_epoch, unpack_batch
+from MLPS.tabular.shared.dae_dnn.tasks import Task, build_task, clone_loader, refresh_task_loaders, task_names
 from MLPS.tabular.shared.dae_dnn.train_utils import AdaptiveBatchController
+from MLPS.tabular.shared.dae_dnn.train_utils import eval_epoch, forward_train_safe, train_epoch, unpack_batch
 from utils.adp_logging import ContinuousLogger
 from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_from_csv
 
@@ -490,20 +490,38 @@ def save_checkpoint(
     model: torch.nn.Module,
     optimizer: torch.optim.Optimizer,
     epoch: int,
+    batch_index: int,
+    epoch_complete: bool,
+    batch_size: int,
+    epoch_seed: int,
+    batches_per_epoch: int,
     best_val: float,
     best_state: Dict[str, torch.Tensor],
     best_epoch: int,
     es_counter: int,
+    running_train_loss: float = 0.0,
+    running_train_correct: float = 0.0,
+    running_train_samples: int = 0,
+    running_train_batches: int = 0,
     metadata: Dict[str, Any],
 ) -> None:
     payload = {
         "epoch": int(epoch),
+        "batch_index": int(batch_index),
+        "epoch_complete": bool(epoch_complete),
+        "batch_size": int(batch_size),
+        "epoch_seed": int(epoch_seed),
+        "batches_per_epoch": int(batches_per_epoch),
         "model_state": copy.deepcopy(model.state_dict()),
         "optimizer_state": optimizer.state_dict(),
         "best_val": float(best_val),
         "best_state": copy.deepcopy(best_state),
         "best_epoch": int(best_epoch),
         "es_counter": int(es_counter),
+        "running_train_loss": float(running_train_loss),
+        "running_train_correct": float(running_train_correct),
+        "running_train_samples": int(running_train_samples),
+        "running_train_batches": int(running_train_batches),
         "metadata": metadata,
         "rng_state": {
             "python": random.getstate(),
@@ -517,7 +535,18 @@ def save_checkpoint(
         tmp_path = Path(tmp.name)
     try:
         torch.save(payload, tmp_path)
+        with tmp_path.open("rb") as f:
+            os.fsync(f.fileno())
         os.replace(tmp_path, path)
+        try:
+            dir_fd = os.open(str(path.parent), os.O_RDONLY)
+        except OSError:
+            dir_fd = None
+        if dir_fd is not None:
+            try:
+                os.fsync(dir_fd)
+            finally:
+                os.close(dir_fd)
     finally:
         if tmp_path.exists():
             try:
@@ -588,6 +617,10 @@ def restore_rng_state(payload: Dict[str, Any]) -> None:
                 torch.cuda.set_rng_state_all(normalized_cuda)
         except Exception:
             pass
+
+
+def epoch_seed_for(cfg: RunConfig, epoch: int) -> int:
+    return int(cfg.seed) * 1_000_003 + int(epoch)
 
 
 def infer_model_signature_from_state_dict(state_dict: Dict[str, Any]) -> Tuple[int, List[int], int, bool]:
@@ -774,6 +807,7 @@ def recover_best_candidate_state(phase_root: Path) -> Tuple[float, Optional[Path
     return best_val, best_candidate_dir, best_checkpoint
 
 
+# Batch-resume implementation that overrides the legacy epoch-only version above.
 def training_loop(
     *,
     task: Task,
@@ -845,6 +879,7 @@ def training_loop(
         )
         return CandidateResult(best_val, best_epoch, start_epoch - 1, best_ckpt, last_ckpt, candidate_dir, [int(w) for w in model.hidden_widths])
 
+    last_epoch_processed = start_epoch - 1
     for epoch in range(start_epoch, int(cfg.max_epochs) + 1):
         if batch_controller is not None:
             batch_controller.maybe_poll()
@@ -2340,6 +2375,411 @@ def build_run_root(cfg: RunConfig) -> Path:
     if cfg.run_root:
         return Path(cfg.run_root)
     return Path(cfg.results_dir) / f"goliath_{now_stamp()}"
+
+
+def training_loop(
+    *,
+    task: Task,
+    model: MLP,
+    candidate_dir: Path,
+    cfg: RunConfig,
+    device,
+    logger: ContinuousLogger,
+    reconstruct: bool,
+    resume: bool = True,
+    batch_controller: Optional[AdaptiveBatchController] = None,
+    display_best_floor: Optional[float] = None,
+) -> CandidateResult:
+    candidate_dir.mkdir(parents=True, exist_ok=True)
+    metadata_path = candidate_dir / "metadata.json"
+    candidate_state_path = candidate_dir / "candidate_state.json"
+    last_ckpt = candidate_dir / "checkpoint_last.pt"
+    best_ckpt = candidate_dir / "checkpoint_best.pt"
+
+    optimizer = torch.optim.AdamW(model.parameters(), lr=float(cfg.lr), weight_decay=float(cfg.weight_decay))
+
+    start_epoch = 1
+    start_batch = 0
+    best_val = float("inf")
+    best_state = copy.deepcopy(model.state_dict())
+    best_epoch = 0
+    es_counter = 0
+    metric_keys: List[str] = []
+    current_batch_size = int(getattr(task.train_loader, "batch_size", 0) or 0)
+    running_train_loss = 0.0
+    running_train_correct = 0.0
+    running_train_samples = 0
+    running_train_batches = 0
+
+    if batch_controller is not None:
+        refreshed = int(batch_controller.current_batch_size)
+        if refreshed > 0 and refreshed != current_batch_size:
+            refresh_task_loaders(task, refreshed)
+            current_batch_size = refreshed
+
+    if resume and last_ckpt.exists():
+        ckpt = load_checkpoint(last_ckpt, device)
+        model, optimizer = resume_model_from_checkpoint(
+            model=model,
+            ckpt=ckpt,
+            optimizer=optimizer,
+            device=device,
+            metadata_path=metadata_path,
+        )
+        restore_rng_state(ckpt)
+        start_epoch = int(ckpt["epoch"])
+        start_batch = int(ckpt.get("batch_index", 0) or 0)
+        checkpoint_batch_size = int(ckpt.get("batch_size", current_batch_size) or current_batch_size)
+        if checkpoint_batch_size > 0 and checkpoint_batch_size != current_batch_size:
+            refresh_task_loaders(task, checkpoint_batch_size)
+            current_batch_size = checkpoint_batch_size
+        best_val = float(ckpt["best_val"])
+        best_state = copy.deepcopy(ckpt["best_state"])
+        best_epoch = int(ckpt["best_epoch"])
+        es_counter = int(ckpt["es_counter"])
+        running_train_loss = float(ckpt.get("running_train_loss", 0.0) or 0.0)
+        running_train_correct = float(ckpt.get("running_train_correct", 0.0) or 0.0)
+        running_train_samples = int(ckpt.get("running_train_samples", 0) or 0)
+        running_train_batches = int(ckpt.get("running_train_batches", 0) or 0)
+        checkpoint_batches = int(ckpt.get("batches_per_epoch", 0) or 0)
+        if bool(ckpt.get("epoch_complete", True)) or (
+            checkpoint_batches > 0 and start_batch >= checkpoint_batches
+        ):
+            start_epoch = int(ckpt["epoch"]) + 1
+            start_batch = 0
+            running_train_loss = 0.0
+            running_train_correct = 0.0
+            running_train_samples = 0
+            running_train_batches = 0
+
+    if not metadata_path.exists():
+        write_json(
+            metadata_path,
+            phase_metadata(
+                task=task,
+                phase_name=candidate_dir.parent.name,
+                phase_kind="candidate",
+                reconstruct=reconstruct,
+                model=model,
+                cfg=cfg,
+                candidate_index=int(candidate_dir.name.split("_")[1]),
+            ),
+        )
+
+    if start_epoch > int(cfg.max_epochs):
+        model.load_state_dict(best_state)
+        write_json(
+            candidate_state_path,
+            {
+                "completed": True,
+                "best_val": best_val,
+                "best_epoch": best_epoch,
+                "final_epoch": start_epoch - 1,
+                "candidate_dir": str(candidate_dir),
+                "checkpoint_best": str(best_ckpt),
+                "checkpoint_last": str(last_ckpt),
+                "batch_index": 0,
+                "epoch_complete": True,
+                "batch_size": current_batch_size,
+                "architecture": [int(w) for w in model.hidden_widths],
+                "reconstruct": reconstruct,
+            },
+        )
+        return CandidateResult(best_val, best_epoch, start_epoch - 1, best_ckpt, last_ckpt, candidate_dir, [int(w) for w in model.hidden_widths])
+
+    last_epoch_processed = start_epoch - 1
+    for epoch in range(start_epoch, int(cfg.max_epochs) + 1):
+        if batch_controller is not None and start_batch == 0:
+            batch_controller.maybe_poll()
+            refreshed = int(batch_controller.current_batch_size)
+            if refreshed > 0 and refreshed != current_batch_size:
+                refresh_task_loaders(task, refreshed)
+                current_batch_size = refreshed
+
+        epoch_seed = epoch_seed_for(cfg, epoch)
+        epoch_generator = torch.Generator()
+        epoch_generator.manual_seed(epoch_seed)
+        train_loader = clone_loader(task.train_loader, current_batch_size, shuffle=True, generator=epoch_generator)
+        batches_per_epoch = len(train_loader)
+        if start_batch >= batches_per_epoch:
+            start_batch = 0
+        if start_batch == 0:
+            running_train_loss = 0.0
+            running_train_correct = 0.0
+            running_train_samples = 0
+            running_train_batches = 0
+
+        batch_processed = False
+        for batch_idx, batch in enumerate(train_loader):
+            if batch_idx < start_batch:
+                continue
+            batch_processed = True
+            x, y, _ = unpack_batch(batch)
+            x = x.to(device)
+            if not reconstruct:
+                y = y.to(device)
+
+            optimizer.zero_grad(set_to_none=True)
+            if reconstruct:
+                out = forward_train_safe(model, x)
+                loss = F.mse_loss(out, x)
+            else:
+                out = forward_train_safe(model, x)
+                loss = task.loss_fn(out, y)
+            loss.backward()
+            if float(cfg.grad_clip) > 0:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), float(cfg.grad_clip))
+            optimizer.step()
+
+            batch_size_actual = int(x.size(0))
+            running_train_loss += float(loss.item()) * batch_size_actual
+            running_train_samples += batch_size_actual
+            running_train_batches += 1
+            if not reconstruct and task.task_type == "classification":
+                running_train_correct += float((out.argmax(dim=1) == y).float().sum().item())
+
+            save_checkpoint(
+                last_ckpt,
+                model=model,
+                optimizer=optimizer,
+                epoch=epoch,
+                batch_index=batch_idx + 1,
+                epoch_complete=False,
+                batch_size=current_batch_size,
+                epoch_seed=epoch_seed,
+                batches_per_epoch=batches_per_epoch,
+                best_val=best_val,
+                best_state=best_state,
+                best_epoch=best_epoch,
+                es_counter=es_counter,
+                running_train_loss=running_train_loss,
+                running_train_correct=running_train_correct,
+                running_train_samples=running_train_samples,
+                running_train_batches=running_train_batches,
+                metadata={
+                    "task": task.name,
+                    "phase": candidate_dir.parent.name,
+                    "candidate_dir": str(candidate_dir),
+                    "reconstruct": reconstruct,
+                },
+            )
+            write_json(
+                candidate_state_path,
+                {
+                    "completed": False,
+                    "task": task.name,
+                    "phase": candidate_dir.parent.name,
+                    "candidate_dir": str(candidate_dir),
+                    "epoch": epoch,
+                    "batch_index": batch_idx + 1,
+                    "epoch_complete": False,
+                    "batch_size": current_batch_size,
+                    "epoch_seed": epoch_seed,
+                    "batches_per_epoch": batches_per_epoch,
+                    "running_train_loss": running_train_loss,
+                    "running_train_correct": running_train_correct,
+                    "running_train_samples": running_train_samples,
+                    "running_train_batches": running_train_batches,
+                    "best_val": best_val,
+                    "best_epoch": best_epoch,
+                    "final_epoch": epoch,
+                    "es_counter": es_counter,
+                    "architecture": [int(w) for w in model.hidden_widths],
+                    "reconstruct": reconstruct,
+                    "checkpoint_best": str(best_ckpt),
+                    "checkpoint_last": str(last_ckpt),
+                },
+            )
+
+        if not batch_processed:
+            raise RuntimeError(f"No batches were processed for {candidate_dir} at epoch {epoch}")
+
+        tr_loss = float(running_train_loss / max(running_train_samples, 1))
+        tr_acc = None
+        if not reconstruct and task.task_type == "classification":
+            tr_acc = float(running_train_correct / max(running_train_samples, 1))
+
+        if reconstruct:
+            val_loss, val_acc, throughput = reconstruction_eval_epoch(model, task.val_loader, F.mse_loss, device, measure_throughput=False)
+        else:
+            val_loss, val_acc, throughput = eval_epoch(model, task.val_loader, task.loss_fn, device, task.task_type, measure_throughput=False)
+
+        metrics: Dict[str, Any] = {}
+        if not reconstruct and task.metrics_fn is not None and (epoch == 1 or epoch % 5 == 0):
+            metrics = task.metrics_fn(model, task, device) or {}
+            if not metric_keys:
+                metric_keys = list(metrics.keys())
+
+        improved = val_loss < (best_val - float(cfg.delta))
+        if improved:
+            best_val = val_loss
+            best_state = copy.deepcopy(model.state_dict())
+            best_epoch = epoch
+            es_counter = 0
+            save_checkpoint(
+                best_ckpt,
+                model=model,
+                optimizer=optimizer,
+                epoch=epoch,
+                batch_index=0,
+                epoch_complete=True,
+                batch_size=current_batch_size,
+                epoch_seed=epoch_seed,
+                batches_per_epoch=batches_per_epoch,
+                best_val=best_val,
+                best_state=best_state,
+                best_epoch=best_epoch,
+                es_counter=es_counter,
+                running_train_loss=running_train_loss,
+                running_train_correct=running_train_correct,
+                running_train_samples=running_train_samples,
+                running_train_batches=running_train_batches,
+                metadata={
+                    "task": task.name,
+                    "phase": candidate_dir.parent.name,
+                    "candidate_dir": str(candidate_dir),
+                    "reconstruct": reconstruct,
+                },
+            )
+        else:
+            es_counter += 1
+
+        save_checkpoint(
+            last_ckpt,
+            model=model,
+            optimizer=optimizer,
+            epoch=epoch,
+            batch_index=0,
+            epoch_complete=True,
+            batch_size=current_batch_size,
+            epoch_seed=epoch_seed,
+            batches_per_epoch=batches_per_epoch,
+            best_val=best_val,
+            best_state=best_state,
+            best_epoch=best_epoch,
+            es_counter=es_counter,
+            running_train_loss=running_train_loss,
+            running_train_correct=running_train_correct,
+            running_train_samples=running_train_samples,
+            running_train_batches=running_train_batches,
+            metadata={
+                "task": task.name,
+                "phase": candidate_dir.parent.name,
+                "candidate_dir": str(candidate_dir),
+                "reconstruct": reconstruct,
+            },
+        )
+
+        row: Dict[str, Any] = {
+            "task": task.name,
+            "phase": candidate_dir.parent.name,
+            "candidate_dir": candidate_dir.name,
+            "epoch": epoch,
+            "width": model_width(model),
+            "depth": model_depth(model),
+            "neurons": int(sum(model.hidden_widths) + model.out_dim),
+            "train_loss": tr_loss,
+            "val_loss": val_loss,
+            "best_val": best_val,
+            "best_epoch": best_epoch,
+            "es_counter": es_counter,
+            "improved": improved,
+            "train_acc": tr_acc,
+            "val_acc": val_acc,
+            "throughput": throughput,
+        }
+        for key in metric_keys:
+            row[key] = metrics.get(key)
+        logger.log_epoch_stats(row)
+        display_global_best = best_val if display_best_floor is None else min(best_val, float(display_best_floor))
+        logger.log_console(
+            f"[{task.name}][{candidate_dir.parent.name}][{candidate_dir.name}] epoch={epoch} "
+            f"architecture={format_architecture_for_report(model.hidden_widths)} "
+            f"train_loss={tr_loss:.6f} val_loss={val_loss:.6f} "
+            f"candidate_best={best_val:.6f} global_best={display_global_best:.6f} "
+            f"es={es_counter}/{cfg.patience}"
+        )
+
+        write_json(
+            candidate_state_path,
+            {
+                "completed": False,
+                "task": task.name,
+                "phase": candidate_dir.parent.name,
+                "candidate_dir": str(candidate_dir),
+                "epoch": epoch,
+                "batch_index": 0,
+                "epoch_complete": True,
+                "batch_size": current_batch_size,
+                "epoch_seed": epoch_seed,
+                "batches_per_epoch": batches_per_epoch,
+                "running_train_loss": running_train_loss,
+                "running_train_correct": running_train_correct,
+                "running_train_samples": running_train_samples,
+                "running_train_batches": running_train_batches,
+                "best_val": best_val,
+                "best_epoch": best_epoch,
+                "final_epoch": epoch,
+                "es_counter": es_counter,
+                "architecture": [int(w) for w in model.hidden_widths],
+                "reconstruct": reconstruct,
+                "checkpoint_best": str(best_ckpt),
+                "checkpoint_last": str(last_ckpt),
+            },
+        )
+
+        running_train_loss = 0.0
+        running_train_correct = 0.0
+        running_train_samples = 0
+        running_train_batches = 0
+        start_batch = 0
+        last_epoch_processed = epoch
+
+        if es_counter >= int(cfg.patience):
+            break
+
+    model.load_state_dict(best_state)
+    save_checkpoint(
+        best_ckpt,
+        model=model,
+        optimizer=optimizer,
+        epoch=best_epoch,
+        batch_index=0,
+        epoch_complete=True,
+        batch_size=current_batch_size,
+        epoch_seed=epoch_seed_for(cfg, best_epoch if best_epoch > 0 else last_epoch_processed),
+        batches_per_epoch=batches_per_epoch,
+        best_val=best_val,
+        best_state=best_state,
+        best_epoch=best_epoch,
+        es_counter=0,
+        running_train_loss=running_train_loss,
+        running_train_correct=running_train_correct,
+        running_train_samples=running_train_samples,
+        running_train_batches=running_train_batches,
+        metadata={"task": task.name, "phase": candidate_dir.parent.name, "candidate_dir": str(candidate_dir), "reconstruct": reconstruct},
+    )
+    write_json(
+        candidate_state_path,
+        {
+            "completed": True,
+            "task": task.name,
+            "phase": candidate_dir.parent.name,
+            "candidate_dir": str(candidate_dir),
+            "best_val": best_val,
+            "best_epoch": best_epoch,
+            "final_epoch": last_epoch_processed,
+            "batch_index": 0,
+            "epoch_complete": True,
+            "batch_size": current_batch_size,
+            "architecture": [int(w) for w in model.hidden_widths],
+            "reconstruct": reconstruct,
+            "checkpoint_best": str(best_ckpt),
+            "checkpoint_last": str(last_ckpt),
+        },
+    )
+
+    return CandidateResult(best_val, best_epoch, last_epoch_processed, best_ckpt, last_ckpt, candidate_dir, [int(w) for w in model.hidden_widths])
 
 
 def main() -> None:

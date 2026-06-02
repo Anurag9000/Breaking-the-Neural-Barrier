@@ -32,7 +32,7 @@ class ContinuousLogger:
         formatted = f"[{timestamp}] {message}"
         
         # Print to console
-        print(formatted)
+        print(formatted, flush=True)
         
         # Write to file and flush immediately
         self.txt_handle.write(formatted + "\n")
