@@ -221,14 +221,11 @@ def main() -> None:
                 int(args.min_width),
                 (calibrated_limit // int(depth) // int(args.width_step)) * int(args.width_step),
             )
-            window_min = max(int(args.min_width), center_width - int(args.search_margin))
-            window_max = min(int(args.max_width), center_width + int(args.search_margin))
-            widths = list(range(window_min, window_max + 1, int(args.width_step)))
             log_line(
-                f"width window: task={task_name} depth={depth} center={center_width} "
-                f"range={window_min}..{window_max} step={int(args.width_step)}"
+                f"width center: task={task_name} depth={depth} center={center_width} "
+                f"margin={int(args.search_margin)} step={int(args.width_step)}"
             )
-            for width in widths:
+            def probe(width: int) -> ProbeResult:
                 log_line(
                     f"candidate start: task={task_name} depth={depth} width={width} "
                     f"batch_size={int(args.batch_size)} threshold_mib={int(args.vram_threshold_mib)}"
@@ -251,57 +248,54 @@ def main() -> None:
                     f"success={result.success} reason={result.reason} batches={result.batches_completed} "
                     f"peak_mib={result.peak_mib}"
                 )
-                if result.success:
-                    best_width = int(width)
-                    best_peak = int(result.peak_mib)
-                    best_allocated = int(result.peak_allocated_mib)
-                    best_reserved = int(result.peak_reserved_mib)
-                    continue
-                failure_width = int(width)
-                failure_reason = str(result.reason)
-                break
+                return result
 
-            if failure_width is None and window_max < int(args.max_width):
-                cursor = window_max + int(args.width_step)
-                while failure_width is None and cursor <= int(args.max_width):
-                    window_max = min(int(args.max_width), cursor + int(args.search_margin))
-                    log_line(
-                        f"extend window: task={task_name} depth={depth} "
-                        f"range={cursor}..{window_max} step={int(args.width_step)}"
-                    )
-                    for width in range(cursor, window_max + 1, int(args.width_step)):
-                        log_line(
-                            f"candidate start: task={task_name} depth={depth} width={width} "
-                            f"batch_size={int(args.batch_size)} threshold_mib={int(args.vram_threshold_mib)}"
-                        )
-                        if torch.cuda.is_available():
-                            torch.cuda.empty_cache()
-                        result = run_candidate(
-                            task_name=task_name,
-                            task=task,
-                            depth=depth,
-                            width=width,
-                            batch_size=int(args.batch_size),
-                            device=device,
-                            use_bn=bool(args.use_bn),
-                            threshold_mib=int(args.vram_threshold_mib),
-                        )
-                        summary_rows.append(asdict(result))
-                        log_line(
-                            f"candidate result: task={task_name} depth={depth} width={width} "
-                            f"success={result.success} reason={result.reason} batches={result.batches_completed} "
-                            f"peak_mib={result.peak_mib}"
-                        )
+            width = int(center_width)
+            result = probe(width)
+            if result.success:
+                best_width = width
+                best_peak = int(result.peak_mib)
+                best_allocated = int(result.peak_allocated_mib)
+                best_reserved = int(result.peak_reserved_mib)
+                width += int(args.width_step)
+                while width <= int(args.max_width):
+                    result = probe(width)
+                    if result.success:
+                        best_width = width
+                        best_peak = int(result.peak_mib)
+                        best_allocated = int(result.peak_allocated_mib)
+                        best_reserved = int(result.peak_reserved_mib)
+                        width += int(args.width_step)
+                        continue
+                    failure_width = width
+                    failure_reason = str(result.reason)
+                    break
+            else:
+                failure_reason = str(result.reason)
+                width -= int(args.width_step)
+                while width >= int(args.min_width):
+                    result = probe(width)
+                    if result.success:
+                        best_width = width
+                        best_peak = int(result.peak_mib)
+                        best_allocated = int(result.peak_allocated_mib)
+                        best_reserved = int(result.peak_reserved_mib)
+                        width += int(args.width_step)
+                        break
+                    width -= int(args.width_step)
+                if best_width is not None and failure_width is None:
+                    while width <= int(args.max_width):
+                        result = probe(width)
                         if result.success:
-                            best_width = int(width)
+                            best_width = width
                             best_peak = int(result.peak_mib)
                             best_allocated = int(result.peak_allocated_mib)
                             best_reserved = int(result.peak_reserved_mib)
+                            width += int(args.width_step)
                             continue
-                        failure_width = int(width)
+                        failure_width = width
                         failure_reason = str(result.reason)
                         break
-                    cursor = window_max + int(args.width_step)
 
             report[task_name][depth] = {
                 "max_width": best_width,
