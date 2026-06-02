@@ -1,7 +1,10 @@
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
+import urllib.request
 
 import numpy as np
+import pandas as pd
 import torch
 import torch.nn.functional as F
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
@@ -140,27 +143,51 @@ class OneClassAnomalyDataset(Dataset):
         return self.x[idx], self.y[idx], torch.tensor(self.anomaly_label, dtype=torch.long)
 
 
-def _load_covtype(seed: int):
-    data = fetch_covtype(download_if_missing=True)
+def _data_home_from_dir(data_dir: str) -> str:
+    path = Path(data_dir).expanduser()
+    path.mkdir(parents=True, exist_ok=True)
+    return str(path)
+
+
+def _load_covtype(seed: int, data_dir: str):
+    data = fetch_covtype(download_if_missing=True, data_home=_data_home_from_dir(data_dir))
     x = np.asarray(data.data, dtype=np.float32)
     y = np.asarray(data.target, dtype=np.int64) - 1
     return _split_numpy_arrays(x, y, seed)
 
 
-def _load_year_prediction(seed: int):
+def _load_year_prediction(seed: int, data_dir: str):
+    cache_dir = Path(_data_home_from_dir(data_dir)) / "year_prediction_msd"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    zip_path = cache_dir / "YearPredictionMSD.txt.zip"
     try:
-        data = fetch_openml(name="YearPredictionMSD", version=1, as_frame=False)
-        x = np.asarray(data.data, dtype=np.float32)
-        y = np.asarray(data.target, dtype=np.float32).reshape(-1, 1)
+        if not zip_path.exists():
+            urllib.request.urlretrieve(
+                "https://archive.ics.uci.edu/ml/machine-learning-databases/00203/YearPredictionMSD.txt.zip",
+                zip_path,
+            )
+        frame = pd.read_csv(zip_path, header=None, compression="zip")
+        y = frame.iloc[:, 0].to_numpy(dtype=np.float32).reshape(-1, 1)
+        x = frame.iloc[:, 1:].to_numpy(dtype=np.float32)
     except Exception:
-        data = fetch_california_housing()
-        x = np.asarray(data.data, dtype=np.float32)
-        y = np.asarray(data.target, dtype=np.float32).reshape(-1, 1)
+        try:
+            data = fetch_openml(data_id=46672, as_frame=False, data_home=_data_home_from_dir(data_dir))
+            x = np.asarray(data.data, dtype=np.float32)
+            y = np.asarray(data.target, dtype=np.float32).reshape(-1, 1)
+        except Exception:
+            try:
+                data = fetch_openml(name="Year_Prediction_MSD", version=1, as_frame=False, data_home=_data_home_from_dir(data_dir))
+                x = np.asarray(data.data, dtype=np.float32)
+                y = np.asarray(data.target, dtype=np.float32).reshape(-1, 1)
+            except Exception:
+                data = fetch_california_housing(data_home=_data_home_from_dir(data_dir))
+                x = np.asarray(data.data, dtype=np.float32)
+                y = np.asarray(data.target, dtype=np.float32).reshape(-1, 1)
     return _split_numpy_arrays(x, y, seed)
 
 
-def _load_california_housing(seed: int):
-    data = fetch_california_housing()
+def _load_california_housing(seed: int, data_dir: str):
+    data = fetch_california_housing(data_home=_data_home_from_dir(data_dir))
     x = np.asarray(data.data, dtype=np.float32)
     y = np.asarray(data.target, dtype=np.float32).reshape(-1, 1)
     return _split_numpy_arrays(x, y, seed)
@@ -184,7 +211,7 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
     name = task_name.lower()
 
     if name in ["prediction", "regression", "sequence"]:
-        train_x, train_y, val_x, val_y, test_x, test_y = _load_year_prediction(seed)
+        train_x, train_y, val_x, val_y, test_x, test_y = _load_year_prediction(seed, data_dir)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
         train_ds = ArrayDataset(train_x, train_y)
         val_ds = ArrayDataset(val_x, val_y)
@@ -223,7 +250,7 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
         )
 
     if name in ["classification", "representation", "edge"]:
-        train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed)
+        train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed, data_dir)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
         train_ds = ArrayDataset(train_x, train_y)
         val_ds = ArrayDataset(val_x, val_y)
@@ -267,7 +294,7 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
         )
 
     if name in ["autoencoding", "generation", "denoising"]:
-        train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed)
+        train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed, data_dir)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
         if name == "generation":
             train_ds = PairArrayDataset(np.random.randn(*train_x.shape).astype(np.float32), train_x)
@@ -300,7 +327,7 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
         )
 
     if name == "anomaly":
-        train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed)
+        train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed, data_dir)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
         normal_class = 0
         train_mask = train_y == normal_class
@@ -346,7 +373,7 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
         )
 
     if name == "simulation":
-        train_x, train_y, val_x, val_y, test_x, test_y = _load_california_housing(seed)
+        train_x, train_y, val_x, val_y, test_x, test_y = _load_california_housing(seed, data_dir)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
         in_x_train = train_x
         in_x_val = val_x
