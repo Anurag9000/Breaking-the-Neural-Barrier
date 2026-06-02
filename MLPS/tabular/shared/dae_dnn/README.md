@@ -68,7 +68,7 @@ python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode stl 
 
 Run one task (ADP, width then depth)
 ```bash
-python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode adp --adp-mode width_to_depth --hidden 50 50 --ex-k 1 --max-depth 10 --patience 10 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
+python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode adp --adp-mode width_to_depth --hidden 50 50 --ex-k 1 --max-depth 8 --patience 10 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
 ```
 
 Run one task (ADP, alternating width-first)
