@@ -33,10 +33,16 @@ The removed tasks are not part of the active sweep:
 Current resume target on this machine:
 
 - task: `generation`
-- remaining depths: `5 6 7 8`
+- remaining depths: `1 2 3 4 5 6 7 8 9 10`
 - concurrency: `4`
 
-Depths `1 2 3 4` are already preserved in the result tree, and `9 10` are not part of the remaining work on this machine.
+The launcher now follows the documented waves:
+
+- wave 1: `1 2 3 4`
+- wave 2: `5 6 7 8`
+- wave 3: `9 10`
+
+Depths `1 2 3 4` are already preserved in the result tree.
 
 ## Current artifact roots to keep
 
@@ -74,8 +80,8 @@ To keep that deterministic, do not change the command, task list, or `--stl-dept
 
 ## Suggested execution split
 
-For the current generation resume on this machine, use the remaining depths `5 6 7 8` with concurrency `4`.
-The launcher in `scripts/run_generation_suite.sh` is the canonical entry point for this machine.
+For the current generation resume on this machine, use the launcher in `scripts/run_generation_suite.sh` with concurrency `4`.
+It runs the three depth waves above and wraps every depth in the watchdog.
 
 Recommended launch pattern:
 
