@@ -25,7 +25,7 @@ DEFAULT_TASKS = [
 ]
 
 DEFAULT_MIN_DEPTH = 1
-DEFAULT_MAX_DEPTH = 8
+DEFAULT_MAX_DEPTH = 5
 DEFAULT_MIN_WIDTH = 16
 DEFAULT_MAX_WIDTH = 1024
 DEFAULT_WIDTH_STEP = 16
@@ -70,7 +70,7 @@ def build_architectures(args) -> List[List[int]]:
         depths = parse_csv_ints(depths_arg)
         return dedupe_architectures([[int(width)] * int(depth) for depth in depths for width in widths])
     min_depth = max(1, int(args.min_depth))
-    max_depth = max(min_depth, min(int(args.max_depth), 8))
+    max_depth = max(min_depth, min(int(args.max_depth), 5))
     if getattr(args, "legacy_architecture_grid", False):
         min_width = max(1, int(args.min_width))
         max_width = max(min_width, int(args.max_width))
@@ -139,7 +139,7 @@ def parameter_count_for_summary(task: rg.Task, task_root: Path, summary: Dict[st
 
 
 def target_parameter_count(task: rg.Task, cfg: rg.RunConfig) -> int:
-    effective_max_depth = max(1, min(int(cfg.max_depth), 8))
+    effective_max_depth = max(1, min(int(cfg.max_depth), 5))
     # Use a quarter of the maximum width as the reference budget so the matched-depth
     # family stays closer to the machine limits while still preserving a single
     # consistent parameter target across depths.
@@ -173,7 +173,7 @@ def solve_parameter_matched_width(task: rg.Task, depth: int, cfg: rg.RunConfig, 
 
     consider(best_width)
 
-    safety_units = max(high_units, low_units) * max(8, max(1, min(int(cfg.max_depth), 8)) * 2)
+    safety_units = max(high_units, low_units) * max(8, max(1, min(int(cfg.max_depth), 5)) * 2)
     while _parameter_count_for_width(task, depth, high_units * step, cfg) < int(target_params) and high_units < safety_units:
         low_units = high_units
         high_units *= 2
@@ -448,7 +448,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--grad-clip", type=float, default=1.0)
     p.add_argument("--max-width", type=int, default=1024)
-    p.add_argument("--max-depth", type=int, default=8)
+    p.add_argument("--max-depth", type=int, default=5)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
     p.add_argument("--width-stage-margin-patience", type=int, default=10)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
