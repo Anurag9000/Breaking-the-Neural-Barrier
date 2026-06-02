@@ -137,6 +137,17 @@ def child_completed(child_run_root: Path, task_name: str) -> bool:
     return bool(data.get("ablation_stl_runs")) and plot_path.exists()
 
 
+def resolve_child_root(child_base: Path, phase_name: str) -> Path:
+    candidates = [
+        child_base / phase_name,
+        *sorted((p for p in child_base.glob(f"**/{phase_name}") if p.is_dir()), key=lambda p: (len(p.parts), str(p))),
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return child_base / phase_name
+
+
 def load_task_child_summary(child_run_root: Path, task_name: str) -> Dict[str, Any]:
     path = child_summary_path(child_run_root, task_name)
     data = rg.load_json_if_exists(path)
@@ -230,7 +241,7 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
     jobs: Deque[Tuple[Tuple[int, ...], Path]] = deque()
     for architecture in architectures:
         phase_name = stl.phase_name_for_architecture(architecture, 1)
-        child_root = child_base / phase_name
+        child_root = resolve_child_root(child_base, phase_name)
         jobs.append((tuple(int(v) for v in architecture), child_root))
 
     active: Dict[subprocess.Popen[Any], Tuple[Tuple[int, ...], Path, List[str]]] = {}
