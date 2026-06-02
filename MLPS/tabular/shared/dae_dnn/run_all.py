@@ -13,7 +13,7 @@ def main() -> None:
     p = argparse.ArgumentParser(description="Run STL + supported ADP modes for all DNN tasks")
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="MLPS/tabular/shared/dae_dnn/results")
-    p.add_argument("--batch-size", type=int, default=2048)
+    p.add_argument("--batch-size", type=int, default=81920)
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
     p.add_argument("--ex-k", type=int, default=1)
@@ -31,14 +31,6 @@ def main() -> None:
     shared_batch_state = Path(args.results_dir) / "_batch_size_state.json"
 
     def current_batch_size() -> int:
-        if shared_batch_state.exists():
-            try:
-                payload = json.loads(shared_batch_state.read_text(encoding="utf-8"))
-                batch_size = int(payload.get("batch_size", args.batch_size))
-                if batch_size > 0:
-                    return batch_size
-            except Exception:
-                pass
         return int(args.batch_size)
 
     for mode in ["stl"] + adp_modes:

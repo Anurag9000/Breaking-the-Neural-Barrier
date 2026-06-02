@@ -1292,7 +1292,7 @@ def main() -> None:
         default=DEFAULT_BASELINE_METHODS,
         help="Search methods to run. Defaults to the stronger baselines only.",
     )
-    p.add_argument("--batch-size", type=int, default=32768)
+    p.add_argument("--batch-size", type=int, default=81920)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
@@ -1391,8 +1391,9 @@ def main() -> None:
             batch_size,
             threshold_gb=DEFAULT_VRAM_BUDGET_GB,
             poll_interval_sec=30.0,
-            shrink_factor=0.75,
+            shrink_factor=1.0,
             state_path=task_root / "_batch_size_state.json",
+            restore_state=False,
         )
         controller.start()
         task_batch_controllers[task_name] = controller
