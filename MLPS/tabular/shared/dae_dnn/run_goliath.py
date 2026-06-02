@@ -84,6 +84,9 @@ class RunConfig:
     width_stage_min_improve_pct: float
     use_bn: bool
     demo: bool
+    min_width: int = 16
+    width_step: int = 16
+    parameter_matched: bool = False
 
 
 @dataclass

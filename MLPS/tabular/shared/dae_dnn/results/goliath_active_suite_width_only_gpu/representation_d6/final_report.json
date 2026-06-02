@@ -33,25 +33,149 @@
     "width_stage_min_improve_pct": 1.0
   },
   "device": "cuda",
-  "git_commit": "0bd93a767414a580539a8e096b2cee76731019c2",
+  "git_commit": "e2f333b29b4390437a50baf88415a6d9351067cb",
   "run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d6",
   "summary": {
-    "num_tasks_completed": 0,
+    "num_tasks_completed": 1,
     "num_tasks_requested": 1,
-    "tasks_completed": [],
+    "tasks_completed": [
+      "representation"
+    ],
     "tasks_requested": [
       "representation"
     ]
   },
   "tasks": [
     {
-      "adp_runs": [],
+      "adp_runs": [
+        {
+          "architecture": [
+            105,
+            105,
+            105,
+            105,
+            105,
+            105
+          ],
+          "best_epoch": 5,
+          "best_val": 0.0878763967233977,
+          "candidate_dir": "cand_624_d6_w105",
+          "final_epoch": 5,
+          "mode": "width_only",
+          "phase": "ae_width_only",
+          "test_metrics": null
+        }
+      ],
       "baseline_comparisons": [],
       "baseline_stl_runs": [],
-      "comparisons": [],
-      "paired_stl_runs": [],
+      "comparisons": [
+        {
+          "adp_architecture": [
+            105,
+            105,
+            105,
+            105,
+            105,
+            105
+          ],
+          "adp_best_val": 0.0878763967233977,
+          "adp_phase": "ae_width_only",
+          "stl_architecture": [
+            105,
+            105,
+            105,
+            105,
+            105,
+            105
+          ],
+          "stl_best_val": 0.16020771858998947,
+          "stl_phase": "stl_from_ae_width_only",
+          "task": "representation",
+          "winner": "adp",
+          "winner_phase": "ae_width_only",
+          "winner_value": 0.0878763967233977
+        }
+      ],
+      "paired_stl_runs": [
+        {
+          "adp_architecture": [
+            105,
+            105,
+            105,
+            105,
+            105,
+            105
+          ],
+          "adp_best_val": 0.0878763967233977,
+          "adp_phase": "ae_width_only",
+          "stl_architecture": [
+            105,
+            105,
+            105,
+            105,
+            105,
+            105
+          ],
+          "stl_best_val": 0.16020771858998947,
+          "stl_phase": "stl_from_ae_width_only",
+          "stl_run": {
+            "architecture": [
+              105,
+              105,
+              105,
+              105,
+              105,
+              105
+            ],
+            "best_epoch": 99,
+            "best_val": 0.16020771858998947,
+            "candidate_dir": "cand_000_d6_w105",
+            "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d6/representation/stl_from_ae_width_only/cand_000_d6_w105/checkpoint_best.pt",
+            "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d6/representation/stl_from_ae_width_only/cand_000_d6_w105/checkpoint_last.pt",
+            "final_epoch": 109,
+            "phase": "stl_from_ae_width_only",
+            "resumed": false,
+            "source_phase": "ae_width_only",
+            "task": "representation",
+            "test_metrics": {
+              "cluster_nmi": 0.4985227056684225,
+              "knn_acc": 0.9534259307068725,
+              "test_acc": 0.9391404622984114,
+              "test_loss": 0.15887048647631707
+            }
+          },
+          "winner": "adp",
+          "winner_phase": "ae_width_only",
+          "winner_value": 0.0878763967233977
+        }
+      ],
       "task": "representation",
-      "winner": null
+      "winner": {
+        "adp_architecture": [
+          105,
+          105,
+          105,
+          105,
+          105,
+          105
+        ],
+        "adp_best_val": 0.0878763967233977,
+        "adp_phase": "ae_width_only",
+        "stl_architecture": [
+          105,
+          105,
+          105,
+          105,
+          105,
+          105
+        ],
+        "stl_best_val": 0.16020771858998947,
+        "stl_phase": "stl_from_ae_width_only",
+        "task": "representation",
+        "winner": "adp",
+        "winner_phase": "ae_width_only",
+        "winner_value": 0.0878763967233977
+      }
     }
   ]
 }

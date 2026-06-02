@@ -33,25 +33,165 @@
     "width_stage_min_improve_pct": 1.0
   },
   "device": "cuda",
-  "git_commit": "0bd93a767414a580539a8e096b2cee76731019c2",
+  "git_commit": "08c02fe1ed9b88e09a1a3345f5d487222dc92511",
   "run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d8",
   "summary": {
-    "num_tasks_completed": 0,
+    "num_tasks_completed": 1,
     "num_tasks_requested": 1,
-    "tasks_completed": [],
+    "tasks_completed": [
+      "representation"
+    ],
     "tasks_requested": [
       "representation"
     ]
   },
   "tasks": [
     {
-      "adp_runs": [],
+      "adp_runs": [
+        {
+          "architecture": [
+            90,
+            90,
+            89,
+            89,
+            89,
+            89,
+            89,
+            89
+          ],
+          "best_epoch": 7,
+          "best_val": 0.08590842700675401,
+          "candidate_dir": "cand_706_d8_w90",
+          "final_epoch": 7,
+          "mode": "width_only",
+          "phase": "ae_width_only",
+          "test_metrics": null
+        }
+      ],
       "baseline_comparisons": [],
       "baseline_stl_runs": [],
-      "comparisons": [],
-      "paired_stl_runs": [],
+      "comparisons": [
+        {
+          "adp_architecture": [
+            90,
+            90,
+            89,
+            89,
+            89,
+            89,
+            89,
+            89
+          ],
+          "adp_best_val": 0.08590842700675401,
+          "adp_phase": "ae_width_only",
+          "stl_architecture": [
+            90,
+            90,
+            89,
+            89,
+            89,
+            89,
+            89,
+            89
+          ],
+          "stl_best_val": 0.14542500918755746,
+          "stl_phase": "stl_from_ae_width_only",
+          "task": "representation",
+          "winner": "adp",
+          "winner_phase": "ae_width_only",
+          "winner_value": 0.08590842700675401
+        }
+      ],
+      "paired_stl_runs": [
+        {
+          "adp_architecture": [
+            90,
+            90,
+            89,
+            89,
+            89,
+            89,
+            89,
+            89
+          ],
+          "adp_best_val": 0.08590842700675401,
+          "adp_phase": "ae_width_only",
+          "stl_architecture": [
+            90,
+            90,
+            89,
+            89,
+            89,
+            89,
+            89,
+            89
+          ],
+          "stl_best_val": 0.14542500918755746,
+          "stl_phase": "stl_from_ae_width_only",
+          "stl_run": {
+            "architecture": [
+              90,
+              90,
+              89,
+              89,
+              89,
+              89,
+              89,
+              89
+            ],
+            "best_epoch": 134,
+            "best_val": 0.14542500918755746,
+            "candidate_dir": "cand_000_d8_w90",
+            "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d8/representation/stl_from_ae_width_only/cand_000_d8_w90/checkpoint_best.pt",
+            "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d8/representation/stl_from_ae_width_only/cand_000_d8_w90/checkpoint_last.pt",
+            "final_epoch": 144,
+            "phase": "stl_from_ae_width_only",
+            "resumed": false,
+            "source_phase": "ae_width_only",
+            "task": "representation",
+            "test_metrics": {
+              "cluster_nmi": 0.5355989105695145,
+              "knn_acc": 0.9593294435551883,
+              "test_acc": 0.9443210960224436,
+              "test_loss": 0.14726148127388236
+            }
+          },
+          "winner": "adp",
+          "winner_phase": "ae_width_only",
+          "winner_value": 0.08590842700675401
+        }
+      ],
       "task": "representation",
-      "winner": null
+      "winner": {
+        "adp_architecture": [
+          90,
+          90,
+          89,
+          89,
+          89,
+          89,
+          89,
+          89
+        ],
+        "adp_best_val": 0.08590842700675401,
+        "adp_phase": "ae_width_only",
+        "stl_architecture": [
+          90,
+          90,
+          89,
+          89,
+          89,
+          89,
+          89,
+          89
+        ],
+        "stl_best_val": 0.14542500918755746,
+        "stl_phase": "stl_from_ae_width_only",
+        "task": "representation",
+        "winner": "adp",
+        "winner_phase": "ae_width_only",
+        "winner_value": 0.08590842700675401
+      }
     }
   ]
 }
