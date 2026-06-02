@@ -34,17 +34,23 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--grad-clip", type=float, default=1.0)
     p.add_argument("--max-width", type=int, default=1024)
-    p.add_argument("--max-depth", type=int, default=10)
+    p.add_argument("--max-depth", type=int, default=8)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
     p.add_argument("--width-stage-margin-patience", type=int, default=10)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
     p.add_argument("--min-width", type=int, default=16)
     p.add_argument("--width-step", type=int, default=16)
     p.add_argument("--min-depth", type=int, default=1)
-    p.add_argument("--repeat-count", type=int, default=5)
+    p.add_argument("--repeat-count", type=int, default=10)
     p.add_argument("--concurrency", type=int, default=10)
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
+    p.add_argument(
+        "--legacy-architecture-grid",
+        action="store_true",
+        default=False,
+        help="Use the old fixed width x depth sweep instead of parameter-matched depth families.",
+    )
     p.add_argument("--use-bn", action="store_true", default=True)
     p.add_argument("--no-bn", dest="use_bn", action="store_false")
     return p.parse_args()
@@ -58,7 +64,7 @@ def build_worker_command(
     repeat_index: int,
     child_run_root: Path,
 ) -> List[str]:
-    return [
+    command = [
         sys.executable,
         str(Path(__file__).resolve().parent / "run_stl_ablation.py"),
         "--data-dir",
@@ -115,7 +121,12 @@ def build_worker_command(
         str(int(args.stl_width)),
         "--stl-depth",
         str(int(args.stl_depth)),
-    ] + (["--no-bn"] if not bool(args.use_bn) else [])
+    ]
+    if not bool(args.use_bn):
+        command.append("--no-bn")
+    if bool(getattr(args, "legacy_architecture_grid", False)):
+        command.append("--legacy-architecture-grid")
+    return command
 
 
 def child_summary_path(child_run_root: Path, task_name: str) -> Path:
