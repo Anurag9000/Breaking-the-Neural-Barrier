@@ -294,12 +294,12 @@ def run_task_ablation(
     curve_rows: List[Dict[str, Any]] = []
     repeat_indices = [int(repeat_index)] if repeat_index is not None else list(range(1, repeat_count + 1))
 
-    for repeat_id in repeat_indices:
-        for architecture in architectures:
-            family = [list(architecture)]
-            if cfg.parameter_matched and len(architecture) == 1:
-                family = parameter_matched_architectures(task, int(architecture[0]), cfg)
-            for expanded_architecture in family:
+    for architecture in architectures:
+        family = [list(architecture)]
+        if cfg.parameter_matched and len(architecture) == 1:
+            family = parameter_matched_architectures(task, int(architecture[0]), cfg)
+        for expanded_architecture in family:
+            for repeat_id in repeat_indices:
                 phase_name = phase_name_for_architecture(expanded_architecture, repeat_id)
                 log.log_console(
                     f"[ABLATION:{task_name}] STL phase start: {phase_name} architecture={rg.format_architecture_for_report(expanded_architecture)}"
@@ -462,7 +462,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--run-root", default=None)
     p.add_argument("--source-run-root", default="MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current")
     p.add_argument("--tasks", nargs="+", default=list(DEFAULT_TASKS))
-    p.add_argument("--batch-size", type=int, default=16384)
+    p.add_argument("--batch-size", type=int, default=81920)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)

@@ -24,7 +24,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--run-root", default=None)
     p.add_argument("--source-run-root", default="MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current")
     p.add_argument("--tasks", nargs="+", default=list(stl.DEFAULT_TASKS))
-    p.add_argument("--batch-size", type=int, default=16384)
+    p.add_argument("--batch-size", type=int, default=81920)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
@@ -61,7 +61,6 @@ def build_worker_command(
     args: argparse.Namespace,
     task_name: str,
     architecture: Sequence[int],
-    repeat_index: int,
     child_run_root: Path,
 ) -> List[str]:
     command = [
@@ -79,10 +78,8 @@ def build_worker_command(
         task_name,
         "--architecture",
         ",".join(str(int(v)) for v in architecture),
-        "--repeat-index",
-        str(int(repeat_index)),
         "--repeat-count",
-        "1",
+        str(int(args.repeat_count)),
         "--batch-size",
         str(int(args.batch_size)),
         "--num-workers",
@@ -170,12 +167,10 @@ def aggregate_task(task_name: str, task_root: Path, child_roots: Sequence[Path])
                 candidate_dir = Path(entry["checkpoint_best"]).parent
                 metadata = rg.load_json_if_exists(candidate_dir / "metadata.json") or {}
                 model_cfg = metadata.get("model") or {}
-                repeat_token = child_root.parent.name
-                repeat_index = int(repeat_token[1:]) if repeat_token.startswith("r") else 1
                 curve_rows.append(
                     {
                         "task": task_name,
-                        "repeat": int(repeat_index),
+                        "repeat": int(entry.get("repeat", 1)),
                         "phase": str(entry["phase"]),
                         "architecture": rg.format_architecture_for_report(architecture),
                         "parameter_count": int(
@@ -232,20 +227,18 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
     task_root = run_root / task_name
     child_base = task_root / "_children"
     child_base.mkdir(parents=True, exist_ok=True)
-    repeat_indices = list(range(1, int(args.repeat_count) + 1))
-    jobs: Deque[Tuple[int, Tuple[int, ...], Path]] = deque()
-    for repeat_index in repeat_indices:
-        for architecture in architectures:
-            phase_name = stl.phase_name_for_architecture(architecture, repeat_index)
-            child_root = child_base / f"r{repeat_index:02d}" / phase_name
-            jobs.append((repeat_index, tuple(int(v) for v in architecture), child_root))
+    jobs: Deque[Tuple[Tuple[int, ...], Path]] = deque()
+    for architecture in architectures:
+        phase_name = stl.phase_name_for_architecture(architecture, 1)
+        child_root = child_base / phase_name
+        jobs.append((tuple(int(v) for v in architecture), child_root))
 
-    active: Dict[subprocess.Popen[Any], Tuple[int, Tuple[int, ...], Path, List[str]]] = {}
+    active: Dict[subprocess.Popen[Any], Tuple[Tuple[int, ...], Path, List[str]]] = {}
     completed_children: List[Path] = []
     launch_count = 0
     while jobs or active:
         while jobs and len(active) < int(args.concurrency):
-            repeat_index, architecture, child_root = jobs.popleft()
+            architecture, child_root = jobs.popleft()
             if child_completed(child_root, task_name):
                 completed_children.append(child_root)
                 continue
@@ -253,12 +246,11 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
                 args=args,
                 task_name=task_name,
                 architecture=architecture,
-                repeat_index=repeat_index,
                 child_run_root=child_root,
             )
             child_root.mkdir(parents=True, exist_ok=True)
             proc = subprocess.Popen(cmd)
-            active[proc] = (repeat_index, architecture, child_root, cmd)
+            active[proc] = (architecture, child_root, cmd)
             launch_count += 1
 
         if not active:
@@ -270,12 +262,12 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
             if code is None:
                 continue
             if code != 0:
-                repeat_index, architecture, child_root, cmd = active[proc]
-                raise SystemExit(f"Child job failed (repeat={repeat_index}, arch={architecture}, root={child_root}): {' '.join(cmd)}")
+                architecture, child_root, cmd = active[proc]
+                raise SystemExit(f"Child job failed (arch={architecture}, root={child_root}): {' '.join(cmd)}")
             finished.append(proc)
 
         for proc in finished:
-            repeat_index, architecture, child_root, cmd = active.pop(proc)
+            architecture, child_root, cmd = active.pop(proc)
             completed_children.append(child_root)
 
         if active:

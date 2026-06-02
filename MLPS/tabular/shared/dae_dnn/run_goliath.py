@@ -2354,7 +2354,7 @@ def main() -> None:
         nargs="+",
         default=["ae_alt_width", "ae_alt_depth", "ae_width_to_depth", "ae_depth_to_width"],
     )
-    p.add_argument("--batch-size", type=int, default=32768, help="Global batch-size default/override. The adaptive controller will shrink this if VRAM pressure rises.")
+    p.add_argument("--batch-size", type=int, default=81920, help="Global batch-size default/override.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--stl-width", type=int, default=128)
@@ -2461,8 +2461,9 @@ def main() -> None:
             task_batch_size,
             threshold_gb=DEFAULT_VRAM_BUDGET_GB,
             poll_interval_sec=30.0,
-            shrink_factor=0.75,
+            shrink_factor=1.0,
             state_path=task_root / "_batch_size_state.json",
+            restore_state=False,
         )
         batch_controller.start()
         task_batch_controllers[task_name] = batch_controller
