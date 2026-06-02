@@ -134,9 +134,10 @@ def child_summary_path(child_run_root: Path, task_name: str) -> Path:
 
 
 def child_completed(child_run_root: Path, task_name: str) -> bool:
-    path = child_summary_path(child_run_root, task_name)
-    data = rg.load_json_if_exists(path) or {}
-    return bool(data.get("ablation_stl_runs"))
+    summary_path = child_summary_path(child_run_root, task_name)
+    plot_path = child_run_root / task_name / "ablation_loss_vs_params.png"
+    data = rg.load_json_if_exists(summary_path) or {}
+    return bool(data.get("ablation_stl_runs")) and plot_path.exists()
 
 
 def load_task_child_summary(child_run_root: Path, task_name: str) -> Dict[str, Any]:
