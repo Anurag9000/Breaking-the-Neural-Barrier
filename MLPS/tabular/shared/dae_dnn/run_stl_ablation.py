@@ -45,6 +45,13 @@ def parse_architectures(values: Sequence[str]) -> List[List[int]]:
     return architectures
 
 
+def parse_architecture(text: str) -> List[int]:
+    value = str(text).strip()
+    if value.startswith("[") and value.endswith("]"):
+        value = value[1:-1]
+    return [max(1, int(v)) for v in parse_csv_ints(value)]
+
+
 def dedupe_architectures(architectures: Iterable[Sequence[int]]) -> List[List[int]]:
     seen = set()
     out: List[List[int]] = []
@@ -200,6 +207,20 @@ def parameter_matched_architecture(task: rg.Task, depth: int, cfg: rg.RunConfig)
     return [int(width) for _ in range(max(1, int(depth)))]
 
 
+def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig) -> List[List[int]]:
+    depth = max(1, int(depth))
+    step = max(1, int(cfg.width_step))
+    min_width = max(1, int(cfg.min_width))
+    start_width = int(math.ceil(min_width / step) * step)
+    max_width = solve_parameter_matched_width(task, depth, cfg, target_parameter_count(task, cfg))
+    if max_width < start_width:
+        max_width = start_width
+    widths = list(range(start_width, max_width + 1, step))
+    if not widths or widths[-1] != max_width:
+        widths.append(int(max_width))
+    return [[int(width) for _ in range(depth)] for width in widths]
+
+
 def make_cfg(args, tasks: List[str], run_root: Path) -> rg.RunConfig:
     return rg.RunConfig(
         data_dir=args.data_dir,
@@ -274,78 +295,80 @@ def run_task_ablation(
 
     for repeat_id in repeat_indices:
         for architecture in architectures:
+            family = [list(architecture)]
             if cfg.parameter_matched and len(architecture) == 1:
-                architecture = parameter_matched_architecture(task, int(architecture[0]), cfg)
-            phase_name = phase_name_for_architecture(architecture, repeat_id)
-            log.log_console(
-                f"[ABLATION:{task_name}] STL phase start: {phase_name} architecture={rg.format_architecture_for_report(architecture)}"
-            )
-            summary = rg.run_stl_phase(
-                task,
-                task_root,
-                cfg,
-                device,
-                list(architecture),
-                phase_name=phase_name,
-                source_phase=None,
-                batch_controller=batch_controller,
-            )
-            ablation_runs.append(summary)
-            parameter_count = parameter_count_for_summary(task, task_root, summary)
-
-            curve_rows.append(
-                {
-                    "task": task_name,
-                    "repeat": int(repeat_id),
-                    "phase": phase_name,
-                    "architecture": rg.format_architecture_for_report(architecture),
-                    "parameter_count": int(parameter_count),
-                    "best_val": float(summary.get("best_val", float("inf"))),
-                    "best_epoch": int(summary.get("best_epoch", 0)),
-                    "final_epoch": int(summary.get("final_epoch", summary.get("best_epoch", 0))),
-                    "test_loss": (summary.get("test_metrics") or {}).get("test_loss"),
-                    "test_acc": (summary.get("test_metrics") or {}).get("test_acc"),
-                }
-            )
-
-            if best_ablation is None or float(summary.get("best_val", float("inf"))) < float(best_ablation.get("best_val", float("inf"))):
-                best_ablation = {
-                    **summary,
-                    "repeat": int(repeat_id),
-                    "parameter_count": int(parameter_count),
-                }
-
-            rows.append(
-                {
-                    "task": task_name,
-                    "repeat": int(repeat_id),
-                    "row_type": "ablation_stl",
-                    "phase": phase_name,
-                    "architecture": rg.format_architecture_for_report(architecture),
-                    "parameter_count": int(parameter_count),
-                    "best_val": float(summary.get("best_val", float("inf"))),
-                    "best_epoch": int(summary.get("best_epoch", 0)),
-                    "final_epoch": int(summary.get("final_epoch", summary.get("best_epoch", 0))),
-                    "test_loss": (summary.get("test_metrics") or {}).get("test_loss"),
-                    "test_acc": (summary.get("test_metrics") or {}).get("test_acc"),
-                }
-            )
-
-            for ref_kind, ref_phase, ref_arch, ref_best_val in source_refs:
-                comparisons.append(
-                    comparison_row(
-                        task_name=task_name,
-                        repeat_index=repeat_id,
-                        ablation_phase=phase_name,
-                        ablation_architecture=architecture,
-                        ablation_parameter_count=parameter_count,
-                        ablation_best_val=float(summary.get("best_val", float("inf"))),
-                        ref_phase=str(ref_phase),
-                        ref_kind=ref_kind,
-                        ref_architecture=ref_arch,
-                        ref_best_val=float(ref_best_val),
-                    )
+                family = parameter_matched_architectures(task, int(architecture[0]), cfg)
+            for expanded_architecture in family:
+                phase_name = phase_name_for_architecture(expanded_architecture, repeat_id)
+                log.log_console(
+                    f"[ABLATION:{task_name}] STL phase start: {phase_name} architecture={rg.format_architecture_for_report(expanded_architecture)}"
                 )
+                summary = rg.run_stl_phase(
+                    task,
+                    task_root,
+                    cfg,
+                    device,
+                    list(expanded_architecture),
+                    phase_name=phase_name,
+                    source_phase=None,
+                    batch_controller=batch_controller,
+                )
+                ablation_runs.append(summary)
+                parameter_count = parameter_count_for_summary(task, task_root, summary)
+
+                curve_rows.append(
+                    {
+                        "task": task_name,
+                        "repeat": int(repeat_id),
+                        "phase": phase_name,
+                        "architecture": rg.format_architecture_for_report(expanded_architecture),
+                        "parameter_count": int(parameter_count),
+                        "best_val": float(summary.get("best_val", float("inf"))),
+                        "best_epoch": int(summary.get("best_epoch", 0)),
+                        "final_epoch": int(summary.get("final_epoch", summary.get("best_epoch", 0))),
+                        "test_loss": (summary.get("test_metrics") or {}).get("test_loss"),
+                        "test_acc": (summary.get("test_metrics") or {}).get("test_acc"),
+                    }
+                )
+
+                if best_ablation is None or float(summary.get("best_val", float("inf"))) < float(best_ablation.get("best_val", float("inf"))):
+                    best_ablation = {
+                        **summary,
+                        "repeat": int(repeat_id),
+                        "parameter_count": int(parameter_count),
+                    }
+
+                rows.append(
+                    {
+                        "task": task_name,
+                        "repeat": int(repeat_id),
+                        "row_type": "ablation_stl",
+                        "phase": phase_name,
+                        "architecture": rg.format_architecture_for_report(expanded_architecture),
+                        "parameter_count": int(parameter_count),
+                        "best_val": float(summary.get("best_val", float("inf"))),
+                        "best_epoch": int(summary.get("best_epoch", 0)),
+                        "final_epoch": int(summary.get("final_epoch", summary.get("best_epoch", 0))),
+                        "test_loss": (summary.get("test_metrics") or {}).get("test_loss"),
+                        "test_acc": (summary.get("test_metrics") or {}).get("test_acc"),
+                    }
+                )
+
+                for ref_kind, ref_phase, ref_arch, ref_best_val in source_refs:
+                    comparisons.append(
+                        comparison_row(
+                            task_name=task_name,
+                            repeat_index=repeat_id,
+                            ablation_phase=phase_name,
+                            ablation_architecture=expanded_architecture,
+                            ablation_parameter_count=parameter_count,
+                            ablation_best_val=float(summary.get("best_val", float("inf"))),
+                            ref_phase=str(ref_phase),
+                            ref_kind=ref_kind,
+                            ref_architecture=ref_arch,
+                            ref_best_val=float(ref_best_val),
+                        )
+                    )
 
     rg.write_csv(
         task_root / "ablation_summary.csv",
