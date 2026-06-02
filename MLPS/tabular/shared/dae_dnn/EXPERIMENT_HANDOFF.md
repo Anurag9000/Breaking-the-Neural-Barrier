@@ -15,11 +15,28 @@ The active tabular suite is:
 - `simulation`
 - `prediction`
 
+For the `generation` task on laptop 2, the only dataset that must be present before the run is `Covertype`.
+If you want to warm the shared benchmark cache anyway, use:
+
+```bash
+python3 scripts/prefetch_dae_dnn_datasets.py --all
+```
+
 The removed tasks are not part of the active sweep:
 
 - `inverse`
 - `control`
 - `selfsupervised`
+
+### Laptop 2 generation resume state
+
+Current resume target on this machine:
+
+- task: `generation`
+- remaining depths: `5 6 7 8`
+- concurrency: `4`
+
+Depths `1 2 3 4` are already preserved in the result tree, and `9 10` are not part of the remaining work on this machine.
 
 ## Current artifact roots to keep
 
@@ -34,9 +51,8 @@ The plots in `analysis/` are derived from the corresponding run roots and archiv
 
 Important limitation:
 
-- CSV, JSON, TXT, MD, and PNG artifacts are tracked in Git when staged.
-- PyTorch checkpoints (`*.pt`, `*.pth`, `*.ckpt`) are still ignored by the repo rules.
-- That means a fresh clone can recover the run plan, logs, metrics, plots, and candidate metadata from GitHub, but **exact optimizer-state resume requires the checkpoint files to be copied separately** from the machine that produced them or archived in another artifact store.
+- CSV, JSON, TXT, MD, PNG, and forced-tracked checkpoint artifacts are preserved in this handoff snapshot when staged.
+- The current result tree includes PyTorch checkpoints (`*.pt`, `*.pth`, `*.ckpt`) for the preserved runs so a fresh clone of this commit can resume the saved state without a separate artifact store.
 
 ## How the width-only sweep is organized
 
@@ -52,49 +68,23 @@ The unit of resumption is the per-depth directory, not the whole task wave.
 If a machine dies or a job is interrupted, rerun the exact same command with the same `--run-root`.
 The candidate metadata and `phase_progress.csv` will be reused. If the matching checkpoint files are present on disk, the optimizer state and best state resume exactly; otherwise the run restarts from the best recoverable metadata state.
 
+The staged tabular runner also checkpoints at batch boundaries inside each epoch.
+That means a restart from the same `--run-root` picks up the next unprocessed batch in the current epoch when the last checkpoint survived.
+To keep that deterministic, do not change the command, task list, or `--stl-depth` while resuming.
+
 ## Suggested execution split
 
-To parallelize across laptops without overlapping work, split the depth range into waves:
-
-- wave 1: depths `1 2 3 4 5`
-- wave 2: depths `6 7 8`
-- wave 3: depths `9 10`
-
-Tasks stay sequential within a machine unless you intentionally split them further.
+For the current generation resume on this machine, use the remaining depths `5 6 7 8` with concurrency `4`.
+The launcher in `scripts/run_generation_suite.sh` is the canonical entry point for this machine.
 
 Recommended launch pattern:
 
 ```bash
-cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
+cd /home/anurag/Projects/Breaking-the-Neural-Barrier
 git checkout main
 git pull origin main
-
-tasks=(representation autoencoding generation denoising anomaly simulation prediction)
-depths=(1 2 3 4 5)
-
-for task in "${tasks[@]}"; do
-  for depth in "${depths[@]}"; do
-    .venv/bin/python MLPS/tabular/shared/dae_dnn/run_goliath_staged_width_only.py \
-      --data-dir ./data \
-      --results-dir MLPS/tabular/shared/dae_dnn/results \
-      --run-root MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/${task}_d${depth} \
-      --tasks "$task" \
-      --stl-depth "$depth" \
-      --alt-start-width 1 \
-      --patience 10 \
-      --width-expansion-patience 10 \
-      --num-workers 0 &
-  done
-  wait
-done
+./scripts/run_generation_suite.sh 2>&1 | tee generation_run.log
 ```
-
-Use the same shape for the other waves by swapping the depth list:
-
-- `depths=(6 7 8)`
-- `depths=(9 10)`
-
-If you want strict single-process execution per depth, remove the trailing `&` and `wait`.
 
 ## Push / pull consolidation protocol
 
