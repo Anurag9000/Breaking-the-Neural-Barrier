@@ -32,7 +32,7 @@ def main() -> None:
         choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"],
     )
     p.add_argument("--hidden", type=int, nargs="+", default=[50, 50])
-    p.add_argument("--batch-size", type=int, default=32768)
+    p.add_argument("--batch-size", type=int, default=81920)
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
     p.add_argument("--trials-width", type=int, default=10)
@@ -55,12 +55,6 @@ def main() -> None:
 
     batch_state_path = Path(args.results_dir) / "_batch_size_state.json"
     initial_batch_size = int(args.batch_size)
-    if batch_state_path.exists():
-        try:
-            payload = json.loads(batch_state_path.read_text(encoding="utf-8"))
-            initial_batch_size = min(initial_batch_size, int(payload.get("batch_size", initial_batch_size)))
-        except Exception:
-            pass
 
     task = build_task(args.task, args.data_dir, initial_batch_size, args.num_workers, args.seed)
 
@@ -92,8 +86,9 @@ def main() -> None:
         initial_batch_size,
         threshold_gb=5.5,
         poll_interval_sec=30.0,
-        shrink_factor=0.75,
+        shrink_factor=1.0,
         state_path=batch_state_path,
+        restore_state=False,
     )
     batch_controller.start()
 

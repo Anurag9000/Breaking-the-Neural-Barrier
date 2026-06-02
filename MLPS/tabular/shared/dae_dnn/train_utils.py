@@ -70,6 +70,7 @@ class AdaptiveBatchController:
         shrink_factor: float = 0.75,
         min_batch_size: int = 1,
         state_path: Optional[Path] = None,
+        restore_state: bool = True,
     ):
         self._lock = threading.RLock()
         self._stop_event = threading.Event()
@@ -80,7 +81,7 @@ class AdaptiveBatchController:
         self.min_batch_size = int(min_batch_size)
         self.state_path = Path(state_path) if state_path is not None else None
         restored_batch_size = None
-        if self.state_path is not None and self.state_path.exists():
+        if restore_state and self.state_path is not None and self.state_path.exists():
             try:
                 payload = json.loads(self.state_path.read_text(encoding="utf-8"))
                 restored_batch_size = int(payload.get("batch_size")) if payload.get("batch_size") is not None else None
