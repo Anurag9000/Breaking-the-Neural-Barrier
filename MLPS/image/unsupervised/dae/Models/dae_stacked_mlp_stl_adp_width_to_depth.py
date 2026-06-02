@@ -34,7 +34,7 @@ class ADPConfig:
     trials_depth: int = 5
     ex_k: int = 256
     max_width: int = 4096
-    max_depth: int = 12
+    max_depth: int = 5
     max_neurons: int = 10_000_000
     width_stage_margin_patience: int = 5
     width_stage_min_improve_pct: float = 1.0
@@ -233,7 +233,7 @@ def main() -> None:
     p.add_argument("--trials-depth", type=int, default=2)
     p.add_argument("--ex-k", type=int, default=256)
     p.add_argument("--max-width", type=int, default=4096)
-    p.add_argument("--max-depth", type=int, default=12)
+    p.add_argument("--max-depth", type=int, default=5)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
     p.add_argument("--lr", type=float, default=1e-3)
     p.add_argument("--weight-decay", type=float, default=1e-4)

@@ -1302,7 +1302,7 @@ def main() -> None:
     p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--grad-clip", type=float, default=1.0)
     p.add_argument("--max-width", type=int, default=512)
-    p.add_argument("--max-depth", type=int, default=10)
+    p.add_argument("--max-depth", type=int, default=5)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
     p.add_argument("--width-stage-margin-patience", type=int, default=10)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)

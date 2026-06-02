@@ -43,7 +43,7 @@ class ADPConfig:
     trials_depth: int = 2
     ex_k: int = 64 # Must be divisible by nhead (8)
     max_width: int = 1024
-    max_depth: int = 16
+    max_depth: int = 5
     max_neurons: int = 5_000_000
     lr: float = 1e-4
     weight_decay: float = 1e-4

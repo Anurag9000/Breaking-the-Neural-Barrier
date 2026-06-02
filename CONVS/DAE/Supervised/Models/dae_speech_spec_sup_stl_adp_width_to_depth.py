@@ -26,7 +26,7 @@ class ADPConfig:
     trials_depth: int = 2
     ex_k: int = 16
     max_width: int = 256
-    max_depth: int = 8
+    max_depth: int = 5
     max_neurons: int = 5_000_000
     lr: float = 1e-3
     weight_decay: float = 1e-4
@@ -344,7 +344,7 @@ def main():
     parser.add_argument("--width", type=int, default=64)
     parser.add_argument("--depth", type=int, default=4)
     parser.add_argument("--max-width", type=int, default=256)
-    parser.add_argument("--max-depth", type=int, default=8)
+    parser.add_argument("--max-depth", type=int, default=5)
     parser.add_argument("--max-neurons", type=int, default=5_000_000)
     parser.add_argument("--max-epochs", type=int, default=300)
     parser.add_argument("--lr", type=float, default=1e-3)
