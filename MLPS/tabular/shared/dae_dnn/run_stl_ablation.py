@@ -218,6 +218,7 @@ def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig
     widths = list(range(start_width, max_width + 1, step))
     if not widths or widths[-1] != max_width:
         widths.append(int(max_width))
+    widths = sorted(set(int(width) for width in widths), reverse=True)
     return [[int(width) for _ in range(depth)] for width in widths]
 
 
