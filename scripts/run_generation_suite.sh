@@ -6,7 +6,7 @@ cd /home/anurag/Projects/Breaking-the-Neural-Barrier
 git checkout main
 git pull origin main
 
-concurrency=4
+concurrency=3
 depths=(1 2 3 4 5 6 7 8 9 10)
 
 for ((i=0; i<${#depths[@]}; i+=concurrency)); do
