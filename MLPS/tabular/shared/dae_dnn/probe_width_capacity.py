@@ -43,7 +43,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--max-depth", type=int, default=10)
     p.add_argument("--min-width", type=int, default=16)
     p.add_argument("--width-step", type=int, default=16)
-    p.add_argument("--max-width", type=int, default=8192)
+    p.add_argument("--max-width", type=int, default=16384)
+    p.add_argument("--calibrated-limit-mib", type=int, default=9472)
+    p.add_argument("--search-margin", type=int, default=128)
     p.add_argument("--vram-threshold-mib", type=int, default=6144)
     p.add_argument("--device", default="cuda")
     p.add_argument("--use-bn", action="store_true", default=True)
@@ -214,7 +216,18 @@ def main() -> None:
             best_reserved: Optional[int] = None
             failure_width: Optional[int] = None
             failure_reason: Optional[str] = None
-            widths = list(range(int(args.min_width), int(args.max_width) + 1, int(args.width_step)))
+            calibrated_limit = max(int(args.min_width), int(args.calibrated_limit_mib))
+            center_width = max(
+                int(args.min_width),
+                (calibrated_limit // int(depth) // int(args.width_step)) * int(args.width_step),
+            )
+            window_min = max(int(args.min_width), center_width - int(args.search_margin))
+            window_max = min(int(args.max_width), center_width + int(args.search_margin))
+            widths = list(range(window_min, window_max + 1, int(args.width_step)))
+            log_line(
+                f"width window: task={task_name} depth={depth} center={center_width} "
+                f"range={window_min}..{window_max} step={int(args.width_step)}"
+            )
             for width in widths:
                 log_line(
                     f"candidate start: task={task_name} depth={depth} width={width} "
@@ -247,6 +260,48 @@ def main() -> None:
                 failure_width = int(width)
                 failure_reason = str(result.reason)
                 break
+
+            if failure_width is None and window_max < int(args.max_width):
+                cursor = window_max + int(args.width_step)
+                while failure_width is None and cursor <= int(args.max_width):
+                    window_max = min(int(args.max_width), cursor + int(args.search_margin))
+                    log_line(
+                        f"extend window: task={task_name} depth={depth} "
+                        f"range={cursor}..{window_max} step={int(args.width_step)}"
+                    )
+                    for width in range(cursor, window_max + 1, int(args.width_step)):
+                        log_line(
+                            f"candidate start: task={task_name} depth={depth} width={width} "
+                            f"batch_size={int(args.batch_size)} threshold_mib={int(args.vram_threshold_mib)}"
+                        )
+                        if torch.cuda.is_available():
+                            torch.cuda.empty_cache()
+                        result = run_candidate(
+                            task_name=task_name,
+                            task=task,
+                            depth=depth,
+                            width=width,
+                            batch_size=int(args.batch_size),
+                            device=device,
+                            use_bn=bool(args.use_bn),
+                            threshold_mib=int(args.vram_threshold_mib),
+                        )
+                        summary_rows.append(asdict(result))
+                        log_line(
+                            f"candidate result: task={task_name} depth={depth} width={width} "
+                            f"success={result.success} reason={result.reason} batches={result.batches_completed} "
+                            f"peak_mib={result.peak_mib}"
+                        )
+                        if result.success:
+                            best_width = int(width)
+                            best_peak = int(result.peak_mib)
+                            best_allocated = int(result.peak_allocated_mib)
+                            best_reserved = int(result.peak_reserved_mib)
+                            continue
+                        failure_width = int(width)
+                        failure_reason = str(result.reason)
+                        break
+                    cursor = window_max + int(args.width_step)
 
             report[task_name][depth] = {
                 "max_width": best_width,
