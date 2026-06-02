@@ -37,7 +37,7 @@ class ADPConfig:
     width_stage_min_improve_pct: float = 1.0
     ex_k: int = 16
     max_width: int = 4096
-    max_depth: int = 16
+    max_depth: int = 5
     max_neurons: int = 5_000_000
     min_new_layer_width: int = 10
     lr: float = 1e-3

@@ -42,7 +42,7 @@ class ADPConfig:
     trials_depth: int = 2
     ex_k: int = 16
     max_width: int = 512
-    max_depth: int = 16
+    max_depth: int = 5
     max_neurons: int = 5_000_000
     lr: float = 1e-3
     weight_decay: float = 1e-4

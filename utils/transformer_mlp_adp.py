@@ -275,7 +275,7 @@ def expand_transformer_ffn_width(
 
 def expand_transformer_ffn_depth(
     model: nn.Module,
-    max_depth: int = 16,
+    max_depth: int = 5,
     min_new_layer_width: int = 10,
     max_neurons: Optional[int] = None,
 ) -> Optional[nn.Module]:
@@ -300,7 +300,7 @@ class SearchConfig:
     width_stage_min_improve_pct: float = 1.0
     ex_k_width: int = 1
     max_width: int = 4096
-    max_depth: int = 16
+    max_depth: int = 5
     max_neurons: int = 5_000_000
     min_new_layer_width: int = 10
 
@@ -566,7 +566,7 @@ def bind_legacy_wrapper(module_globals: Dict[str, Any]) -> None:
             getattr(cfg, "max_neurons", None) if cfg is not None else None,
         )
 
-    def expand_depth(model: nn.Module, max_depth: int = 16, device: Any = None, cfg: Any = None) -> Optional[nn.Module]:
+    def expand_depth(model: nn.Module, max_depth: int = 5, device: Any = None, cfg: Any = None) -> Optional[nn.Module]:
         del device
         return expand_transformer_ffn_depth(
             model,

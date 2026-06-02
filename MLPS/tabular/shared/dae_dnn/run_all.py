@@ -20,7 +20,7 @@ def main() -> None:
     p.add_argument("--trials-width", type=int, default=10)
     p.add_argument("--trials-depth", type=int, default=2)
     p.add_argument("--max-width", type=int, default=4096)
-    p.add_argument("--max-depth", type=int, default=10)
+    p.add_argument("--max-depth", type=int, default=5)
     p.add_argument("--max-neurons", type=int, default=10000000)
     p.add_argument("--hidden", type=int, nargs="+", default=[50, 50])
     p.add_argument("--tasks", type=str, nargs="+", default=["all"], help="Task names or 'all'")
