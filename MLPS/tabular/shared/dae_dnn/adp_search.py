@@ -24,7 +24,7 @@ class ADPConfig:
     trials_depth: int = 5
     ex_k: int = 1
     max_width: int = 4096
-    max_depth: int = 5
+    max_depth: int = 10
     max_neurons: int = 10_000_000
     width_stage_margin_patience: int = 5
     width_stage_min_improve_pct: float = 1.0
