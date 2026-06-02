@@ -1,0 +1,29 @@
+{
+  "rows": [
+    {
+      "architecture": "[81, 81, 81, 81, 81, 80, 80, 80, 80]",
+      "best_val": 0.084252640832077,
+      "cluster_nmi": null,
+      "family": "ADP",
+      "knn_acc": null,
+      "params": 59040,
+      "phase": "ae_width_only",
+      "task": "representation",
+      "test_acc": null,
+      "test_loss": null
+    },
+    {
+      "architecture": "[81, 81, 81, 81, 81, 80, 80, 80, 80]",
+      "best_val": 0.16729290629036034,
+      "cluster_nmi": 0.5560128228878896,
+      "family": "STL_paired",
+      "knn_acc": 0.9549921688094869,
+      "params": 59040,
+      "phase": "stl_from_ae_width_only",
+      "task": "representation",
+      "test_acc": 0.9322386878022754,
+      "test_loss": 0.1695281153285781
+    }
+  ],
+  "task": "representation"
+}

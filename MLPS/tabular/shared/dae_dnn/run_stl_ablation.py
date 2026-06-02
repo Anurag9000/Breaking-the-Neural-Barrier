@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import math
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
@@ -24,11 +25,11 @@ DEFAULT_TASKS = [
 ]
 
 DEFAULT_MIN_DEPTH = 1
-DEFAULT_MAX_DEPTH = 10
+DEFAULT_MAX_DEPTH = 8
 DEFAULT_MIN_WIDTH = 16
 DEFAULT_MAX_WIDTH = 1024
 DEFAULT_WIDTH_STEP = 16
-DEFAULT_REPEAT_COUNT = 5
+DEFAULT_REPEAT_COUNT = 10
 
 
 def parse_csv_ints(text: str) -> List[int]:
@@ -61,23 +62,29 @@ def build_architectures(args) -> List[List[int]]:
     widths_arg = getattr(args, "widths", None)
     depths_arg = getattr(args, "depths", None)
     if architecture_arg:
-        return dedupe_architectures(parse_architectures(architecture_arg))
+        parsed = dedupe_architectures(parse_architectures(architecture_arg))
+        if parsed:
+            return parsed
     if widths_arg and depths_arg:
         widths = parse_csv_ints(widths_arg)
         depths = parse_csv_ints(depths_arg)
         return dedupe_architectures([[int(width)] * int(depth) for depth in depths for width in widths])
     min_depth = max(1, int(args.min_depth))
-    max_depth = max(min_depth, int(args.max_depth))
-    min_width = max(1, int(args.min_width))
-    max_width = max(min_width, int(args.max_width))
-    width_step = max(1, int(args.width_step))
-    widths = list(range(min_width, max_width + 1, width_step))
-    depths = list(range(min_depth, max_depth + 1))
-    return dedupe_architectures([[int(width)] * int(depth) for depth in depths for width in widths])
+    max_depth = max(min_depth, min(int(args.max_depth), 8))
+    if getattr(args, "legacy_architecture_grid", False):
+        min_width = max(1, int(args.min_width))
+        max_width = max(min_width, int(args.max_width))
+        width_step = max(1, int(args.width_step))
+        widths = list(range(min_width, max_width + 1, width_step))
+        depths = list(range(min_depth, max_depth + 1))
+        return dedupe_architectures([[int(width)] * int(depth) for depth in depths for width in widths])
+    return [[int(depth)] for depth in range(min_depth, max_depth + 1)]
 
 
 def phase_name_for_architecture(architecture: Sequence[int], repeat_index: int) -> str:
     depth = len(architecture)
+    if depth == 1:
+        return f"stl_ablation_r{repeat_index:02d}_d{int(architecture[0]):02d}_parammatched"
     width = max(int(v) for v in architecture)
     return f"stl_ablation_r{repeat_index:02d}_d{depth:02d}_w{width:04d}_{'_'.join(str(int(v)) for v in architecture)}"
 
@@ -131,6 +138,68 @@ def parameter_count_for_summary(task: rg.Task, task_root: Path, summary: Dict[st
     return int(rg.count_model_parameters(model))
 
 
+def target_parameter_count(task: rg.Task, cfg: rg.RunConfig) -> int:
+    effective_max_depth = max(1, min(int(cfg.max_depth), 8))
+    # Use a quarter of the maximum width as the reference budget so the matched-depth
+    # family stays closer to the machine limits while still preserving a single
+    # consistent parameter target across depths.
+    reference_width = max(1, int(cfg.max_width) // 4)
+    reference_architecture = [reference_width for _ in range(effective_max_depth)]
+    model = rg.make_stl_model(task, reference_architecture, cfg.use_bn)
+    return int(rg.count_model_parameters(model))
+
+
+def _parameter_count_for_width(task: rg.Task, depth: int, width: int, cfg: rg.RunConfig) -> int:
+    model = rg.make_stl_model(task, [int(width) for _ in range(max(1, int(depth)))], cfg.use_bn)
+    return int(rg.count_model_parameters(model))
+
+
+def solve_parameter_matched_width(task: rg.Task, depth: int, cfg: rg.RunConfig, target_params: int) -> int:
+    step = max(1, int(cfg.width_step))
+    min_width = max(step, int(cfg.min_width))
+    low_units = max(1, int(math.ceil(min_width / step)))
+    high_units = max(low_units, int(math.ceil(int(cfg.max_width) / step)))
+
+    best_width = low_units * step
+    best_delta = abs(_parameter_count_for_width(task, depth, best_width, cfg) - int(target_params))
+
+    def consider(candidate_width: int) -> None:
+        nonlocal best_width, best_delta
+        candidate_width = max(step, int(candidate_width))
+        delta = abs(_parameter_count_for_width(task, depth, candidate_width, cfg) - int(target_params))
+        if delta < best_delta or (delta == best_delta and candidate_width < best_width):
+            best_width = candidate_width
+            best_delta = delta
+
+    consider(best_width)
+
+    safety_units = max(high_units, low_units) * max(8, max(1, min(int(cfg.max_depth), 8)) * 2)
+    while _parameter_count_for_width(task, depth, high_units * step, cfg) < int(target_params) and high_units < safety_units:
+        low_units = high_units
+        high_units *= 2
+        consider(high_units * step)
+
+    while low_units + 1 < high_units:
+        mid_units = (low_units + high_units) // 2
+        mid_width = mid_units * step
+        mid_params = _parameter_count_for_width(task, depth, mid_width, cfg)
+        consider(mid_width)
+        if mid_params < int(target_params):
+            low_units = mid_units
+        else:
+            high_units = mid_units
+
+    for units in {low_units, high_units, max(1, low_units - 1), high_units + 1}:
+        consider(units * step)
+
+    return int(best_width)
+
+
+def parameter_matched_architecture(task: rg.Task, depth: int, cfg: rg.RunConfig) -> List[int]:
+    width = solve_parameter_matched_width(task, depth, cfg, target_parameter_count(task, cfg))
+    return [int(width) for _ in range(max(1, int(depth)))]
+
+
 def make_cfg(args, tasks: List[str], run_root: Path) -> rg.RunConfig:
     return rg.RunConfig(
         data_dir=args.data_dir,
@@ -160,6 +229,9 @@ def make_cfg(args, tasks: List[str], run_root: Path) -> rg.RunConfig:
         width_stage_min_improve_pct=float(args.width_stage_min_improve_pct),
         use_bn=bool(args.use_bn),
         demo=False,
+        min_width=int(args.min_width),
+        width_step=int(args.width_step),
+        parameter_matched=not bool(getattr(args, "legacy_architecture_grid", False)),
     )
 
 
@@ -179,6 +251,7 @@ def run_task_ablation(
     task_batch_size = rg.batch_size_for_task(task_name, cfg.batch_size)
     task = build_task(task_name, cfg.data_dir, task_batch_size, cfg.num_workers, cfg.seed)
     source_summary = load_source_task_summary(source_run_root, task_name)
+    target_params = target_parameter_count(task, cfg) if cfg.parameter_matched else None
 
     ablation_runs: List[Dict[str, Any]] = []
     comparisons: List[Dict[str, Any]] = []
@@ -201,6 +274,8 @@ def run_task_ablation(
 
     for repeat_id in repeat_indices:
         for architecture in architectures:
+            if cfg.parameter_matched and len(architecture) == 1:
+                architecture = parameter_matched_architecture(task, int(architecture[0]), cfg)
             phase_name = phase_name_for_architecture(architecture, repeat_id)
             log.log_console(
                 f"[ABLATION:{task_name}] STL phase start: {phase_name} architecture={rg.format_architecture_for_report(architecture)}"
@@ -284,6 +359,8 @@ def run_task_ablation(
             "source_task_summary": str(source_run_root / task_name / "task_summary.json"),
             "source_adp_runs": source_adp_runs,
             "source_paired_stl_runs": source_paired_stl_runs,
+            "parameter_matched": bool(cfg.parameter_matched),
+            "parameter_budget_target": int(target_params) if target_params is not None else None,
             "ablation_stl_runs": ablation_runs,
             "comparisons": comparisons,
             "best_ablation": best_ablation,
@@ -309,18 +386,26 @@ def run_task_ablation(
 
 def plot_task_ablation(task_root: Path, task_name: str, rows: Sequence[Dict[str, Any]]) -> Path:
     fig, ax = plt.subplots(figsize=(18, 12))
-    repeats = sorted({int(row["repeat"]) for row in rows})
+    depths = sorted({len(parse_architecture(str(row["architecture"]))) for row in rows})
     cmap = plt.get_cmap("tab10")
-    for idx, repeat in enumerate(repeats):
-        repeat_rows = [row for row in rows if int(row["repeat"]) == repeat]
-        repeat_rows = sorted(repeat_rows, key=lambda row: (float(row["parameter_count"]), float(row["best_val"])))
-        if not repeat_rows:
+    for idx, depth in enumerate(depths):
+        depth_rows = [row for row in rows if len(parse_architecture(str(row["architecture"]))) == depth]
+        if not depth_rows:
             continue
-        xs = [float(row["parameter_count"]) for row in repeat_rows]
-        ys = [float(row["best_val"]) for row in repeat_rows]
+
+        grouped: Dict[float, float] = {}
+        for row in depth_rows:
+            param_count = float(row["parameter_count"])
+            best_val = float(row["best_val"])
+            prev = grouped.get(param_count)
+            if prev is None or best_val < prev:
+                grouped[param_count] = best_val
+
+        xs = sorted(grouped.keys())
+        ys = [grouped[x] for x in xs]
         color = cmap(idx % 10)
-        ax.plot(xs, ys, color=color, linewidth=1.2, alpha=0.8, label=f"repeat {repeat}")
-        ax.scatter(xs, ys, color=color, s=8, alpha=0.35)
+        ax.plot(xs, ys, color=color, linewidth=1.8, alpha=0.9, label=f"depth {depth}")
+        ax.scatter(xs, ys, color=color, s=14, alpha=0.65)
 
     ax.set_xscale("log")
     ax.set_yscale("log")
@@ -339,8 +424,8 @@ def plot_task_ablation(task_root: Path, task_name: str, rows: Sequence[Dict[str,
         {
             "task": task_name,
             "plot_path": str(plot_path),
-            "repeats": repeats,
-            "note": "Each repeat line is one full architecture sweep over widths 16..1024 in steps of 16 and depths 1..10.",
+            "depths": depths,
+            "note": "Each colored line is one hidden-depth family, parameter-matched to the same task-specific budget and aggregated across repeats.",
         },
     )
     return plot_path
@@ -363,7 +448,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--grad-clip", type=float, default=1.0)
     p.add_argument("--max-width", type=int, default=1024)
-    p.add_argument("--max-depth", type=int, default=10)
+    p.add_argument("--max-depth", type=int, default=8)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
     p.add_argument("--width-stage-margin-patience", type=int, default=10)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
@@ -379,6 +464,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--widths", default="")
     p.add_argument("--depths", default="")
     p.add_argument("--architecture", action="append", default=[], help="Explicit hidden widths, e.g. --architecture 64,64,64")
+    p.add_argument(
+        "--legacy-architecture-grid",
+        action="store_true",
+        default=False,
+        help="Use the old fixed width x depth sweep instead of parameter-matched depth families.",
+    )
     return p.parse_args()
 
 
