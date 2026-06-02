@@ -1,0 +1,115 @@
+{
+  "adp_runs": [
+    {
+      "architecture": [
+        94,
+        94
+      ],
+      "best_candidate_dir": "cand_185_d2_w94",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d2/autoencoding/ae_width_only/cand_185_d2_w94/checkpoint_best.pt",
+      "best_epoch": 11,
+      "best_val": 0.0008080639426775319,
+      "final_epoch": 11,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "autoencoding"
+    }
+  ],
+  "comparisons": [
+    {
+      "adp_architecture": [
+        94,
+        94
+      ],
+      "adp_best_val": 0.0008080639426775319,
+      "adp_phase": "ae_width_only",
+      "stl_architecture": [
+        94,
+        94
+      ],
+      "stl_best_val": 0.0035054915680655784,
+      "stl_phase": "stl_from_ae_width_only",
+      "task": "autoencoding",
+      "winner": "adp",
+      "winner_phase": "ae_width_only",
+      "winner_value": 0.0008080639426775319
+    }
+  ],
+  "paired_stl_runs": [
+    {
+      "architecture": [
+        94,
+        94
+      ],
+      "best_epoch": 94,
+      "best_val": 0.0035054915680655784,
+      "candidate_dir": "cand_000_d2_w94",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d2/autoencoding/stl_from_ae_width_only/cand_000_d2_w94/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d2/autoencoding/stl_from_ae_width_only/cand_000_d2_w94/checkpoint_last.pt",
+      "final_epoch": 104,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "autoencoding",
+      "test_metrics": {
+        "test_loss": 0.003796013590258488
+      }
+    }
+  ],
+  "phases": [
+    {
+      "architecture": [
+        94,
+        94
+      ],
+      "best_candidate_dir": "cand_185_d2_w94",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d2/autoencoding/ae_width_only/cand_185_d2_w94/checkpoint_best.pt",
+      "best_epoch": 11,
+      "best_val": 0.0008080639426775319,
+      "final_epoch": 11,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "autoencoding"
+    },
+    {
+      "architecture": [
+        94,
+        94
+      ],
+      "best_epoch": 94,
+      "best_val": 0.0035054915680655784,
+      "candidate_dir": "cand_000_d2_w94",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d2/autoencoding/stl_from_ae_width_only/cand_000_d2_w94/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d2/autoencoding/stl_from_ae_width_only/cand_000_d2_w94/checkpoint_last.pt",
+      "final_epoch": 104,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "autoencoding",
+      "test_metrics": {
+        "test_loss": 0.003796013590258488
+      }
+    }
+  ],
+  "task": "autoencoding",
+  "winner": {
+    "adp_architecture": [
+      94,
+      94
+    ],
+    "adp_best_val": 0.0008080639426775319,
+    "adp_phase": "ae_width_only",
+    "stl_architecture": [
+      94,
+      94
+    ],
+    "stl_best_val": 0.0035054915680655784,
+    "stl_phase": "stl_from_ae_width_only",
+    "task": "autoencoding",
+    "winner": "adp",
+    "winner_phase": "ae_width_only",
+    "winner_value": 0.0008080639426775319
+  }
+}
