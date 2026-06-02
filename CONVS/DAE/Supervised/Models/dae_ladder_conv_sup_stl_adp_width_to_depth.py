@@ -29,7 +29,7 @@ class ADPConfig:
     trials_depth: int = 2
     ex_k: int = 16
     max_width: int = 256
-    max_depth: int = 8
+    max_depth: int = 5
     max_neurons: int = 10_000_000
     lr: float = 1e-3
     weight_decay: float = 1e-4
@@ -427,7 +427,7 @@ def main() -> None:
     p.add_argument("--trials-depth", type=int, default=2)
     p.add_argument("--ex-k", type=int, default=16)
     p.add_argument("--max-width", type=int, default=256)
-    p.add_argument("--max-depth", type=int, default=8)
+    p.add_argument("--max-depth", type=int, default=5)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
     p.add_argument("--lr", type=float, default=1e-3)
     p.add_argument("--weight-decay", type=float, default=1e-4)

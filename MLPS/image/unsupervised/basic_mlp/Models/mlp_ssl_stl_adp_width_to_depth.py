@@ -43,7 +43,7 @@ class ADPConfig:
     width_stage_margin_patience: int = 5
     width_stage_min_improve_pct: float = 1.0
     max_width: int = 4096
-    max_depth: int = 10
+    max_depth: int = 5
     width_stage_margin_patience: int = 5
     width_stage_min_improve_pct: float = 1.0
     depth_stage_margin_patience: int = 5
@@ -262,7 +262,7 @@ def main():
     p.add_argument("--width-stage-margin-patience", type=int, default=5)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
     p.add_argument("--max-width", type=int, default=4096)
-    p.add_argument("--max-depth", type=int, default=10)
+    p.add_argument("--max-depth", type=int, default=5)
     p.add_argument("--max-neurons", type=int, default=10_000_000)
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--batch-size", type=int, default=128)

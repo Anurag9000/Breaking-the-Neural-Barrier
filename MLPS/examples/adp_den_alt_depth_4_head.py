@@ -212,7 +212,7 @@ class ADP_ALT_DEPTH_4Head:
         ex_k: int = 1,
         max_width: Optional[int] = None,
         max_neurons: int = 4096,
-        max_depth: int = 16,
+        max_depth: int = 5,
         delta: float = 0.0,
         patience_width: int = 10,
         patience_depth: int = 10,

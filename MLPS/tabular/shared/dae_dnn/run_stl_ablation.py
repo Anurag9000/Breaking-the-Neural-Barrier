@@ -438,7 +438,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--run-root", default=None)
     p.add_argument("--source-run-root", default="MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current")
     p.add_argument("--tasks", nargs="+", default=list(DEFAULT_TASKS))
-    p.add_argument("--batch-size", type=int, default=32768)
+    p.add_argument("--batch-size", type=int, default=16384)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
