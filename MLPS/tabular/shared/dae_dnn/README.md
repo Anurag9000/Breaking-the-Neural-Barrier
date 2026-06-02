@@ -91,6 +91,31 @@ Run all tasks (STL + ADP modes)
 python MLPS/tabular/shared/dae_dnn/run_all.py --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results --hidden 50 50
 ```
 
+Current STL ablation run
+```bash
+CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/run_with_watchdog.py \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl_ablation_parameter_matched_gpu_serial \
+  --idle-seconds 600 \
+  --max-restarts 5 \
+  --burst-limit 3 \
+  --burst-window-seconds 600 \
+  --poll-seconds 10 \
+  --grace-seconds 20 \
+  -- \
+  env CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
+    --data-dir ./data \
+    --results-dir MLPS/tabular/shared/dae_dnn/results \
+    --run-root MLPS/tabular/shared/dae_dnn/results/stl_ablation_parameter_matched_gpu_serial \
+    --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu \
+    --tasks representation autoencoding generation denoising anomaly simulation prediction \
+    --repeat-count 10 \
+    --concurrency 1 \
+    --num-workers 0 \
+    --patience 10 \
+    --max-depth 5 \
+    --batch-size 81920
+```
+
 Linux CUDA setup
 ```bash
 bash scripts/setup_cuda_venv.sh
@@ -106,7 +131,7 @@ only if you also want a standalone baseline STL run.
 
 To run the broader benchmark-suite comparison:
 ```bash
-python MLPS/tabular/shared/dae_dnn/run_search_suite.py --tasks all --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results --reference-run-root MLPS/tabular/shared/dae_dnn/results/goliath_<timestamp> --batch-size 32768 --candidate-budget 0 --seed 0
+python MLPS/tabular/shared/dae_dnn/run_search_suite.py --tasks all --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results --reference-run-root MLPS/tabular/shared/dae_dnn/results/goliath_<timestamp> --batch-size 81920 --candidate-budget 0 --seed 0
 ```
 This evaluates grid search, random search, Bayesian HPO, and greedy NAS-style
 growth by default, then refits STL on the best architecture found by each
@@ -121,7 +146,7 @@ Common flags
 - `--trials-width`, `--trials-depth`: expansion patience
 - `--max-epochs`: cap for each single-shot training
 - `--seed`, `--batch-size`, `--num-workers`
-- Default batch size is `32768`; the adaptive controller shrinks it automatically if VRAM pressure crosses the threshold.
+- Default batch size is `81920`; the adaptive controller is disabled for the shared tabular DNN runners so this exact batch size is used consistently.
 
 Where results go
 - Per-run folder:
