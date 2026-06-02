@@ -34,7 +34,7 @@ Current resume target on this machine:
 
 - task: `generation`
 - remaining depths: `1 2 3 4 5 6 7 8 9 10`
-- concurrency: `4`
+- concurrency: `3`
 
 The launcher now follows the documented waves:
 
