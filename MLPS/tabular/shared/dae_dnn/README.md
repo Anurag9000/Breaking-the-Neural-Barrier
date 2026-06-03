@@ -101,6 +101,8 @@ CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/run_with_wat
   --burst-window-seconds 600 \
   --poll-seconds 10 \
   --grace-seconds 20 \
+  --min-host-ram-mib 1024 \
+  --min-vram-free-mib 100 \
   -- \
   env CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
     --data-dir ./data \
