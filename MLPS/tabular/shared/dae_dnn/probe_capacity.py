@@ -130,6 +130,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--min-width", type=int, default=DEFAULT_MIN_WIDTH)
     parser.add_argument("--width-step", type=int, default=DEFAULT_WIDTH_STEP)
     parser.add_argument(
+        "--width-cut-pct",
+        type=float,
+        default=0.0,
+        help="Reduce every candidate width by this percentage before alignment, then round down to the width step.",
+    )
+    parser.add_argument(
         "--max-width",
         type=int,
         default=0,
@@ -369,6 +375,14 @@ def align_width(width: int, min_width: int, step: int) -> int:
     return max(int(min_width), width)
 
 
+def apply_width_cut(width: int, cut_pct: float, min_width: int, step: int) -> int:
+    cut_pct = max(0.0, float(cut_pct))
+    if cut_pct <= 0.0:
+        return align_width(width, min_width, step)
+    reduced = float(width) * (1.0 - cut_pct / 100.0)
+    return align_width(int(reduced), min_width, step)
+
+
 def run_candidate(
     *,
     task_name: str,
@@ -512,6 +526,7 @@ def binary_search_max_width(
     probe: Callable[[int], CandidateResult],
     min_width: int,
     width_step: int,
+    width_cut_pct: float,
     max_width: Optional[int],
 ) -> Tuple[Optional[int], Optional[int], Optional[str], Optional[int], Optional[float]]:
     min_width = int(min_width)
@@ -519,7 +534,7 @@ def binary_search_max_width(
     max_width = None if max_width is None or int(max_width) <= 0 else int(max_width)
 
     def align(v: int) -> int:
-        return align_width(v, min_width, width_step)
+        return apply_width_cut(v, width_cut_pct, min_width, width_step)
 
     start = align(min_width)
     if max_width is not None:
@@ -698,6 +713,7 @@ def main() -> None:
                 probe=probe,
                 min_width=int(args.min_width),
                 width_step=int(args.width_step),
+                width_cut_pct=float(args.width_cut_pct),
                 max_width=int(args.max_width),
             )
 
@@ -712,6 +728,7 @@ def main() -> None:
                 "success_unit": str(args.success_unit),
                 "success_count": int(args.success_count),
                 "vram_threshold_mib": int(args.vram_threshold_mib),
+                "width_cut_pct": float(args.width_cut_pct),
                 "task_batch_size": int(requested_batch),
                 "task_factory": task_factory_name,
                 "model_factory": str(args.model_factory),
