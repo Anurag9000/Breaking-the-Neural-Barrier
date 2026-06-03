@@ -116,6 +116,27 @@ CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/run_with_wat
     --batch-size 81920
 ```
 
+Generic capacity probe
+```bash
+CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capacity.py \
+  --task-factory MLPS.tabular.shared.dae_dnn.tasks:build_task \
+  --model-factory MLPS.tabular.shared.dae_dnn.mlp:MLP \
+  --task-factory-kwargs-json '{"data_dir":"./data","num_workers":0,"seed":0}' \
+  --tasks representation anomaly simulation \
+  --min-depth 1 \
+  --max-depth 10 \
+  --min-width 16 \
+  --width-step 16 \
+  --max-width 0 \
+  --success-unit batches \
+  --success-count 2 \
+  --vram-threshold-mib 6144 \
+  --batch-size 0
+```
+Use `--success-unit epochs` for datasets where a full epoch is the right
+verification unit, and add `--task-batch-size task=batch` overrides when a
+specific task needs its own loader shape.
+
 Linux CUDA setup
 ```bash
 bash scripts/setup_cuda_venv.sh
