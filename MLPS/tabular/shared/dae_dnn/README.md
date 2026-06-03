@@ -128,7 +128,7 @@ CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capaci
   --min-width 16 \
   --width-step 16 \
   --max-width 0 \
-  --width-cut-pct 5 \
+  --width-cut-pct 10 \
   --success-unit batches \
   --success-count 2 \
   --vram-threshold-mib 6144 \
@@ -151,7 +151,7 @@ How to use it on any dataset/model/GPU
   dataset/model-specific configuration.
 - Use `--task-batch-size task=batch` to set a different batch size per task
   when one dataset needs a different loader shape from another.
-- Use `--width-cut-pct 5` to apply the conservative 5 percent lower-side cut
+- Use `--width-cut-pct 10` to apply the conservative 10 percent lower-side cut
   before probing a candidate width. The script rounds down to the nearest
   `--width-step` after the cut.
 - Use `--success-unit batches` or `--success-unit epochs` depending on whether
@@ -172,7 +172,7 @@ CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capaci
   --task-batch-size representation=9312 \
   --task-batch-size anomaly=16944 \
   --task-batch-size simulation=16512 \
-  --width-cut-pct 5 \
+  --width-cut-pct 10 \
   --success-unit batches \
   --success-count 2 \
   --vram-threshold-mib 6144

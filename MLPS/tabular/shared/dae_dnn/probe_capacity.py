@@ -132,7 +132,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--width-cut-pct",
         type=float,
-        default=0.0,
+        default=10.0,
         help="Reduce every candidate width by this percentage before alignment, then round down to the width step.",
     )
     parser.add_argument(
