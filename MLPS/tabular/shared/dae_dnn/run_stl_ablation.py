@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import argparse
 import math
+import subprocess
+import threading
+import time
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
@@ -41,9 +44,9 @@ DEFAULT_BATCH_TARGETS = {
 }
 
 REPRESENTATION_MAX_WIDTH_BY_DEPTH = {
-    1: 13552,
-    2: 13824,
-    3: 10400,
+    1: 36800,
+    2: 13120,
+    3: 9872,
     4: 8432,
     5: 6864,
     6: 5872,
@@ -54,9 +57,9 @@ REPRESENTATION_MAX_WIDTH_BY_DEPTH = {
 }
 
 ANOMALY_MAX_WIDTH_BY_DEPTH = {
-    1: 9456,
-    2: 10080,
-    3: 7312,
+    1: 16432,
+    2: 9568,
+    3: 7520,
     4: 5776,
     5: 5312,
     6: 4480,
@@ -67,9 +70,9 @@ ANOMALY_MAX_WIDTH_BY_DEPTH = {
 }
 
 SIMULATION_MAX_WIDTH_BY_DEPTH = {
-    1: 13552,
-    2: 10304,
-    3: 8096,
+    1: 21168,
+    2: 9792,
+    3: 7680,
     4: 5904,
     5: 5456,
     6: 4576,
@@ -213,6 +216,28 @@ def stl_batch_size_for_task(task_name: str, task: rg.Task, override: int, step: 
     min_batch = max(1, int(math.ceil(train_rows / target_batches)))
     rounded = max(int(step), int(math.ceil(min_batch / int(step)) * int(step)))
     return int(rounded)
+
+
+def query_gpu_memory_used_mib(device_index: int = 0) -> Optional[int]:
+    try:
+        out = subprocess.check_output(
+            [
+                "nvidia-smi",
+                f"--id={int(device_index)}",
+                "--query-gpu=memory.used",
+                "--format=csv,noheader,nounits",
+            ],
+            stderr=subprocess.DEVNULL,
+        )
+    except Exception:
+        return None
+    text = out.decode("utf-8").strip().splitlines()
+    if not text:
+        return None
+    try:
+        return int(float(text[0].strip()))
+    except Exception:
+        return None
 
 
 def _parameter_count_for_width(task: rg.Task, depth: int, width: int, cfg: rg.RunConfig) -> int:
@@ -374,6 +399,26 @@ def run_task_ablation(
     repeat_count = max(1, int(repeat_count))
     curve_rows: List[Dict[str, Any]] = []
     repeat_indices = [int(repeat_index)] if repeat_index is not None else list(range(1, repeat_count + 1))
+    gpu_vram_samples_mib: List[int] = []
+
+    sampler_stop = threading.Event()
+
+    def sample_gpu_vram() -> None:
+        if not torch.cuda.is_available():
+            return
+        device_index = int(torch.cuda.current_device())
+        for _ in range(5):
+            if sampler_stop.is_set():
+                break
+            sample = query_gpu_memory_used_mib(device_index)
+            if sample is not None:
+                gpu_vram_samples_mib.append(int(sample))
+            if len(gpu_vram_samples_mib) >= 5:
+                break
+            time.sleep(1.0)
+
+    sampler_thread = threading.Thread(target=sample_gpu_vram, daemon=True)
+    sampler_thread.start()
 
     saved_state = load_ablation_state(task_root)
     resume_arch_idx = max(0, int(saved_state.get("architecture_index", 0) or 0))
@@ -505,6 +550,13 @@ def run_task_ablation(
         },
     )
 
+    sampler_stop.set()
+    sampler_thread.join(timeout=2.0)
+    gpu_vram_avg_mib = float(sum(gpu_vram_samples_mib) / max(len(gpu_vram_samples_mib), 1)) if gpu_vram_samples_mib else None
+    log.log_console(
+        f"[ABLATION:{task_name}] GPU VRAM samples={gpu_vram_samples_mib} avg_mib={gpu_vram_avg_mib}"
+    )
+
     rg.write_csv(
         task_root / "ablation_summary.csv",
         rows,
@@ -519,6 +571,8 @@ def run_task_ablation(
             "source_paired_stl_runs": source_paired_stl_runs,
             "parameter_matched": bool(cfg.parameter_matched),
             "parameter_budget_target": int(target_params) if target_params is not None else None,
+            "gpu_vram_samples_mib": gpu_vram_samples_mib,
+            "gpu_vram_avg_mib": gpu_vram_avg_mib,
             "ablation_stl_runs": ablation_runs,
             "comparisons": comparisons,
             "best_ablation": best_ablation,
@@ -539,6 +593,8 @@ def run_task_ablation(
         "best_ablation": best_ablation,
         "repeat_count": repeat_count,
         "curve_rows": curve_rows,
+        "gpu_vram_samples_mib": gpu_vram_samples_mib,
+        "gpu_vram_avg_mib": gpu_vram_avg_mib,
     }
 
 
