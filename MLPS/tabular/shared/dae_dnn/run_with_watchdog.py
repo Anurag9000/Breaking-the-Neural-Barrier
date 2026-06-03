@@ -236,7 +236,7 @@ def candidate_summary_payload(candidate_dir: Path, device: torch.device) -> Opti
         return None
 
     data_dir = str(cfg.get("data_dir", "./data"))
-    batch_size = int(cfg.get("batch_size", 32768))
+    batch_size = max(1, int(cfg.get("batch_size", 32768) or 1))
     num_workers = int(cfg.get("num_workers", 0))
     seed = int(cfg.get("seed", 0))
 
@@ -296,21 +296,23 @@ def candidate_summary_payload(candidate_dir: Path, device: torch.device) -> Opti
     }
 
 
-def finalize_candidate(candidate_dir: Path, device: torch.device) -> bool:
+def finalize_candidate(candidate_dir: Path, device: torch.device, *, materialize_summary: bool = True, failed: bool = False) -> bool:
     state_path = candidate_dir / "candidate_state.json"
     state = load_json_if_exists(state_path)
     if not state or bool(state.get("completed", False)):
         return False
 
-    summary = candidate_summary_payload(candidate_dir, device)
-    if summary is not None:
-        write_json(candidate_dir / "candidate_summary.json", summary)
-        state.update(summary)
+    if materialize_summary:
+        summary = candidate_summary_payload(candidate_dir, device)
+        if summary is not None:
+            write_json(candidate_dir / "candidate_summary.json", summary)
+            state.update(summary)
 
     state.update(
         {
             "completed": True,
             "finalized_by_watchdog": True,
+            "failed": bool(failed or state.get("failed", False)),
         }
     )
     write_json(state_path, state)
@@ -444,7 +446,7 @@ def run_supervised(
                 candidate_dir = latest_incomplete_candidate(run_root)
                 if candidate_dir is not None:
                     log_line(f"Force-finalizing resource-pressured candidate: {candidate_dir}")
-                    finalize_candidate(candidate_dir, device)
+                    finalize_candidate(candidate_dir, device, materialize_summary=False, failed=True)
                 break
 
             idle_for = time.monotonic() - last_progress_at
@@ -473,7 +475,7 @@ def run_supervised(
                     candidate_dir = latest_incomplete_candidate(run_root)
                     if candidate_dir is not None:
                         log_line(f"Force-finalizing stuck candidate: {candidate_dir}")
-                        finalize_candidate(candidate_dir, device)
+                        finalize_candidate(candidate_dir, device, materialize_summary=True, failed=True)
                     restart_count = 0
                     first_hiccup_at = None
                     hiccup_restarts = 0
@@ -499,7 +501,7 @@ def run_supervised(
             candidate_dir = latest_incomplete_candidate(run_root)
             if candidate_dir is not None:
                 log_line(f"Final restart budget exhausted; force-finalizing {candidate_dir}.")
-                finalize_candidate(candidate_dir, device)
+                finalize_candidate(candidate_dir, device, materialize_summary=True, failed=True)
             restart_count = 0
             first_hiccup_at = None
             hiccup_restarts = 0
