@@ -217,7 +217,7 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
     name = task_name.lower()
 
     if name in ["prediction", "regression", "sequence"]:
-        train_x, train_y, val_x, val_y, test_x, test_y = _load_year_prediction(seed, data_dir)
+        train_x, train_y, val_x, val_y, test_x, test_y = _load_california_housing(seed, data_dir)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
         train_ds = ArrayDataset(train_x, train_y)
         val_ds = ArrayDataset(val_x, val_y)

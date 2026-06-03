@@ -30,6 +30,54 @@ DEFAULT_MIN_WIDTH = 16
 DEFAULT_MAX_WIDTH = 1024
 DEFAULT_WIDTH_STEP = 16
 DEFAULT_REPEAT_COUNT = 10
+DEFAULT_BATCH_TARGETS = {
+    "representation": 50,
+    "autoencoding": 50,
+    "generation": 50,
+    "denoising": 50,
+    "anomaly": 10,
+    "simulation": 1,
+    "prediction": 1,
+}
+
+REPRESENTATION_MAX_WIDTH_BY_DEPTH = {
+    1: 13552,
+    2: 13824,
+    3: 10400,
+    4: 8432,
+    5: 6864,
+    6: 5872,
+    7: 5168,
+    8: 4656,
+    9: 4656,
+    10: 4320,
+}
+
+ANOMALY_MAX_WIDTH_BY_DEPTH = {
+    1: 9456,
+    2: 10080,
+    3: 7312,
+    4: 5776,
+    5: 5312,
+    6: 4480,
+    7: 4016,
+    8: 3520,
+    9: 3360,
+    10: 3024,
+}
+
+SIMULATION_MAX_WIDTH_BY_DEPTH = {
+    1: 13552,
+    2: 10304,
+    3: 8096,
+    4: 5904,
+    5: 5456,
+    6: 4576,
+    7: 4112,
+    8: 3616,
+    9: 3456,
+    10: 3072,
+}
 
 
 def parse_csv_ints(text: str) -> List[int]:
@@ -156,6 +204,17 @@ def target_parameter_count(task: rg.Task, cfg: rg.RunConfig) -> int:
     return int(rg.count_model_parameters(model))
 
 
+def stl_batch_size_for_task(task_name: str, task: rg.Task, override: int, step: int = 16) -> int:
+    override = int(override)
+    if override > 0:
+        return override
+    target_batches = max(1, int(DEFAULT_BATCH_TARGETS.get(task_name.lower(), 50)))
+    train_rows = len(task.train_loader.dataset)
+    min_batch = max(1, int(math.ceil(train_rows / target_batches)))
+    rounded = max(int(step), int(math.ceil(min_batch / int(step)) * int(step)))
+    return int(rounded)
+
+
 def _parameter_count_for_width(task: rg.Task, depth: int, width: int, cfg: rg.RunConfig) -> int:
     model = rg.make_stl_model(task, [int(width) for _ in range(max(1, int(depth)))], cfg.use_bn)
     return int(rg.count_model_parameters(model))
@@ -212,7 +271,15 @@ def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig
     step = max(1, int(cfg.width_step))
     min_width = max(1, int(cfg.min_width))
     start_width = int(math.ceil(min_width / step) * step)
-    max_width = solve_parameter_matched_width(task, depth, cfg, target_parameter_count(task, cfg))
+    task_name = str(getattr(task, "name", "")).lower()
+    if task_name in {"representation", "autoencoding", "generation", "denoising"}:
+        max_width = int(REPRESENTATION_MAX_WIDTH_BY_DEPTH.get(depth, REPRESENTATION_MAX_WIDTH_BY_DEPTH[max(REPRESENTATION_MAX_WIDTH_BY_DEPTH)]))
+    elif task_name == "anomaly" and depth in ANOMALY_MAX_WIDTH_BY_DEPTH:
+        max_width = int(ANOMALY_MAX_WIDTH_BY_DEPTH[depth])
+    elif task_name in {"simulation", "prediction"}:
+        max_width = int(SIMULATION_MAX_WIDTH_BY_DEPTH.get(depth, SIMULATION_MAX_WIDTH_BY_DEPTH[max(SIMULATION_MAX_WIDTH_BY_DEPTH)]))
+    else:
+        max_width = solve_parameter_matched_width(task, depth, cfg, target_parameter_count(task, cfg))
     if max_width < start_width:
         max_width = start_width
     widths = list(range(start_width, max_width + 1, step))
@@ -270,8 +337,9 @@ def run_task_ablation(
     log: ContinuousLogger,
     batch_controller,
 ) -> Dict[str, Any]:
-    task_batch_size = rg.batch_size_for_task(task_name, cfg.batch_size)
-    task = build_task(task_name, cfg.data_dir, task_batch_size, cfg.num_workers, cfg.seed)
+    task = build_task(task_name, cfg.data_dir, 1, cfg.num_workers, cfg.seed)
+    task_batch_size = stl_batch_size_for_task(task_name, task, cfg.batch_size)
+    rg.refresh_task_loaders(task, task_batch_size)
     source_summary = load_source_task_summary(source_run_root, task_name)
     target_params = target_parameter_count(task, cfg) if cfg.parameter_matched else None
 
@@ -462,7 +530,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--run-root", default=None)
     p.add_argument("--source-run-root", default="MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current")
     p.add_argument("--tasks", nargs="+", default=list(DEFAULT_TASKS))
-    p.add_argument("--batch-size", type=int, default=81920)
+    p.add_argument("--batch-size", type=int, default=0)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
