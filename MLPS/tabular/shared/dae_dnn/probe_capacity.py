@@ -1,5 +1,25 @@
 from __future__ import annotations
 
+"""Generic GPU capacity probe for arbitrary task/model factories.
+
+This script probes the largest width per depth that satisfies a user-defined
+success criterion while staying under a VRAM ceiling. It is intentionally
+factory-driven:
+
+- the task factory supplies the dataset/task bundle, loaders, loss, and dims
+- the model factory builds the candidate model for a given depth and width
+
+Use it for:
+- any dataset the task factory can build
+- any model the model factory can instantiate
+- any GPU that exposes `nvidia-smi`
+- any success horizon, measured in batches or epochs
+
+The probe uses exponential bracketing followed by binary search. Batch size can
+be overridden globally or per task, which lets the same script probe different
+datasets with different loader shapes.
+"""
+
 import argparse
 import csv
 import gc
