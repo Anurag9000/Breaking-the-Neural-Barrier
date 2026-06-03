@@ -39,8 +39,26 @@ def _split_dataset(ds: Dataset, seed: int, val_split: float = 0.1, test_split: f
     return random_split(ds, [n_train, n_val, n_test], generator=g)
 
 
-def _make_loaders(ds: Dataset, batch_size: int, num_workers: int, shuffle: bool = True):
-    return DataLoader(ds, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers, pin_memory=torch.cuda.is_available())
+def _resolve_pin_memory(pin_memory: Optional[bool]) -> bool:
+    if pin_memory is None:
+        return bool(torch.cuda.is_available())
+    return bool(pin_memory)
+
+
+def _make_loaders(
+    ds: Dataset,
+    batch_size: int,
+    num_workers: int,
+    shuffle: bool = True,
+    pin_memory: Optional[bool] = None,
+):
+    return DataLoader(
+        ds,
+        batch_size=batch_size,
+        shuffle=shuffle,
+        num_workers=num_workers,
+        pin_memory=_resolve_pin_memory(pin_memory),
+    )
 
 
 def clone_loader(
@@ -213,7 +231,14 @@ def _cluster_nmi(embeddings: np.ndarray, labels: np.ndarray) -> float:
     return float(normalized_mutual_info_score(labels, clusters))
 
 
-def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int, seed: int) -> Task:
+def build_task(
+    task_name: str,
+    data_dir: str,
+    batch_size: int,
+    num_workers: int,
+    seed: int,
+    pin_memory: Optional[bool] = None,
+) -> Task:
     name = task_name.lower()
 
     if name in ["prediction", "regression", "sequence"]:
@@ -244,9 +269,9 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
 
         return Task(
             name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
+            train_loader=_make_loaders(train_ds, batch_size, num_workers, pin_memory=pin_memory),
+            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False, pin_memory=pin_memory),
+            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False, pin_memory=pin_memory),
             in_dim=int(train_x.shape[1]),
             out_dim=1,
             task_type="regression",
@@ -288,9 +313,9 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
 
         return Task(
             name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
+            train_loader=_make_loaders(train_ds, batch_size, num_workers, pin_memory=pin_memory),
+            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False, pin_memory=pin_memory),
+            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False, pin_memory=pin_memory),
             in_dim=in_dim,
             out_dim=out_dim,
             task_type=task_type,
@@ -321,9 +346,9 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
 
         return Task(
             name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
+            train_loader=_make_loaders(train_ds, batch_size, num_workers, pin_memory=pin_memory),
+            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False, pin_memory=pin_memory),
+            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False, pin_memory=pin_memory),
             in_dim=in_dim,
             out_dim=in_dim,
             task_type="reconstruction",
@@ -367,9 +392,9 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
 
         return Task(
             name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
+            train_loader=_make_loaders(train_ds, batch_size, num_workers, pin_memory=pin_memory),
+            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False, pin_memory=pin_memory),
+            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False, pin_memory=pin_memory),
             in_dim=int(train_x.shape[1]),
             out_dim=int(train_x.shape[1]),
             task_type="reconstruction",
@@ -393,9 +418,9 @@ def build_task(task_name: str, data_dir: str, batch_size: int, num_workers: int,
         test_ds = ArrayDataset(in_x_test, out_y_test)
         return Task(
             name=name,
-            train_loader=_make_loaders(train_ds, batch_size, num_workers),
-            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False),
-            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False),
+            train_loader=_make_loaders(train_ds, batch_size, num_workers, pin_memory=pin_memory),
+            val_loader=_make_loaders(val_ds, batch_size, num_workers, shuffle=False, pin_memory=pin_memory),
+            test_loader=_make_loaders(test_ds, batch_size, num_workers, shuffle=False, pin_memory=pin_memory),
             in_dim=int(in_x_train.shape[1]),
             out_dim=int(np.asarray(out_y_train).shape[1]) if np.asarray(out_y_train).ndim > 1 else 1,
             task_type="regression",

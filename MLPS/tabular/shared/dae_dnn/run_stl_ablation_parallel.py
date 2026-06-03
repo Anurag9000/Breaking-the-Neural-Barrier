@@ -25,6 +25,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--source-run-root", default="MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current")
     p.add_argument("--tasks", nargs="+", default=list(stl.DEFAULT_TASKS))
     p.add_argument("--batch-size", type=int, default=0)
+    p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
+    p.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
@@ -82,6 +84,7 @@ def build_worker_command(
         str(int(args.repeat_count)),
         "--batch-size",
         str(int(args.batch_size)),
+        "--pin-memory" if bool(args.pin_memory) else "--no-pin-memory",
         "--num-workers",
         str(int(args.num_workers)),
         "--seed",
