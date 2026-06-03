@@ -133,7 +133,14 @@ def child_summary_path(child_run_root: Path, task_name: str) -> Path:
     return child_run_root / task_name / "ablation_summary.json"
 
 
+def child_state_path(child_run_root: Path) -> Path:
+    return child_run_root / "child_run_state.json"
+
+
 def child_completed(child_run_root: Path, task_name: str) -> bool:
+    state = rg.load_json_if_exists(child_state_path(child_run_root)) or {}
+    if bool(state.get("completed", False)) or bool(state.get("failed", False)):
+        return True
     summary_path = child_summary_path(child_run_root, task_name)
     plot_path = child_run_root / task_name / "ablation_loss_vs_params.png"
     data = rg.load_json_if_exists(summary_path) or {}
@@ -155,8 +162,36 @@ def load_task_child_summary(child_run_root: Path, task_name: str) -> Dict[str, A
     path = child_summary_path(child_run_root, task_name)
     data = rg.load_json_if_exists(path)
     if not isinstance(data, dict):
+        state = rg.load_json_if_exists(child_state_path(child_run_root)) or {}
+        if bool(state.get("failed", False)):
+            return {
+                "task": task_name,
+                "source_adp_runs": [],
+                "source_paired_stl_runs": [],
+                "ablation_stl_runs": [],
+                "comparisons": [],
+                "best_ablation": None,
+                "failed": True,
+                "failed_architecture": state.get("architecture"),
+                "failed_exit_code": state.get("exit_code"),
+                "failed_command": state.get("command"),
+            }
         raise FileNotFoundError(f"Missing child summary: {path}")
     return data
+
+
+def mark_child_failed(child_root: Path, task_name: str, architecture: Sequence[int], exit_code: int, cmd: Sequence[str]) -> None:
+    rg.write_json(
+        child_state_path(child_root),
+        {
+            "task": task_name,
+            "architecture": [int(v) for v in architecture],
+            "exit_code": int(exit_code),
+            "command": list(cmd),
+            "completed": True,
+            "failed": True,
+        },
+    )
 
 
 def aggregate_task(task_name: str, task_root: Path, child_roots: Sequence[Path]) -> Dict[str, Any]:
@@ -277,7 +312,12 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
                 continue
             if code != 0:
                 architecture, child_root, cmd = active[proc]
-                raise SystemExit(f"Child job failed (arch={architecture}, root={child_root}): {' '.join(cmd)}")
+                log = f"Child job failed (arch={architecture}, root={child_root}, code={code}): {' '.join(cmd)}"
+                print(log, flush=True)
+                mark_child_failed(child_root, task_name, architecture, code, cmd)
+                completed_children.append(child_root)
+                finished.append(proc)
+                continue
             finished.append(proc)
 
         for proc in finished:
