@@ -324,6 +324,19 @@ def make_cfg(args, tasks: List[str], run_root: Path) -> rg.RunConfig:
     )
 
 
+def ablation_state_path(task_root: Path) -> Path:
+    return task_root / "ablation_state.json"
+
+
+def load_ablation_state(task_root: Path) -> Dict[str, Any]:
+    data = rg.load_json_if_exists(ablation_state_path(task_root))
+    return data if isinstance(data, dict) else {}
+
+
+def save_ablation_state(task_root: Path, state: Dict[str, Any]) -> None:
+    rg.write_json(ablation_state_path(task_root), state)
+
+
 def run_task_ablation(
     *,
     task_name: str,
@@ -362,12 +375,28 @@ def run_task_ablation(
     curve_rows: List[Dict[str, Any]] = []
     repeat_indices = [int(repeat_index)] if repeat_index is not None else list(range(1, repeat_count + 1))
 
-    for architecture in architectures:
+    saved_state = load_ablation_state(task_root)
+    resume_arch_idx = max(0, int(saved_state.get("architecture_index", 0) or 0))
+    resume_family_idx = max(0, int(saved_state.get("family_index", 0) or 0))
+    resume_repeat_idx = max(1, int(saved_state.get("repeat_index", 1) or 1))
+    resume_completed = bool(saved_state.get("completed", False))
+    if resume_completed and (task_root / "ablation_summary.json").exists():
+        return rg.load_json_if_exists(task_root / "ablation_summary.json") or {}
+
+    for architecture_idx, architecture in enumerate(architectures):
         family = [list(architecture)]
         if cfg.parameter_matched and len(architecture) == 1:
             family = parameter_matched_architectures(task, int(architecture[0]), cfg)
-        for expanded_architecture in family:
+        family_start_idx = resume_family_idx if architecture_idx == resume_arch_idx else 0
+        for family_idx, expanded_architecture in enumerate(family):
+            if architecture_idx == resume_arch_idx and family_idx < family_start_idx:
+                continue
+            repeat_start = repeat_indices[0]
+            if architecture_idx == resume_arch_idx and family_idx == resume_family_idx:
+                repeat_start = resume_repeat_idx
             for repeat_id in repeat_indices:
+                if repeat_index is None and repeat_id < repeat_start:
+                    continue
                 phase_name = phase_name_for_architecture(expanded_architecture, repeat_id)
                 log.log_console(
                     f"[ABLATION:{task_name}] STL phase start: {phase_name} architecture={rg.format_architecture_for_report(expanded_architecture)}"
@@ -438,6 +467,43 @@ def run_task_ablation(
                             ref_best_val=float(ref_best_val),
                         )
                     )
+
+                if repeat_index is None:
+                    next_repeat = repeat_id + 1
+                    next_family = family_idx
+                    next_architecture = architecture_idx
+                    if next_repeat > repeat_count:
+                        next_repeat = 1
+                        next_family = family_idx + 1
+                        if next_family >= len(family):
+                            next_family = 0
+                            next_architecture = architecture_idx + 1
+                    save_ablation_state(
+                        task_root,
+                        {
+                            "task": task_name,
+                            "architecture_index": int(next_architecture),
+                            "family_index": int(next_family),
+                            "repeat_index": int(next_repeat),
+                            "repeat_count": int(repeat_count),
+                            "completed": False,
+                        },
+                    )
+
+        resume_family_idx = 0
+        resume_repeat_idx = 1
+
+    save_ablation_state(
+        task_root,
+        {
+            "task": task_name,
+            "architecture_index": len(architectures),
+            "family_index": 0,
+            "repeat_index": 1,
+            "repeat_count": int(repeat_count),
+            "completed": True,
+        },
+    )
 
     rg.write_csv(
         task_root / "ablation_summary.csv",
