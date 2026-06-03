@@ -123,6 +123,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--batch-size", type=int, default=0, help="Default batch size override. 0 defers to the task builder.")
     parser.add_argument("--device", default="cuda")
+    parser.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
+    parser.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     parser.add_argument("--use-bn", action="store_true", default=True)
     parser.add_argument("--no-bn", dest="use_bn", action="store_false")
     parser.add_argument("--min-depth", type=int, default=DEFAULT_MIN_DEPTH)
@@ -164,6 +166,12 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=DEFAULT_VRAM_THRESHOLD_MIB,
         help="Fail a candidate if sampled GPU memory exceeds this threshold in MiB.",
+    )
+    parser.add_argument(
+        "--host-ram-threshold-mib",
+        type=int,
+        default=0,
+        help="Fail a candidate if MemAvailable drops below this threshold in MiB. 0 disables host-RAM gating.",
     )
     parser.add_argument("--clear-results", action="store_true", default=False)
     parser.add_argument(
@@ -256,6 +264,20 @@ def sample_gpu_mib(device_index: int = 0) -> Optional[int]:
         return None
 
 
+def sample_host_available_mib() -> Optional[int]:
+    try:
+        with open("/proc/meminfo", "r", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("MemAvailable:"):
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        return int(int(parts[1]) // 1024)
+                    break
+    except Exception:
+        return None
+    return None
+
+
 def terminate_stale_processes(exclude_pids: Optional[Sequence[int]] = None) -> None:
     exclude = {int(pid) for pid in (exclude_pids or [])}
     patterns = [
@@ -329,9 +351,12 @@ def build_task_bundle(
     task_name: str,
     batch_size: int,
     base_kwargs: Dict[str, Any],
+    pin_memory: Optional[bool] = None,
 ) -> TaskBundle:
     kwargs = dict(base_kwargs)
     kwargs.update({"task_name": task_name, "batch_size": int(batch_size)})
+    if pin_memory is not None and "pin_memory" not in kwargs:
+        kwargs["pin_memory"] = bool(pin_memory)
     try:
         raw = task_factory(**kwargs)
     except TypeError:
@@ -396,6 +421,7 @@ def run_candidate(
     success_unit: str,
     success_count: int,
     vram_threshold_mib: int,
+    host_ram_threshold_mib: int,
     device: torch.device,
     use_bn: bool,
     save_samples: bool,
@@ -420,6 +446,10 @@ def run_candidate(
             samples.append(int(used_mib))
         if int(used_mib) > int(vram_threshold_mib):
             raise RuntimeError("vram_threshold_exceeded")
+        if int(host_ram_threshold_mib) > 0:
+            host_available = sample_host_available_mib()
+            if host_available is not None and int(host_available) < int(host_ram_threshold_mib):
+                raise RuntimeError("host_ram_threshold_exceeded")
 
     try:
         while True:
@@ -496,6 +526,8 @@ def run_candidate(
             reason = "oom"
         elif "vram_threshold_exceeded" in msg:
             reason = "vram_threshold_exceeded"
+        elif "host_ram_threshold_exceeded" in msg:
+            reason = "host_ram_threshold_exceeded"
         else:
             reason = f"runtime_error:{exc.__class__.__name__}"
     finally:
@@ -686,6 +718,7 @@ def main() -> None:
             task_name,
             requested_batch,
             task_factory_kwargs,
+            pin_memory=bool(args.pin_memory),
         )
         # annotate task factory name for reports
         task_factory_name = str(args.task_factory)
@@ -704,6 +737,7 @@ def main() -> None:
                     success_unit=str(args.success_unit),
                     success_count=int(args.success_count),
                     vram_threshold_mib=int(args.vram_threshold_mib),
+                    host_ram_threshold_mib=int(args.host_ram_threshold_mib),
                     device=device,
                     use_bn=bool(args.use_bn),
                     save_samples=bool(args.save_samples),
@@ -728,6 +762,7 @@ def main() -> None:
                 "success_unit": str(args.success_unit),
                 "success_count": int(args.success_count),
                 "vram_threshold_mib": int(args.vram_threshold_mib),
+                "host_ram_threshold_mib": int(args.host_ram_threshold_mib),
                 "width_cut_pct": float(args.width_cut_pct),
                 "task_batch_size": int(requested_batch),
                 "task_factory": task_factory_name,

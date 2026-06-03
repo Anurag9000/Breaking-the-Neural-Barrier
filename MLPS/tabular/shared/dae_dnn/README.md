@@ -107,13 +107,14 @@ CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/run_with_wat
     --results-dir MLPS/tabular/shared/dae_dnn/results \
     --run-root MLPS/tabular/shared/dae_dnn/results/stl_ablation_parameter_matched_gpu_serial \
     --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu \
-    --tasks representation autoencoding generation denoising anomaly simulation prediction \
+    --tasks representation autoencoding generation denoising anomaly simulation \
     --repeat-count 10 \
     --concurrency 1 \
     --num-workers 0 \
+    --no-pin-memory \
     --patience 10 \
     --max-depth 10 \
-    --batch-size 81920
+    --batch-size 0
 ```
 
 Generic capacity probe
@@ -132,6 +133,7 @@ CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capaci
   --success-unit batches \
   --success-count 2 \
   --vram-threshold-mib 6144 \
+  --host-ram-threshold-mib 0 \
   --batch-size 0
 ```
 What it does
@@ -139,6 +141,8 @@ What it does
 - Uses exponential growth to bracket a failure, then binary search to refine
   the max passing width.
 - Samples GPU VRAM once per batch with `nvidia-smi`.
+- Optionally fails a candidate early if host available RAM drops under a
+  configured threshold.
 - Stops a candidate only when it reaches the requested success horizon or
   fails the VRAM ceiling.
 
@@ -159,6 +163,8 @@ How to use it on any dataset/model/GPU
   epochs.
 - Set `--success-count` to any positive integer.
 - Set `--vram-threshold-mib` to match the GPU budget you want to probe.
+- Set `--host-ram-threshold-mib` to protect the machine from host-RAM
+  pressure during long probes.
 - Set `--max-width 0` to remove the hard ceiling and let the exponential search
   expand until it finds a real failure.
 
@@ -175,7 +181,8 @@ CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capaci
   --width-cut-pct 10 \
   --success-unit batches \
   --success-count 2 \
-  --vram-threshold-mib 6144
+  --vram-threshold-mib 6144 \
+  --host-ram-threshold-mib 0
 ```
 ```bash
 CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capacity.py \
