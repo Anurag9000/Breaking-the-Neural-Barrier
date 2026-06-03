@@ -133,9 +133,56 @@ CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capaci
   --vram-threshold-mib 6144 \
   --batch-size 0
 ```
-Use `--success-unit epochs` for datasets where a full epoch is the right
-verification unit, and add `--task-batch-size task=batch` overrides when a
-specific task needs its own loader shape.
+What it does
+- Finds the largest width per depth that still passes the success rule.
+- Uses exponential growth to bracket a failure, then binary search to refine
+  the max passing width.
+- Samples GPU VRAM once per batch with `nvidia-smi`.
+- Stops a candidate only when it reaches the requested success horizon or
+  fails the VRAM ceiling.
+
+How to use it on any dataset/model/GPU
+- Point `--task-factory` at a callable that builds a task bundle with
+  `train_loader`, `in_dim`, `out_dim`, `task_type`, and `loss_fn`.
+- Point `--model-factory` at a callable that can build the candidate model for
+  a given depth and width.
+- Use `--task-factory-kwargs-json` and `--model-factory-kwargs-json` to pass
+  dataset/model-specific configuration.
+- Use `--task-batch-size task=batch` to set a different batch size per task
+  when one dataset needs a different loader shape from another.
+- Use `--success-unit batches` or `--success-unit epochs` depending on whether
+  a candidate is considered valid after a fixed number of batches or full
+  epochs.
+- Set `--success-count` to any positive integer.
+- Set `--vram-threshold-mib` to match the GPU budget you want to probe.
+- Set `--max-width 0` to remove the hard ceiling and let the exponential search
+  expand until it finds a real failure.
+
+Examples
+```bash
+CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capacity.py \
+  --task-factory MLPS.tabular.shared.dae_dnn.tasks:build_task \
+  --model-factory MLPS.tabular.shared.dae_dnn.mlp:MLP \
+  --task-factory-kwargs-json '{"data_dir":"./data","num_workers":0,"seed":0}' \
+  --tasks representation anomaly simulation \
+  --task-batch-size representation=9312 \
+  --task-batch-size anomaly=16944 \
+  --task-batch-size simulation=16512 \
+  --success-unit batches \
+  --success-count 2 \
+  --vram-threshold-mib 6144
+```
+```bash
+CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capacity.py \
+  --task-factory mypkg.tasks:build_task \
+  --model-factory mypkg.models:build_model \
+  --task-factory-kwargs-json '{"data_root":"/data/custom","split":"train"}' \
+  --model-factory-kwargs-json '{"dropout":0.1}' \
+  --tasks custom_task \
+  --success-unit epochs \
+  --success-count 2 \
+  --vram-threshold-mib 8192
+```
 
 Linux CUDA setup
 ```bash
