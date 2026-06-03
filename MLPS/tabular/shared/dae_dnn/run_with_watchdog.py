@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import gc
+import os
 import re
+import signal
 import subprocess
 import sys
 import time
@@ -66,6 +69,42 @@ def task_state_paths(run_root: Path) -> List[Path]:
 
 def training_log_paths(run_root: Path) -> List[Path]:
     return sorted(run_root.rglob("training_log.txt"))
+
+
+def sample_host_available_mib() -> Optional[int]:
+    try:
+        with open("/proc/meminfo", "r", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("MemAvailable:"):
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        return int(int(parts[1]) // 1024)
+                    break
+    except Exception:
+        return None
+    return None
+
+
+def sample_gpu_free_mib(device_index: int = 0) -> Optional[int]:
+    try:
+        out = subprocess.check_output(
+            [
+                "nvidia-smi",
+                f"--id={int(device_index)}",
+                "--query-gpu=memory.free",
+                "--format=csv,noheader,nounits",
+            ],
+            stderr=subprocess.DEVNULL,
+        )
+    except Exception:
+        return None
+    text = out.decode("utf-8").strip().splitlines()
+    if not text:
+        return None
+    try:
+        return int(float(text[0].strip()))
+    except Exception:
+        return None
 
 
 def parse_latest_epoch_from_log(log_path: Path) -> Optional[int]:
@@ -282,18 +321,34 @@ def terminate_process(proc: subprocess.Popen[Any], grace_seconds: int) -> None:
     if proc.poll() is not None:
         return
     try:
-        proc.terminate()
+        os.killpg(proc.pid, signal.SIGTERM)
     except Exception:
-        pass
+        try:
+            proc.terminate()
+        except Exception:
+            pass
     deadline = time.monotonic() + float(grace_seconds)
     while time.monotonic() < deadline:
         if proc.poll() is not None:
             return
         time.sleep(0.5)
     try:
-        proc.kill()
+        os.killpg(proc.pid, signal.SIGKILL)
     except Exception:
-        pass
+        try:
+            proc.kill()
+        except Exception:
+            pass
+
+
+def flush_local_cuda() -> None:
+    if torch.cuda.is_available():
+        try:
+            torch.cuda.empty_cache()
+            torch.cuda.ipc_collect()
+        except Exception:
+            pass
+    gc.collect()
 
 
 def ensure_run_root_arg(command: Sequence[str], run_root: Path) -> List[str]:
@@ -321,7 +376,18 @@ def register_hiccup(
     return restart_count, first_hiccup_at, hiccup_restarts
 
 
-def run_supervised(command: Sequence[str], run_root: Path, idle_seconds: int, max_restarts: int, burst_limit: int, burst_window_seconds: int, poll_seconds: int, grace_seconds: int) -> int:
+def run_supervised(
+    command: Sequence[str],
+    run_root: Path,
+    idle_seconds: int,
+    max_restarts: int,
+    burst_limit: int,
+    burst_window_seconds: int,
+    poll_seconds: int,
+    grace_seconds: int,
+    min_host_ram_mib: int,
+    min_vram_free_mib: int,
+) -> int:
     if not command:
         raise ValueError("No command supplied to watchdog supervisor")
 
@@ -341,7 +407,7 @@ def run_supervised(command: Sequence[str], run_root: Path, idle_seconds: int, ma
 
     while True:
         log_line(f"Starting supervised command: {' '.join(prepared_command)}")
-        proc = subprocess.Popen(prepared_command)
+        proc = subprocess.Popen(prepared_command, start_new_session=True)
         last_progress_at = time.monotonic()
 
         while proc.poll() is None:
@@ -351,6 +417,35 @@ def run_supervised(command: Sequence[str], run_root: Path, idle_seconds: int, ma
                 last_progress_at = time.monotonic()
                 first_hiccup_at = None
                 hiccup_restarts = 0
+
+            host_available = sample_host_available_mib()
+            gpu_free = sample_gpu_free_mib(int(torch.cuda.current_device()) if torch.cuda.is_available() else 0)
+            resource_pressure = False
+            pressure_bits: List[str] = []
+            if int(min_host_ram_mib) > 0 and host_available is not None and host_available < int(min_host_ram_mib):
+                resource_pressure = True
+                pressure_bits.append(f"host_ram_available_mib={host_available} < {int(min_host_ram_mib)}")
+            if int(min_vram_free_mib) > 0 and gpu_free is not None and gpu_free < int(min_vram_free_mib):
+                resource_pressure = True
+                pressure_bits.append(f"gpu_free_mib={gpu_free} < {int(min_vram_free_mib)}")
+            if resource_pressure:
+                log_line(
+                    "Resource pressure detected; terminating current process group and advancing after finalization. "
+                    + "; ".join(pressure_bits)
+                )
+                terminate_process(proc, grace_seconds)
+                flush_local_cuda()
+                restart_count, first_hiccup_at, hiccup_restarts = register_hiccup(
+                    restart_count=restart_count,
+                    first_hiccup_at=first_hiccup_at,
+                    hiccup_restarts=hiccup_restarts,
+                    now=time.monotonic(),
+                )
+                candidate_dir = latest_incomplete_candidate(run_root)
+                if candidate_dir is not None:
+                    log_line(f"Force-finalizing resource-pressured candidate: {candidate_dir}")
+                    finalize_candidate(candidate_dir, device)
+                break
 
             idle_for = time.monotonic() - last_progress_at
             if idle_for >= float(idle_seconds):
@@ -362,6 +457,7 @@ def run_supervised(command: Sequence[str], run_root: Path, idle_seconds: int, ma
                     f"task_progress_total={current_snapshot.task_progress_total}"
                 )
                 terminate_process(proc, grace_seconds)
+                flush_local_cuda()
                 restart_count, first_hiccup_at, hiccup_restarts = register_hiccup(
                     restart_count=restart_count,
                     first_hiccup_at=first_hiccup_at,
@@ -392,6 +488,7 @@ def run_supervised(command: Sequence[str], run_root: Path, idle_seconds: int, ma
             return 0
 
         log_line(f"Supervised command exited with code {exit_code}; restarting from saved state.")
+        flush_local_cuda()
         restart_count, first_hiccup_at, hiccup_restarts = register_hiccup(
             restart_count=restart_count,
             first_hiccup_at=first_hiccup_at,
@@ -417,6 +514,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--burst-window-seconds", type=int, default=600, help="Burst window for repeated stalls")
     p.add_argument("--poll-seconds", type=int, default=10, help="Polling interval while supervising")
     p.add_argument("--grace-seconds", type=int, default=20, help="Time to wait for a graceful shutdown before SIGKILL")
+    p.add_argument("--min-host-ram-mib", type=int, default=1024, help="Force-stop the current process group if MemAvailable drops below this value.")
+    p.add_argument("--min-vram-free-mib", type=int, default=100, help="Force-stop the current process group if free GPU VRAM drops below this value.")
     p.add_argument("command", nargs=argparse.REMAINDER, help="Command to supervise; use `--` before the command")
     return p.parse_args()
 
@@ -439,6 +538,8 @@ def main() -> None:
         burst_window_seconds=int(args.burst_window_seconds),
         poll_seconds=int(args.poll_seconds),
         grace_seconds=int(args.grace_seconds),
+        min_host_ram_mib=int(args.min_host_ram_mib),
+        min_vram_free_mib=int(args.min_vram_free_mib),
     )
     raise SystemExit(exit_code)
 
