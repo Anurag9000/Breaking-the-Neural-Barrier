@@ -232,6 +232,18 @@ def count_model_parameters(model: torch.nn.Module) -> int:
     return int(sum(p.numel() for p in model.parameters()))
 
 
+def cpu_object(value: Any) -> Any:
+    if torch.is_tensor(value):
+        return value.detach().cpu()
+    if isinstance(value, dict):
+        return {key: cpu_object(val) for key, val in value.items()}
+    if isinstance(value, list):
+        return [cpu_object(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(cpu_object(item) for item in value)
+    return copy.deepcopy(value)
+
+
 def task_reconstruct(task: Task) -> bool:
     return task.task_type == "reconstruction"
 
@@ -302,8 +314,8 @@ def auto_select_batch_size(
     probe_task = build_task(task_name, cfg_data_dir, 1, num_workers, seed)
     probe_model = make_stl_model(probe_task, hidden_widths, use_bn).to(device)
     probe_optimizer = torch.optim.AdamW(probe_model.parameters(), lr=1e-3, weight_decay=1e-4)
-    base_model_state = copy.deepcopy(probe_model.state_dict())
-    base_optim_state = copy.deepcopy(probe_optimizer.state_dict())
+    base_model_state = cpu_object(probe_model.state_dict())
+    base_optim_state = cpu_object(probe_optimizer.state_dict())
     budget_bytes = int(float(budget_gb) * (1024**3))
 
     low = 2
@@ -512,10 +524,10 @@ def save_checkpoint(
         "batch_size": int(batch_size),
         "epoch_seed": int(epoch_seed),
         "batches_per_epoch": int(batches_per_epoch),
-        "model_state": copy.deepcopy(model.state_dict()),
-        "optimizer_state": optimizer.state_dict(),
+        "model_state": cpu_object(model.state_dict()),
+        "optimizer_state": cpu_object(optimizer.state_dict()),
         "best_val": float(best_val),
-        "best_state": copy.deepcopy(best_state),
+        "best_state": cpu_object(best_state),
         "best_epoch": int(best_epoch),
         "es_counter": int(es_counter),
         "running_train_loss": float(running_train_loss),
@@ -831,7 +843,7 @@ def training_loop(
 
     start_epoch = 1
     best_val = float("inf")
-    best_state = copy.deepcopy(model.state_dict())
+    best_state = cpu_object(model.state_dict())
     best_epoch = 0
     es_counter = 0
     metric_keys: List[str] = []
@@ -854,7 +866,7 @@ def training_loop(
         restore_rng_state(ckpt)
         start_epoch = int(ckpt["epoch"]) + 1
         best_val = float(ckpt["best_val"])
-        best_state = copy.deepcopy(ckpt["best_state"])
+        best_state = cpu_object(ckpt["best_state"])
         best_epoch = int(ckpt["best_epoch"])
         es_counter = int(ckpt["es_counter"])
 
@@ -907,7 +919,7 @@ def training_loop(
         improved = val_loss < (best_val - float(cfg.delta))
         if improved:
             best_val = val_loss
-            best_state = copy.deepcopy(model.state_dict())
+            best_state = cpu_object(model.state_dict())
             best_epoch = epoch
             es_counter = 0
             save_checkpoint(
@@ -2401,7 +2413,7 @@ def training_loop(
     start_epoch = 1
     start_batch = 0
     best_val = float("inf")
-    best_state = copy.deepcopy(model.state_dict())
+    best_state = cpu_object(model.state_dict())
     best_epoch = 0
     es_counter = 0
     metric_keys: List[str] = []
@@ -2434,7 +2446,7 @@ def training_loop(
             refresh_task_loaders(task, checkpoint_batch_size)
             current_batch_size = checkpoint_batch_size
         best_val = float(ckpt["best_val"])
-        best_state = copy.deepcopy(ckpt["best_state"])
+        best_state = cpu_object(ckpt["best_state"])
         best_epoch = int(ckpt["best_epoch"])
         es_counter = int(ckpt["es_counter"])
         running_train_loss = float(ckpt.get("running_train_loss", 0.0) or 0.0)
@@ -2613,7 +2625,7 @@ def training_loop(
         improved = val_loss < (best_val - float(cfg.delta))
         if improved:
             best_val = val_loss
-            best_state = copy.deepcopy(model.state_dict())
+            best_state = cpu_object(model.state_dict())
             best_epoch = epoch
             es_counter = 0
             save_checkpoint(

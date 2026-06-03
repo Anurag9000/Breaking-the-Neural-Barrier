@@ -44,42 +44,42 @@ DEFAULT_BATCH_TARGETS = {
 }
 
 REPRESENTATION_MAX_WIDTH_BY_DEPTH = {
-    1: 33120,
-    2: 11808,
-    3: 8880,
-    4: 7200,
-    5: 5856,
-    6: 5008,
-    7: 4416,
-    8: 3968,
-    9: 3968,
-    10: 3680,
+    1: 38848,
+    2: 13824,
+    3: 10400,
+    4: 8432,
+    5: 6864,
+    6: 5872,
+    7: 5168,
+    8: 4656,
+    9: 4656,
+    10: 4320,
 }
 
 ANOMALY_MAX_WIDTH_BY_DEPTH = {
-    1: 14784,
-    2: 8608,
-    3: 6768,
-    4: 4912,
-    5: 4528,
-    6: 3824,
-    7: 3424,
-    8: 3008,
-    9: 2864,
-    10: 2576,
+    1: 17312,
+    2: 10080,
+    3: 7936,
+    4: 5776,
+    5: 5312,
+    6: 4480,
+    7: 4016,
+    8: 3520,
+    9: 3360,
+    10: 3024,
 }
 
 SIMULATION_MAX_WIDTH_BY_DEPTH = {
-    1: 19040,
-    2: 8800,
-    3: 6912,
-    4: 5040,
-    5: 4640,
-    6: 3888,
-    7: 3504,
-    8: 3072,
-    9: 2944,
-    10: 2608,
+    1: 22288,
+    2: 10304,
+    3: 8096,
+    4: 5904,
+    5: 5456,
+    6: 4576,
+    7: 4112,
+    8: 3616,
+    9: 3456,
+    10: 3072,
 }
 
 
@@ -367,6 +367,7 @@ def run_task_ablation(
     task_name: str,
     task_root: Path,
     cfg: rg.RunConfig,
+    pin_memory: bool,
     source_run_root: Path,
     architectures: Sequence[Sequence[int]],
     repeat_count: int,
@@ -375,7 +376,14 @@ def run_task_ablation(
     log: ContinuousLogger,
     batch_controller,
 ) -> Dict[str, Any]:
-    task = build_task(task_name, cfg.data_dir, 1, cfg.num_workers, cfg.seed)
+    task = build_task(
+        task_name,
+        cfg.data_dir,
+        1,
+        cfg.num_workers,
+        cfg.seed,
+        pin_memory=bool(pin_memory),
+    )
     task_batch_size = stl_batch_size_for_task(task_name, task, cfg.batch_size)
     rg.refresh_task_loaders(task, task_batch_size)
     source_summary = load_source_task_summary(source_run_root, task_name)
@@ -673,6 +681,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--repeat-index", type=int, default=None, help="Run exactly one repeat index, useful for parallel fan-out.")
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
+    p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
+    p.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     p.add_argument("--use-bn", action="store_true", default=True)
     p.add_argument("--no-bn", dest="use_bn", action="store_false")
     p.add_argument("--widths", default="")
@@ -721,6 +731,7 @@ def main() -> None:
             task_name=task_name,
             task_root=task_root,
             cfg=cfg,
+            pin_memory=bool(args.pin_memory),
             source_run_root=source_run_root,
             architectures=architectures,
             repeat_count=int(args.repeat_count),
