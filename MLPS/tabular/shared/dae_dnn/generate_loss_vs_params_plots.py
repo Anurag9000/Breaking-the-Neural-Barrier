@@ -19,9 +19,9 @@ DEFAULT_OUTPUT_ROOT = "MLPS/tabular/shared/dae_dnn/results/analysis/loss_vs_para
 
 
 TASK_DETAILS: Dict[str, Dict[str, str]] = {
-    "representation": {
+    "classification": {
         "dataset": "Covertype",
-        "summary": "Classification-style representation learning on standardized Covertype features.",
+        "summary": "Classification-style classification learning on standardized Covertype features.",
         "target": "Input: 54 tabular features. Target: 7 forest-cover classes. Validation loss: cross-entropy.",
     },
     "autoencoding": {

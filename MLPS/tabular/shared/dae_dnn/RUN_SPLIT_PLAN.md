@@ -20,7 +20,7 @@ Each per-depth run root is resumable.
 
 Task:
 
-- `representation`
+- `classification`
 
 Execution order:
 
@@ -91,7 +91,7 @@ git pull origin main
 
 For a wave, launch the four or two depth jobs in parallel, then wait for them to finish.
 
-## This laptop: representation wave commands
+## This laptop: classification wave commands
 
 ### Wave 1
 
@@ -102,7 +102,7 @@ cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
 git checkout main
 git pull origin main
 
-tasks=(representation)
+tasks=(classification)
 for task in "${tasks[@]}"; do
   for depth in 1 2 3 4 5; do
     .venv/bin/python MLPS/tabular/shared/dae_dnn/run_goliath_staged_width_only.py \
@@ -129,7 +129,7 @@ cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
 git checkout main
 git pull origin main
 
-tasks=(representation)
+tasks=(classification)
 for task in "${tasks[@]}"; do
   for depth in 6 7 8; do
     .venv/bin/python MLPS/tabular/shared/dae_dnn/run_goliath_staged_width_only.py \
@@ -156,7 +156,7 @@ cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
 git checkout main
 git pull origin main
 
-tasks=(representation)
+tasks=(classification)
 for task in "${tasks[@]}"; do
   for depth in 9 10; do
     .venv/bin/python MLPS/tabular/shared/dae_dnn/run_goliath_staged_width_only.py \
@@ -192,7 +192,7 @@ After a wave finishes on any machine:
 
 These are already preserved in the repo state and should stay visible to future agents:
 
-- `representation`
+- `classification`
 - `autoencoding`
 - `generation`
 - `denoising`

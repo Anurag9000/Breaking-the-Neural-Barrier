@@ -18,7 +18,7 @@ import run_goliath as rg
 
 
 DEFAULT_TASKS = [
-    "representation",
+    "classification",
     "autoencoding",
     "generation",
     "denoising",
@@ -34,7 +34,7 @@ DEFAULT_MAX_WIDTH = 1024
 DEFAULT_WIDTH_STEP = 16
 DEFAULT_REPEAT_COUNT = 10
 DEFAULT_BATCH_TARGETS = {
-    "representation": 50,
+    "classification": 50,
     "autoencoding": 50,
     "generation": 50,
     "denoising": 50,
@@ -43,8 +43,21 @@ DEFAULT_BATCH_TARGETS = {
     "prediction": 1,
 }
 
+REPRESENTATION_ONLY_MAX_WIDTH_BY_DEPTH = {
+    1: 512,
+    2: 512,
+    3: 512,
+    4: 512,
+    5: 512,
+    6: 512,
+    7: 512,
+    8: 512,
+    9: 512,
+    10: 512,
+}
+
 REPRESENTATION_MAX_WIDTH_BY_DEPTH = {
-    1: 38848,
+    1: 15664,
     2: 13824,
     3: 10400,
     4: 8432,
@@ -57,7 +70,7 @@ REPRESENTATION_MAX_WIDTH_BY_DEPTH = {
 }
 
 ANOMALY_MAX_WIDTH_BY_DEPTH = {
-    1: 17312,
+    1: 6960,
     2: 10080,
     3: 7936,
     4: 5776,
@@ -70,7 +83,7 @@ ANOMALY_MAX_WIDTH_BY_DEPTH = {
 }
 
 SIMULATION_MAX_WIDTH_BY_DEPTH = {
-    1: 22288,
+    1: 17824,
     2: 10304,
     3: 8096,
     4: 5904,
@@ -297,7 +310,14 @@ def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig
     min_width = max(1, int(cfg.min_width))
     start_width = int(math.ceil(min_width / step) * step)
     task_name = str(getattr(task, "name", "")).lower()
-    if task_name in {"representation", "autoencoding", "generation", "denoising"}:
+    if task_name == "classification":
+        max_width = int(
+            REPRESENTATION_ONLY_MAX_WIDTH_BY_DEPTH.get(
+                depth,
+                REPRESENTATION_ONLY_MAX_WIDTH_BY_DEPTH[max(REPRESENTATION_ONLY_MAX_WIDTH_BY_DEPTH)],
+            )
+        )
+    elif task_name in {"autoencoding", "generation", "denoising"}:
         max_width = int(REPRESENTATION_MAX_WIDTH_BY_DEPTH.get(depth, REPRESENTATION_MAX_WIDTH_BY_DEPTH[max(REPRESENTATION_MAX_WIDTH_BY_DEPTH)]))
     elif task_name == "anomaly" and depth in ANOMALY_MAX_WIDTH_BY_DEPTH:
         max_width = int(ANOMALY_MAX_WIDTH_BY_DEPTH[depth])
@@ -343,6 +363,7 @@ def make_cfg(args, tasks: List[str], run_root: Path) -> rg.RunConfig:
         width_stage_min_improve_pct=float(args.width_stage_min_improve_pct),
         use_bn=bool(args.use_bn),
         demo=False,
+        metrics_every=int(args.metrics_every),
         min_width=int(args.min_width),
         width_step=int(args.width_step),
         parameter_matched=not bool(getattr(args, "legacy_architecture_grid", False)),
@@ -360,6 +381,18 @@ def load_ablation_state(task_root: Path) -> Dict[str, Any]:
 
 def save_ablation_state(task_root: Path, state: Dict[str, Any]) -> None:
     rg.write_json(ablation_state_path(task_root), state)
+
+
+def current_candidate_failed(task_root: Path, saved_state: Dict[str, Any]) -> bool:
+    phase_name = str(saved_state.get("current_phase_name") or "").strip()
+    if not phase_name:
+        return False
+    candidate_state_paths = sorted(task_root.rglob(f"{phase_name}/cand_*/candidate_state.json"))
+    for candidate_state_path in candidate_state_paths:
+        state = rg.load_json_if_exists(candidate_state_path) or {}
+        if bool(state.get("failed", False)):
+            return True
+    return False
 
 
 def run_task_ablation(
@@ -435,6 +468,20 @@ def run_task_ablation(
     resume_completed = bool(saved_state.get("completed", False))
     if resume_completed and (task_root / "ablation_summary.json").exists():
         return rg.load_json_if_exists(task_root / "ablation_summary.json") or {}
+    if current_candidate_failed(task_root, saved_state):
+        resume_family_idx = int(resume_family_idx) + 1
+        resume_repeat_idx = 1
+        saved_state.update(
+            {
+                "architecture_index": int(resume_arch_idx),
+                "family_index": int(resume_family_idx),
+                "repeat_index": int(resume_repeat_idx),
+                "repeat_count": int(repeat_count),
+                "completed": False,
+                "skipped_failed_family": True,
+            }
+        )
+        save_ablation_state(task_root, saved_state)
 
     for architecture_idx, architecture in enumerate(architectures):
         family = [list(architecture)]
@@ -450,6 +497,32 @@ def run_task_ablation(
             for repeat_id in repeat_indices:
                 if repeat_index is None and repeat_id < repeat_start:
                     continue
+                if repeat_index is None:
+                    next_repeat = repeat_id + 1
+                    next_family = family_idx
+                    next_architecture = architecture_idx
+                    if next_repeat > repeat_count:
+                        next_repeat = 1
+                        next_family = family_idx + 1
+                        if next_family >= len(family):
+                            next_family = 0
+                            next_architecture = architecture_idx + 1
+                    save_ablation_state(
+                        task_root,
+                        {
+                            "task": task_name,
+                            "architecture_index": int(next_architecture),
+                            "family_index": int(next_family),
+                            "repeat_index": int(next_repeat),
+                            "repeat_count": int(repeat_count),
+                            "completed": False,
+                            "current_architecture_index": int(architecture_idx),
+                            "current_family_index": int(family_idx),
+                            "current_repeat_index": int(repeat_id),
+                            "current_phase_name": phase_name_for_architecture(expanded_architecture, repeat_id),
+                            "current_architecture": [int(v) for v in expanded_architecture],
+                        },
+                    )
                 phase_name = phase_name_for_architecture(expanded_architecture, repeat_id)
                 log.log_console(
                     f"[ABLATION:{task_name}] STL phase start: {phase_name} architecture={rg.format_architecture_for_report(expanded_architecture)}"
@@ -519,28 +592,6 @@ def run_task_ablation(
                             ref_architecture=ref_arch,
                             ref_best_val=float(ref_best_val),
                         )
-                    )
-
-                if repeat_index is None:
-                    next_repeat = repeat_id + 1
-                    next_family = family_idx
-                    next_architecture = architecture_idx
-                    if next_repeat > repeat_count:
-                        next_repeat = 1
-                        next_family = family_idx + 1
-                        if next_family >= len(family):
-                            next_family = 0
-                            next_architecture = architecture_idx + 1
-                    save_ablation_state(
-                        task_root,
-                        {
-                            "task": task_name,
-                            "architecture_index": int(next_architecture),
-                            "family_index": int(next_family),
-                            "repeat_index": int(next_repeat),
-                            "repeat_count": int(repeat_count),
-                            "completed": False,
-                        },
                     )
 
         resume_family_idx = 0
@@ -681,6 +732,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--repeat-index", type=int, default=None, help="Run exactly one repeat index, useful for parallel fan-out.")
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
+    p.add_argument("--metrics-every", type=int, default=0, help="Run auxiliary task metrics every N epochs; 0 disables them.")
     p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
     p.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     p.add_argument("--use-bn", action="store_true", default=True)

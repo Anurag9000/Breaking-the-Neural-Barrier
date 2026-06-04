@@ -47,6 +47,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--concurrency", type=int, default=10)
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
+    p.add_argument("--metrics-every", type=int, default=0)
     p.add_argument(
         "--legacy-architecture-grid",
         action="store_true",
@@ -121,6 +122,8 @@ def build_worker_command(
         str(int(args.stl_width)),
         "--stl-depth",
         str(int(args.stl_depth)),
+        "--metrics-every",
+        str(int(args.metrics_every)),
     ]
     if not bool(args.use_bn):
         command.append("--no-bn")

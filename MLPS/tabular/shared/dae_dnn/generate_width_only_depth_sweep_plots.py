@@ -18,7 +18,7 @@ DEFAULT_RESULTS_ROOT = "MLPS/tabular/shared/dae_dnn/results"
 DEFAULT_STL_ABLATION_ROOT = "MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus"
 DEFAULT_OUTPUT_SUBDIR = "analysis/width_only_depth_sweep_loglog"
 DEFAULT_TASKS = [
-    "representation",
+    "classification",
     "autoencoding",
     "generation",
     "denoising",

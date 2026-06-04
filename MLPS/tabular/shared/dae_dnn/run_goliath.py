@@ -19,6 +19,9 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.metrics import normalized_mutual_info_score
+from sklearn.neighbors import KNeighborsClassifier
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
@@ -35,7 +38,7 @@ DEFAULT_VRAM_BUDGET_GB = 5.5
 
 PER_TASK_BATCH_SIZES = {
     "prediction": 32768,
-    "representation": 32768,
+    "classification": 32768,
     "autoencoding": 32768,
     "generation": 32768,
     "denoising": 32768,
@@ -84,6 +87,7 @@ class RunConfig:
     width_stage_min_improve_pct: float
     use_bn: bool
     demo: bool
+    metrics_every: int = 0
     min_width: int = 16
     width_step: int = 16
     parameter_matched: bool = False
@@ -511,6 +515,7 @@ def save_checkpoint(
     best_state: Dict[str, torch.Tensor],
     best_epoch: int,
     es_counter: int,
+    include_best_state: bool = True,
     running_train_loss: float = 0.0,
     running_train_correct: float = 0.0,
     running_train_samples: int = 0,
@@ -527,7 +532,6 @@ def save_checkpoint(
         "model_state": cpu_object(model.state_dict()),
         "optimizer_state": cpu_object(optimizer.state_dict()),
         "best_val": float(best_val),
-        "best_state": cpu_object(best_state),
         "best_epoch": int(best_epoch),
         "es_counter": int(es_counter),
         "running_train_loss": float(running_train_loss),
@@ -542,6 +546,8 @@ def save_checkpoint(
             "cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None,
         },
     }
+    if include_best_state:
+        payload["best_state"] = cpu_object(best_state)
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp", delete=False) as tmp:
         tmp_path = Path(tmp.name)
@@ -786,6 +792,22 @@ def resume_model_from_checkpoint(
         return model, optimizer
 
 
+def restore_best_state_from_candidate(candidate_dir: Path, device, fallback_ckpt: Dict[str, Any]) -> Dict[str, torch.Tensor]:
+    best_ckpt_path = candidate_dir / "checkpoint_best.pt"
+    if best_ckpt_path.exists():
+        try:
+            best_ckpt = load_checkpoint(best_ckpt_path, device)
+            best_state = best_ckpt.get("best_state") or best_ckpt.get("model_state")
+            if best_state is not None:
+                return cpu_object(best_state)
+        except Exception:
+            pass
+    best_state = fallback_ckpt.get("best_state") or fallback_ckpt.get("model_state")
+    if best_state is None:
+        raise ValueError(f"Unable to restore best state for candidate {candidate_dir}")
+    return cpu_object(best_state)
+
+
 def resolve_candidate_dir(phase_root: Path, candidate_ref: Optional[str]) -> Optional[Path]:
     if not candidate_ref:
         return None
@@ -901,18 +923,45 @@ def training_loop(
                 current_batch_size = refreshed
 
         if reconstruct:
+            logger.log_console(
+                f"[VAL] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} starting validation"
+            )
             tr_loss = reconstruction_train_epoch(model, task.train_loader, F.mse_loss, optimizer, device, grad_clip=float(cfg.grad_clip))
             val_loss, val_acc, throughput = reconstruction_eval_epoch(
                 model, task.val_loader, F.mse_loss, device, measure_throughput=False
             )
+            logger.log_console(
+                f"[VAL] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} finished validation val_loss={val_loss:.6f}"
+            )
             tr_acc = None
         else:
             tr_loss, tr_acc = train_epoch(model, task.train_loader, task.loss_fn, optimizer, device, task.task_type, float(cfg.grad_clip))
+            logger.log_console(
+                f"[VAL] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} starting validation"
+            )
             val_loss, val_acc, throughput = eval_epoch(model, task.val_loader, task.loss_fn, device, task.task_type, measure_throughput=False)
+            logger.log_console(
+                f"[VAL] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} finished validation val_loss={val_loss:.6f}"
+            )
 
         metrics: Dict[str, Any] = {}
         if not reconstruct and task.metrics_fn is not None and (epoch == 1 or epoch % 5 == 0):
-            metrics = task.metrics_fn(model, task, device) or {}
+            logger.log_console(
+                f"[METRICS] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} starting auxiliary metrics"
+            )
+            if str(task.name).lower() == "classification":
+                metrics = logged_classification_metrics(model, task, device, logger)
+            else:
+                metrics = task.metrics_fn(model, task, device) or {}
+            logger.log_console(
+                f"[METRICS] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} finished auxiliary metrics keys={sorted(metrics.keys())}"
+            )
             if not metric_keys:
                 metric_keys = list(metrics.keys())
 
@@ -1091,6 +1140,46 @@ def eval_final(model: MLP, task: Task, device, reconstruct: bool) -> Dict[str, A
         metrics = task.metrics_fn(model, task, device) or {}
         out.update(metrics)
     return out
+
+
+def logged_classification_metrics(model: MLP, task: Task, device, logger: ContinuousLogger) -> Dict[str, Any]:
+    model.eval()
+    feats = []
+    labels = []
+    total_batches = len(task.val_loader)
+    logger.log_console(f"[REP_METRICS] start embedding extraction total_val_batches={total_batches}")
+    with torch.no_grad():
+        for batch_idx, (x, y) in enumerate(task.val_loader, start=1):
+            x = x.to(device)
+            _, emb = model(x, return_embedding=True)
+            feats.append(emb.cpu().numpy())
+            labels.append(y.numpy())
+            if batch_idx == 1 or batch_idx == total_batches or batch_idx % 10 == 0:
+                logger.log_console(
+                    f"[REP_METRICS] embedding_progress batch={batch_idx}/{total_batches}"
+                )
+    logger.log_console("[REP_METRICS] finished embedding extraction")
+    feats_np = np.concatenate(feats, axis=0)
+    labels_np = np.concatenate(labels, axis=0)
+
+    logger.log_console("[REP_METRICS] start knn")
+    knn = KNeighborsClassifier(n_neighbors=5)
+    knn.fit(feats_np, labels_np)
+    knn_preds = knn.predict(feats_np)
+    knn_acc = float((knn_preds == labels_np).mean())
+    logger.log_console(f"[REP_METRICS] finished knn knn_acc={knn_acc:.6f}")
+
+    logger.log_console("[REP_METRICS] start kmeans_nmi")
+    n_clusters = int(np.unique(labels_np).shape[0])
+    km = KMeans(n_clusters=n_clusters, n_init=10, random_state=0)
+    clusters = km.fit_predict(feats_np)
+    cluster_nmi = float(normalized_mutual_info_score(labels_np, clusters))
+    logger.log_console(f"[REP_METRICS] finished kmeans_nmi cluster_nmi={cluster_nmi:.6f}")
+
+    return {
+        "knn_acc": knn_acc,
+        "cluster_nmi": cluster_nmi,
+    }
 
 
 def latest_completed_candidate(phase_root: Path) -> Optional[Path]:
@@ -1412,8 +1501,8 @@ def _hidden_widths_from_summary_architecture(architecture: Any) -> List[int]:
     return []
 
 
-def write_representation_benchmark_artifacts(task_root: Path, task: Task, cfg: RunConfig, task_summary: Dict[str, Any]) -> None:
-    if task.name != "representation":
+def write_classification_benchmark_artifacts(task_root: Path, task: Task, cfg: RunConfig, task_summary: Dict[str, Any]) -> None:
+    if task.name != "classification":
         return
 
     rows: List[Dict[str, Any]] = []
@@ -1451,8 +1540,8 @@ def write_representation_benchmark_artifacts(task_root: Path, task: Task, cfg: R
 
     rows.sort(key=lambda row: (str(row["family"]), str(row["phase"])))
     fieldnames = ["task", "family", "phase", "architecture", "params", "best_val", "test_loss", "test_acc", "knn_acc", "cluster_nmi"]
-    write_csv(task_root / "representation_benchmark.csv", rows, fieldnames)
-    write_json(task_root / "representation_benchmark.json", {"task": task.name, "rows": rows})
+    write_csv(task_root / "classification_benchmark.csv", rows, fieldnames)
+    write_json(task_root / "classification_benchmark.json", {"task": task.name, "rows": rows})
 
     def plot_metric(metric_key: str, ylabel: str, output_name: str) -> None:
         metric_rows = [row for row in rows if row.get(metric_key) is not None]
@@ -1480,8 +1569,8 @@ def write_representation_benchmark_artifacts(task_root: Path, task: Task, cfg: R
         fig.savefig(task_root / output_name, dpi=200)
         plt.close(fig)
 
-    plot_metric("knn_acc", "kNN accuracy", "representation_knn_acc_vs_params.png")
-    plot_metric("cluster_nmi", "Cluster NMI", "representation_cluster_nmi_vs_params.png")
+    plot_metric("knn_acc", "kNN accuracy", "classification_knn_acc_vs_params.png")
+    plot_metric("cluster_nmi", "Cluster NMI", "classification_cluster_nmi_vs_params.png")
 
 
 def run_stl_phase(
@@ -2348,7 +2437,7 @@ def run_task_pipeline(
         write_json(task_state_path, task_state)
 
     task_summary["winner"] = best_overall
-    write_representation_benchmark_artifacts(task_root, task, cfg, task_summary)
+    write_classification_benchmark_artifacts(task_root, task, cfg, task_summary)
     write_json(task_root / "task_summary.json", task_summary)
     task_state.update(
         {
@@ -2446,7 +2535,7 @@ def training_loop(
             refresh_task_loaders(task, checkpoint_batch_size)
             current_batch_size = checkpoint_batch_size
         best_val = float(ckpt["best_val"])
-        best_state = cpu_object(ckpt["best_state"])
+        best_state = restore_best_state_from_candidate(candidate_dir, device, ckpt)
         best_epoch = int(ckpt["best_epoch"])
         es_counter = int(ckpt["es_counter"])
         running_train_loss = float(ckpt.get("running_train_loss", 0.0) or 0.0)
@@ -2575,6 +2664,20 @@ def training_loop(
                     "reconstruct": reconstruct,
                 },
             )
+            running_train_loss_avg = float(running_train_loss / max(running_train_samples, 1))
+            batch_message = (
+                f"[BATCH] task={task.name} phase={candidate_dir.parent.name} "
+                f"candidate={candidate_dir.name} epoch={epoch} "
+                f"batch={batch_idx + 1}/{batches_per_epoch} "
+                f"batch_size={batch_size_actual} "
+                f"running_batches={running_train_batches} "
+                f"batch_loss={float(loss.item()):.6f} "
+                f"running_loss={running_train_loss_avg:.6f}"
+            )
+            if not reconstruct and task.task_type == "classification":
+                running_train_acc = float(running_train_correct / max(running_train_samples, 1))
+                batch_message += f" running_acc={running_train_acc:.6f}"
+            logger.log_console(batch_message)
             write_json(
                 candidate_state_path,
                 {
@@ -2612,13 +2715,44 @@ def training_loop(
             tr_acc = float(running_train_correct / max(running_train_samples, 1))
 
         if reconstruct:
-            val_loss, val_acc, throughput = reconstruction_eval_epoch(model, task.val_loader, F.mse_loss, device, measure_throughput=False)
+            logger.log_console(
+                f"[VAL] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} starting validation"
+            )
+            val_loss, val_acc, throughput = reconstruction_eval_epoch(
+                model, task.val_loader, F.mse_loss, device, measure_throughput=False
+            )
+            logger.log_console(
+                f"[VAL] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} finished validation val_loss={val_loss:.6f}"
+            )
         else:
-            val_loss, val_acc, throughput = eval_epoch(model, task.val_loader, task.loss_fn, device, task.task_type, measure_throughput=False)
+            logger.log_console(
+                f"[VAL] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} starting validation"
+            )
+            val_loss, val_acc, throughput = eval_epoch(
+                model, task.val_loader, task.loss_fn, device, task.task_type, measure_throughput=False
+            )
+            logger.log_console(
+                f"[VAL] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} finished validation val_loss={val_loss:.6f}"
+            )
 
         metrics: Dict[str, Any] = {}
         if not reconstruct and task.metrics_fn is not None and (epoch == 1 or epoch % 5 == 0):
-            metrics = task.metrics_fn(model, task, device) or {}
+            logger.log_console(
+                f"[METRICS] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} starting auxiliary metrics"
+            )
+            if str(task.name).lower() == "classification":
+                metrics = logged_classification_metrics(model, task, device, logger)
+            else:
+                metrics = task.metrics_fn(model, task, device) or {}
+            logger.log_console(
+                f"[METRICS] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} finished auxiliary metrics keys={sorted(metrics.keys())}"
+            )
             if not metric_keys:
                 metric_keys = list(metrics.keys())
 

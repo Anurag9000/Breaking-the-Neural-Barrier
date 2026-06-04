@@ -18,7 +18,7 @@ DEFAULT_CURRENT_RUN_ROOT = "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_anom
 DEFAULT_OUTPUT_SUBDIR = "analysis/recovered_trial1_w2d_history"
 REPO_ROOT = Path(__file__).resolve().parents[4]
 
-TASKS = ["representation", "autoencoding", "generation", "denoising"]
+TASKS = ["classification", "autoencoding", "generation", "denoising"]
 PHASES = ["ae_width_to_depth", "stl_from_ae_width_to_depth"]
 
 
