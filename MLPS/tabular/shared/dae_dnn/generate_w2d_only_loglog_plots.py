@@ -20,9 +20,9 @@ DEFAULT_OUTPUT_SUBDIR = "analysis/loss_vs_params_w2d_only_loglog"
 REPO_ROOT = Path(__file__).resolve().parents[4]
 
 TASK_DETAILS: Dict[str, Dict[str, Any]] = {
-    "representation": {
+    "classification": {
         "dataset": "Covertype",
-        "summary": "Supervised representation learning on standardized Covertype features.",
+        "summary": "Supervised classification learning on standardized Covertype features.",
         "target": "Input: 54 tabular features. Target: 7 forest-cover classes. Training loss: cross-entropy.",
         "in_dim": 54,
         "out_dim": 7,
@@ -54,7 +54,7 @@ TASK_DETAILS: Dict[str, Dict[str, Any]] = {
     },
 }
 
-W2D_TASKS = ["representation", "autoencoding", "generation", "denoising"]
+W2D_TASKS = ["classification", "autoencoding", "generation", "denoising"]
 
 
 @dataclass

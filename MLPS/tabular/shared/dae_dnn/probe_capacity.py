@@ -39,7 +39,7 @@ import torch
 from MLPS.tabular.shared.dae_dnn.train_utils import unpack_batch
 
 
-DEFAULT_TASKS = ["representation", "anomaly", "simulation"]
+DEFAULT_TASKS = ["classification", "anomaly", "simulation"]
 DEFAULT_VRAM_THRESHOLD_MIB = 6144
 DEFAULT_MIN_DEPTH = 1
 DEFAULT_MAX_DEPTH = 10

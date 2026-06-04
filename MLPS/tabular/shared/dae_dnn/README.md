@@ -54,7 +54,7 @@ winner.
 
 Tasks and default benchmark mappings
 - prediction: YearPredictionMSD
-- representation: Covertype
+- classification: Covertype
 - autoencoding: Covertype
 - generation: Covertype
 - denoising: Covertype
@@ -109,7 +109,7 @@ CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/run_with_wat
     --results-dir MLPS/tabular/shared/dae_dnn/results \
     --run-root MLPS/tabular/shared/dae_dnn/results/stl_ablation_parameter_matched_gpu_serial \
     --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu \
-    --tasks representation autoencoding generation denoising anomaly simulation \
+    --tasks classification autoencoding generation denoising anomaly simulation \
     --repeat-count 10 \
     --concurrency 1 \
     --num-workers 0 \
@@ -125,7 +125,7 @@ CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capaci
   --task-factory MLPS.tabular.shared.dae_dnn.tasks:build_task \
   --model-factory MLPS.tabular.shared.dae_dnn.mlp:MLP \
   --task-factory-kwargs-json '{"data_dir":"./data","num_workers":0,"seed":0}' \
-  --tasks representation anomaly simulation \
+  --tasks classification anomaly simulation \
   --min-depth 1 \
   --max-depth 10 \
   --min-width 16 \
@@ -176,8 +176,8 @@ CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capaci
   --task-factory MLPS.tabular.shared.dae_dnn.tasks:build_task \
   --model-factory MLPS.tabular.shared.dae_dnn.mlp:MLP \
   --task-factory-kwargs-json '{"data_dir":"./data","num_workers":0,"seed":0}' \
-  --tasks representation anomaly simulation \
-  --task-batch-size representation=9312 \
+  --tasks classification anomaly simulation \
+  --task-batch-size classification=9312 \
   --task-batch-size anomaly=16944 \
   --task-batch-size simulation=16512 \
   --width-cut-pct 10 \

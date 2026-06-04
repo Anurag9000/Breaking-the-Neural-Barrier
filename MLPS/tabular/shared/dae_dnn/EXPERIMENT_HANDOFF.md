@@ -7,7 +7,7 @@ Keep the archived result trees in Git and resume each depth-specific run root fr
 
 The active tabular suite is:
 
-- `representation`
+- `classification`
 - `autoencoding`
 - `generation`
 - `denoising`
@@ -114,7 +114,7 @@ Useful current plot roots:
 - `analysis/loss_vs_params_linearx_logy/w2d/...`
 - `analysis/loss_vs_params_linearx_logy/width_only/...`
 
-The `representation` width-only plot labels STL architectures directly in the figure.
+The `classification` width-only plot labels STL architectures directly in the figure.
 
 ## Resume rule of thumb
 
