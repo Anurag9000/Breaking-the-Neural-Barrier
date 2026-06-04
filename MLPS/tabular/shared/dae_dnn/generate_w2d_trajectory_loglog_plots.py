@@ -21,9 +21,9 @@ DEFAULT_STL_ABLATION_ROOT = "MLPS/tabular/shared/dae_dnn/results/stl_ablation_al
 DEFAULT_OUTPUT_SUBDIR = "analysis/loss_vs_params_w2d_trajectory_loglog"
 
 TASK_DETAILS: Dict[str, Dict[str, str]] = {
-    "representation": {
+    "classification": {
         "dataset": "Covertype",
-        "summary": "Supervised representation learning on standardized Covertype features.",
+        "summary": "Supervised classification learning on standardized Covertype features.",
         "target": "Input: 54 tabular features. Target: 7 forest-cover classes. Training loss: cross-entropy.",
     },
     "autoencoding": {
@@ -48,7 +48,7 @@ TASK_DETAILS: Dict[str, Dict[str, str]] = {
     },
 }
 
-OLD_COMPLETED_TASKS = ["representation", "autoencoding", "generation", "denoising"]
+OLD_COMPLETED_TASKS = ["classification", "autoencoding", "generation", "denoising"]
 CURRENT_TASKS = OLD_COMPLETED_TASKS + ["anomaly"]
 
 

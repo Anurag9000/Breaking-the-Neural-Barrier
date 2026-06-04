@@ -22,7 +22,7 @@ from MLPS.tabular.shared.dae_dnn.train_utils import unpack_batch
 
 
 DEFAULT_TASKS = [
-    "representation",
+    "classification",
     "simulation",
 ]
 
@@ -38,7 +38,7 @@ def parse_args() -> argparse.Namespace:
         "--task-batch-size",
         action="append",
         default=[],
-        help="Override batch size for a specific task, e.g. representation=9312. May be passed multiple times.",
+        help="Override batch size for a specific task, e.g. classification=9312. May be passed multiple times.",
     )
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
@@ -46,7 +46,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--max-depth", type=int, default=10)
     p.add_argument("--min-width", type=int, default=16)
     p.add_argument("--width-step", type=int, default=16)
-    p.add_argument("--max-width", type=int, default=16384)
+    p.add_argument(
+        "--max-width",
+        type=int,
+        default=0,
+        help="Maximum width to test. Use 0 or a negative value for no explicit ceiling.",
+    )
     p.add_argument("--calibrated-limit-mib", type=int, default=9472)
     p.add_argument("--search-margin", type=int, default=128)
     p.add_argument("--vram-threshold-mib", type=int, default=6144)
@@ -180,7 +185,7 @@ def binary_search_max_width(
     probe,
     start_width: int,
     min_width: int,
-    max_width: int,
+    max_width: Optional[int],
     width_step: int,
 ) -> tuple[Optional[int], Optional[int], Optional[str], Optional[int], Optional[int], Optional[int]]:
     """
@@ -188,10 +193,11 @@ def binary_search_max_width(
     exponential bracketing followed by binary search.
     """
     min_width = int(min_width)
-    max_width = int(max_width)
+    max_width = None if max_width is None or int(max_width) <= 0 else int(max_width)
     width_step = max(1, int(width_step))
     start_width = align_width(int(start_width), min_width, width_step)
-    start_width = min(start_width, max_width)
+    if max_width is not None:
+        start_width = min(start_width, max_width)
 
     best_width: Optional[int] = None
     best_peak: Optional[int] = None
@@ -214,7 +220,7 @@ def binary_search_max_width(
         step = width_step
         while True:
             candidate = align_width(low + step, min_width, width_step)
-            if candidate <= low or candidate > max_width:
+            if candidate <= low or (max_width is not None and candidate > max_width):
                 failure_width = None
                 failure_reason = None
                 break
@@ -307,9 +313,8 @@ def run_candidate(
     target_epochs: int = 0,
 ) -> ProbeResult:
     cleanup_cuda()
-    model = MLP(in_dim=task.in_dim, hidden_widths=[int(width) for _ in range(int(depth))], out_dim=task.out_dim, use_bn=use_bn).to(device)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
-
+    model = None
+    optimizer = None
     peak_mib = 0
     peak_allocated_mib = 0
     peak_reserved_mib = 0
@@ -318,6 +323,14 @@ def run_candidate(
     reason = "ok"
 
     try:
+        model = MLP(
+            in_dim=task.in_dim,
+            hidden_widths=[int(width) for _ in range(int(depth))],
+            out_dim=task.out_dim,
+            use_bn=use_bn,
+        ).to(device)
+        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
+
         if int(target_epochs) > 0:
             for _ in range(int(target_epochs)):
                 for batch in task.train_loader:
@@ -378,8 +391,10 @@ def run_candidate(
         else:
             reason = f"runtime_error:{exc.__class__.__name__}"
     finally:
-        del model
-        del optimizer
+        if model is not None:
+            del model
+        if optimizer is not None:
+            del optimizer
         del task
         cleanup_cuda()
 
@@ -476,12 +491,12 @@ def main() -> None:
                 return result
 
             best_width, failure_width, failure_reason, best_peak, best_allocated, best_reserved = binary_search_max_width(
-                probe=probe,
-                start_width=int(start_width),
-                min_width=int(args.min_width),
-                max_width=int(args.max_width),
-                width_step=int(args.width_step),
-            )
+        probe=probe,
+        start_width=int(start_width),
+        min_width=int(args.min_width),
+        max_width=None if int(args.max_width) <= 0 else int(args.max_width),
+        width_step=int(args.width_step),
+    )
             previous_best_width = best_width
 
             report[task_name][depth] = {

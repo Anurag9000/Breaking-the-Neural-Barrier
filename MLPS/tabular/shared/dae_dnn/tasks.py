@@ -280,7 +280,7 @@ def build_task(
             extra={},
         )
 
-    if name in ["classification", "representation", "edge"]:
+    if name in ["classification", "edge"]:
         train_x, train_y, val_x, val_y, test_x, test_y = _load_covtype(seed, data_dir)
         train_x, val_x, test_x = _standardize_from_train(train_x, val_x, test_x)
         train_ds = ArrayDataset(train_x, train_y)
@@ -288,7 +288,7 @@ def build_task(
         test_ds = ArrayDataset(test_x, test_y)
 
         metrics_fn = None
-        if name == "representation":
+        if name == "classification":
             def metrics_fn(model, task, device):
                 model.eval()
                 feats = []
@@ -301,9 +301,11 @@ def build_task(
                         labels.append(y.numpy())
                 feats_np = np.concatenate(feats, axis=0)
                 labels_np = np.concatenate(labels, axis=0)
+                knn_acc = _knn_accuracy(feats_np, labels_np)
+                cluster_nmi = _cluster_nmi(feats_np, labels_np)
                 return {
-                    "knn_acc": _knn_accuracy(feats_np, labels_np),
-                    "cluster_nmi": _cluster_nmi(feats_np, labels_np),
+                    "knn_acc": knn_acc,
+                    "cluster_nmi": cluster_nmi,
                 }
 
         task_type = "classification"
@@ -434,7 +436,7 @@ def build_task(
 
 def task_names() -> List[str]:
     return [
-        "representation",
+        "classification",
         "autoencoding",
         "generation",
         "denoising",
