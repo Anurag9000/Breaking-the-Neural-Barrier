@@ -13,11 +13,11 @@ Use it for:
 - any dataset the task factory can build
 - any model the model factory can instantiate
 - any GPU that exposes `nvidia-smi`
-- any success horizon, measured in batches or epochs
 
-The probe uses exponential bracketing followed by binary search. Batch size can
-be overridden globally or per task, which lets the same script probe different
-datasets with different loader shapes.
+The probe uses exponential bracketing followed by binary search to find the
+largest width per depth that meets the requested success criterion.
+Batch size can be overridden globally or per task, which lets the same script
+probe different datasets with different loader shapes.
 """
 
 import argparse
@@ -28,6 +28,7 @@ import json
 import os
 import signal
 import subprocess
+import shutil
 import time
 from dataclasses import asdict, dataclass, field, is_dataclass
 from datetime import datetime
@@ -36,6 +37,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tupl
 
 import torch
 
+from MLPS.tabular.shared.dae_dnn.run_goliath import save_checkpoint
 from MLPS.tabular.shared.dae_dnn.train_utils import unpack_batch
 
 
@@ -75,9 +77,14 @@ class CandidateResult:
     epochs_completed: int
     peak_mib: int
     samples_mib: List[int]
+    samples_free_mib: List[int]
+    samples_host_available_mib: List[int]
+    min_free_mib: Optional[int]
+    min_host_available_mib: Optional[int]
     average_mib: Optional[float]
     model_factory: str
     task_factory: str
+    candidate_dir: str
 
 
 def parse_args() -> argparse.Namespace:
@@ -255,6 +262,33 @@ def sample_gpu_mib(device_index: int = 0) -> Optional[int]:
         )
     except Exception:
         return None
+
+
+def sample_gpu_pressure_mib(device_index: int = 0) -> Optional[Dict[str, int]]:
+    try:
+        out = subprocess.check_output(
+            [
+                "nvidia-smi",
+                f"--id={int(device_index)}",
+                "--query-gpu=memory.used,memory.total",
+                "--format=csv,noheader,nounits",
+            ],
+            stderr=subprocess.DEVNULL,
+        )
+    except Exception:
+        return None
+    text = out.decode("utf-8").strip().splitlines()
+    if not text:
+        return None
+    parts = [part.strip() for part in text[0].split(",")]
+    if len(parts) < 2:
+        return None
+    try:
+        used = int(float(parts[0]))
+        total = int(float(parts[1]))
+    except Exception:
+        return None
+    return {"used_mib": used, "total_mib": total, "free_mib": max(0, total - used)}
     text = out.decode("utf-8").strip().splitlines()
     if not text:
         return None
@@ -425,31 +459,66 @@ def run_candidate(
     device: torch.device,
     use_bn: bool,
     save_samples: bool,
+    run_root: Path,
+    seed: int,
 ) -> CandidateResult:
     cleanup_cuda()
+    candidate_dir = run_root / task_name / f"d{int(depth):02d}" / "latest"
+    shutil.rmtree(candidate_dir, ignore_errors=True)
+    candidate_dir.mkdir(parents=True, exist_ok=True)
+    last_ckpt = candidate_dir / "checkpoint_last.pt"
+    best_ckpt = candidate_dir / "checkpoint_best.pt"
+    state_path = candidate_dir / "candidate_state.json"
     model = build_model(model_factory, task, depth, width, use_bn, model_kwargs).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
 
     batches_done = 0
     epochs_done = 0
     samples: List[int] = []
+    samples_free: List[int] = []
+    samples_host_available: List[int] = []
     peak_mib = 0
+    min_free_mib: Optional[int] = None
+    min_host_available_mib: Optional[int] = None
     reason = "ok"
+    best_state = {key: value.detach().cpu().clone() for key, value in model.state_dict().items()}
+    best_val = float("inf")
+    best_epoch = 0
+    es_counter = 0
+    epoch = 1
+    epoch_seed = int(seed)
+    batches_per_epoch = len(task.train_loader)
+    running_train_loss = 0.0
+    running_train_correct = 0.0
+    running_train_samples = 0
+    running_train_batches = 0
 
     def record_sample() -> None:
-        nonlocal peak_mib
-        used_mib = sample_gpu_mib(torch.cuda.current_device() if torch.cuda.is_available() else 0)
-        if used_mib is None:
+        nonlocal peak_mib, min_free_mib, min_host_available_mib
+        pressure = sample_gpu_pressure_mib(torch.cuda.current_device() if torch.cuda.is_available() else 0)
+        if pressure is None:
             return
-        peak_mib = max(peak_mib, int(used_mib))
+        used_mib = int(pressure["used_mib"])
+        free_mib = int(pressure["free_mib"])
+        peak_mib = max(peak_mib, used_mib)
         if save_samples:
-            samples.append(int(used_mib))
+            samples.append(used_mib)
+            samples_free.append(free_mib)
+        min_free_mib = free_mib if min_free_mib is None else min(min_free_mib, free_mib)
         if int(used_mib) > int(vram_threshold_mib):
             raise RuntimeError("vram_threshold_exceeded")
         if int(host_ram_threshold_mib) > 0:
             host_available = sample_host_available_mib()
             if host_available is not None and int(host_available) < int(host_ram_threshold_mib):
                 raise RuntimeError("host_ram_threshold_exceeded")
+            if host_available is not None and save_samples:
+                samples_host_available.append(int(host_available))
+            if host_available is not None:
+                min_host_available_mib = (
+                    int(host_available)
+                    if min_host_available_mib is None
+                    else min(min_host_available_mib, int(host_available))
+                )
 
     try:
         while True:
@@ -478,9 +547,152 @@ def run_candidate(
 
                 batches_done += 1
                 batches_this_epoch += 1
+                running_train_batches += 1
+                batch_size_actual = int(x.size(0))
+                running_train_loss += float(loss.item()) * batch_size_actual
+                running_train_samples += batch_size_actual
+                if task.task_type == "classification" and y is not None:
+                    running_train_correct += float((out.argmax(dim=1) == y).float().sum().item())
+
+                save_checkpoint(
+                    last_ckpt,
+                    model=model,
+                    optimizer=optimizer,
+                    epoch=epoch,
+                    batch_index=batches_done,
+                    epoch_complete=False,
+                    batch_size=int(getattr(task.train_loader, "batch_size", 0) or batch_size_actual),
+                    epoch_seed=epoch_seed,
+                    batches_per_epoch=batches_per_epoch,
+                    best_val=best_val,
+                    best_state=best_state,
+                    best_epoch=best_epoch,
+                    es_counter=es_counter,
+                    running_train_loss=running_train_loss,
+                    running_train_correct=running_train_correct,
+                    running_train_samples=running_train_samples,
+                    running_train_batches=running_train_batches,
+                    metadata={
+                        "task": task_name,
+                        "probe": True,
+                        "depth": int(depth),
+                        "width": int(width),
+                        "candidate_dir": str(candidate_dir),
+                    },
+                )
+                state_path.write_text(
+                    json.dumps(
+                        {
+                            "completed": False,
+                            "task": task_name,
+                            "depth": int(depth),
+                            "width": int(width),
+                            "epoch": epoch,
+                            "batch_index": batches_done,
+                            "epoch_complete": False,
+                            "batch_size": int(getattr(task.train_loader, "batch_size", 0) or batch_size_actual),
+                            "epoch_seed": epoch_seed,
+                            "batches_per_epoch": batches_per_epoch,
+                            "running_train_loss": running_train_loss,
+                            "running_train_correct": running_train_correct,
+                            "running_train_samples": running_train_samples,
+                            "running_train_batches": running_train_batches,
+                            "best_val": best_val,
+                            "best_epoch": best_epoch,
+                            "candidate_dir": str(candidate_dir),
+                            "checkpoint_last": str(last_ckpt),
+                            "checkpoint_best": str(best_ckpt),
+                        },
+                        indent=2,
+                    ),
+                    encoding="utf-8",
+                )
                 record_sample()
 
                 if success_unit == "batches" and batches_done >= int(success_count):
+                    train_loss_avg = float(running_train_loss / max(running_train_samples, 1))
+                    best_val = train_loss_avg
+                    best_epoch = epoch
+                    best_state = {key: value.detach().cpu().clone() for key, value in model.state_dict().items()}
+                    save_checkpoint(
+                        best_ckpt,
+                        model=model,
+                        optimizer=optimizer,
+                        epoch=epoch,
+                        batch_index=0,
+                        epoch_complete=True,
+                        batch_size=int(getattr(task.train_loader, "batch_size", 0) or batch_size_actual),
+                        epoch_seed=epoch_seed,
+                        batches_per_epoch=batches_per_epoch,
+                        best_val=best_val,
+                        best_state=best_state,
+                        best_epoch=best_epoch,
+                        es_counter=es_counter,
+                        running_train_loss=running_train_loss,
+                        running_train_correct=running_train_correct,
+                        running_train_samples=running_train_samples,
+                        running_train_batches=running_train_batches,
+                        metadata={
+                            "task": task_name,
+                            "probe": True,
+                            "depth": int(depth),
+                            "width": int(width),
+                            "candidate_dir": str(candidate_dir),
+                        },
+                    )
+                    save_checkpoint(
+                        last_ckpt,
+                        model=model,
+                        optimizer=optimizer,
+                        epoch=epoch,
+                        batch_index=0,
+                        epoch_complete=True,
+                        batch_size=int(getattr(task.train_loader, "batch_size", 0) or batch_size_actual),
+                        epoch_seed=epoch_seed,
+                        batches_per_epoch=batches_per_epoch,
+                        best_val=best_val,
+                        best_state=best_state,
+                        best_epoch=best_epoch,
+                        es_counter=es_counter,
+                        running_train_loss=running_train_loss,
+                        running_train_correct=running_train_correct,
+                        running_train_samples=running_train_samples,
+                        running_train_batches=running_train_batches,
+                        metadata={
+                            "task": task_name,
+                            "probe": True,
+                            "depth": int(depth),
+                            "width": int(width),
+                            "candidate_dir": str(candidate_dir),
+                        },
+                    )
+                    state_path.write_text(
+                        json.dumps(
+                            {
+                                "completed": True,
+                                "task": task_name,
+                                "depth": int(depth),
+                                "width": int(width),
+                                "epoch": epoch,
+                                "batch_index": 0,
+                                "epoch_complete": True,
+                                "batch_size": int(getattr(task.train_loader, "batch_size", 0) or batch_size_actual),
+                                "epoch_seed": epoch_seed,
+                                "batches_per_epoch": batches_per_epoch,
+                                "running_train_loss": running_train_loss,
+                                "running_train_correct": running_train_correct,
+                                "running_train_samples": running_train_samples,
+                                "running_train_batches": running_train_batches,
+                                "best_val": best_val,
+                                "best_epoch": best_epoch,
+                                "candidate_dir": str(candidate_dir),
+                                "checkpoint_last": str(last_ckpt),
+                                "checkpoint_best": str(best_ckpt),
+                            },
+                            indent=2,
+                        ),
+                        encoding="utf-8",
+                    )
                     return CandidateResult(
                         task=task_name,
                         depth=int(depth),
@@ -493,9 +705,14 @@ def run_candidate(
                         epochs_completed=int(epochs_done),
                         peak_mib=int(peak_mib),
                         samples_mib=list(samples),
+                        samples_free_mib=list(samples_free),
+                        samples_host_available_mib=list(samples_host_available),
+                        min_free_mib=min_free_mib,
+                        min_host_available_mib=min_host_available_mib,
                         average_mib=float(sum(samples) / max(len(samples), 1)) if samples else None,
                         model_factory=model_factory_name,
                         task_factory=task_factory_name,
+                        candidate_dir=str(candidate_dir),
                     )
 
             if batches_this_epoch == 0:
@@ -514,11 +731,16 @@ def run_candidate(
                     success_count=int(success_count),
                     batches_completed=int(batches_done),
                     epochs_completed=int(epochs_done),
-                    peak_mib=int(peak_mib),
-                    samples_mib=list(samples),
+                        peak_mib=int(peak_mib),
+                        samples_mib=list(samples),
+                        samples_free_mib=list(samples_free),
+                        samples_host_available_mib=list(samples_host_available),
+                        min_free_mib=min_free_mib,
+                        min_host_available_mib=min_host_available_mib,
                     average_mib=float(sum(samples) / max(len(samples), 1)) if samples else None,
                     model_factory=model_factory_name,
                     task_factory=task_factory_name,
+                    candidate_dir=str(candidate_dir),
                 )
     except RuntimeError as exc:
         msg = str(exc).lower()
@@ -547,9 +769,14 @@ def run_candidate(
         epochs_completed=int(epochs_done),
         peak_mib=int(peak_mib),
         samples_mib=list(samples),
+        samples_free_mib=list(samples_free),
+        samples_host_available_mib=list(samples_host_available),
+        min_free_mib=min_free_mib,
+        min_host_available_mib=min_host_available_mib,
         average_mib=float(sum(samples) / max(len(samples), 1)) if samples else None,
         model_factory=model_factory_name,
         task_factory=task_factory_name,
+        candidate_dir=str(candidate_dir),
     )
 
 
@@ -677,11 +904,29 @@ def write_reports(run_root: Path, rows: List[Dict[str, Any]]) -> None:
     for row in rows:
         if row["task"] != current_task:
             current_task = row["task"]
-            md_lines.extend([f"## {current_task}", "", "| depth | max width | failure width | failure reason | peak MiB | avg MiB |", "| --- | ---: | ---: | --- | ---: | ---: |"])
+            md_lines.extend([
+                f"## {current_task}",
+                "",
+                "| depth | max width | failure width | failure reason | peak MiB | avg MiB | min free MiB | min host avail MiB |",
+                "| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: |",
+            ])
         md_lines.append(
-            f"| {row['depth']} | {row.get('max_width')} | {row.get('failure_width')} | {row.get('failure_reason')} | {row.get('peak_mib')} | {row.get('average_mib')} |"
+            f"| {row['depth']} | {row.get('max_width')} | {row.get('failure_width')} | {row.get('failure_reason')} | {row.get('peak_mib')} | {row.get('average_mib')} | {row.get('min_free_mib')} | {row.get('min_host_available_mib')} |"
         )
     (run_root / "probe_summary.md").write_text("\n".join(md_lines) + "\n", encoding="utf-8")
+
+
+def load_existing_rows(run_root: Path) -> List[Dict[str, Any]]:
+    path = run_root / "probe_rows.json"
+    if not path.exists():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    if not isinstance(data, list):
+        return []
+    return [row for row in data if isinstance(row, dict)]
 
 
 def main() -> None:
@@ -701,7 +946,12 @@ def main() -> None:
     run_root.mkdir(parents=True, exist_ok=True)
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
-    rows: List[Dict[str, Any]] = []
+    rows: List[Dict[str, Any]] = load_existing_rows(run_root)
+    completed_pairs = {
+        (str(row.get("task", "")).lower(), int(row.get("depth")))
+        for row in rows
+        if row.get("task") is not None and row.get("depth") is not None
+    }
     start_task_time = time.time()
 
     for task_name in [str(t).lower() for t in args.tasks]:
@@ -724,6 +974,9 @@ def main() -> None:
         task_factory_name = str(args.task_factory)
 
         for depth in range(int(args.min_depth), int(args.max_depth) + 1):
+            if (task_name, int(depth)) in completed_pairs:
+                continue
+
             def probe(width: int) -> CandidateResult:
                 return run_candidate(
                     task_name=task_name,
@@ -741,6 +994,8 @@ def main() -> None:
                     device=device,
                     use_bn=bool(args.use_bn),
                     save_samples=bool(args.save_samples),
+                    run_root=run_root,
+                    seed=int(args.seed),
                 )
 
             max_width, failure_width, failure_reason, peak_mib, avg_mib = binary_search_max_width(
@@ -750,6 +1005,7 @@ def main() -> None:
                 width_cut_pct=float(args.width_cut_pct),
                 max_width=int(args.max_width),
             )
+            final_result = probe(max_width) if max_width is not None else None
 
             row = {
                 "task": task_name,
@@ -759,6 +1015,11 @@ def main() -> None:
                 "failure_reason": failure_reason,
                 "peak_mib": peak_mib,
                 "average_mib": avg_mib,
+                "samples_mib": final_result.samples_mib if final_result is not None else [],
+                "samples_free_mib": final_result.samples_free_mib if final_result is not None else [],
+                "samples_host_available_mib": final_result.samples_host_available_mib if final_result is not None else [],
+                "min_free_mib": final_result.min_free_mib if final_result is not None else None,
+                "min_host_available_mib": final_result.min_host_available_mib if final_result is not None else None,
                 "success_unit": str(args.success_unit),
                 "success_count": int(args.success_count),
                 "vram_threshold_mib": int(args.vram_threshold_mib),
@@ -767,10 +1028,13 @@ def main() -> None:
                 "task_batch_size": int(requested_batch),
                 "task_factory": task_factory_name,
                 "model_factory": str(args.model_factory),
+                "candidate_dir": final_result.candidate_dir if final_result is not None else None,
                 "elapsed_sec": round(time.time() - start_task_time, 3),
             }
             rows.append(row)
+            completed_pairs.add((task_name, int(depth)))
             print(json.dumps(row, sort_keys=True), flush=True)
+            write_reports(run_root, rows)
 
     write_reports(run_root, rows)
 
