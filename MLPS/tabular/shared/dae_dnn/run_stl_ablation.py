@@ -29,9 +29,9 @@ DEFAULT_TASKS = [
 
 DEFAULT_MIN_DEPTH = 1
 DEFAULT_MAX_DEPTH = 10
-DEFAULT_MIN_WIDTH = 16
+DEFAULT_MIN_WIDTH = 64
 DEFAULT_MAX_WIDTH = 1024
-DEFAULT_WIDTH_STEP = 16
+DEFAULT_WIDTH_STEP = 64
 DEFAULT_REPEAT_COUNT = 10
 DEFAULT_BATCH_TARGETS = {
     "classification": 50,
@@ -43,56 +43,105 @@ DEFAULT_BATCH_TARGETS = {
     "prediction": 1,
 }
 
-REPRESENTATION_ONLY_MAX_WIDTH_BY_DEPTH = {
-    1: 512,
-    2: 512,
-    3: 512,
-    4: 512,
-    5: 512,
-    6: 512,
-    7: 512,
-    8: 512,
-    9: 512,
-    10: 512,
-}
-
-REPRESENTATION_MAX_WIDTH_BY_DEPTH = {
-    1: 15664,
-    2: 13824,
-    3: 10400,
+CLASSIFICATION_MAX_WIDTH_BY_DEPTH = {
+    1: 39408,
+    2: 13504,
+    3: 10352,
     4: 8432,
     5: 6864,
-    6: 5872,
+    6: 5888,
     7: 5168,
     8: 4656,
     9: 4656,
-    10: 4320,
+    10: 4336,
+}
+
+AUTOENCODING_MAX_WIDTH_BY_DEPTH = {
+    1: 31520,
+    2: 12864,
+    3: 9968,
+    4: 8416,
+    5: 6864,
+    6: 5872,
+    7: 5168,
+    8: 4608,
+    9: 1024,
+    10: 256,
+}
+
+GENERATION_MAX_WIDTH_BY_DEPTH = {
+    1: 39040,
+    2: 14656,
+    3: 10560,
+    4: 8576,
+    5: 7296,
+    6: 6400,
+    7: 5760,
+    8: 5248,
+    9: 4800,
+    10: 4480,
+}
+
+DENOISING_MAX_WIDTH_BY_DEPTH = {
+    1: 39040,
+    2: 14656,
+    3: 10560,
+    4: 8576,
+    5: 7296,
+    6: 6400,
+    7: 5760,
+    8: 5248,
+    9: 4800,
+    10: 4480,
 }
 
 ANOMALY_MAX_WIDTH_BY_DEPTH = {
-    1: 6960,
-    2: 10080,
-    3: 7936,
-    4: 5776,
-    5: 5312,
-    6: 4480,
-    7: 4016,
-    8: 3520,
-    9: 3360,
-    10: 3024,
+    1: 21504,
+    2: 14656,
+    3: 10560,
+    4: 8512,
+    5: 7296,
+    6: 6400,
+    7: 5760,
+    8: 5248,
+    9: 4864,
+    10: 4416,
 }
 
 SIMULATION_MAX_WIDTH_BY_DEPTH = {
-    1: 17824,
-    2: 10304,
-    3: 8096,
-    4: 5904,
-    5: 5456,
-    6: 4576,
-    7: 4112,
-    8: 3616,
-    9: 3456,
-    10: 3072,
+    1: 39552,
+    2: 14656,
+    3: 10560,
+    4: 8576,
+    5: 7296,
+    6: 6400,
+    7: 5760,
+    8: 5248,
+    9: 4864,
+    10: 4480,
+}
+
+PREDICTION_MAX_WIDTH_BY_DEPTH = {
+    1: 39552,
+    2: 14656,
+    3: 10560,
+    4: 8576,
+    5: 7296,
+    6: 6400,
+    7: 5760,
+    8: 5248,
+    9: 4864,
+    10: 4480,
+}
+
+REMAINING_DEPTHS_BY_TASK = {
+    "classification": set(range(1, 11)),
+    "autoencoding": set(range(1, 11)),
+    "generation": set(range(1, 11)),
+    "denoising": set(range(1, 11)),
+    "anomaly": set(range(1, 11)),
+    "simulation": set(range(1, 11)),
+    "prediction": set(range(1, 11)),
 }
 
 
@@ -307,30 +356,48 @@ def parameter_matched_architecture(task: rg.Task, depth: int, cfg: rg.RunConfig)
 def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig) -> List[List[int]]:
     depth = max(1, int(depth))
     step = max(1, int(cfg.width_step))
-    min_width = max(1, int(cfg.min_width))
+    min_width = max(step, int(cfg.min_width))
     start_width = int(math.ceil(min_width / step) * step)
     task_name = str(getattr(task, "name", "")).lower()
+    if depth not in REMAINING_DEPTHS_BY_TASK.get(task_name, set()):
+        return []
     if task_name == "classification":
         max_width = int(
-            REPRESENTATION_ONLY_MAX_WIDTH_BY_DEPTH.get(
+            CLASSIFICATION_MAX_WIDTH_BY_DEPTH.get(depth, CLASSIFICATION_MAX_WIDTH_BY_DEPTH[max(CLASSIFICATION_MAX_WIDTH_BY_DEPTH)])
+        )
+    elif task_name == "autoencoding":
+        max_width = int(
+            AUTOENCODING_MAX_WIDTH_BY_DEPTH.get(
                 depth,
-                REPRESENTATION_ONLY_MAX_WIDTH_BY_DEPTH[max(REPRESENTATION_ONLY_MAX_WIDTH_BY_DEPTH)],
+                AUTOENCODING_MAX_WIDTH_BY_DEPTH[max(AUTOENCODING_MAX_WIDTH_BY_DEPTH)],
             )
         )
-    elif task_name in {"autoencoding", "generation", "denoising"}:
-        max_width = int(REPRESENTATION_MAX_WIDTH_BY_DEPTH.get(depth, REPRESENTATION_MAX_WIDTH_BY_DEPTH[max(REPRESENTATION_MAX_WIDTH_BY_DEPTH)]))
+    elif task_name == "generation":
+        max_width = int(
+            GENERATION_MAX_WIDTH_BY_DEPTH.get(
+                depth,
+                GENERATION_MAX_WIDTH_BY_DEPTH[max(GENERATION_MAX_WIDTH_BY_DEPTH)],
+            )
+        )
+    elif task_name == "denoising":
+        max_width = int(
+            DENOISING_MAX_WIDTH_BY_DEPTH.get(
+                depth,
+                DENOISING_MAX_WIDTH_BY_DEPTH[max(DENOISING_MAX_WIDTH_BY_DEPTH)],
+            )
+        )
     elif task_name == "anomaly" and depth in ANOMALY_MAX_WIDTH_BY_DEPTH:
         max_width = int(ANOMALY_MAX_WIDTH_BY_DEPTH[depth])
-    elif task_name in {"simulation", "prediction"}:
+    elif task_name == "simulation":
         max_width = int(SIMULATION_MAX_WIDTH_BY_DEPTH.get(depth, SIMULATION_MAX_WIDTH_BY_DEPTH[max(SIMULATION_MAX_WIDTH_BY_DEPTH)]))
+    elif task_name == "prediction":
+        max_width = int(PREDICTION_MAX_WIDTH_BY_DEPTH.get(depth, PREDICTION_MAX_WIDTH_BY_DEPTH[max(PREDICTION_MAX_WIDTH_BY_DEPTH)]))
     else:
         max_width = solve_parameter_matched_width(task, depth, cfg, target_parameter_count(task, cfg))
+    max_width = int(math.floor(max_width / step) * step)
     if max_width < start_width:
         max_width = start_width
-    widths = list(range(start_width, max_width + 1, step))
-    if not widths or widths[-1] != max_width:
-        widths.append(int(max_width))
-    widths = sorted(set(int(width) for width in widths), reverse=True)
+    widths = list(range(max_width, start_width - 1, -step))
     return [[int(width) for _ in range(depth)] for width in widths]
 
 
@@ -487,6 +554,8 @@ def run_task_ablation(
         family = [list(architecture)]
         if cfg.parameter_matched and len(architecture) == 1:
             family = parameter_matched_architectures(task, int(architecture[0]), cfg)
+        if not family:
+            continue
         family_start_idx = resume_family_idx if architecture_idx == resume_arch_idx else 0
         for family_idx, expanded_architecture in enumerate(family):
             if architecture_idx == resume_arch_idx and family_idx < family_start_idx:

@@ -8,6 +8,7 @@ import datetime as _dt
 import json
 import os
 import random
+import signal
 import subprocess
 import sys
 import tempfile
@@ -35,6 +36,46 @@ from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_fr
 
 DEFAULT_MAX_EPOCHS = 99999999999999999999999999999999999999999999999999999999999999999999999
 DEFAULT_VRAM_BUDGET_GB = 5.5
+
+
+class CheckpointTimeoutError(RuntimeError):
+    pass
+
+
+def sample_gpu_mib(device_index: int = 0) -> Optional[int]:
+    try:
+        out = subprocess.check_output(
+            [
+                "nvidia-smi",
+                f"--id={int(device_index)}",
+                "--query-gpu=memory.used",
+                "--format=csv,noheader,nounits",
+            ],
+            stderr=subprocess.DEVNULL,
+        )
+    except Exception:
+        return None
+    text = out.decode("utf-8").strip().splitlines()
+    if not text:
+        return None
+    try:
+        return int(float(text[0].strip()))
+    except Exception:
+        return None
+
+
+def sample_host_available_mib() -> Optional[int]:
+    try:
+        with open("/proc/meminfo", "r", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("MemAvailable:"):
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        return int(int(parts[1]) // 1024)
+                    break
+    except Exception:
+        return None
+    return None
 
 PER_TASK_BATCH_SIZES = {
     "prediction": 32768,
@@ -521,6 +562,7 @@ def save_checkpoint(
     running_train_samples: int = 0,
     running_train_batches: int = 0,
     metadata: Dict[str, Any],
+    timeout_sec: float = 0.0,
 ) -> None:
     payload = {
         "epoch": int(epoch),
@@ -552,7 +594,21 @@ def save_checkpoint(
     with tempfile.NamedTemporaryFile(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp", delete=False) as tmp:
         tmp_path = Path(tmp.name)
     try:
-        torch.save(payload, tmp_path)
+        previous_handler = None
+        if float(timeout_sec) > 0:
+            def _checkpoint_timeout_handler(signum, frame):
+                raise CheckpointTimeoutError(f"checkpoint_timeout_sec_exceeded:{float(timeout_sec):.3f}")
+
+            previous_handler = signal.getsignal(signal.SIGALRM)
+            signal.signal(signal.SIGALRM, _checkpoint_timeout_handler)
+            signal.setitimer(signal.ITIMER_REAL, float(timeout_sec))
+        try:
+            torch.save(payload, tmp_path)
+        finally:
+            if float(timeout_sec) > 0:
+                signal.setitimer(signal.ITIMER_REAL, 0.0)
+                if previous_handler is not None:
+                    signal.signal(signal.SIGALRM, previous_handler)
         with tmp_path.open("rb") as f:
             os.fsync(f.fileno())
         os.replace(tmp_path, path)
@@ -854,6 +910,10 @@ def training_loop(
     resume: bool = True,
     batch_controller: Optional[AdaptiveBatchController] = None,
     display_best_floor: Optional[float] = None,
+    max_train_batches_per_epoch: Optional[int] = None,
+    checkpoint_timeout_sec: float = 0.0,
+    vram_threshold_mib: int = 0,
+    host_ram_threshold_mib: int = 0,
 ) -> CandidateResult:
     candidate_dir.mkdir(parents=True, exist_ok=True)
     metadata_path = candidate_dir / "metadata.json"
@@ -954,10 +1014,7 @@ def training_loop(
                 f"[METRICS] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
                 f"epoch={epoch} starting auxiliary metrics"
             )
-            if str(task.name).lower() == "classification":
-                metrics = logged_classification_metrics(model, task, device, logger)
-            else:
-                metrics = task.metrics_fn(model, task, device) or {}
+            metrics = task.metrics_fn(model, task, device) or {}
             logger.log_console(
                 f"[METRICS] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
                 f"epoch={epoch} finished auxiliary metrics keys={sorted(metrics.keys())}"
@@ -971,6 +1028,10 @@ def training_loop(
             best_state = cpu_object(model.state_dict())
             best_epoch = epoch
             es_counter = 0
+            logger.log_console(
+                f"[CKPT] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} start path={best_ckpt.name}"
+            )
             save_checkpoint(
                 best_ckpt,
                 model=model,
@@ -986,10 +1047,21 @@ def training_loop(
                     "candidate_dir": str(candidate_dir),
                     "reconstruct": reconstruct,
                 },
+                timeout_sec=float(checkpoint_timeout_sec),
+            )
+            logger.log_console(
+                f"[CKPT] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} done path={best_ckpt.name} "
+                f"gpu_used_mib={sample_gpu_mib(torch.cuda.current_device() if torch.cuda.is_available() else 0)} "
+                f"host_available_mib={sample_host_available_mib()}"
             )
         else:
             es_counter += 1
 
+        logger.log_console(
+            f"[CKPT] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+            f"epoch={epoch} start path={last_ckpt.name}"
+        )
         save_checkpoint(
             last_ckpt,
             model=model,
@@ -999,13 +1071,14 @@ def training_loop(
             best_state=best_state,
             best_epoch=best_epoch,
             es_counter=es_counter,
-            metadata={
-                "task": task.name,
-                "phase": candidate_dir.parent.name,
-                "candidate_dir": str(candidate_dir),
-                "reconstruct": reconstruct,
-            },
-        )
+                metadata={
+                    "task": task.name,
+                    "phase": candidate_dir.parent.name,
+                    "candidate_dir": str(candidate_dir),
+                    "reconstruct": reconstruct,
+                },
+                timeout_sec=float(checkpoint_timeout_sec),
+            )
 
         row: Dict[str, Any] = {
             "task": task.name,
@@ -1070,6 +1143,7 @@ def training_loop(
         best_epoch=best_epoch,
         es_counter=0,
         metadata={"task": task.name, "phase": candidate_dir.parent.name, "candidate_dir": str(candidate_dir), "reconstruct": reconstruct},
+        timeout_sec=float(checkpoint_timeout_sec),
     )
     write_json(
         candidate_state_path,
@@ -2478,6 +2552,9 @@ def build_run_root(cfg: RunConfig) -> Path:
     return Path(cfg.results_dir) / f"goliath_{now_stamp()}"
 
 
+_batch_resume_training_loop = training_loop
+
+
 def training_loop(
     *,
     task: Task,
@@ -2490,7 +2567,30 @@ def training_loop(
     resume: bool = True,
     batch_controller: Optional[AdaptiveBatchController] = None,
     display_best_floor: Optional[float] = None,
+    **kwargs,
 ) -> CandidateResult:
+    max_train_batches_per_epoch = kwargs.pop("max_train_batches_per_epoch", None)
+    checkpoint_timeout_sec = float(kwargs.pop("checkpoint_timeout_sec", 0.0))
+    vram_threshold_mib = int(kwargs.pop("vram_threshold_mib", 0))
+    host_ram_threshold_mib = int(kwargs.pop("host_ram_threshold_mib", 0))
+    if kwargs:
+        return _batch_resume_training_loop(
+            task=task,
+            model=model,
+            candidate_dir=candidate_dir,
+            cfg=cfg,
+            device=device,
+            logger=logger,
+            reconstruct=reconstruct,
+            resume=resume,
+            batch_controller=batch_controller,
+            display_best_floor=display_best_floor,
+            max_train_batches_per_epoch=max_train_batches_per_epoch,
+            checkpoint_timeout_sec=checkpoint_timeout_sec,
+            vram_threshold_mib=vram_threshold_mib,
+            host_ram_threshold_mib=host_ram_threshold_mib,
+            **kwargs,
+        )
     candidate_dir.mkdir(parents=True, exist_ok=True)
     metadata_path = candidate_dir / "metadata.json"
     candidate_state_path = candidate_dir / "candidate_state.json"
@@ -2611,6 +2711,7 @@ def training_loop(
             running_train_batches = 0
 
         batch_processed = False
+        batch_limit_hit = False
         for batch_idx, batch in enumerate(train_loader):
             if batch_idx < start_batch:
                 continue
@@ -2631,6 +2732,14 @@ def training_loop(
             if float(cfg.grad_clip) > 0:
                 torch.nn.utils.clip_grad_norm_(model.parameters(), float(cfg.grad_clip))
             optimizer.step()
+            if int(vram_threshold_mib) > 0:
+                gpu_used = sample_gpu_mib(torch.cuda.current_device() if torch.cuda.is_available() else 0)
+                if gpu_used is not None and int(gpu_used) > int(vram_threshold_mib):
+                    raise RuntimeError("vram_threshold_exceeded")
+            if int(host_ram_threshold_mib) > 0:
+                host_available = sample_host_available_mib()
+                if host_available is not None and int(host_available) < int(host_ram_threshold_mib):
+                    raise RuntimeError("host_ram_threshold_exceeded")
 
             batch_size_actual = int(x.size(0))
             running_train_loss += float(loss.item()) * batch_size_actual
@@ -2639,6 +2748,10 @@ def training_loop(
             if not reconstruct and task.task_type == "classification":
                 running_train_correct += float((out.argmax(dim=1) == y).float().sum().item())
 
+            logger.log_console(
+                f"[CKPT] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} batch={batch_idx + 1}/{batches_per_epoch} start path={last_ckpt.name}"
+            )
             save_checkpoint(
                 last_ckpt,
                 model=model,
@@ -2663,6 +2776,14 @@ def training_loop(
                     "candidate_dir": str(candidate_dir),
                     "reconstruct": reconstruct,
                 },
+                timeout_sec=float(checkpoint_timeout_sec),
+            )
+            gpu_used_after_ckpt = sample_gpu_mib(torch.cuda.current_device() if torch.cuda.is_available() else 0)
+            host_avail_after_ckpt = sample_host_available_mib()
+            logger.log_console(
+                f"[CKPT] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+                f"epoch={epoch} batch={batch_idx + 1}/{batches_per_epoch} done "
+                f"gpu_used_mib={gpu_used_after_ckpt} host_available_mib={host_avail_after_ckpt}"
             )
             running_train_loss_avg = float(running_train_loss / max(running_train_samples, 1))
             batch_message = (
@@ -2706,6 +2827,15 @@ def training_loop(
                 },
             )
 
+            if max_train_batches_per_epoch is not None and running_train_batches >= int(max_train_batches_per_epoch):
+                batch_limit_hit = True
+                logger.log_console(
+                    f"[BATCH_LIMIT] task={task.name} phase={candidate_dir.parent.name} "
+                    f"candidate={candidate_dir.name} epoch={epoch} "
+                    f"limit={int(max_train_batches_per_epoch)} reached_batches={running_train_batches}"
+                )
+                break
+
         if not batch_processed:
             raise RuntimeError(f"No batches were processed for {candidate_dir} at epoch {epoch}")
 
@@ -2745,10 +2875,7 @@ def training_loop(
                 f"[METRICS] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
                 f"epoch={epoch} starting auxiliary metrics"
             )
-            if str(task.name).lower() == "classification":
-                metrics = logged_classification_metrics(model, task, device, logger)
-            else:
-                metrics = task.metrics_fn(model, task, device) or {}
+            metrics = task.metrics_fn(model, task, device) or {}
             logger.log_console(
                 f"[METRICS] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
                 f"epoch={epoch} finished auxiliary metrics keys={sorted(metrics.keys())}"
@@ -2786,6 +2913,7 @@ def training_loop(
                     "candidate_dir": str(candidate_dir),
                     "reconstruct": reconstruct,
                 },
+                timeout_sec=float(checkpoint_timeout_sec),
             )
         else:
             es_counter += 1
@@ -2814,6 +2942,13 @@ def training_loop(
                 "candidate_dir": str(candidate_dir),
                 "reconstruct": reconstruct,
             },
+            timeout_sec=float(checkpoint_timeout_sec),
+        )
+        logger.log_console(
+            f"[CKPT] task={task.name} phase={candidate_dir.parent.name} candidate={candidate_dir.name} "
+            f"epoch={epoch} done path={last_ckpt.name} "
+            f"gpu_used_mib={sample_gpu_mib(torch.cuda.current_device() if torch.cuda.is_available() else 0)} "
+            f"host_available_mib={sample_host_available_mib()}"
         )
 
         row: Dict[str, Any] = {
@@ -2883,6 +3018,8 @@ def training_loop(
 
         if es_counter >= int(cfg.patience):
             break
+        if batch_limit_hit:
+            break
 
     model.load_state_dict(best_state)
     save_checkpoint(
@@ -2904,6 +3041,7 @@ def training_loop(
         running_train_samples=running_train_samples,
         running_train_batches=running_train_batches,
         metadata={"task": task.name, "phase": candidate_dir.parent.name, "candidate_dir": str(candidate_dir), "reconstruct": reconstruct},
+        timeout_sec=float(checkpoint_timeout_sec),
     )
     write_json(
         candidate_state_path,

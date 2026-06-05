@@ -40,8 +40,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--max-neurons", type=int, default=10_000_000)
     p.add_argument("--width-stage-margin-patience", type=int, default=10)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
-    p.add_argument("--min-width", type=int, default=16)
-    p.add_argument("--width-step", type=int, default=16)
+    p.add_argument("--min-width", type=int, default=64)
+    p.add_argument("--width-step", type=int, default=64)
     p.add_argument("--min-depth", type=int, default=1)
     p.add_argument("--repeat-count", type=int, default=10)
     p.add_argument("--concurrency", type=int, default=10)
@@ -142,7 +142,9 @@ def child_state_path(child_run_root: Path) -> Path:
 
 def child_completed(child_run_root: Path, task_name: str) -> bool:
     state = rg.load_json_if_exists(child_state_path(child_run_root)) or {}
-    if bool(state.get("completed", False)) or bool(state.get("failed", False)):
+    if bool(state.get("failed", False)):
+        return False
+    if bool(state.get("completed", False)):
         return True
     summary_path = child_summary_path(child_run_root, task_name)
     plot_path = child_run_root / task_name / "ablation_loss_vs_params.png"
