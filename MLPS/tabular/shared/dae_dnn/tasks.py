@@ -287,27 +287,6 @@ def build_task(
         val_ds = ArrayDataset(val_x, val_y)
         test_ds = ArrayDataset(test_x, test_y)
 
-        metrics_fn = None
-        if name == "classification":
-            def metrics_fn(model, task, device):
-                model.eval()
-                feats = []
-                labels = []
-                with torch.no_grad():
-                    for x, y in task.val_loader:
-                        x = x.to(device)
-                        _, emb = model(x, return_embedding=True)
-                        feats.append(emb.cpu().numpy())
-                        labels.append(y.numpy())
-                feats_np = np.concatenate(feats, axis=0)
-                labels_np = np.concatenate(labels, axis=0)
-                knn_acc = _knn_accuracy(feats_np, labels_np)
-                cluster_nmi = _cluster_nmi(feats_np, labels_np)
-                return {
-                    "knn_acc": knn_acc,
-                    "cluster_nmi": cluster_nmi,
-                }
-
         task_type = "classification"
         out_dim = 7
         in_dim = int(train_x.shape[1])
@@ -322,7 +301,7 @@ def build_task(
             out_dim=out_dim,
             task_type=task_type,
             loss_fn=loss_fn,
-            metrics_fn=metrics_fn,
+            metrics_fn=None,
             extra={"max_width": 32} if name == "edge" else {},
         )
 
