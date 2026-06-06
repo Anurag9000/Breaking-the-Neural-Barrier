@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import argparse
+import os
+import signal
 import subprocess
 import sys
 import time
@@ -199,6 +201,57 @@ def mark_child_failed(child_root: Path, task_name: str, architecture: Sequence[i
     )
 
 
+def terminate_child_process(proc: subprocess.Popen[Any], timeout_sec: float = 10.0) -> None:
+    try:
+        pgid = os.getpgid(proc.pid)
+    except Exception:
+        pgid = None
+
+    if pgid is not None:
+        try:
+            os.killpg(pgid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        except Exception:
+            try:
+                proc.terminate()
+            except Exception:
+                pass
+    else:
+        try:
+            proc.terminate()
+        except Exception:
+            pass
+
+    try:
+        proc.wait(timeout=timeout_sec)
+        return
+    except subprocess.TimeoutExpired:
+        pass
+    except Exception:
+        return
+
+    if pgid is not None:
+        try:
+            os.killpg(pgid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        except Exception:
+            try:
+                proc.kill()
+            except Exception:
+                pass
+    else:
+        try:
+            proc.kill()
+        except Exception:
+            pass
+    try:
+        proc.wait(timeout=timeout_sec)
+    except Exception:
+        pass
+
+
 def aggregate_task(task_name: str, task_root: Path, child_roots: Sequence[Path]) -> Dict[str, Any]:
     ablation_runs: List[Dict[str, Any]] = []
     comparisons: List[Dict[str, Any]] = []
@@ -319,10 +372,12 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
                 architecture, child_root, cmd = active[proc]
                 log = f"Child job failed (arch={architecture}, root={child_root}, code={code}): {' '.join(cmd)}"
                 print(log, flush=True)
+                terminate_child_process(proc)
                 mark_child_failed(child_root, task_name, architecture, code, cmd)
                 jobs.appendleft((architecture, child_root))
                 finished.append(proc)
                 continue
+            terminate_child_process(proc)
             finished.append(proc)
 
         for proc in finished:
