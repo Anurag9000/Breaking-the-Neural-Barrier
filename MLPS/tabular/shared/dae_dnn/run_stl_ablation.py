@@ -845,56 +845,60 @@ def main() -> None:
 
     task_reports: List[Dict[str, Any]] = []
     comparison_rows: List[Dict[str, Any]] = []
-    for task_name in tasks:
-        task_root = run_root / task_name
-        task_root.mkdir(parents=True, exist_ok=True)
-        report = run_task_ablation(
-            task_name=task_name,
-            task_root=task_root,
-            cfg=cfg,
-            pin_memory=bool(args.pin_memory),
-            source_run_root=source_run_root,
-            architectures=architectures,
-            repeat_count=int(args.repeat_count),
-            repeat_index=args.repeat_index,
-            device=device,
-            log=logger,
-            batch_controller=batch_controller,
-        )
-        task_reports.append(report)
-        comparison_rows.extend(report["comparisons"])
+    try:
+        for task_name in tasks:
+            task_root = run_root / task_name
+            task_root.mkdir(parents=True, exist_ok=True)
+            report = run_task_ablation(
+                task_name=task_name,
+                task_root=task_root,
+                cfg=cfg,
+                pin_memory=bool(args.pin_memory),
+                source_run_root=source_run_root,
+                architectures=architectures,
+                repeat_count=int(args.repeat_count),
+                repeat_index=args.repeat_index,
+                device=device,
+                log=logger,
+                batch_controller=batch_controller,
+            )
+            task_reports.append(report)
+            comparison_rows.extend(report["comparisons"])
+            rg.cleanup_runtime()
 
-    if comparison_rows:
-        rg.write_csv(
-            run_root / "comparison_summary.csv",
-            comparison_rows,
-            fieldnames=[
-                "task",
-                "repeat",
-                "ablation_phase",
-                "ablation_architecture",
-                "ablation_parameter_count",
-                "ablation_best_val",
-                "reference_kind",
-                "reference_phase",
-                "reference_architecture",
-                "reference_best_val",
-                "winner",
-                "winner_value",
-            ],
-        )
+        if comparison_rows:
+            rg.write_csv(
+                run_root / "comparison_summary.csv",
+                comparison_rows,
+                fieldnames=[
+                    "task",
+                    "repeat",
+                    "ablation_phase",
+                    "ablation_architecture",
+                    "ablation_parameter_count",
+                    "ablation_best_val",
+                    "reference_kind",
+                    "reference_phase",
+                    "reference_architecture",
+                    "reference_best_val",
+                    "winner",
+                    "winner_value",
+                ],
+            )
 
-    rg.write_json(
-        run_root / "comparison_summary.json",
-        {
-            "tasks": tasks,
-            "architectures": architectures,
-            "source_run_root": str(source_run_root),
-            "repeat_count": int(args.repeat_count),
-            "reports": task_reports,
-        },
-    )
-    logger.close()
+        rg.write_json(
+            run_root / "comparison_summary.json",
+            {
+                "tasks": tasks,
+                "architectures": architectures,
+                "source_run_root": str(source_run_root),
+                "repeat_count": int(args.repeat_count),
+                "reports": task_reports,
+            },
+        )
+    finally:
+        rg.cleanup_runtime()
+        logger.close()
 
 
 if __name__ == "__main__":

@@ -77,6 +77,26 @@ def sample_host_available_mib() -> Optional[int]:
         return None
     return None
 
+
+def cleanup_runtime() -> None:
+    try:
+        if torch.cuda.is_available():
+            try:
+                torch.cuda.synchronize()
+            except Exception:
+                pass
+            try:
+                torch.cuda.empty_cache()
+            except Exception:
+                pass
+            try:
+                if hasattr(torch.cuda, "ipc_collect"):
+                    torch.cuda.ipc_collect()
+            except Exception:
+                pass
+    finally:
+        gc.collect()
+
 PER_TASK_BATCH_SIZES = {
     "prediction": 32768,
     "classification": 32768,
