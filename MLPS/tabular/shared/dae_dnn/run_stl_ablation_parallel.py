@@ -43,7 +43,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--width-stage-margin-patience", type=int, default=10)
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
     p.add_argument("--min-width", type=int, default=64)
-    p.add_argument("--width-step", type=int, default=64)
+    p.add_argument("--width-step", type=int, default=1)
     p.add_argument("--width-count-per-depth", type=int, default=20)
     p.add_argument("--min-depth", type=int, default=1)
     p.add_argument("--repeat-count", type=int, default=5)
