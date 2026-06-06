@@ -193,7 +193,7 @@ def mark_child_failed(child_root: Path, task_name: str, architecture: Sequence[i
             "architecture": [int(v) for v in architecture],
             "exit_code": int(exit_code),
             "command": list(cmd),
-            "completed": True,
+            "completed": False,
             "failed": True,
         },
     )
@@ -320,7 +320,7 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
                 log = f"Child job failed (arch={architecture}, root={child_root}, code={code}): {' '.join(cmd)}"
                 print(log, flush=True)
                 mark_child_failed(child_root, task_name, architecture, code, cmd)
-                completed_children.append(child_root)
+                jobs.appendleft((architecture, child_root))
                 finished.append(proc)
                 continue
             finished.append(proc)
