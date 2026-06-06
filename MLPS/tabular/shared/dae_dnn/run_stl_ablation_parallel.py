@@ -44,8 +44,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--width-stage-min-improve-pct", type=float, default=1.0)
     p.add_argument("--min-width", type=int, default=64)
     p.add_argument("--width-step", type=int, default=64)
+    p.add_argument("--width-count-per-depth", type=int, default=20)
     p.add_argument("--min-depth", type=int, default=1)
-    p.add_argument("--repeat-count", type=int, default=10)
+    p.add_argument("--repeat-count", type=int, default=5)
     p.add_argument("--concurrency", type=int, default=10)
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
@@ -118,6 +119,8 @@ def build_worker_command(
         str(int(args.min_width)),
         "--width-step",
         str(int(args.width_step)),
+        "--width-count-per-depth",
+        str(int(args.width_count_per_depth)),
         "--min-depth",
         str(int(args.min_depth)),
         "--stl-width",
