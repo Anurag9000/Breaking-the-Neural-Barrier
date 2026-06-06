@@ -36,13 +36,11 @@ Current resume target on this machine:
 - remaining depths: `1 2 3 4 5 6 7 8 9 10`
 - concurrency: `3`
 
-The launcher now follows the documented waves:
+The launcher now uses a sliding window of 3 depths:
 
-- wave 1: `1 2 3 4`
-- wave 2: `5 6 7 8`
-- wave 3: `9 10`
-
-Depths `1 2 3 4` are already preserved in the result tree.
+- at most 3 depth jobs are active at once
+- as soon as any job exits, the next queued depth starts
+- the order is still `1 2 3 4 5 6 7 8 9 10`, but the active window shifts instead of waiting for a fixed batch to finish
 
 ## Current artifact roots to keep
 
@@ -80,8 +78,8 @@ To keep that deterministic, do not change the command, task list, or `--stl-dept
 
 ## Suggested execution split
 
-For the current generation resume on this machine, use the launcher in `scripts/run_generation_suite.sh` with concurrency `4`.
-It runs the three depth waves above and wraps every depth in the watchdog.
+For the current generation resume on this machine, use the launcher in `scripts/run_generation_suite.sh` with concurrency `3`.
+It runs the sliding window above and wraps every depth in the watchdog.
 
 Recommended launch pattern:
 
