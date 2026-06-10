@@ -76,8 +76,7 @@ MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_anomaly_onward_gpu
 MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current
 ```
 
-The staged archive now uses `classification` as the visible task label where
-the old tree used `representation`.
+The staged archive now uses `classification` as the visible task label.
 
 ## Big Open TODO
 
@@ -98,15 +97,36 @@ Historical STL outputs from the previous top-level run root were moved to:
 MLPS/tabular/shared/dae_dnn/results/archive/stl_ablation_parameter_matched_gpu_serial
 ```
 
-The legacy `representation` sweep is restored under the canonical
-`classification` archive root:
+The legacy sweep is restored under the canonical `classification` archive root:
 
 ```text
 MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1
 ```
 
-The source artifact names still carry the legacy `representation` label in the
-archived CSV and plot, but the repo-visible root is `classification_trial1`.
+The repo-visible root is `classification_trial1`.
+
+The curated result catalog now lives under:
+
+```text
+MLPS/tabular/shared/dae_dnn/results/catalog/
+```
+
+That catalog exposes the current task groups:
+
+- `representation`
+- `classification`
+- `autoencoding`
+- `generation`
+- `denoising`
+- `anomaly`
+- `simulation`
+- `prediction`
+
+The live repeat-5 ADP W2D suite remains separate at:
+
+```text
+MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1
+```
 
 ## Resume rule
 
