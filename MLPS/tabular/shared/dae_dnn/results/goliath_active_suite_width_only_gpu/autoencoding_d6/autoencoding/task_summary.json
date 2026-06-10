@@ -1,0 +1,147 @@
+{
+  "adp_runs": [
+    {
+      "architecture": [
+        128,
+        128,
+        128,
+        128,
+        128,
+        128
+      ],
+      "best_candidate_dir": "cand_762_d6_w128",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d6/autoencoding/ae_width_only/cand_762_d6_w128/checkpoint_best.pt",
+      "best_epoch": 17,
+      "best_val": 0.0006699250661768019,
+      "final_epoch": 17,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "autoencoding"
+    }
+  ],
+  "comparisons": [
+    {
+      "adp_architecture": [
+        128,
+        128,
+        128,
+        128,
+        128,
+        128
+      ],
+      "adp_best_val": 0.0006699250661768019,
+      "adp_phase": "ae_width_only",
+      "stl_architecture": [
+        128,
+        128,
+        128,
+        128,
+        128,
+        128
+      ],
+      "stl_best_val": 0.00599288335070014,
+      "stl_phase": "stl_from_ae_width_only",
+      "task": "autoencoding",
+      "winner": "adp",
+      "winner_phase": "ae_width_only",
+      "winner_value": 0.0006699250661768019
+    }
+  ],
+  "paired_stl_runs": [
+    {
+      "architecture": [
+        128,
+        128,
+        128,
+        128,
+        128,
+        128
+      ],
+      "best_epoch": 90,
+      "best_val": 0.00599288335070014,
+      "candidate_dir": "cand_000_d6_w128",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d6/autoencoding/stl_from_ae_width_only/cand_000_d6_w128/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d6/autoencoding/stl_from_ae_width_only/cand_000_d6_w128/checkpoint_last.pt",
+      "final_epoch": 100,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "autoencoding",
+      "test_metrics": {
+        "test_loss": 0.0062588173896074295
+      }
+    }
+  ],
+  "phases": [
+    {
+      "architecture": [
+        128,
+        128,
+        128,
+        128,
+        128,
+        128
+      ],
+      "best_candidate_dir": "cand_762_d6_w128",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d6/autoencoding/ae_width_only/cand_762_d6_w128/checkpoint_best.pt",
+      "best_epoch": 17,
+      "best_val": 0.0006699250661768019,
+      "final_epoch": 17,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "autoencoding"
+    },
+    {
+      "architecture": [
+        128,
+        128,
+        128,
+        128,
+        128,
+        128
+      ],
+      "best_epoch": 90,
+      "best_val": 0.00599288335070014,
+      "candidate_dir": "cand_000_d6_w128",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d6/autoencoding/stl_from_ae_width_only/cand_000_d6_w128/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d6/autoencoding/stl_from_ae_width_only/cand_000_d6_w128/checkpoint_last.pt",
+      "final_epoch": 100,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "autoencoding",
+      "test_metrics": {
+        "test_loss": 0.0062588173896074295
+      }
+    }
+  ],
+  "task": "autoencoding",
+  "winner": {
+    "adp_architecture": [
+      128,
+      128,
+      128,
+      128,
+      128,
+      128
+    ],
+    "adp_best_val": 0.0006699250661768019,
+    "adp_phase": "ae_width_only",
+    "stl_architecture": [
+      128,
+      128,
+      128,
+      128,
+      128,
+      128
+    ],
+    "stl_best_val": 0.00599288335070014,
+    "stl_phase": "stl_from_ae_width_only",
+    "task": "autoencoding",
+    "winner": "adp",
+    "winner_phase": "ae_width_only",
+    "winner_value": 0.0006699250661768019
+  }
+}

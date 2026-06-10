@@ -1,0 +1,115 @@
+{
+  "adp_runs": [
+    {
+      "architecture": [
+        86,
+        86
+      ],
+      "best_candidate_dir": "cand_170_d2_w86",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d2/denoising/ae_width_only/cand_170_d2_w86/checkpoint_best.pt",
+      "best_epoch": 13,
+      "best_val": 0.0007168621721048121,
+      "final_epoch": 13,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "denoising"
+    }
+  ],
+  "comparisons": [
+    {
+      "adp_architecture": [
+        86,
+        86
+      ],
+      "adp_best_val": 0.0007168621721048121,
+      "adp_phase": "ae_width_only",
+      "stl_architecture": [
+        86,
+        86
+      ],
+      "stl_best_val": 0.0109968754119212,
+      "stl_phase": "stl_from_ae_width_only",
+      "task": "denoising",
+      "winner": "adp",
+      "winner_phase": "ae_width_only",
+      "winner_value": 0.0007168621721048121
+    }
+  ],
+  "paired_stl_runs": [
+    {
+      "architecture": [
+        86,
+        86
+      ],
+      "best_epoch": 202,
+      "best_val": 0.0109968754119212,
+      "candidate_dir": "cand_000_d2_w86",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d2/denoising/stl_from_ae_width_only/cand_000_d2_w86/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d2/denoising/stl_from_ae_width_only/cand_000_d2_w86/checkpoint_last.pt",
+      "final_epoch": 212,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "denoising",
+      "test_metrics": {
+        "test_loss": 0.011111024235017305
+      }
+    }
+  ],
+  "phases": [
+    {
+      "architecture": [
+        86,
+        86
+      ],
+      "best_candidate_dir": "cand_170_d2_w86",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d2/denoising/ae_width_only/cand_170_d2_w86/checkpoint_best.pt",
+      "best_epoch": 13,
+      "best_val": 0.0007168621721048121,
+      "final_epoch": 13,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "denoising"
+    },
+    {
+      "architecture": [
+        86,
+        86
+      ],
+      "best_epoch": 202,
+      "best_val": 0.0109968754119212,
+      "candidate_dir": "cand_000_d2_w86",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d2/denoising/stl_from_ae_width_only/cand_000_d2_w86/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d2/denoising/stl_from_ae_width_only/cand_000_d2_w86/checkpoint_last.pt",
+      "final_epoch": 212,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "denoising",
+      "test_metrics": {
+        "test_loss": 0.011111024235017305
+      }
+    }
+  ],
+  "task": "denoising",
+  "winner": {
+    "adp_architecture": [
+      86,
+      86
+    ],
+    "adp_best_val": 0.0007168621721048121,
+    "adp_phase": "ae_width_only",
+    "stl_architecture": [
+      86,
+      86
+    ],
+    "stl_best_val": 0.0109968754119212,
+    "stl_phase": "stl_from_ae_width_only",
+    "task": "denoising",
+    "winner": "adp",
+    "winner_phase": "ae_width_only",
+    "winner_value": 0.0007168621721048121
+  }
+}

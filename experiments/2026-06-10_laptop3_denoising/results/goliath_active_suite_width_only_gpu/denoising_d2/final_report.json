@@ -1,0 +1,146 @@
+{
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 32768,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "depth_expansion_patience": 2,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 99999999999999999999999999999999999999999999999999999999999999999999999,
+    "max_neurons": 10000000,
+    "max_width": 512,
+    "num_workers": 0,
+    "patience": 10,
+    "phases": [
+      "ae_width_only"
+    ],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d2",
+    "seed": 0,
+    "stl_depth": 2,
+    "stl_width": 128,
+    "tasks": [
+      "denoising"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_expansion_patience": 10,
+    "width_stage_margin_patience": 10,
+    "width_stage_min_improve_pct": 1.0
+  },
+  "device": "cpu",
+  "git_commit": "c94df6d10754195394b5d5cf6977de976b506d7c",
+  "run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d2",
+  "summary": {
+    "num_tasks_completed": 1,
+    "num_tasks_requested": 1,
+    "tasks_completed": [
+      "denoising"
+    ],
+    "tasks_requested": [
+      "denoising"
+    ]
+  },
+  "tasks": [
+    {
+      "adp_runs": [
+        {
+          "architecture": [
+            86,
+            86
+          ],
+          "best_epoch": 13,
+          "best_val": 0.0007168621721048121,
+          "candidate_dir": "cand_170_d2_w86",
+          "final_epoch": 13,
+          "mode": "width_only",
+          "phase": "ae_width_only",
+          "test_metrics": null
+        }
+      ],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [
+        {
+          "adp_architecture": [
+            86,
+            86
+          ],
+          "adp_best_val": 0.0007168621721048121,
+          "adp_phase": "ae_width_only",
+          "stl_architecture": [
+            86,
+            86
+          ],
+          "stl_best_val": 0.0109968754119212,
+          "stl_phase": "stl_from_ae_width_only",
+          "task": "denoising",
+          "winner": "adp",
+          "winner_phase": "ae_width_only",
+          "winner_value": 0.0007168621721048121
+        }
+      ],
+      "paired_stl_runs": [
+        {
+          "adp_architecture": [
+            86,
+            86
+          ],
+          "adp_best_val": 0.0007168621721048121,
+          "adp_phase": "ae_width_only",
+          "stl_architecture": [
+            86,
+            86
+          ],
+          "stl_best_val": 0.0109968754119212,
+          "stl_phase": "stl_from_ae_width_only",
+          "stl_run": {
+            "architecture": [
+              86,
+              86
+            ],
+            "best_epoch": 202,
+            "best_val": 0.0109968754119212,
+            "candidate_dir": "cand_000_d2_w86",
+            "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d2/denoising/stl_from_ae_width_only/cand_000_d2_w86/checkpoint_best.pt",
+            "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d2/denoising/stl_from_ae_width_only/cand_000_d2_w86/checkpoint_last.pt",
+            "final_epoch": 212,
+            "phase": "stl_from_ae_width_only",
+            "resumed": false,
+            "source_phase": "ae_width_only",
+            "task": "denoising",
+            "test_metrics": {
+              "test_loss": 0.011111024235017305
+            }
+          },
+          "winner": "adp",
+          "winner_phase": "ae_width_only",
+          "winner_value": 0.0007168621721048121
+        }
+      ],
+      "task": "denoising",
+      "winner": {
+        "adp_architecture": [
+          86,
+          86
+        ],
+        "adp_best_val": 0.0007168621721048121,
+        "adp_phase": "ae_width_only",
+        "stl_architecture": [
+          86,
+          86
+        ],
+        "stl_best_val": 0.0109968754119212,
+        "stl_phase": "stl_from_ae_width_only",
+        "task": "denoising",
+        "winner": "adp",
+        "winner_phase": "ae_width_only",
+        "winner_value": 0.0007168621721048121
+      }
+    }
+  ]
+}

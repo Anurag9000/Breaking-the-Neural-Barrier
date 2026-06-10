@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import torch
@@ -247,6 +248,7 @@ def adp_search(
     measure_throughput: bool = False,
     batch_controller=None,
     max_candidates: Optional[int] = None,
+    results_dir: Optional[str | Path] = None,
 ):
     return run_module_adp(
         globals(),
@@ -255,7 +257,7 @@ def adp_search(
         task.val_loader,
         cfg,
         device,
-        results_dir=None,
+        results_dir=Path(results_dir) if results_dir is not None else None,
         logger=logger,
         batch_controller=batch_controller,
         measure_throughput=measure_throughput,
