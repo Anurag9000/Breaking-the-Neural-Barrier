@@ -1145,7 +1145,7 @@ def run_module_adp(
         )
         warmed_model, _, warmed_val, warmed_snap, current_width_fail, current_depth_fail, current_margin_fail = ensure_uniform_width(
             warm_model,
-            update_global=False,
+            update_global=True,
             current_width_fail=current_width_fail,
             current_depth_fail=current_depth_fail,
             current_margin_fail=current_margin_fail,
