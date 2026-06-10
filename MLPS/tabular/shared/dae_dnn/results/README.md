@@ -1,5 +1,14 @@
 # Results Layout
 
+The repo now has two distinct views of results:
+
+- a curated catalog under `MLPS/tabular/shared/dae_dnn/results/catalog/`
+- the live resumable run tree under `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1`
+
+The catalog is the repo-facing organization layer for historical and supporting
+results. The live repeat-5 run remains separate and should not be folded into
+the catalog while it is still active.
+
 The canonical result layout for current and future tabular DAE/DNN runs is:
 
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/<suite_name>/`
@@ -19,8 +28,18 @@ Historical ADP W2D archives restored into the repo:
 - `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_anomaly_onward_gpu`
 - `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current`
 
-The staged legacy archive now exposes `classification` instead of the old
-`representation` task label at the repo-visible root.
+The staged legacy archive now exposes `classification` at the repo-visible root.
+
+Catalog view:
+
+- `MLPS/tabular/shared/dae_dnn/results/catalog/representation`
+- `MLPS/tabular/shared/dae_dnn/results/catalog/classification`
+- `MLPS/tabular/shared/dae_dnn/results/catalog/autoencoding`
+- `MLPS/tabular/shared/dae_dnn/results/catalog/generation`
+- `MLPS/tabular/shared/dae_dnn/results/catalog/denoising`
+- `MLPS/tabular/shared/dae_dnn/results/catalog/anomaly`
+- `MLPS/tabular/shared/dae_dnn/results/catalog/simulation`
+- `MLPS/tabular/shared/dae_dnn/results/catalog/prediction`
 
 STL ablation is still a flagged TODO in the repo docs. Do not treat the
 archived STL tree as finished state; it is the history backing the current

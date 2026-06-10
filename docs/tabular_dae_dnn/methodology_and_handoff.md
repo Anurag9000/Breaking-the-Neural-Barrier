@@ -15,11 +15,6 @@ Current task names:
 - `simulation`
 - `prediction`
 
-Historical alias:
-
-- `representation` is the legacy name that now maps to the `classification`
-  archive lineage.
-
 ## Exact code paths to use
 
 Task definitions and dataset mapping:
@@ -43,9 +38,8 @@ Historical ADP W2D archives already restored into the repo:
 - `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_anomaly_onward_gpu`
 - `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current`
 
-The staged legacy lineage used the `representation` label in its original
-tree. The repo-visible archive root now uses `classification` for that task
-lineage where the rename was applied.
+The staged legacy lineage is exposed in the repo-visible archive root as
+`classification` for that task lineage.
 
 Legacy and analysis helpers:
 
@@ -106,5 +100,6 @@ Refresh the inventory after new results land:
 
 The canonical result layout is documented in:
 
+- `MLPS/tabular/shared/dae_dnn/results/catalog/`
 - `MLPS/tabular/shared/dae_dnn/results/README.md`
 - `docs/tabular_dae_dnn/README.md`

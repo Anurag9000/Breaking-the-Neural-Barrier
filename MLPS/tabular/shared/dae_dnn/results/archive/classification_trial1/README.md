@@ -1,14 +1,15 @@
-# Representation Trial 1 Archive
+# Classification Trial 1 Archive
 
-This root restores the legacy `representation` sweep from repo history into the current structured results layout.
+This root restores the legacy sweep from repo history into the current structured results layout under the normalized task name `classification`.
 
 Source provenance:
-- task CSV: `old runs/trial 1/csv/tasks/representation.csv`
-- plot: `old runs/trial 1/graphs/representation/representation_loss_vs_params.png`
-- rename history: commit `e816acf50` (`Rename representation to classification`)
-- archive history: commit `c4be2ae73` (`Archive trial 1 results and clear active outputs`)
+- task CSV: `old runs/trial 1/csv/tasks/classification.csv`
+- plot: `old runs/trial 1/graphs/classification/classification_loss_vs_params.png`
+- rename history: commit `e816acf50`
+- archive history: commit `c4be2ae73`
 
-The restored files are kept in their original shape:
-- `csv/tasks/representation.csv`
-- `graphs/representation/representation_loss_vs_params.png`
+The restored files are normalized here as:
+- `csv/tasks/classification.csv`
+- `graphs/classification/classification_loss_vs_params.png`
 
+The archive surface now uses `classification` throughout.
