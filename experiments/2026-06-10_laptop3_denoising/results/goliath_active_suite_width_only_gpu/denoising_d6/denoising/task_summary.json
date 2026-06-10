@@ -1,0 +1,147 @@
+{
+  "adp_runs": [
+    {
+      "architecture": [
+        141,
+        141,
+        141,
+        140,
+        140,
+        140
+      ],
+      "best_candidate_dir": "cand_836_d6_w141",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d6/denoising/ae_width_only/cand_836_d6_w141/checkpoint_best.pt",
+      "best_epoch": 6,
+      "best_val": 0.0010556160610009713,
+      "final_epoch": 6,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "denoising"
+    }
+  ],
+  "comparisons": [
+    {
+      "adp_architecture": [
+        141,
+        141,
+        141,
+        140,
+        140,
+        140
+      ],
+      "adp_best_val": 0.0010556160610009713,
+      "adp_phase": "ae_width_only",
+      "stl_architecture": [
+        141,
+        141,
+        141,
+        140,
+        140,
+        140
+      ],
+      "stl_best_val": 0.010602531373164591,
+      "stl_phase": "stl_from_ae_width_only",
+      "task": "denoising",
+      "winner": "adp",
+      "winner_phase": "ae_width_only",
+      "winner_value": 0.0010556160610009713
+    }
+  ],
+  "paired_stl_runs": [
+    {
+      "architecture": [
+        141,
+        141,
+        141,
+        140,
+        140,
+        140
+      ],
+      "best_epoch": 101,
+      "best_val": 0.010602531373164591,
+      "candidate_dir": "cand_000_d6_w141",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d6/denoising/stl_from_ae_width_only/cand_000_d6_w141/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d6/denoising/stl_from_ae_width_only/cand_000_d6_w141/checkpoint_last.pt",
+      "final_epoch": 111,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "denoising",
+      "test_metrics": {
+        "test_loss": 0.015989458344989486
+      }
+    }
+  ],
+  "phases": [
+    {
+      "architecture": [
+        141,
+        141,
+        141,
+        140,
+        140,
+        140
+      ],
+      "best_candidate_dir": "cand_836_d6_w141",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d6/denoising/ae_width_only/cand_836_d6_w141/checkpoint_best.pt",
+      "best_epoch": 6,
+      "best_val": 0.0010556160610009713,
+      "final_epoch": 6,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "denoising"
+    },
+    {
+      "architecture": [
+        141,
+        141,
+        141,
+        140,
+        140,
+        140
+      ],
+      "best_epoch": 101,
+      "best_val": 0.010602531373164591,
+      "candidate_dir": "cand_000_d6_w141",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d6/denoising/stl_from_ae_width_only/cand_000_d6_w141/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/denoising_d6/denoising/stl_from_ae_width_only/cand_000_d6_w141/checkpoint_last.pt",
+      "final_epoch": 111,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "denoising",
+      "test_metrics": {
+        "test_loss": 0.015989458344989486
+      }
+    }
+  ],
+  "task": "denoising",
+  "winner": {
+    "adp_architecture": [
+      141,
+      141,
+      141,
+      140,
+      140,
+      140
+    ],
+    "adp_best_val": 0.0010556160610009713,
+    "adp_phase": "ae_width_only",
+    "stl_architecture": [
+      141,
+      141,
+      141,
+      140,
+      140,
+      140
+    ],
+    "stl_best_val": 0.010602531373164591,
+    "stl_phase": "stl_from_ae_width_only",
+    "task": "denoising",
+    "winner": "adp",
+    "winner_phase": "ae_width_only",
+    "winner_value": 0.0010556160610009713
+  }
+}
