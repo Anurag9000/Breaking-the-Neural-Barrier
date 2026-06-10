@@ -41,6 +41,48 @@ Historical ADP W2D archives already restored into the repo:
 The staged legacy lineage is exposed in the repo-visible archive root as
 `classification` for that task lineage.
 
+## Small historical STL follow-up
+
+This is separate from the massive STL ablation TODO.
+
+The lightweight historical STL archive at `results/archive/classification_trial1`
+covers:
+
+- `classification` / legacy `representation`
+- `autoencoding`
+- `generation`
+- `denoising`
+- `anomaly`
+
+It does not include dedicated `simulation` or `prediction` STL roots. If you
+want to continue that small family on a slave machine, run the missing tasks as
+a separate follow-up suite:
+
+```bash
+cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
+
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
+CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
+  --data-dir ./data \
+  --results-dir MLPS/tabular/shared/dae_dnn/results \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/classification_representation_followup_v1 \
+  --source-run-root MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1 \
+  --tasks simulation prediction \
+  --repeat-count 5 \
+  --concurrency 2 \
+  --num-workers 0 \
+  --no-pin-memory \
+  --patience 10 \
+  --max-depth 10 \
+  --batch-size 9312 \
+  --min-width 1 \
+  --width-step 1 \
+  --width-count-per-depth 10
+```
+
+Same `--run-root` means resume. Keep this separate from the massive all-task
+STL sweep.
+
 Legacy and analysis helpers:
 
 - `MLPS/tabular/shared/dae_dnn/run_goliath.py`
