@@ -120,8 +120,8 @@ It does not contain dedicated STL ablation roots for `simulation` or
 
 `simulation` and `prediction` are not part of the recovered small STL archive
 and there is no archived one-off W2D root for them in the current repo.
-Treat them as absent from the historical STL material until new results are
-generated.
+If you need to run them, use the separate small follow-up command documented
+in `docs/tabular_dae_dnn/methodology_and_handoff.md`.
 
 The curated result catalog now lives under:
 
