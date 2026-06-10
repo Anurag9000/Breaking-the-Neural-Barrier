@@ -28,6 +28,16 @@ DEFAULT_TASKS = [
     "prediction",
 ]
 
+TASK_REPEAT_COUNTS = {
+    "classification": 5,
+    "autoencoding": 5,
+    "generation": 5,
+    "denoising": 5,
+    "anomaly": 5,
+    "simulation": 6,
+    "prediction": 6,
+}
+
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Parallel ADP width-to-depth suite launcher for tabular DNN tasks.")
@@ -53,7 +63,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--concurrency", type=int, default=7)
-    p.add_argument("--repeat-count", type=int, default=5)
+    p.add_argument(
+        "--repeat-count",
+        type=int,
+        default=5,
+        help="Base repeat count; simulation and prediction are given one extra repeat in this suite.",
+    )
     p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
     p.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     return p.parse_args()
@@ -70,6 +85,10 @@ def task_completed(task_root: Path) -> bool:
     except Exception:
         return False
     return bool(state.get("completed", False)) and not bool(state.get("failed", False))
+
+
+def repeat_count_for_task(task_name: str, base_repeat_count: int) -> int:
+    return int(max(int(base_repeat_count), int(TASK_REPEAT_COUNTS.get(task_name, base_repeat_count))))
 
 
 def terminate_child_process(proc: subprocess.Popen[Any], timeout_sec: float = 10.0) -> None:
@@ -228,7 +247,10 @@ def main() -> None:
     logger.log_console(f"Tasks: {tasks}")
     logger.log_console(f"Batch size: {int(args.batch_size)}")
     logger.log_console(f"Hidden seed: {list(map(int, args.hidden))}")
-    logger.log_console(f"Repeat count: {int(args.repeat_count)}")
+    logger.log_console(
+        "Repeat counts: "
+        + ", ".join(f"{task}={repeat_count_for_task(task, int(args.repeat_count))}" for task in tasks)
+    )
     logger.log_console(f"Concurrency: {int(args.concurrency)}")
     logger.log_console(f"Git commit: {rg.git_commit()}")
 
@@ -236,15 +258,19 @@ def main() -> None:
     reports: List[Dict[str, Any]] = []
 
     try:
-        for repeat_index in range(1, int(args.repeat_count) + 1):
+        max_repeat_count = max(repeat_count_for_task(task, int(args.repeat_count)) for task in tasks)
+        for repeat_index in range(1, max_repeat_count + 1):
             repeat_root = run_root / f"repeat_{repeat_index:02d}"
             repeat_root.mkdir(parents=True, exist_ok=True)
             pending.clear()
             for task_name in tasks:
-                pending.append((repeat_index, task_name, repeat_root / task_name))
+                if repeat_index <= repeat_count_for_task(task_name, int(args.repeat_count)):
+                    pending.append((repeat_index, task_name, repeat_root / task_name))
 
             active: Dict[subprocess.Popen[Any], Tuple[int, str, Path, List[str]]] = {}
-            logger.log_console(f"[REPEAT] start repeat={repeat_index}/{int(args.repeat_count)} root={repeat_root}")
+            logger.log_console(
+                f"[REPEAT] start repeat={repeat_index}/{max_repeat_count} root={repeat_root}"
+            )
 
             while pending or active:
                 while pending and len(active) < int(args.concurrency):
@@ -320,6 +346,7 @@ def main() -> None:
             "hidden": [int(v) for v in args.hidden],
             "adp_mode": str(args.adp_mode),
             "repeat_count": int(args.repeat_count),
+            "repeat_counts": {task: repeat_count_for_task(task, int(args.repeat_count)) for task in tasks},
             "reports": reports,
         }
         (run_root / "suite_summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")

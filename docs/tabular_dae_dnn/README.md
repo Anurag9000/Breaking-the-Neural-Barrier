@@ -31,6 +31,7 @@ goliath trees, but it is not part of the current STL sweep.
 Future runs should live under one of these roots:
 
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/<suite_name>/`
+- `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/<suite_name>/`
 - `MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>/`
 - `MLPS/tabular/shared/dae_dnn/results/archive/<legacy_suite>/`
 
@@ -63,6 +64,15 @@ The planned schedule CSV for that run root is:
 
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1/planned_params_by_task_depth_width.csv`
 
+The current recommended small-grid follow-up root is:
+
+```text
+MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1
+```
+
+Use `MLPS/tabular/shared/dae_dnn/run_stl_small_grid.py` for that no-repeat
+grid.
+
 The current recommended ADP root is:
 
 ```text
@@ -77,6 +87,9 @@ MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current
 ```
 
 The staged archive now uses `classification` as the visible task label.
+
+The live ADP suite uses five repeats for the first five tasks and six repeats
+for `simulation` and `prediction`.
 
 ## Big Open TODO
 
@@ -120,8 +133,8 @@ It does not contain dedicated STL ablation roots for `simulation` or
 
 `simulation` and `prediction` are not part of the recovered small STL archive
 and there is no archived one-off W2D root for them in the current repo.
-If you need to run them, use the separate small follow-up command documented
-in `docs/tabular_dae_dnn/methodology_and_handoff.md`.
+If you need to run them, use the separate no-repeat small-grid runner
+documented in `docs/tabular_dae_dnn/methodology_and_handoff.md`.
 
 The curated result catalog now lives under:
 
