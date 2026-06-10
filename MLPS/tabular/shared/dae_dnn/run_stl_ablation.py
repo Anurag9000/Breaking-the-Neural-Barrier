@@ -599,20 +599,6 @@ def run_task_ablation(
     resume_completed = bool(saved_state.get("completed", False))
     if resume_completed and (task_root / "ablation_summary.json").exists():
         return rg.load_json_if_exists(task_root / "ablation_summary.json") or {}
-    if current_candidate_failed(task_root, saved_state):
-        resume_family_idx = int(resume_family_idx) + 1
-        resume_repeat_idx = 1
-        saved_state.update(
-            {
-                "architecture_index": int(resume_arch_idx),
-                "family_index": int(resume_family_idx),
-                "repeat_index": int(resume_repeat_idx),
-                "repeat_count": int(repeat_count),
-                "completed": False,
-                "skipped_failed_family": True,
-            }
-        )
-        save_ablation_state(task_root, saved_state)
 
     for architecture_idx, architecture in enumerate(architectures):
         family = [list(architecture)]

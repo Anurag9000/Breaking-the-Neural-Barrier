@@ -220,7 +220,7 @@ def main() -> None:
     if not tasks:
         raise SystemExit("No tasks requested.")
 
-    run_root = Path(args.run_root) if args.run_root else Path(args.results_dir) / f"adp_w2d_suite_{time.strftime('%Y%m%d_%H%M%S')}"
+    run_root = Path(args.run_root) if args.run_root else Path(args.results_dir) / "adp" / "w2d" / "repeat5_v1"
     run_root.mkdir(parents=True, exist_ok=True)
     resume_logs = (run_root / "training_log.txt").exists() or (run_root / "training_stats.csv").exists()
     logger = ContinuousLogger(run_root, "adp_w2d_suite", "adp_width_to_depth", resume=resume_logs)
