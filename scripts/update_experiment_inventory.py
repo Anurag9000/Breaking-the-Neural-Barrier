@@ -70,7 +70,7 @@ def _marker_flags(root: Path) -> list[str]:
 
 
 def _status_for(root: Path) -> str:
-    if root == ACTIVE_ADP_ROOT:
+    if root == ACTIVE_ADP_ROOT or root.is_relative_to(ACTIVE_ADP_ROOT):
         return "active"
     if (root / "final_report.json").exists():
         return "complete"
@@ -88,6 +88,16 @@ def _discover_roots() -> list[Path]:
             roots.add(marker.parent)
     if ACTIVE_ADP_ROOT.exists():
         roots.add(ACTIVE_ADP_ROOT)
+        for repeat_dir in sorted(ACTIVE_ADP_ROOT.glob("repeat_*")):
+            if not repeat_dir.is_dir():
+                continue
+            for task_dir in sorted(repeat_dir.iterdir()):
+                if not task_dir.is_dir():
+                    continue
+                if (task_dir / "task_state.json").exists() or (
+                    task_dir / "training_log.txt"
+                ).exists():
+                    roots.add(task_dir)
     return sorted(roots, key=lambda p: p.as_posix())
 
 

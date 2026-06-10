@@ -69,6 +69,16 @@ The current recommended ADP root is:
 MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1
 ```
 
+Historical ADP width-to-depth archives are restored under:
+
+```text
+MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_anomaly_onward_gpu
+MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current
+```
+
+The staged archive now uses `classification` as the visible task label where
+the old tree used `representation`.
+
 ## Big Open TODO
 
 STL ablation is still a glaring open item in this repo. The schedule and

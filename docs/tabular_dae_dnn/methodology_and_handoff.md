@@ -38,6 +38,15 @@ ADP width-to-depth orchestration:
 - `utils/adp_contract.py`
 - `MLPS/tabular/shared/dae_dnn/run_adp_w2d_suite_parallel.py`
 
+Historical ADP W2D archives already restored into the repo:
+
+- `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_anomaly_onward_gpu`
+- `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current`
+
+The staged legacy lineage used the `representation` label in its original
+tree. The repo-visible archive root now uses `classification` for that task
+lineage where the rename was applied.
+
 Legacy and analysis helpers:
 
 - `MLPS/tabular/shared/dae_dnn/run_goliath.py`
@@ -99,4 +108,3 @@ The canonical result layout is documented in:
 
 - `MLPS/tabular/shared/dae_dnn/results/README.md`
 - `docs/tabular_dae_dnn/README.md`
-

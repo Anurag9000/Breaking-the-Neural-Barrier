@@ -1,0 +1,73 @@
+{
+  "candidate_index": 240,
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 32768,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "depth_expansion_patience": 5,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 99999999999999999999999999999999999999999999999999999999999999999999999,
+    "max_neurons": 10000000,
+    "max_width": 512,
+    "num_workers": 0,
+    "patience": 5,
+    "phases": [
+      "ae_width_to_depth"
+    ],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_anomaly_onward_gpu",
+    "seed": 0,
+    "stl_depth": 2,
+    "stl_width": 128,
+    "tasks": [
+      "anomaly",
+      "inverse",
+      "control",
+      "selfsupervised",
+      "simulation",
+      "prediction"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_expansion_patience": 10,
+    "width_stage_margin_patience": 5,
+    "width_stage_min_improve_pct": 1.0
+  },
+  "dataset_sizes": {
+    "test": 58101,
+    "train": 169386,
+    "val": 21156
+  },
+  "git_commit": "f0c0f018cb35cd4e2809f37f2c5ecd3e956275d4",
+  "hidden_widths": [
+    64,
+    64,
+    64,
+    64,
+    21
+  ],
+  "model": {
+    "hidden_widths": [
+      64,
+      64,
+      64,
+      64,
+      21
+    ],
+    "in_dim": 54,
+    "out_dim": 54,
+    "use_bn": true
+  },
+  "phase_kind": "width_to_depth",
+  "phase_name": "ae_width_to_depth",
+  "reconstruct": true,
+  "search_phase": "width",
+  "task": "anomaly",
+  "task_extra": {},
+  "task_type": "reconstruction"
+}

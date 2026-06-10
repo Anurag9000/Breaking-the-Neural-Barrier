@@ -14,6 +14,14 @@ Current recommended fresh roots:
 - STL: `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1`
 - ADP: `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1`
 
+Historical ADP W2D archives restored into the repo:
+
+- `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_anomaly_onward_gpu`
+- `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current`
+
+The staged legacy archive now exposes `classification` instead of the old
+`representation` task label at the repo-visible root.
+
 STL ablation is still a flagged TODO in the repo docs. Do not treat the
 archived STL tree as finished state; it is the history backing the current
 fresh run layout and the remaining analysis work.
