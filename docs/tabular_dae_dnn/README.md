@@ -44,6 +44,10 @@ The current recommended fresh STL root is:
 MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1
 ```
 
+The planned schedule CSV for that run root is:
+
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1/planned_params_by_task_depth_width.csv`
+
 The current recommended ADP root is:
 
 ```text
