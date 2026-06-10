@@ -118,11 +118,6 @@ contains the older small study for:
 It does not contain dedicated STL ablation roots for `simulation` or
 `prediction`.
 
-The recovered classification width-only lineage is partial. The repo-visible
-archive currently contains the `d1_w1` and `d1_w2` prefix under
-`results/archive/goliath_w2d_staged_current/classification/ae_width_only`.
-Widths `w3` through `w10` remain a TODO.
-
 `simulation` and `prediction` are not part of the recovered small STL archive
 and there is no archived one-off W2D root for them in the current repo.
 Treat them as absent from the historical STL material until new results are
