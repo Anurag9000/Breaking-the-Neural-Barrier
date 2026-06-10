@@ -80,8 +80,9 @@ The staged archive now uses `classification` as the visible task label.
 
 ## Big Open TODO
 
-STL ablation is still a glaring open item in this repo. The schedule and
-resume machinery exist, but the suite is not yet a finalized end-state run.
+The massive STL ablation we planned earlier is still a glaring open item in
+this repo. The schedule and resume machinery exist, but that large all-task
+sweep was stopped midway and is not a finalized end-state run.
 Treat it as a TODO until the full repeat-level analysis is complete.
 
 Open items:
@@ -104,6 +105,18 @@ MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1
 ```
 
 The repo-visible root is `classification_trial1`.
+
+That lightweight historical STL archive is not the massive all-task sweep. It
+contains the older small study for:
+
+- `classification` / legacy `representation`
+- `autoencoding`
+- `generation`
+- `denoising`
+- `anomaly`
+
+It does not contain dedicated STL ablation roots for `simulation` or
+`prediction`.
 
 The curated result catalog now lives under:
 
