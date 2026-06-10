@@ -4,8 +4,8 @@ This catalog is generated from the tracked result roots and the active ADP run r
 
 | Root | Source | Status | Markers | Files |
 |---|---|---|---|---:|
-| `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1` | `results` | `active` | `training_log.txt;training_stats.csv` | 2194 |
-| `MLPS/tabular/shared/dae_dnn/results/archive/representation_trial1` | `results` | `complete` | `run_metadata.json;final_report.json` | 5 |
+| `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1` | `results` | `active` | `training_log.txt;training_stats.csv` | 2442 |
+| `MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1` | `results` | `complete` | `run_metadata.json;final_report.json` | 5 |
 | `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d1` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt` | 6 |
 | `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d2` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt` | 6 |
 | `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d3` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt` | 6 |
