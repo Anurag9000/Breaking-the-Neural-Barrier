@@ -47,8 +47,11 @@ The staged legacy lineage is exposed in the repo-visible archive root as
 For width-to-depth runs, a depth expansion is not treated as a terminal step.
 After the new layer is added, the controller continues widening neuron by
 neuron until the model is uniform again, and only then does the patience
-counter resume. That prevents the run from quitting while the post-depth
-warmup is still in progress.
+counter resume. The width-stage failure and margin counters are reset after a
+completed depth/fill cycle, so a model like `[29, 29, 29]` can continue to
+`[30, 29, 29]`, `[30, 30, 29]`, and `[30, 30, 30]` before width patience is
+allowed to stop the search. That prevents the run from quitting while the
+post-depth warmup is still in progress.
 
 ## Small historical STL archive
 
@@ -110,23 +113,13 @@ width)` candidate, with no repeats.
 
 ## ADP repeat schedule
 
-The current ADP width-to-depth suite uses four repeats for:
+The current ADP width-to-depth suite is launcher-driven. Keep the active
+`--run-root` aligned with the launcher state and do not reuse a deleted root.
+The repeat schedule is encoded in the launcher, not in this document.
 
-- `classification`
-- `autoencoding`
-- `generation`
-- `denoising`
-- `anomaly`
-
-It uses five repeats for:
-
-- `simulation`
-- `prediction`
-
-This is intentional and reflected in the suite launcher. Keep that split when
-restarting the suite or comparing results across tasks. The older one-off ADP
-W2D outputs for the first five tasks are intended to be merged into this base
-later, so the total becomes five runs per task.
+The older one-off ADP W2D outputs for the first five tasks are intended to be
+merged into the current canonical base later, so the combined history stays
+under one task family instead of being split across unrelated roots.
 
 Legacy and analysis helpers:
 

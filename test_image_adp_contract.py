@@ -1,6 +1,8 @@
 import copy
+import tempfile
 import unittest
 from dataclasses import dataclass
+from pathlib import Path
 
 from utils.adp_contract import run_module_adp
 
@@ -88,17 +90,79 @@ class ADPContractImageTests(unittest.TestCase):
             (3, 3, 3): 8.0,
         }
         visited = []
-        best_val, model = run_module_adp(
-            self.make_module_globals(losses, visited),
-            FakeModel([2, 2]),
-            None,
-            None,
-            FakeConfig(adp_mode="width_to_depth", max_width=3, max_depth=3),
-            "cpu",
-        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            best_val, model = run_module_adp(
+                self.make_module_globals(losses, visited),
+                FakeModel([2, 2]),
+                None,
+                None,
+                FakeConfig(adp_mode="width_to_depth", max_width=3, max_depth=3),
+                "cpu",
+                results_dir=Path(tmpdir),
+            )
         self.assertEqual(visited[:4], [(2, 2), (3, 2), (3, 3), (3, 3, 3)])
         self.assertEqual(model.hidden_widths, [3, 3, 3])
         self.assertAlmostEqual(best_val, 8.0)
+
+    def test_width_to_depth_resets_width_patience_after_depth_fill(self):
+        losses = {
+            (28, 28): 10.2,
+            (29, 28): 10.1,
+            (29, 29): 10.0,
+            (29, 29, 1): 9.9,
+            (29, 29, 2): 9.8,
+            (29, 29, 3): 9.7,
+            (29, 29, 4): 9.6,
+            (29, 29, 5): 9.5,
+            (29, 29, 6): 9.4,
+            (29, 29, 7): 9.3,
+            (29, 29, 8): 9.2,
+            (29, 29, 9): 9.1,
+            (29, 29, 10): 9.0,
+            (29, 29, 11): 8.9,
+            (29, 29, 12): 8.8,
+            (29, 29, 13): 8.7,
+            (29, 29, 14): 8.6,
+            (29, 29, 15): 8.5,
+            (29, 29, 16): 8.4,
+            (29, 29, 17): 8.3,
+            (29, 29, 18): 8.2,
+            (29, 29, 19): 8.1,
+            (29, 29, 20): 8.0,
+            (29, 29, 21): 7.9,
+            (29, 29, 22): 7.8,
+            (29, 29, 23): 7.7,
+            (29, 29, 24): 7.6,
+            (29, 29, 25): 7.5,
+            (29, 29, 26): 7.4,
+            (29, 29, 27): 7.3,
+            (29, 29, 28): 7.2,
+            (29, 29, 29): 7.1,
+            (30, 29, 29): 7.0,
+            (30, 30, 29): 6.9,
+            (30, 30, 30): 6.8,
+        }
+        visited = []
+        with tempfile.TemporaryDirectory() as tmpdir:
+            best_val, model = run_module_adp(
+                self.make_module_globals(losses, visited),
+                FakeModel([28, 28]),
+                None,
+                None,
+                FakeConfig(
+                    adp_mode="width_to_depth",
+                    max_width=30,
+                    max_depth=3,
+                    width_stage_margin_patience=1,
+                    width_stage_min_improve_pct=1_000.0,
+                ),
+                "cpu",
+                results_dir=Path(tmpdir),
+            )
+        self.assertIn((29, 29, 29), visited)
+        self.assertIn((30, 29, 29), visited)
+        self.assertEqual(model.hidden_widths, [30, 30, 30])
+        self.assertAlmostEqual(best_val, 6.8)
 
     def test_depth_only_fills_to_uniform_before_depth(self):
         losses = {
@@ -107,14 +171,16 @@ class ADPContractImageTests(unittest.TestCase):
             (3, 3, 3): 3.0,
         }
         visited = []
-        best_val, model = run_module_adp(
-            self.make_module_globals(losses, visited),
-            FakeModel([3, 2]),
-            None,
-            None,
-            FakeConfig(adp_mode="depth_only", width_stage_min_improve_pct=1.0, max_width=3, max_depth=3),
-            "cpu",
-        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            best_val, model = run_module_adp(
+                self.make_module_globals(losses, visited),
+                FakeModel([3, 2]),
+                None,
+                None,
+                FakeConfig(adp_mode="depth_only", width_stage_min_improve_pct=1.0, max_width=3, max_depth=3),
+                "cpu",
+                results_dir=Path(tmpdir),
+            )
         self.assertEqual(visited[:3], [(3, 2), (3, 3), (3, 3, 3)])
         self.assertEqual(model.hidden_widths, [3, 3, 3])
         self.assertAlmostEqual(best_val, 3.0)
