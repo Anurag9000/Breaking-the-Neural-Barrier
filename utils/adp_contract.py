@@ -1143,6 +1143,7 @@ def run_module_adp(
                 "depth_fail": int(current_depth_fail),
             }
         )
+        depth_anchor = float(global_best_val)
         warmed_model, _, warmed_val, warmed_snap, current_width_fail, current_depth_fail, current_margin_fail = ensure_uniform_width(
             warm_model,
             update_global=True,
@@ -1154,9 +1155,7 @@ def run_module_adp(
             cur_model = restore(warm_model, warmup_snap)
             return cur_model, True, False, current_width_fail, current_depth_fail, current_margin_fail
         cur_model = restore(warmed_model, warmed_snap)
-        improved = False
-        if compare_after_warmup:
-            improved = update_global_best(cur_model, warmed_val, warmed_snap, warmup_dir, delta_depth)
+        improved = bool(compare_after_warmup and float(global_best_val) < depth_anchor - delta_depth)
         return cur_model, True, improved, current_width_fail, current_depth_fail, current_margin_fail
 
     def run_depth_phase(cur_model: Any, *, initial_depth_fail: int = 0, current_width_fail: int = 0, current_margin_fail: int = 0) -> Tuple[Any, bool, int]:
@@ -1253,6 +1252,8 @@ def run_module_adp(
                 depth_fail = 0
             else:
                 depth_fail += 1
+            width_fail = 0
+            width_stage_margin_fail = 0
             current_phase = "width"
     elif mode == "depth_to_width":
         while width_fail < patience_width:

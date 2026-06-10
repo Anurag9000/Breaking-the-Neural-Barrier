@@ -76,7 +76,7 @@ grid.
 The current recommended ADP root is:
 
 ```text
-MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat4_v1
+MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>
 ```
 
 Historical ADP width-to-depth archives are restored under:
@@ -88,8 +88,8 @@ MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current
 
 The staged archive now uses `classification` as the visible task label.
 
-The live ADP suite uses four repeats for the first five tasks and five repeats
-for `simulation` and `prediction`.
+Use the active ADP launcher configuration to determine the current repeat
+split. Do not point documentation at a deleted live root.
 
 ## Big Open TODO
 
@@ -152,11 +152,8 @@ That catalog exposes the current task groups:
 - `simulation`
 - `prediction`
 
-The live ADP W2D suite remains separate at:
-
-```text
-MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat4_v1
-```
+The live ADP W2D suite uses the current launcher-selected `<suite_name>` under
+`results/adp/w2d/`. Do not hardcode a deleted run root here.
 
 ## Resume rule
 
