@@ -1334,9 +1334,9 @@ def can_deepen(model: MLP, cfg: RunConfig) -> bool:
     widths = [int(width) for width in model.hidden_widths]
     if len(set(widths)) != 1:
         return False
-    if int(widths[-1]) <= 10:
+    if int(widths[-1]) <= 1:
         return False
-    return len(widths) + 1 <= int(cfg.max_depth) and int(sum(widths) + 10 + model.out_dim) <= int(cfg.max_neurons)
+    return len(widths) + 1 <= int(cfg.max_depth) and int(sum(widths) + 1 + model.out_dim) <= int(cfg.max_neurons)
 
 
 def width_expansion_patience(cfg: RunConfig) -> int:
