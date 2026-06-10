@@ -3,10 +3,10 @@
 The repo now has two distinct views of results:
 
 - a curated catalog under `MLPS/tabular/shared/dae_dnn/results/catalog/`
-- the live resumable run tree under `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1`
+- the live resumable run tree under `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat4_v1`
 
 The catalog is the repo-facing organization layer for historical and supporting
-results. The live repeat-5 run remains separate and should not be folded into
+results. The live 4-repeat run remains separate and should not be folded into
 the catalog while it is still active.
 
 The canonical result layout for current and future tabular DAE/DNN runs is:
@@ -23,10 +23,10 @@ Current recommended fresh roots:
 
 - STL: `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1`
 - small-grid STL: `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1`
-- ADP: `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1`
+- ADP: `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat4_v1`
 
-The ADP W2D suite uses five repeats for `classification`, `autoencoding`,
-`generation`, `denoising`, and `anomaly`, and six repeats for `simulation`
+The ADP W2D suite uses four repeats for `classification`, `autoencoding`,
+`generation`, `denoising`, and `anomaly`, and five repeats for `simulation`
 and `prediction`.
 
 Historical ADP W2D archives restored into the repo:
