@@ -1,249 +1,35 @@
-# DNN STL + ADP (DAE/DNN)
+# Tabular DAE/DNN
 
-This folder provides plain-MLP baselines for the 7 active non-vision tasks in
-`MLPS/tabular/shared/dae_dnn/tasks.py`. Each task runs in:
+This folder contains the tabular MLP runners, ADP search code, and experiment
+helpers for the non-vision benchmark suite.
 
-- STL mode: fixed architecture
-- ADP mode: adaptive width/depth search
+Canonical guide:
+- [docs/tabular_dae_dnn/README.md](../../../../docs/tabular_dae_dnn/README.md)
 
-The benchmarks are real public datasets, with the main task families centered
-on:
+Current active STL and ADP task set:
+- classification
+- autoencoding
+- denoising
+- anomaly
+- simulation
+- prediction
 
-- `Covertype`
-- `YearPredictionMSD`
-- `California Housing`
+Generation remains archived in historical result trees and is not part of the
+current STL sweep.
 
-Supported ADP phases for active runs:
-- `ae_alt_width`
-- `ae_alt_depth`
-- `ae_width_to_depth`
-- `ae_depth_to_width`
+Primary entry points:
+- `run_task.py` - single task runner
+- `run_all.py` - full tabular suite
+- `run_stl_ablation.py` - STL ablation family generator
+- `run_stl_ablation_parallel.py` - resumable STL launcher
+- `run_adp_w2d_suite_parallel.py` - resumable ADP width-to-depth suite
+- `probe_capacity.py` - capacity probing helper
+- `summarize_repeat_metrics.py` - repeat-level summary generation
 
-Files
-- `DEFAULT_TASKS.md`: default task/dataset mapping
-- `mlp.py`: plain MLP backbone
-- `tasks.py`: dataset builders + task registry
-- `adp_search.py`: ADP search (width/depth expansions)
-- `run_task.py`: run one task (STL or ADP)
-- `run_all.py`: run STL + all ADP modes for all tasks
-- `run_goliath.py`: sequential STL + ADP experiment runner with resumable
-  checkpoints
-- `run_search_suite.py`: baseline-only benchmark suite for grid search,
-  random search, Bayesian HPO, and greedy NAS-style growth; it can compare
-  against a completed goliath reference run, but it does not run ADP variants
+Canonical result layout:
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/<suite_name>/`
+- `MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>/`
+- `MLPS/tabular/shared/dae_dnn/results/archive/<legacy_suite>/`
 
-`run_goliath.py` now runs only the four supported ADP phases:
-- `ae_alt_width`
-- `ae_alt_depth`
-- `ae_width_to_depth`
-- `ae_depth_to_width`
-
-All ADP phases start from a fixed `2x2` seed and preserve the best checkpoint
-found during search, not just the last epoch. After each ADP phase, the runner
-automatically trains an STL refit on that ADP-discovered architecture and logs
-the ADP-vs-STL comparison for the task. A standalone STL baseline is optional
-if you explicitly include `stl` in `--phases`.
-
-At the end of a full goliath run, the runner writes:
-- `final_report.json`
-- `final_report.md`
-
-These summarize, for each task and each ADP phase, the best architecture found,
-the paired STL refit loss on that same architecture, and the overall task
-winner.
-
-Tasks and default benchmark mappings
-- prediction: YearPredictionMSD
-- classification: Covertype
-- autoencoding: Covertype
-- generation: Covertype
-- denoising: Covertype
-- anomaly: Covertype
-- simulation: California Housing
-
-Run one task (STL, fixed architecture)
-```bash
-python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode stl --hidden 50 50 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
-```
-
-Run one task (ADP, width then depth)
-```bash
-python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode adp --adp-mode width_to_depth --hidden 50 50 --ex-k 1 --max-depth 10 --patience 10 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
-```
-
-Run one task (ADP, alternating width-first)
-```bash
-python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode adp --adp-mode alt_width --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
-```
-
-Run one task (ADP, alternating depth-first)
-```bash
-python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode adp --adp-mode alt_depth --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
-```
-
-Run one task (ADP, depth then width)
-```bash
-python MLPS/tabular/shared/dae_dnn/run_task.py --task classification --mode adp --adp-mode depth_to_width --hidden 50 50 --ex-k 1 --patience 10 --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results
-```
-
-Run all tasks (STL + ADP modes)
-```bash
-python MLPS/tabular/shared/dae_dnn/run_all.py --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results --hidden 50 50
-```
-
-Current STL ablation run
-```bash
-CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/run_with_watchdog.py \
-  --run-root MLPS/tabular/shared/dae_dnn/results/stl_ablation_parameter_matched_gpu_serial \
-  --idle-seconds 600 \
-  --max-restarts 5 \
-  --burst-limit 3 \
-  --burst-window-seconds 600 \
-  --poll-seconds 10 \
-  --grace-seconds 20 \
-  --min-host-ram-mib 1024 \
-  --min-vram-free-mib 100 \
-  -- \
-  env CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
-    --data-dir ./data \
-    --results-dir MLPS/tabular/shared/dae_dnn/results \
-    --run-root MLPS/tabular/shared/dae_dnn/results/stl_ablation_parameter_matched_gpu_serial \
-    --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu \
-    --tasks classification autoencoding generation denoising anomaly simulation \
-    --repeat-count 10 \
-    --concurrency 1 \
-    --num-workers 0 \
-    --no-pin-memory \
-    --patience 10 \
-    --max-depth 10 \
-    --batch-size 0
-```
-
-Generic capacity probe
-```bash
-CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capacity.py \
-  --task-factory MLPS.tabular.shared.dae_dnn.tasks:build_task \
-  --model-factory MLPS.tabular.shared.dae_dnn.mlp:MLP \
-  --task-factory-kwargs-json '{"data_dir":"./data","num_workers":0,"seed":0}' \
-  --tasks classification anomaly simulation \
-  --min-depth 1 \
-  --max-depth 10 \
-  --min-width 16 \
-  --width-step 16 \
-  --max-width 0 \
-  --width-cut-pct 10 \
-  --success-unit batches \
-  --success-count 2 \
-  --vram-threshold-mib 6144 \
-  --host-ram-threshold-mib 0 \
-  --batch-size 0
-```
-What it does
-- Finds the largest width per depth that still passes the success rule.
-- Uses exponential growth to bracket a failure, then binary search to refine
-  the max passing width.
-- Samples GPU VRAM once per batch with `nvidia-smi`.
-- Optionally fails a candidate early if host available RAM drops under a
-  configured threshold.
-- Stops a candidate only when it reaches the requested success horizon or
-  fails the VRAM ceiling.
-
-How to use it on any dataset/model/GPU
-- Point `--task-factory` at a callable that builds a task bundle with
-  `train_loader`, `in_dim`, `out_dim`, `task_type`, and `loss_fn`.
-- Point `--model-factory` at a callable that can build the candidate model for
-  a given depth and width.
-- Use `--task-factory-kwargs-json` and `--model-factory-kwargs-json` to pass
-  dataset/model-specific configuration.
-- Use `--task-batch-size task=batch` to set a different batch size per task
-  when one dataset needs a different loader shape from another.
-- Use `--width-cut-pct 10` to apply the conservative 10 percent lower-side cut
-  before probing a candidate width. The script rounds down to the nearest
-  `--width-step` after the cut.
-- Use `--success-unit batches` or `--success-unit epochs` depending on whether
-  a candidate is considered valid after a fixed number of batches or full
-  epochs.
-- Set `--success-count` to any positive integer.
-- Set `--vram-threshold-mib` to match the GPU budget you want to probe.
-- Set `--host-ram-threshold-mib` to protect the machine from host-RAM
-  pressure during long probes.
-- Set `--max-width 0` to remove the hard ceiling and let the exponential search
-  expand until it finds a real failure.
-
-Examples
-```bash
-CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capacity.py \
-  --task-factory MLPS.tabular.shared.dae_dnn.tasks:build_task \
-  --model-factory MLPS.tabular.shared.dae_dnn.mlp:MLP \
-  --task-factory-kwargs-json '{"data_dir":"./data","num_workers":0,"seed":0}' \
-  --tasks classification anomaly simulation \
-  --task-batch-size classification=9312 \
-  --task-batch-size anomaly=16944 \
-  --task-batch-size simulation=16512 \
-  --width-cut-pct 10 \
-  --success-unit batches \
-  --success-count 2 \
-  --vram-threshold-mib 6144 \
-  --host-ram-threshold-mib 0
-```
-```bash
-CUDA_VISIBLE_DEVICES=0 .venv/bin/python MLPS/tabular/shared/dae_dnn/probe_capacity.py \
-  --task-factory mypkg.tasks:build_task \
-  --model-factory mypkg.models:build_model \
-  --task-factory-kwargs-json '{"data_root":"/data/custom","split":"train"}' \
-  --model-factory-kwargs-json '{"dropout":0.1}' \
-  --tasks custom_task \
-  --success-unit epochs \
-  --success-count 2 \
-  --vram-threshold-mib 8192
-```
-
-Linux CUDA setup
-```bash
-bash scripts/setup_cuda_venv.sh
-source .venv/bin/activate
-```
-Then launch the sequential experiment:
-```bash
-python MLPS/tabular/shared/dae_dnn/run_goliath.py --tasks all --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results --stl-width 128 --stl-depth 2 --alt-start-width 2 --alt-start-depth 2 --patience 5 --seed 0
-```
-By default, `run_goliath.py` runs the four supported ADP phases first and then
-an STL refit on each ADP-discovered architecture. Include `stl` in `--phases`
-only if you also want a standalone baseline STL run.
-
-To run the broader benchmark-suite comparison:
-```bash
-python MLPS/tabular/shared/dae_dnn/run_search_suite.py --tasks all --data-dir ./data --results-dir MLPS/tabular/shared/dae_dnn/results --reference-run-root MLPS/tabular/shared/dae_dnn/results/goliath_<timestamp> --batch-size 81920 --candidate-budget 0 --seed 0
-```
-This evaluates grid search, random search, Bayesian HPO, and greedy NAS-style
-growth by default, then refits STL on the best architecture found by each
-method. Use `run_goliath.py` for ADP/STL comparisons; `run_search_suite.py`
-never reruns ADP.
-
-Common flags
-- `--hidden`: starting widths (length = starting depth)
-- `--ex-k`: width expansion step
-- `--max-width`, `--max-depth`, `--max-neurons`: hard caps
-- `--patience`: early stopping for a single run
-- `--trials-width`, `--trials-depth`: expansion patience
-- `--max-epochs`: cap for each single-shot training
-- `--seed`, `--batch-size`, `--num-workers`
-- Default batch size is `81920`; the adaptive controller is disabled for the shared tabular DNN runners so this exact batch size is used consistently.
-
-Where results go
-- Per-run folder:
-  `MLPS/tabular/shared/dae_dnn/results/<task>_<mode>_<adp_mode>_d<d>_w<w>_exk<k>_<timestamp>/`
-- Files:
-  `training_log.txt`, `training_stats.csv`, `val_loss_vs_step.png`,
-  `loss_vs_neurons_best.png`
-
-`run_goliath.py` adds a deeper hierarchy:
-- `results/goliath_<timestamp>/<task>/<phase>/cand_###_d##_w##/`
-- Each candidate dir stores `metadata.json`, `candidate_state.json`,
-  `checkpoint_last.pt`, `checkpoint_best.pt`, `training_log.txt`,
-  `training_stats.csv`
-- Phase roots store `search_state.json`, `phase_summary.json`, and
-  `phase_progress.csv`
-- The run root also stores `final_report.json` and `final_report.md`, which
-  summarize the best ADP architecture per variant, the paired STL refit loss
-  on the same architecture, and the overall winner per task.
+For a fresh STL ablation, use the canonical root documented in
+`../../../../docs/tabular_dae_dnn/README.md`.
