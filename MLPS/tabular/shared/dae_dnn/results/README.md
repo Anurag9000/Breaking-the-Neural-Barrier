@@ -12,6 +12,7 @@ the catalog while it is still active.
 The canonical result layout for current and future tabular DAE/DNN runs is:
 
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/<suite_name>/`
+- `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/<suite_name>/`
 - `MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>/`
 - `MLPS/tabular/shared/dae_dnn/results/archive/<legacy_suite>/`
 
@@ -21,7 +22,12 @@ instead of adding more sibling result trees at the top level.
 Current recommended fresh roots:
 
 - STL: `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1`
+- small-grid STL: `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1`
 - ADP: `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1`
+
+The ADP W2D suite uses five repeats for `classification`, `autoencoding`,
+`generation`, `denoising`, and `anomaly`, and six repeats for `simulation`
+and `prediction`.
 
 Historical ADP W2D archives restored into the repo:
 
@@ -43,6 +49,10 @@ Catalog view:
 `simulation` and `prediction` are not part of the recovered small STL archive.
 They should be treated as absent from the historical STL material until new
 results are generated.
+
+For the missing `simulation` and `prediction` follow-up, use the dedicated
+no-repeat small-grid runner. It writes to `results/stl/small_grid/<suite_name>/`
+and nests each candidate under a depth/width path.
 
 STL ablation is still a flagged TODO in the repo docs. Do not treat the
 archived STL tree as finished state; it is the history backing the current

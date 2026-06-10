@@ -1242,7 +1242,7 @@ def run_module_adp(
             current_phase = "depth"
             model, progressed, improved, width_fail, depth_fail, width_stage_margin_fail = run_depth_step(
                 model,
-                compare_after_warmup=False,
+                compare_after_warmup=True,
                 current_width_fail=width_fail,
                 current_depth_fail=depth_fail,
                 current_margin_fail=width_stage_margin_fail,

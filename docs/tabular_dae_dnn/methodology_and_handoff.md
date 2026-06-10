@@ -25,6 +25,7 @@ STL sweep orchestration:
 
 - `MLPS/tabular/shared/dae_dnn/run_stl_ablation.py`
 - `MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py`
+- `MLPS/tabular/shared/dae_dnn/run_stl_small_grid.py`
 
 ADP width-to-depth orchestration:
 
@@ -41,12 +42,21 @@ Historical ADP W2D archives already restored into the repo:
 The staged legacy lineage is exposed in the repo-visible archive root as
 `classification` for that task lineage.
 
+## Width-to-depth rule
+
+For width-to-depth runs, a depth expansion is not treated as a terminal step.
+After the new layer is added, the controller continues widening neuron by
+neuron until the model is uniform again, and only then does the patience
+counter resume. That prevents the run from quitting while the post-depth
+warmup is still in progress.
+
 ## Small historical STL archive
 
 This is separate from the massive STL ablation TODO.
 
 The lightweight historical STL archive at `results/archive/classification_trial1`
-covers:
+is a one-off fixed-grid summary, not a repeat suite. It covers the following
+tasks:
 
 - `classification`
 - `autoencoding`
@@ -54,10 +64,15 @@ covers:
 - `denoising`
 - `anomaly`
 
-It does not include dedicated `simulation` or `prediction` STL roots, and no
-archived one-off W2D root for those tasks is currently recovered in the repo.
-Treat those two tasks as absent from the historical STL material until new
-results are generated.
+The archived STL ablation grid is sparse and fixed:
+
+- depths: `3`, `4`, `6`, `8`, `10`
+- widths: `64`, `96`, `128`, `160`, `192`, `224`, `256`
+- repeats: none
+
+It does not include dedicated `simulation` or `prediction` STL roots. Treat
+those two tasks as absent from the historical STL material until new results
+are generated.
 
 Same `--run-root` means resume. Keep this separate from the massive all-task
 STL sweep.
@@ -65,8 +80,9 @@ STL sweep.
 ## Small STL follow-up on slave laptops
 
 If you want to run the missing `simulation` and `prediction` tasks as a
-separate, lightweight follow-up on a slave machine, use a dedicated run root
-and keep it out of the massive all-task STL ablation tree.
+separate, lightweight follow-up on a slave machine, use the dedicated
+no-repeat grid runner and keep it out of the massive all-task STL ablation
+tree.
 
 Use this command:
 
@@ -74,26 +90,41 @@ Use this command:
 cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
 
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
-CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
+CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_small_grid.py \
   --data-dir ./data \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
-  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/classification_simulation_prediction_followup_v1 \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1 \
   --source-run-root MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1 \
   --tasks simulation prediction \
-  --repeat-count 5 \
-  --concurrency 2 \
+  --depths 3 4 6 8 10 \
+  --widths 64 96 128 160 192 224 256 \
   --num-workers 0 \
-  --no-pin-memory \
   --patience 10 \
-  --max-depth 10 \
   --batch-size 9312 \
-  --min-width 1 \
-  --width-step 1 \
-  --width-count-per-depth 10
+  --max-epochs 100000000
 ```
 
 This follow-up is separate from the massive all-task STL TODO and should not
-be mixed with the live repeat-5 ADP run.
+be mixed with the live repeat-5 ADP run. It is one run per `(task, depth,
+width)` candidate, with no repeats.
+
+## ADP repeat schedule
+
+The current ADP width-to-depth suite uses five repeats for:
+
+- `classification`
+- `autoencoding`
+- `generation`
+- `denoising`
+- `anomaly`
+
+It uses six repeats for:
+
+- `simulation`
+- `prediction`
+
+This is intentional and reflected in the suite launcher. Keep that split when
+restarting the suite or comparing results across tasks.
 
 Legacy and analysis helpers:
 
@@ -123,7 +154,7 @@ The current result roots are:
 
 - same `--run-root` means resume
 - new `--run-root` means fresh run
-- do not change task order or repeat count while resuming
+- do not change task order, candidate grid, or repeat count while resuming
 - keep the local `main` branch authoritative
 
 ## Export rule for other laptops
