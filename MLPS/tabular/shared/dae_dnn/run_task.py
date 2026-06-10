@@ -33,6 +33,7 @@ def main() -> None:
     )
     p.add_argument("--hidden", type=int, nargs="+", default=[50, 50])
     p.add_argument("--batch-size", type=int, default=81920)
+    p.add_argument("--run-root", type=str, default=None, help="Optional fixed output root for resumable runs.")
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
     p.add_argument("--trials-width", type=int, default=10)
@@ -62,17 +63,36 @@ def main() -> None:
     if "max_width" in task.extra:
         max_width = min(int(task.extra["max_width"]), int(args.max_width))
 
-    model = MLP(in_dim=task.in_dim, hidden_widths=args.hidden, out_dim=task.out_dim)
+    hidden = list(args.hidden)
+    if args.mode == "adp" and not hidden:
+        hidden = [1]
+    model = MLP(in_dim=task.in_dim, hidden_widths=hidden, out_dim=task.out_dim)
 
-    run_name = (
-        f"{task.name}_{args.mode}_{args.adp_mode}_d{len(args.hidden)}"
-        f"_w{max(args.hidden) if args.hidden else 0}_exk{args.ex_k}_{_dt.datetime.now().strftime('%Y%m%d_%H%M%S')}"
-    )
-    results_dir = Path(args.results_dir) / run_name
-    logger = ContinuousLogger(results_dir, f"dnn_{task.name}", args.adp_mode)
+    if args.run_root:
+        results_dir = Path(args.run_root)
+        run_name = results_dir.name
+    else:
+        run_name = (
+            f"{task.name}_{args.mode}_{args.adp_mode}_d{len(hidden)}"
+            f"_w{max(hidden) if hidden else 0}_exk{args.ex_k}_{_dt.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        )
+        results_dir = Path(args.results_dir) / run_name
+
+    task_state_path = results_dir / "task_state.json"
+    existing_task_state = {}
+    if task_state_path.exists():
+        try:
+            existing_task_state = json.loads(task_state_path.read_text(encoding="utf-8"))
+        except Exception:
+            existing_task_state = {}
+    if bool(existing_task_state.get("completed", False)) and not bool(existing_task_state.get("failed", False)):
+        print(f"[RESUME] Task already completed at {task_state_path}; skipping.", flush=True)
+        return
+
+    logger = ContinuousLogger(results_dir, f"dnn_{task.name}", args.adp_mode, resume=results_dir.exists())
 
     logger.log_console(
-        f"Task={task.name} mode={args.mode} adp_mode={args.adp_mode} hidden={format_hidden(args.hidden)} in_dim={task.in_dim} out_dim={task.out_dim}"
+        f"Task={task.name} mode={args.mode} adp_mode={args.adp_mode} hidden={format_hidden(hidden)} in_dim={task.in_dim} out_dim={task.out_dim}"
     )
     logger.log_console(
         f"ADP: ex_k={args.ex_k} trials_width={args.trials_width} trials_depth={args.trials_depth} max_width={max_width} max_depth={args.max_depth} max_neurons={args.max_neurons}"
@@ -108,7 +128,20 @@ def main() -> None:
         metrics_interval=args.metrics_interval,
     )
 
+    task_state = {
+        "task": task.name,
+        "mode": args.mode,
+        "adp_mode": args.adp_mode,
+        "hidden": [int(w) for w in hidden],
+        "batch_size": int(args.batch_size),
+        "run_root": str(results_dir),
+        "completed": False,
+        "failed": False,
+    }
+
     try:
+        task_state_path.parent.mkdir(parents=True, exist_ok=True)
+        task_state_path.write_text(json.dumps({**task_state, "status": "running"}, indent=2, sort_keys=True), encoding="utf-8")
         refresh_task_loaders(task, batch_controller.current_batch_size)
         if args.mode == "stl":
             best_val, best_state, _ = train_with_early_stopping(
@@ -133,10 +166,27 @@ def main() -> None:
                 logger.log_console(f"[METRICS] {metrics}")
                 logger.log_epoch_stats({"epoch": 0, **metrics})
 
+        task_state.update(
+            {
+                "completed": True,
+                "best_val": float(best_val),
+                "best_hidden": [int(w) for w in model.hidden_widths],
+                "val_loss": float(val_loss),
+                "val_acc": None if val_acc is None else float(val_acc),
+                "throughput": None if throughput is None else float(throughput),
+            }
+        )
+        task_state_path.write_text(json.dumps(task_state, indent=2, sort_keys=True), encoding="utf-8")
+        (results_dir / "task_summary.json").write_text(json.dumps(task_state, indent=2, sort_keys=True), encoding="utf-8")
+
         plot_val_loss_from_csv(logger.csv_file, results_dir / "val_loss_vs_step.png", title=f"{run_name} - val_loss")
         plot_best_loss_per_neurons_from_csv(
             logger.csv_file, results_dir / "loss_vs_neurons_best.png", title=f"{run_name} - best val_loss per neurons"
         )
+    except BaseException as exc:
+        task_state.update({"completed": False, "failed": True, "error": repr(exc)})
+        task_state_path.write_text(json.dumps(task_state, indent=2, sort_keys=True), encoding="utf-8")
+        raise
     finally:
         batch_controller.stop()
         logger.close()
