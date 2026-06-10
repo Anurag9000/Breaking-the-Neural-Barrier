@@ -151,7 +151,7 @@ class RunConfig:
     metrics_every: int = 0
     min_width: int = 16
     width_step: int = 16
-    width_count_per_depth: int = 12
+    width_count_per_depth: int = 10
     parameter_matched: bool = False
 
 
