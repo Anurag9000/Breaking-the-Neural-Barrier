@@ -41,6 +41,13 @@ Catalog view:
 - `MLPS/tabular/shared/dae_dnn/results/catalog/simulation`
 - `MLPS/tabular/shared/dae_dnn/results/catalog/prediction`
 
+Recovered classification width-only history lives under:
+
+- `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current/classification/ae_width_only`
+
+The currently restored prefix is only `d1_w1` and `d1_w2`; widths `w3`
+through `w10` are not recovered yet.
+
 STL ablation is still a flagged TODO in the repo docs. Do not treat the
 archived STL tree as finished state; it is the history backing the current
 fresh run layout and the remaining analysis work.
