@@ -84,6 +84,12 @@ Historical STL outputs from the previous top-level run root were moved to:
 MLPS/tabular/shared/dae_dnn/results/archive/stl_ablation_parameter_matched_gpu_serial
 ```
 
+The legacy `representation` sweep is restored under:
+
+```text
+MLPS/tabular/shared/dae_dnn/results/archive/representation_trial1
+```
+
 ## Resume rule
 
 - same `--run-root` means resume
