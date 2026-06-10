@@ -38,6 +38,17 @@ The tree-level map lives in:
 
 - [MLPS/tabular/shared/dae_dnn/results/README.md](../../MLPS/tabular/shared/dae_dnn/results/README.md)
 
+The experiment inventory lives in:
+
+- [docs/tabular_dae_dnn/experiment_inventory.md](experiment_inventory.md)
+- [docs/tabular_dae_dnn/experiment_inventory.csv](experiment_inventory.csv)
+
+Regenerate it with:
+
+```bash
+./.venv/bin/python scripts/update_experiment_inventory.py
+```
+
 The current recommended fresh STL root is:
 
 ```text
@@ -53,6 +64,19 @@ The current recommended ADP root is:
 ```text
 MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1
 ```
+
+## Big Open TODO
+
+STL ablation is still a glaring open item in this repo. The schedule and
+resume machinery exist, but the suite is not yet a finalized end-state run.
+Treat it as a TODO until the full repeat-level analysis is complete.
+
+Open items:
+
+- verify the exact resume boundary behavior on the live STL runner
+- finish the repeat-level final-loss and final-accuracy tables
+- generate per-task best-repeat and worst-repeat trajectory plots
+- keep all outputs under the canonical `results/stl/ablation/` layout
 
 Historical STL outputs from the previous top-level run root were moved to:
 

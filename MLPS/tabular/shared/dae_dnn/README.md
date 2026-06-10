@@ -17,6 +17,12 @@ Current active STL and ADP task set:
 Generation remains archived in historical result trees and is not part of the
 current STL sweep.
 
+## Glaring STL TODO
+
+The STL ablation path is intentionally still an open work item. The runner and
+result layout are in place, but the full repeat-level final analysis and plots
+are not yet treated as a finished deliverable.
+
 Primary entry points:
 - `run_task.py` - single task runner
 - `run_all.py` - full tabular suite

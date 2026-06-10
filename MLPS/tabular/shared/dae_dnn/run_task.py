@@ -47,17 +47,24 @@ def main() -> None:
     p.add_argument("--metrics-interval", type=int, default=5)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--num-workers", type=int, default=0)
+    p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
+    p.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="MLPS/tabular/shared/dae_dnn/results")
     args = p.parse_args()
 
     torch.manual_seed(int(args.seed))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    batch_state_path = Path(args.results_dir) / "_batch_size_state.json"
     initial_batch_size = int(args.batch_size)
 
-    task = build_task(args.task, args.data_dir, initial_batch_size, args.num_workers, args.seed)
+    task = build_task(
+        args.task,
+        args.data_dir,
+        initial_batch_size,
+        args.num_workers,
+        args.seed,
+        pin_memory=bool(args.pin_memory),
+    )
 
     max_width = args.max_width
     if "max_width" in task.extra:
@@ -77,6 +84,7 @@ def main() -> None:
             f"_w{max(hidden) if hidden else 0}_exk{args.ex_k}_{_dt.datetime.now().strftime('%Y%m%d_%H%M%S')}"
         )
         results_dir = Path(args.results_dir) / run_name
+    batch_state_path = results_dir / "_batch_size_state.json"
 
     task_state_path = results_dir / "task_state.json"
     existing_task_state = {}
@@ -108,7 +116,7 @@ def main() -> None:
         poll_interval_sec=30.0,
         shrink_factor=1.0,
         state_path=batch_state_path,
-        restore_state=False,
+        restore_state=True,
     )
     batch_controller.start()
 
@@ -151,7 +159,13 @@ def main() -> None:
             logger.log_console(f"[STL] best_val_loss={best_val:.6f} hidden={format_hidden(model.hidden_widths)}")
         else:
             best_val, model = adp_search(
-                model.to(device), task, cfg, device, logger, batch_controller=batch_controller
+                model.to(device),
+                task,
+                cfg,
+                device,
+                logger,
+                batch_controller=batch_controller,
+                results_dir=results_dir,
             )
             logger.log_console(f"[ADP] best_val_loss={best_val:.6f} hidden={format_hidden(model.hidden_widths)}")
 
