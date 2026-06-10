@@ -15,7 +15,7 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Summarize final metrics across repeats for tabular ablation runs.")
     p.add_argument(
         "--results-root",
-        default="MLPS/tabular/shared/dae_dnn/results/stl_ablation_parameter_matched_gpu_serial",
+        default="MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1",
         help="Root directory containing per-candidate repeat outputs.",
     )
     p.add_argument(
