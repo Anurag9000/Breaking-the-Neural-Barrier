@@ -1,7 +1,7 @@
 # Classification ADP Width Only
 
 Recovered historical classification width-only export, restored from the old
-`representation` lineage.
+legacy archive lineage.
 
 Current recovered scope:
 
@@ -12,5 +12,5 @@ The source archive is:
 
 - `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current/classification/ae_width_only`
 
-The old `representation` name in history maps to this classification lineage.
+The old archive source label maps to this classification lineage.
 Widths `w3` through `w10` are not recovered yet and remain a TODO.

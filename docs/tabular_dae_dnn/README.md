@@ -109,7 +109,7 @@ The repo-visible root is `classification_trial1`.
 That lightweight historical STL archive is not the massive all-task sweep. It
 contains the older small study for:
 
-- `classification` / legacy `representation`
+- `classification`
 - `autoencoding`
 - `generation`
 - `denoising`
@@ -136,7 +136,6 @@ MLPS/tabular/shared/dae_dnn/results/catalog/
 
 That catalog exposes the current task groups:
 
-- `representation`
 - `classification`
 - `autoencoding`
 - `generation`

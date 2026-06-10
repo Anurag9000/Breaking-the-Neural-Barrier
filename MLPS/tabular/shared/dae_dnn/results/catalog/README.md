@@ -5,8 +5,6 @@ tabular DAE/DNN results.
 
 Layout:
 
-- `representation/` is intentionally empty. The legacy `representation` label
-  has been normalized to `classification`.
 - Each task folder has:
   - `adpw2d/`
   - `adp_width_only/`

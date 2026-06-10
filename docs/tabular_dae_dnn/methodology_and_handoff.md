@@ -48,7 +48,7 @@ This is separate from the massive STL ablation TODO.
 The lightweight historical STL archive at `results/archive/classification_trial1`
 covers:
 
-- `classification` / legacy `representation`
+- `classification`
 - `autoencoding`
 - `generation`
 - `denoising`
@@ -65,7 +65,7 @@ PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
 CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
   --data-dir ./data \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
-  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/classification_representation_followup_v1 \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/classification_simulation_prediction_followup_v1 \
   --source-run-root MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1 \
   --tasks simulation prediction \
   --repeat-count 5 \
