@@ -20,7 +20,6 @@ import run_goliath as rg
 DEFAULT_TASKS = [
     "classification",
     "autoencoding",
-    "generation",
     "denoising",
     "anomaly",
     "simulation",
@@ -29,7 +28,7 @@ DEFAULT_TASKS = [
 
 DEFAULT_MIN_DEPTH = 1
 DEFAULT_MAX_DEPTH = 10
-DEFAULT_MIN_WIDTH = 64
+DEFAULT_MIN_WIDTH = 1
 DEFAULT_MAX_WIDTH = 1024
 DEFAULT_WIDTH_STEP = 1
 DEFAULT_WIDTH_COUNT_PER_DEPTH = 20
@@ -502,6 +501,25 @@ def current_candidate_failed(task_root: Path, saved_state: Dict[str, Any]) -> bo
     return False
 
 
+def advance_ablation_cursor(
+    architecture_idx: int,
+    family_idx: int,
+    repeat_id: int,
+    repeat_count: int,
+    family_len: int,
+) -> Tuple[int, int, int]:
+    next_repeat = int(repeat_id) + 1
+    next_family = int(family_idx)
+    next_architecture = int(architecture_idx)
+    if next_repeat > int(repeat_count):
+        next_repeat = 1
+        next_family += 1
+        if next_family >= int(family_len):
+            next_family = 0
+            next_architecture += 1
+    return next_architecture, next_family, next_repeat
+
+
 def run_task_ablation(
     *,
     task_name: str,
@@ -607,22 +625,13 @@ def run_task_ablation(
                 if repeat_index is None and repeat_id < repeat_start:
                     continue
                 if repeat_index is None:
-                    next_repeat = repeat_id + 1
-                    next_family = family_idx
-                    next_architecture = architecture_idx
-                    if next_repeat > repeat_count:
-                        next_repeat = 1
-                        next_family = family_idx + 1
-                        if next_family >= len(family):
-                            next_family = 0
-                            next_architecture = architecture_idx + 1
                     save_ablation_state(
                         task_root,
                         {
                             "task": task_name,
-                            "architecture_index": int(next_architecture),
-                            "family_index": int(next_family),
-                            "repeat_index": int(next_repeat),
+                            "architecture_index": int(architecture_idx),
+                            "family_index": int(family_idx),
+                            "repeat_index": int(repeat_id),
                             "repeat_count": int(repeat_count),
                             "completed": False,
                             "current_architecture_index": int(architecture_idx),
@@ -701,6 +710,31 @@ def run_task_ablation(
                             ref_architecture=ref_arch,
                             ref_best_val=float(ref_best_val),
                         )
+                    )
+
+                if repeat_index is None:
+                    next_architecture, next_family, next_repeat = advance_ablation_cursor(
+                        architecture_idx=architecture_idx,
+                        family_idx=family_idx,
+                        repeat_id=repeat_id,
+                        repeat_count=repeat_count,
+                        family_len=len(family),
+                    )
+                    save_ablation_state(
+                        task_root,
+                        {
+                            "task": task_name,
+                            "architecture_index": int(next_architecture),
+                            "family_index": int(next_family),
+                            "repeat_index": int(next_repeat),
+                            "repeat_count": int(repeat_count),
+                            "completed": False,
+                            "current_architecture_index": int(architecture_idx),
+                            "current_family_index": int(family_idx),
+                            "current_repeat_index": int(repeat_id),
+                            "current_phase_name": phase_name,
+                            "current_architecture": [int(v) for v in expanded_architecture],
+                        },
                     )
 
         resume_family_idx = 0

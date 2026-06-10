@@ -6,7 +6,7 @@ ConditionPathExists=/sys/class/hwmon/hwmon6/fan2_boost
 
 [Service]
 Type=simple
-ExecStart=/usr/local/sbin/alienware-fan-cap.sh 73 73 1
+ExecStart=/usr/local/sbin/alienware-fan-cap.sh 5000 5000 200 1
 Restart=always
 RestartSec=1
 

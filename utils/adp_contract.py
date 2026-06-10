@@ -692,8 +692,8 @@ def run_module_adp(
     width_stage_min_improve_pct = float(getattr(acfg, "width_stage_min_improve_pct", 1.0))
     depth_stage_margin_patience = int(getattr(acfg, "depth_stage_margin_patience", patience_depth))
     depth_stage_min_improve_pct = float(getattr(acfg, "depth_stage_min_improve_pct", 1.0))
-    min_new_layer_width = int(getattr(acfg, "min_new_layer_width", 10))
-    depth_first_seed_width = int(getattr(acfg, "depth_first_seed_width", 20))
+    min_new_layer_width = int(getattr(acfg, "min_new_layer_width", 1))
+    depth_first_seed_width = int(getattr(acfg, "depth_first_seed_width", 1))
 
     def save_search_state(payload: Dict[str, Any]) -> None:
         _write_json(search_state_path, payload)

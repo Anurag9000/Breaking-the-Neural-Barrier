@@ -28,7 +28,7 @@ class ADPConfig:
     max_neurons: int = 10_000_000
     width_stage_margin_patience: int = 5
     width_stage_min_improve_pct: float = 1.0
-    min_new_layer_width: int = 10
+    min_new_layer_width: int = 1
     lr: float = 1e-3
     weight_decay: float = 1e-4
     grad_clip: float = 1.0
@@ -100,9 +100,9 @@ def expand_depth(model: MLP, max_depth: int) -> Optional[MLP]:
     widths = [int(width) for width in model.hidden_widths]
     if len(set(widths)) != 1:
         return None
-    if int(widths[-1]) <= 10:
+    if int(widths[-1]) <= 1:
         return None
-    new_hidden = list(widths) + [10]
+    new_hidden = list(widths) + [1]
     return _rebuild_mlp(model, new_hidden)
 
 
