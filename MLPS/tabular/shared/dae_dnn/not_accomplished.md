@@ -1,17 +1,8 @@
-# Not Accomplished With Vanilla Pure DNNs
+# Archived Notes
 
-Unique, high-level task families:
+Historical experiment notes and unfinished items are consolidated in:
 
-- Prediction / regression
-- Classification / decision
-- Representation / embeddings
-- Autoencoding / reconstruction
-- Generation (single-model)
-- Denoising / restoration
-- Anomaly / novelty detection
-- Sequence / temporal modeling
-- Inverse problems / scientific modeling
-- Control / optimization approximation
-- Self-supervised / weakly-supervised pretext
-- Simulation / digital twin
-- Edge / real-time inference
+- [docs/tabular_dae_dnn/README.md](../../../../docs/tabular_dae_dnn/README.md)
+
+Keep this file as a pointer only. The repo now uses the shared guide and the
+canonical results layout as the single source of truth.
