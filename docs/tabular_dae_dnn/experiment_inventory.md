@@ -4,8 +4,17 @@ This catalog is generated from the tracked result roots and the active ADP run r
 
 | Root | Source | Status | Markers | Files |
 |---|---|---|---|---:|
-| `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1` | `results` | `active` | `training_log.txt;training_stats.csv` | 2442 |
+| `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1` | `results` | `active` | `training_log.txt;training_stats.csv` | 2484 |
+| `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1/repeat_01/anomaly` | `results` | `active` | `task_state.json;training_log.txt;training_stats.csv;phase_progress.csv;search_state.json;_batch_size_state.json` | 42 |
+| `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1/repeat_01/autoencoding` | `results` | `active` | `task_state.json;training_log.txt;training_stats.csv;phase_progress.csv;search_state.json;_batch_size_state.json` | 36 |
+| `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1/repeat_01/classification` | `results` | `active` | `task_state.json;training_log.txt;training_stats.csv;phase_progress.csv;search_state.json;_batch_size_state.json` | 30 |
+| `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1/repeat_01/denoising` | `results` | `active` | `task_state.json;training_log.txt;training_stats.csv;phase_progress.csv;search_state.json;_batch_size_state.json` | 48 |
+| `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1/repeat_01/generation` | `results` | `active` | `task_state.json;training_log.txt;training_stats.csv;phase_progress.csv;search_state.json;_batch_size_state.json` | 150 |
+| `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1/repeat_01/prediction` | `results` | `active` | `task_state.json;task_summary.json;training_log.txt;training_stats.csv;phase_progress.csv;search_state.json;_batch_size_state.json` | 710 |
+| `MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat5_v1/repeat_01/simulation` | `results` | `active` | `task_state.json;task_summary.json;training_log.txt;training_stats.csv;phase_progress.csv;search_state.json;_batch_size_state.json` | 1466 |
 | `MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1` | `results` | `complete` | `run_metadata.json;final_report.json` | 5 |
+| `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_anomaly_onward_gpu` | `results` | `in_progress` | `run_metadata.json;training_log.txt;training_stats.csv` | 8290 |
+| `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt;training_stats.csv` | 47526 |
 | `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d1` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt` | 6 |
 | `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d2` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt` | 6 |
 | `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/autoencoding_d3` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt` | 6 |
