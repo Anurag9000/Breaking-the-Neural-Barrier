@@ -48,6 +48,10 @@ Recovered classification width-only history lives under:
 The currently restored prefix is only `d1_w1` and `d1_w2`; widths `w3`
 through `w10` are not recovered yet.
 
+The separate small STL follow-up for the missing `simulation` and `prediction`
+tasks is documented in `docs/tabular_dae_dnn/methodology_and_handoff.md`.
+Keep that distinct from the massive all-task STL TODO.
+
 STL ablation is still a flagged TODO in the repo docs. Do not treat the
 archived STL tree as finished state; it is the history backing the current
 fresh run layout and the remaining analysis work.
