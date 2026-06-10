@@ -31,7 +31,7 @@ DEFAULT_MAX_DEPTH = 10
 DEFAULT_MIN_WIDTH = 1
 DEFAULT_MAX_WIDTH = 1024
 DEFAULT_WIDTH_STEP = 1
-DEFAULT_WIDTH_COUNT_PER_DEPTH = 20
+DEFAULT_WIDTH_COUNT_PER_DEPTH = 10
 DEFAULT_REPEAT_COUNT = 5
 DEFAULT_BATCH_TARGETS = {
     "classification": 50,
@@ -353,49 +353,44 @@ def parameter_matched_architecture(task: rg.Task, depth: int, cfg: rg.RunConfig)
     return [int(width) for _ in range(max(1, int(depth)))]
 
 
-def generate_budgeted_widths(max_width: int, min_width: int, quantum: int, width_count: int) -> List[int]:
-    max_width = int(max_width)
-    min_width = int(min_width)
-    quantum = max(1, int(quantum))
-    width_count = max(1, int(width_count))
+def generate_budgeted_parameter_targets(min_params: int, max_params: int, samples_per_decade: int) -> List[int]:
+    min_params = max(1, int(min_params))
+    max_params = max(min_params, int(max_params))
+    samples_per_decade = max(1, int(samples_per_decade))
 
-    max_width = int(math.floor(max_width / quantum) * quantum)
-    min_width = int(math.ceil(min_width / quantum) * quantum)
-    if max_width < min_width:
-        max_width = min_width
+    if max_params == min_params:
+        return [int(max_params)]
 
-    if width_count == 1 or max_width == min_width:
-        return [int(max_width)]
-
-    span = max_width - min_width
-    sampled: List[int] = []
-    for idx in range(width_count):
-        ratio = idx / float(width_count - 1)
-        raw_width = max_width - (span * ratio)
-        snapped_width = int(round(raw_width / quantum) * quantum)
-        snapped_width = max(min_width, min(max_width, snapped_width))
-        sampled.append(snapped_width)
-
-    widths: List[int] = []
-    seen = set()
-    for width in sampled:
-        key = int(width)
-        if key in seen:
+    start_exp = int(math.floor(math.log10(max(1, min_params))))
+    end_exp = int(math.floor(math.log10(max_params)))
+    targets: List[int] = []
+    for exp in range(start_exp, end_exp + 1):
+        decade_low = max(min_params, int(10**exp))
+        decade_high = min(max_params, int((10 ** (exp + 1)) - 1))
+        if decade_high < decade_low:
             continue
-        seen.add(key)
-        widths.append(key)
+        if samples_per_decade == 1 or decade_high == decade_low:
+            targets.append(int(decade_low))
+            continue
+        for idx in range(samples_per_decade):
+            ratio = idx / float(samples_per_decade - 1)
+            target = int(round(decade_low + (decade_high - decade_low) * ratio))
+            targets.append(target)
 
-    if widths[-1] != min_width:
-        widths.append(int(min_width))
-    return sorted((int(v) for v in widths), reverse=True)
+    deduped: List[int] = []
+    seen = set()
+    for target in targets:
+        if target in seen:
+            continue
+        seen.add(target)
+        deduped.append(int(target))
+    return deduped
 
 
 def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig) -> List[List[int]]:
     depth = max(1, int(depth))
-    step = max(1, int(cfg.width_step))
-    min_width = max(step, int(cfg.min_width))
-    start_width = int(math.ceil(min_width / step) * step)
-    width_count = max(1, int(getattr(cfg, "width_count_per_depth", DEFAULT_WIDTH_COUNT_PER_DEPTH)))
+    min_width = max(1, int(cfg.min_width))
+    samples_per_decade = max(1, int(getattr(cfg, "width_count_per_depth", DEFAULT_WIDTH_COUNT_PER_DEPTH)))
     task_name = str(getattr(task, "name", "")).lower()
     if depth not in REMAINING_DEPTHS_BY_TASK.get(task_name, set()):
         return []
@@ -432,11 +427,22 @@ def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig
         max_width = int(PREDICTION_MAX_WIDTH_BY_DEPTH.get(depth, PREDICTION_MAX_WIDTH_BY_DEPTH[max(PREDICTION_MAX_WIDTH_BY_DEPTH)]))
     else:
         max_width = solve_parameter_matched_width(task, depth, cfg, target_parameter_count(task, cfg))
-    max_width = int(math.floor(max_width / step) * step)
-    if max_width < start_width:
-        max_width = start_width
-    widths = generate_budgeted_widths(max_width, start_width, step, width_count)
-    return [[int(width) for _ in range(depth)] for width in widths]
+    max_width = max(min_width, int(max_width))
+    min_params = _parameter_count_for_width(task, depth, min_width, cfg)
+    max_params = _parameter_count_for_width(task, depth, max_width, cfg)
+    targets = generate_budgeted_parameter_targets(min_params, max_params, samples_per_decade)
+    widths: List[int] = [int(max_width), int(min_width)]
+    for target in targets:
+        widths.append(int(solve_parameter_matched_width(task, depth, cfg, int(target))))
+    deduped_widths: List[int] = []
+    seen_widths = set()
+    for width in widths:
+        key = max(1, int(width))
+        if key in seen_widths:
+            continue
+        seen_widths.add(key)
+        deduped_widths.append(key)
+    return [[int(width) for _ in range(depth)] for width in sorted(deduped_widths, reverse=True)]
 
 
 def make_cfg(args, tasks: List[str], run_root: Path) -> rg.RunConfig:
@@ -874,7 +880,7 @@ def parse_args() -> argparse.Namespace:
         "--width-count-per-depth",
         type=int,
         default=DEFAULT_WIDTH_COUNT_PER_DEPTH,
-        help="Total widths to sample per task/depth family between that family's capped max width and the minimum width, all rounded to the active width step grid.",
+        help="Parameter-count samples per decade when generating a task/depth family from the learned max-width ceiling down to the minimum width.",
     )
     p.add_argument("--min-depth", type=int, default=DEFAULT_MIN_DEPTH)
     p.add_argument("--repeat-count", type=int, default=DEFAULT_REPEAT_COUNT)
