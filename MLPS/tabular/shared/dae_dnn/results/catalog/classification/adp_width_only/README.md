@@ -1,11 +1,16 @@
 # Classification ADP Width Only
 
-No dedicated width-only classification export exists in the tracked history so
-far.
+Recovered historical classification width-only export, restored from the old
+`representation` lineage.
 
-What *is* present for classification:
+Current recovered scope:
 
-- ADP W2D lineage under `adpw2d/`
-- STL ablation lineage under `stl_ablation/`
+- `cand_000_d1_w1`
+- `cand_001_d1_w2`
+
+The source archive is:
+
+- `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current/classification/ae_width_only`
 
 The old `representation` name in history maps to this classification lineage.
+Widths `w3` through `w10` are not recovered yet and remain a TODO.
