@@ -43,6 +43,10 @@ The experiment inventory lives in:
 - [docs/tabular_dae_dnn/experiment_inventory.md](experiment_inventory.md)
 - [docs/tabular_dae_dnn/experiment_inventory.csv](experiment_inventory.csv)
 
+The exact runner and export methodology lives in:
+
+- [docs/tabular_dae_dnn/methodology_and_handoff.md](methodology_and_handoff.md)
+
 Regenerate it with:
 
 ```bash
@@ -84,11 +88,15 @@ Historical STL outputs from the previous top-level run root were moved to:
 MLPS/tabular/shared/dae_dnn/results/archive/stl_ablation_parameter_matched_gpu_serial
 ```
 
-The legacy `representation` sweep is restored under:
+The legacy `representation` sweep is restored under the canonical
+`classification` archive root:
 
 ```text
-MLPS/tabular/shared/dae_dnn/results/archive/representation_trial1
+MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1
 ```
+
+The source artifact names still carry the legacy `representation` label in the
+archived CSV and plot, but the repo-visible root is `classification_trial1`.
 
 ## Resume rule
 
