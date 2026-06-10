@@ -54,6 +54,17 @@ Archived outputs already moved there include:
 - `MLPS/tabular/shared/dae_dnn/results/archive/stl_ablation_parameter_matched_gpu_serial`
 - `MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1`
 
+`classification_trial1` is the older lightweight STL study, not the massive
+all-task ablation. It covers:
+
+- `classification` / legacy `representation`
+- `autoencoding`
+- `generation`
+- `denoising`
+- `anomaly`
+
+It does not include dedicated STL roots for `simulation` or `prediction`.
+
 Experiment catalog files:
 
 - `docs/tabular_dae_dnn/experiment_inventory.md`
