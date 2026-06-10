@@ -29,13 +29,13 @@ DEFAULT_TASKS = [
 ]
 
 TASK_REPEAT_COUNTS = {
-    "classification": 5,
-    "autoencoding": 5,
-    "generation": 5,
-    "denoising": 5,
-    "anomaly": 5,
-    "simulation": 6,
-    "prediction": 6,
+    "classification": 4,
+    "autoencoding": 4,
+    "generation": 4,
+    "denoising": 4,
+    "anomaly": 4,
+    "simulation": 5,
+    "prediction": 5,
 }
 
 
@@ -66,7 +66,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--repeat-count",
         type=int,
-        default=5,
+        default=4,
         help="Base repeat count; simulation and prediction are given one extra repeat in this suite.",
     )
     p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
@@ -239,7 +239,7 @@ def main() -> None:
     if not tasks:
         raise SystemExit("No tasks requested.")
 
-    run_root = Path(args.run_root) if args.run_root else Path(args.results_dir) / "adp" / "w2d" / "repeat5_v1"
+    run_root = Path(args.run_root) if args.run_root else Path(args.results_dir) / "adp" / "w2d" / "repeat4_v1"
     run_root.mkdir(parents=True, exist_ok=True)
     resume_logs = (run_root / "training_log.txt").exists() or (run_root / "training_stats.csv").exists()
     logger = ContinuousLogger(run_root, "adp_w2d_suite", "adp_width_to_depth", resume=resume_logs)

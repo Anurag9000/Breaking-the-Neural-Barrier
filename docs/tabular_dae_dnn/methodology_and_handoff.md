@@ -105,12 +105,12 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_sm
 ```
 
 This follow-up is separate from the massive all-task STL TODO and should not
-be mixed with the live repeat-5 ADP run. It is one run per `(task, depth,
+be mixed with the live repeat-4 ADP run. It is one run per `(task, depth,
 width)` candidate, with no repeats.
 
 ## ADP repeat schedule
 
-The current ADP width-to-depth suite uses five repeats for:
+The current ADP width-to-depth suite uses four repeats for:
 
 - `classification`
 - `autoencoding`
@@ -118,13 +118,15 @@ The current ADP width-to-depth suite uses five repeats for:
 - `denoising`
 - `anomaly`
 
-It uses six repeats for:
+It uses five repeats for:
 
 - `simulation`
 - `prediction`
 
 This is intentional and reflected in the suite launcher. Keep that split when
-restarting the suite or comparing results across tasks.
+restarting the suite or comparing results across tasks. The older one-off ADP
+W2D outputs for the first five tasks are intended to be merged into this base
+later, so the total becomes five runs per task.
 
 Legacy and analysis helpers:
 
