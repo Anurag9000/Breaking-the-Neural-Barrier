@@ -62,6 +62,39 @@ results are generated.
 Same `--run-root` means resume. Keep this separate from the massive all-task
 STL sweep.
 
+## Small STL follow-up on slave laptops
+
+If you want to run the missing `simulation` and `prediction` tasks as a
+separate, lightweight follow-up on a slave machine, use a dedicated run root
+and keep it out of the massive all-task STL ablation tree.
+
+Use this command:
+
+```bash
+cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
+
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
+CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
+  --data-dir ./data \
+  --results-dir MLPS/tabular/shared/dae_dnn/results \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/classification_simulation_prediction_followup_v1 \
+  --source-run-root MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1 \
+  --tasks simulation prediction \
+  --repeat-count 5 \
+  --concurrency 2 \
+  --num-workers 0 \
+  --no-pin-memory \
+  --patience 10 \
+  --max-depth 10 \
+  --batch-size 9312 \
+  --min-width 1 \
+  --width-step 1 \
+  --width-count-per-depth 10
+```
+
+This follow-up is separate from the massive all-task STL TODO and should not
+be mixed with the live repeat-5 ADP run.
+
 Legacy and analysis helpers:
 
 - `MLPS/tabular/shared/dae_dnn/run_goliath.py`
