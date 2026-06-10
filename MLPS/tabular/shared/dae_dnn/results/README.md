@@ -32,7 +32,6 @@ The staged legacy archive now exposes `classification` at the repo-visible root.
 
 Catalog view:
 
-- `MLPS/tabular/shared/dae_dnn/results/catalog/representation`
 - `MLPS/tabular/shared/dae_dnn/results/catalog/classification`
 - `MLPS/tabular/shared/dae_dnn/results/catalog/autoencoding`
 - `MLPS/tabular/shared/dae_dnn/results/catalog/generation`
@@ -68,7 +67,7 @@ Archived outputs already moved there include:
 `classification_trial1` is the older lightweight STL study, not the massive
 all-task ablation. It covers:
 
-- `classification` / legacy `representation`
+- `classification`
 - `autoencoding`
 - `generation`
 - `denoising`
