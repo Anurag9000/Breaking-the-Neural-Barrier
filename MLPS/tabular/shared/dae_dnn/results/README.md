@@ -25,6 +25,7 @@ The planned STL schedule lives at:
 Archived outputs already moved there include:
 
 - `MLPS/tabular/shared/dae_dnn/results/archive/stl_ablation_parameter_matched_gpu_serial`
+- `MLPS/tabular/shared/dae_dnn/results/archive/representation_trial1`
 
 Experiment catalog files:
 
