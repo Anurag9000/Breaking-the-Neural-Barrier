@@ -11,9 +11,9 @@ Present:
 
 Legacy name:
 
-- `representation` in the old archive now maps here
+- legacy archive source now maps here
 
 Note:
 
-- the old `representation` name is the source label
+- the old archive source label is normalized to `classification`
 - the repo-visible task label is `classification`
