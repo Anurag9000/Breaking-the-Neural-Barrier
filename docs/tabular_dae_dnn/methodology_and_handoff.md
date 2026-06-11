@@ -120,8 +120,8 @@ disjoint slices in parallel and the results can be merged later.
 Use the same runner, but cap the parameter-decade range per machine:
 
 - machine 1: parameter decades `1` through `3`
-- machine 2: parameter decades `4` and `5`
-- machine 3: parameter decades `6` through `8`
+- machine 2: parameter decades `4` through `6`
+- machine 3: parameter decades `7` and `8`
 - machine 4: parameter decades `9` and `10`
 
 The launcher now accepts `--param-band START END`, where the values are
@@ -159,8 +159,8 @@ cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/merge_stl_ablation_bands.py \
   --input-roots \
     MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03 \
-    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_05 \
-    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow06_08 \
+    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06 \
+    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08 \
     MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow09_10 \
   --output-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1
 ```
