@@ -29,6 +29,7 @@ STL sweep orchestration:
 
 - `MLPS/tabular/shared/dae_dnn/run_stl_ablation.py`
 - `MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py`
+- `MLPS/tabular/shared/dae_dnn/run_stl_parallelism_probe.py`
 - `MLPS/tabular/shared/dae_dnn/run_stl_small_grid.py`
 
 ADP width-to-depth orchestration:
@@ -163,6 +164,61 @@ The launcher now accepts `--param-band START END`, where the values are
 parameter-count exponents. For example, `--param-band 1 3` keeps targets in
 the `10^1` through `10^3` range.
 
+Before starting the real ablation on a given laptop, run the parallelism
+probe for the same parameter band. The probe starts at `N=2`, launches the
+`N` largest parameter-count candidates first, runs each of them for exactly
+two epochs through the normal checkpoint/resume path, and increases `N`
+until a trial fails. The last successful `N` is the concurrency to use on
+that laptop.
+
+The probe writes two files into its run root:
+
+- `recommended_parallelism.txt`
+- `parallelism_probe_summary.json`
+
+The real launcher accepts `--concurrency-file` and can read the discovered
+value directly.
+
+Example probe command:
+
+```bash
+cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
+
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
+CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_parallelism_probe.py \
+  --data-dir ./data \
+  --results-dir MLPS/tabular/shared/dae_dnn/results \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl/parallelism_probe/param_10pow01_03 \
+  --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current \
+  --tasks classification autoencoding generation denoising anomaly simulation prediction \
+  --param-band 1 3 \
+  --probe-epochs 2 \
+  --start-n 2 \
+  --num-workers 0 \
+  --pin-memory \
+  --batch-size 9312
+```
+
+Example real run command using the probe output:
+
+```bash
+cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
+
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
+CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
+  --data-dir ./data \
+  --results-dir MLPS/tabular/shared/dae_dnn/results \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03 \
+  --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current \
+  --tasks classification autoencoding generation denoising anomaly simulation prediction \
+  --param-band 1 3 \
+  --concurrency-file MLPS/tabular/shared/dae_dnn/results/stl/parallelism_probe/param_10pow01_03/recommended_parallelism.txt \
+  --repeat-count 5 \
+  --num-workers 0 \
+  --pin-memory \
+  --batch-size 9312
+```
+
 Example for one band:
 
 ```bash
@@ -185,6 +241,10 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
 
 Repeat the same command on the other laptops, changing only the parameter band
 and the `--run-root` suffix.
+
+The real ablation order within each candidate family is now smallest-to-
+largest. The probe uses the opposite order and is intentionally adversarial:
+it stress tests the heaviest models first.
 
 After all bands finish, merge them into the canonical STL root:
 
@@ -237,6 +297,7 @@ The repo uses the same broad method pattern across the tabular sweeps:
 3. write run metadata, logs, CSVs, and phase/task state into the run root
 4. restore from the saved checkpoint/state files when resuming
 5. keep the repeat-level results separate from the derived analysis outputs
+6. probe parameter-band parallelism before launching the real massive STL band
 
 The current result roots are:
 

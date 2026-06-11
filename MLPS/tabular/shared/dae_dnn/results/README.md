@@ -49,6 +49,22 @@ Merge those staged roots back into the canonical STL root with:
   --output-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1
 ```
 
+Before launching any of those parameter-band roots on a given laptop, run the
+parallelism probe for the same band. The probe starts at `N=2`, launches the
+`N` largest parameter-count candidates first, runs them for exactly two
+epochs, and stops when a trial fails. The last successful `N` becomes the
+recommended concurrency for the real run.
+
+Probe outputs to keep:
+
+- `recommended_parallelism.txt`
+- `parallelism_probe_summary.json`
+
+The real launcher accepts `--concurrency-file` and can read the probe result
+directly. The actual STL run order inside each candidate family is
+smallest-to-largest; the probe uses largest-to-smallest to stress test the
+hardware first.
+
 The ADP W2D suite uses task-specific repeat counts. Keep the current launcher
 configuration in sync with the active run root and do not reuse a deleted root.
 
