@@ -15,8 +15,12 @@ import torch
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
 from utils.adp_logging import ContinuousLogger
 
-import run_goliath as rg
-import run_stl_ablation as stl
+try:  # pragma: no cover - import shim for direct script execution
+    import run_goliath as rg
+    import run_stl_ablation as stl
+except ModuleNotFoundError:  # pragma: no cover - import shim for package-style imports
+    from MLPS.tabular.shared.dae_dnn import run_goliath as rg
+    from MLPS.tabular.shared.dae_dnn import run_stl_ablation as stl
 
 
 def parse_args() -> argparse.Namespace:
@@ -56,6 +60,11 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument("--repeat-count", type=int, default=5)
     p.add_argument("--concurrency", type=int, default=10)
+    p.add_argument(
+        "--concurrency-file",
+        default=None,
+        help="Optional text file containing the concurrency value to use instead of --concurrency.",
+    )
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
     p.add_argument("--metrics-every", type=int, default=0)
@@ -68,6 +77,23 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--use-bn", action="store_true", default=True)
     p.add_argument("--no-bn", dest="use_bn", action="store_false")
     return p.parse_args()
+
+
+def resolve_concurrency(args: argparse.Namespace) -> int:
+    concurrency = int(args.concurrency)
+    concurrency_file = getattr(args, "concurrency_file", None)
+    if concurrency_file:
+        path = Path(str(concurrency_file))
+        if not path.exists():
+            raise SystemExit(f"Missing concurrency file: {path}")
+        text = path.read_text(encoding="utf-8").strip()
+        if not text:
+            raise SystemExit(f"Empty concurrency file: {path}")
+        try:
+            concurrency = int(text.splitlines()[0].strip())
+        except Exception as exc:
+            raise SystemExit(f"Invalid concurrency file contents in {path}: {text!r}") from exc
+    return max(1, int(concurrency))
 
 
 def build_worker_command(
@@ -411,6 +437,7 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
 
 def main() -> None:
     args = parse_args()
+    args.concurrency = resolve_concurrency(args)
     tasks = [str(t).lower() for t in args.tasks]
     architectures = stl.build_architectures(args)
     if not architectures:
@@ -432,6 +459,8 @@ def main() -> None:
         logger.log_console(f"Parameter decade band: {list(param_band)}")
     logger.log_console(f"Repeat count: {int(args.repeat_count)}")
     logger.log_console(f"Concurrency: {int(args.concurrency)}")
+    if getattr(args, "concurrency_file", None):
+        logger.log_console(f"Concurrency file: {args.concurrency_file}")
     logger.log_console(f"Source run root: {args.source_run_root}")
     logger.log_console(f"Device: {torch.device('cuda' if torch.cuda.is_available() else 'cpu')}")
     logger.log_console(f"Git commit: {rg.git_commit()}")
@@ -469,9 +498,10 @@ def main() -> None:
             "tasks": tasks,
             "architectures": architectures,
             "param_band": list(param_band) if param_band is not None else None,
+            "concurrency": int(args.concurrency),
+            "concurrency_file": str(args.concurrency_file) if getattr(args, "concurrency_file", None) else None,
             "source_run_root": str(args.source_run_root),
             "repeat_count": int(args.repeat_count),
-            "concurrency": int(args.concurrency),
             "reports": task_reports,
         },
     )

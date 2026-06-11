@@ -14,7 +14,10 @@ import torch
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
 from utils.adp_logging import ContinuousLogger
 
-import run_goliath as rg
+try:  # pragma: no cover - import shim for direct script execution
+    import run_goliath as rg
+except ModuleNotFoundError:  # pragma: no cover - import shim for package-style imports
+    from MLPS.tabular.shared.dae_dnn import run_goliath as rg
 
 
 DEFAULT_TASKS = [
@@ -477,7 +480,7 @@ def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig
             continue
         seen_widths.add(key)
         deduped_widths.append(key)
-    return [[int(width) for _ in range(depth)] for width in sorted(deduped_widths, reverse=True)]
+    return [[int(width) for _ in range(depth)] for width in sorted(deduped_widths)]
 
 
 def make_cfg(args, tasks: List[str], run_root: Path) -> rg.RunConfig:
