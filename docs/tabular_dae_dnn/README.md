@@ -93,6 +93,12 @@ The current recommended ADP root is:
 MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>
 ```
 
+Current live ADP repeat split:
+
+- `classification`, `autoencoding`, `generation`, `denoising`, `anomaly`: 4 repeats in the active suite
+- `simulation`, `prediction`: 5 repeats in the active suite
+- the first five tasks are intended to be merged later with the prior one-off W2D history so each task has 5 combined repeats in the canonical combined tree
+
 Historical ADP width-to-depth archives are restored under:
 
 ```text
@@ -168,6 +174,16 @@ That catalog exposes the current task groups:
 
 The live ADP W2D suite uses the current launcher-selected `<suite_name>` under
 `results/adp/w2d/`. Do not hardcode a deleted run root here.
+
+Recovered small-grid coverage today:
+
+- `classification`: task-first archive present; STL ablation and W2D recovered; width-only is a placeholder
+- `autoencoding`: task-first archive present; STL ablation, W2D, and width-only recovered for depths `d1` through `d6`
+- `generation`: task-first archive present; STL ablation, W2D, and width-only recovered for depths `d1` through `d6`
+- `denoising`: task-first archive present; STL ablation, W2D, and width-only recovered for depths `d1` through `d10`
+- `anomaly`: task-first archive present; STL ablation and W2D recovered; width-only is a placeholder
+- `simulation`: task-first archive present; W2D placeholder recovered; STL ablation and width-only are placeholders
+- `prediction`: task-first archive present; W2D placeholder recovered; STL ablation and width-only are placeholders
 
 ## Resume rule
 

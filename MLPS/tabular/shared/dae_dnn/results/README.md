@@ -48,6 +48,12 @@ Merge those staged roots back into the canonical STL root with:
 The ADP W2D suite uses task-specific repeat counts. Keep the current launcher
 configuration in sync with the active run root and do not reuse a deleted root.
 
+Current live ADP repeat split:
+
+- `classification`, `autoencoding`, `generation`, `denoising`, `anomaly`: 4 repeats in the active suite
+- `simulation`, `prediction`: 5 repeats in the active suite
+- the first five tasks are intended to be merged later with the older one-off W2D history so each task has 5 combined repeats in the canonical combined tree
+
 Historical ADP W2D archives restored into the repo:
 
 - `MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_anomaly_onward_gpu`
@@ -74,6 +80,16 @@ Each catalog task root mirrors the same three-mode layout:
 `simulation` and `prediction` are not part of the recovered small STL archive.
 They should be treated as absent from the historical STL material until new
 results are generated.
+
+Recovered small-grid coverage today:
+
+- `classification`: task-first archive present; STL ablation and W2D recovered; width-only is a placeholder
+- `autoencoding`: task-first archive present; STL ablation, W2D, and width-only recovered for depths `d1` through `d6`
+- `generation`: task-first archive present; STL ablation, W2D, and width-only recovered for depths `d1` through `d6`
+- `denoising`: task-first archive present; STL ablation, W2D, and width-only recovered for depths `d1` through `d10`
+- `anomaly`: task-first archive present; STL ablation and W2D recovered; width-only is a placeholder
+- `simulation`: task-first archive present; W2D placeholder recovered; STL ablation and width-only are placeholders
+- `prediction`: task-first archive present; W2D placeholder recovered; STL ablation and width-only are placeholders
 
 For the missing `simulation` and `prediction` follow-up, use the dedicated
 no-repeat small-grid runner. It writes to `results/stl/small_grid/<suite_name>/`
