@@ -1,22 +1,25 @@
-# Small STL Grid
+# Small STL Width Sweep Archive
 
-This tree is the canonical home for the lightweight no-repeat STL follow-up.
-It is separate from the massive repeat-based STL ablation.
+This folder restores the historical small / fixed-grid loss-vs-parameters study from git history.
 
-Recommended layout:
+Recovered task family:
+- `classification` (legacy label: `representation`)
+- `autoencoding`
+- `generation`
+- `denoising`
+- `anomaly`
 
-- `results/stl/small_grid/<suite_name>/<task>/stl_ablation/d03/w064/cand_000/`
-- one candidate per `(task, depth, width)`
-- no repeat directories
+Not recovered in this small archive:
+- `simulation`
+- `prediction`
 
-Archived historical reference:
+Contents:
+- `csv/tasks/*.csv`: archived per-task rows recovered from git history
+- `csv/all_models_loss_by_task.csv`: combined task listing recovered from git history
+- `csv/best_per_task.csv`: best row per task recovered from git history
+- `graphs/*/*.png`: recovered loss-vs-parameters plots when present in history
+- `graphs/anomaly/anomaly_loss_vs_params.png`: regenerated from the archived anomaly rows because the original plot blob was not preserved in git history
 
-- `MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1`
-
-Recommended grid:
-
-- depths: `3`, `4`, `6`, `8`, `10`
-- widths: `64`, `96`, `128`, `160`, `192`, `224`, `256`
-
-Use `MLPS/tabular/shared/dae_dnn/run_stl_small_grid.py` to generate new runs
-in this layout.
+Notes:
+- `classification` is the repo-facing name for the old `representation` label.
+- This archive is separate from the live repeat-based ADP W2D suite.
