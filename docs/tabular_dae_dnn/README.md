@@ -60,14 +60,13 @@ The current recommended fresh STL root is:
 MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1
 ```
 
-When splitting the massive STL run across multiple laptops, stage each depth
-band under its own sibling root, for example:
+When splitting the massive STL run across multiple laptops, stage each
+parameter-decade band under its own sibling root, for example:
 
-- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_01_02`
-- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_03_04`
-- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_05_06`
-- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_07_08`
-- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_09_10`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_05`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow06_08`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow09_10`
 
 Merge them back into the canonical root with
 `MLPS/tabular/shared/dae_dnn/merge_stl_ablation_bands.py`.

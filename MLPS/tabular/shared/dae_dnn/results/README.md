@@ -25,24 +25,22 @@ Current recommended fresh roots:
 - small-grid STL: `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1`
 - ADP: `MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>/`
 
-Massive STL split runs may stage under depth-band roots such as:
+Massive STL split runs may stage under parameter-band roots such as:
 
-- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_01_02`
-- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_03_04`
-- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_05_06`
-- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_07_08`
-- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_09_10`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_05`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow06_08`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow09_10`
 
 Merge those staged roots back into the canonical STL root with:
 
 ```bash
 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/merge_stl_ablation_bands.py \
   --input-roots \
-    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_01_02 \
-    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_03_04 \
-    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_05_06 \
-    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_07_08 \
-    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_09_10 \
+    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03 \
+    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_05 \
+    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow06_08 \
+    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow09_10 \
   --output-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1
 ```
 

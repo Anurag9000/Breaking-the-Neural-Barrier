@@ -12,7 +12,7 @@ import run_stl_ablation as stl
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Merge depth-band STL ablation roots into a canonical combined root.")
+    p = argparse.ArgumentParser(description="Merge parameter-band STL ablation roots into a canonical combined root.")
     p.add_argument(
         "--input-roots",
         nargs="+",
@@ -37,15 +37,15 @@ def load_csv_rows(path: Path) -> List[Dict[str, Any]]:
         return list(csv.DictReader(f))
 
 
-def discover_depth_band(root: Path, summary: Dict[str, Any]) -> Optional[Tuple[int, int]]:
-    band = summary.get("depth_band")
+def discover_param_band(root: Path, summary: Dict[str, Any]) -> Optional[Tuple[int, int]]:
+    band = summary.get("param_band")
     if isinstance(band, list) and len(band) == 2:
         try:
             return int(band[0]), int(band[1])
         except Exception:
             pass
     meta = load_json(root / "comparison_summary.json")
-    band = meta.get("depth_band")
+    band = meta.get("param_band")
     if isinstance(band, list) and len(band) == 2:
         try:
             return int(band[0]), int(band[1])
@@ -97,7 +97,7 @@ def merge_task(task_name: str, output_root: Path, input_roots: Sequence[Path]) -
             row["source_root"] = str(band_root)
             merged_rows.append(row)
 
-        band_band = discover_depth_band(band_root, summary)
+        band_band = discover_param_band(band_root, summary)
         if band_band is not None:
             merged_band_roots.append(f"{band_root}::depth_{band_band[0]:02d}_{band_band[1]:02d}")
         else:
@@ -170,6 +170,8 @@ def merge_task(task_name: str, output_root: Path, input_roots: Sequence[Path]) -
         "merged_from": merged_band_roots,
         "best_ablation": best_ablation,
         "plot_path": str(plot_path),
+        "ablation_stl_runs": merged_runs,
+        "comparisons": merged_comparisons,
     }
 
 
