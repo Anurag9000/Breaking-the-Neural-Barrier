@@ -64,6 +64,16 @@ The current recommended fresh STL root is:
 MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1
 ```
 
+Parallelism probes for the same STL bands should live under:
+
+```text
+MLPS/tabular/shared/dae_dnn/results/stl/parallelism_probe/<band_name>
+```
+
+Use the probe output file to feed the real launcher through
+`--concurrency-file`. The probe runs the heaviest candidates first for two
+epochs; the real ablation runs the same family smallest-to-largest.
+
 When splitting the massive STL run across multiple laptops, stage each
 parameter-decade band under its own sibling root, for example:
 
