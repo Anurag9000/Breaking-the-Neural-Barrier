@@ -15,6 +15,7 @@ The canonical result layout for current and future tabular DAE/DNN runs is:
 - `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/<suite_name>/`
 - `MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>/`
 - `MLPS/tabular/shared/dae_dnn/results/archive/<legacy_suite>/`
+- `MLPS/tabular/shared/dae_dnn/results/catalog/<task>/{w2d,width_only,stl_ablation}/`
 
 Use the active suite roots for resumable runs. Put old runs under `archive/`
 instead of adding more sibling result trees at the top level.
@@ -63,6 +64,12 @@ Catalog view:
 - `MLPS/tabular/shared/dae_dnn/results/catalog/anomaly`
 - `MLPS/tabular/shared/dae_dnn/results/catalog/simulation`
 - `MLPS/tabular/shared/dae_dnn/results/catalog/prediction`
+
+Each catalog task root mirrors the same three-mode layout:
+
+- `w2d/`
+- `width_only/`
+- `stl_ablation/`
 
 `simulation` and `prediction` are not part of the recovered small STL archive.
 They should be treated as absent from the historical STL material until new
