@@ -84,6 +84,16 @@ Within `stl_ablation/`, depths are the outer folders and widths are the
 nested subfolders. Within `width_only/`, depth folders are the outer layer
 and the width candidates are nested below that.
 
+Recovered small-grid coverage today:
+
+- `classification`: STL ablation and W2D recovered; width-only is a placeholder
+- `autoencoding`: STL ablation, W2D, and width-only recovered for depths `d1` through `d6`
+- `generation`: STL ablation, W2D, and width-only recovered for depths `d1` through `d6`
+- `denoising`: STL ablation, W2D, and width-only recovered for depths `d1` through `d10`
+- `anomaly`: STL ablation and W2D recovered; width-only is a placeholder
+- `simulation`: task-root placeholder only for W2D/STL/width_only
+- `prediction`: task-root placeholder only for W2D/STL/width_only
+
 It does not include dedicated `simulation` or `prediction` STL roots. Treat
 those two tasks as absent from the historical STL material until new results
 are generated.
@@ -185,6 +195,12 @@ regenerated.
 The current ADP width-to-depth suite is launcher-driven. Keep the active
 `--run-root` aligned with the launcher state and do not reuse a deleted root.
 The repeat schedule is encoded in the launcher, not in this document.
+
+Current live ADP repeat split:
+
+- `classification`, `autoencoding`, `generation`, `denoising`, `anomaly`: 4 repeats in the active suite
+- `simulation`, `prediction`: 5 repeats in the active suite
+- the first five tasks are intended to be merged later with the prior one-off W2D history so each task has 5 combined repeats in the canonical combined tree
 
 The older one-off ADP W2D outputs for the first five tasks are intended to be
 merged into the current canonical base later, so the combined history stays
