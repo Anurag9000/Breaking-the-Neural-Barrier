@@ -1,0 +1,105 @@
+[2026-06-11 13:40:53] Initialized ContinuousLogger for stl_small_grid_parallel (Mode: stl_small_grid_parallel)
+[2026-06-11 13:40:53] Logs: MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1/training_log.txt
+[2026-06-11 13:40:53] CSV: MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1/training_stats.csv
+[2026-06-11 13:40:53] Run root: MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1
+[2026-06-11 13:40:53] Tasks: ['simulation', 'prediction']
+[2026-06-11 13:40:53] Depths: [3, 4, 6, 8, 10]
+[2026-06-11 13:40:53] Widths: [64, 96, 128, 160, 192, 224, 256]
+[2026-06-11 13:40:53] Width parallelism per depth: 7
+[2026-06-11 13:40:53] Source root: MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1
+[2026-06-11 13:40:53] Device: cpu
+[2026-06-11 13:40:53] Git commit: 990479726adc08f730c3195927102807aac295e9
+[2026-06-11 13:40:53] [TASK] start simulation
+[2026-06-11 13:40:53] [LAUNCH] task=simulation depth=3 width=64 candidate_index=0
+[2026-06-11 13:40:53] [LAUNCH] task=simulation depth=3 width=96 candidate_index=1
+[2026-06-11 13:40:53] [LAUNCH] task=simulation depth=3 width=128 candidate_index=2
+[2026-06-11 13:40:53] [LAUNCH] task=simulation depth=3 width=160 candidate_index=3
+[2026-06-11 13:40:53] [LAUNCH] task=simulation depth=3 width=192 candidate_index=4
+[2026-06-11 13:40:53] [LAUNCH] task=simulation depth=3 width=224 candidate_index=5
+[2026-06-11 13:40:53] [LAUNCH] task=simulation depth=3 width=256 candidate_index=6
+[2026-06-11 13:41:13] [REQUEUE] task=simulation depth=3 width=64 code=1
+[2026-06-11 13:41:14] [LAUNCH] task=simulation depth=3 width=64 candidate_index=0
+[2026-06-11 13:45:04] [LAUNCH] task=simulation depth=4 width=64 candidate_index=7
+[2026-06-11 13:45:04] [LAUNCH] task=simulation depth=4 width=96 candidate_index=8
+[2026-06-11 13:45:04] [LAUNCH] task=simulation depth=4 width=128 candidate_index=9
+[2026-06-11 13:45:04] [LAUNCH] task=simulation depth=4 width=160 candidate_index=10
+[2026-06-11 13:45:04] [LAUNCH] task=simulation depth=4 width=192 candidate_index=11
+[2026-06-11 13:45:04] [LAUNCH] task=simulation depth=4 width=224 candidate_index=12
+[2026-06-11 13:45:04] [LAUNCH] task=simulation depth=4 width=256 candidate_index=13
+[2026-06-11 13:48:28] [LAUNCH] task=simulation depth=6 width=64 candidate_index=14
+[2026-06-11 13:48:28] [LAUNCH] task=simulation depth=6 width=96 candidate_index=15
+[2026-06-11 13:48:28] [LAUNCH] task=simulation depth=6 width=128 candidate_index=16
+[2026-06-11 13:48:28] [LAUNCH] task=simulation depth=6 width=160 candidate_index=17
+[2026-06-11 13:48:28] [LAUNCH] task=simulation depth=6 width=192 candidate_index=18
+[2026-06-11 13:48:28] [LAUNCH] task=simulation depth=6 width=224 candidate_index=19
+[2026-06-11 13:48:28] [LAUNCH] task=simulation depth=6 width=256 candidate_index=20
+[2026-06-11 13:53:26] [LAUNCH] task=simulation depth=8 width=64 candidate_index=21
+[2026-06-11 13:53:26] [LAUNCH] task=simulation depth=8 width=96 candidate_index=22
+[2026-06-11 13:53:26] [LAUNCH] task=simulation depth=8 width=128 candidate_index=23
+[2026-06-11 13:53:26] [LAUNCH] task=simulation depth=8 width=160 candidate_index=24
+[2026-06-11 13:53:26] [LAUNCH] task=simulation depth=8 width=192 candidate_index=25
+[2026-06-11 13:53:26] [LAUNCH] task=simulation depth=8 width=224 candidate_index=26
+[2026-06-11 13:53:26] [LAUNCH] task=simulation depth=8 width=256 candidate_index=27
+[2026-06-11 14:01:24] [LAUNCH] task=simulation depth=10 width=64 candidate_index=28
+[2026-06-11 14:01:24] [LAUNCH] task=simulation depth=10 width=96 candidate_index=29
+[2026-06-11 14:01:24] [LAUNCH] task=simulation depth=10 width=128 candidate_index=30
+[2026-06-11 14:01:24] [LAUNCH] task=simulation depth=10 width=160 candidate_index=31
+[2026-06-11 14:01:24] [LAUNCH] task=simulation depth=10 width=192 candidate_index=32
+[2026-06-11 14:01:24] [LAUNCH] task=simulation depth=10 width=224 candidate_index=33
+[2026-06-11 14:01:24] [LAUNCH] task=simulation depth=10 width=256 candidate_index=34
+[2026-06-11 14:01:45] [REQUEUE] task=simulation depth=10 width=96 code=1
+[2026-06-11 14:01:45] [REQUEUE] task=simulation depth=10 width=256 code=1
+[2026-06-11 14:01:46] [LAUNCH] task=simulation depth=10 width=256 candidate_index=34
+[2026-06-11 14:01:46] [LAUNCH] task=simulation depth=10 width=96 candidate_index=29
+[2026-06-11 14:11:12] [PLOT] task=simulation plot=MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1/simulation/plots/simulation_loss_vs_params.png
+[2026-06-11 14:11:12] [TASK] done simulation
+[2026-06-11 14:11:12] [TASK] start prediction
+[2026-06-11 14:11:12] [LAUNCH] task=prediction depth=3 width=64 candidate_index=0
+[2026-06-11 14:11:12] [LAUNCH] task=prediction depth=3 width=96 candidate_index=1
+[2026-06-11 14:11:12] [LAUNCH] task=prediction depth=3 width=128 candidate_index=2
+[2026-06-11 14:11:12] [LAUNCH] task=prediction depth=3 width=160 candidate_index=3
+[2026-06-11 14:11:12] [LAUNCH] task=prediction depth=3 width=192 candidate_index=4
+[2026-06-11 14:11:12] [LAUNCH] task=prediction depth=3 width=224 candidate_index=5
+[2026-06-11 14:11:12] [LAUNCH] task=prediction depth=3 width=256 candidate_index=6
+[2026-06-11 14:11:31] [REQUEUE] task=prediction depth=3 width=224 code=1
+[2026-06-11 14:11:32] [LAUNCH] task=prediction depth=3 width=224 candidate_index=5
+[2026-06-11 14:11:32] [REQUEUE] task=prediction depth=3 width=128 code=1
+[2026-06-11 14:11:32] [REQUEUE] task=prediction depth=3 width=160 code=1
+[2026-06-11 14:11:32] [REQUEUE] task=prediction depth=3 width=256 code=1
+[2026-06-11 14:11:33] [LAUNCH] task=prediction depth=3 width=256 candidate_index=6
+[2026-06-11 14:11:33] [LAUNCH] task=prediction depth=3 width=160 candidate_index=3
+[2026-06-11 14:11:33] [LAUNCH] task=prediction depth=3 width=128 candidate_index=2
+[2026-06-11 14:18:45] [LAUNCH] task=prediction depth=4 width=64 candidate_index=7
+[2026-06-11 14:18:45] [LAUNCH] task=prediction depth=4 width=96 candidate_index=8
+[2026-06-11 14:18:45] [LAUNCH] task=prediction depth=4 width=128 candidate_index=9
+[2026-06-11 14:18:45] [LAUNCH] task=prediction depth=4 width=160 candidate_index=10
+[2026-06-11 14:18:45] [LAUNCH] task=prediction depth=4 width=192 candidate_index=11
+[2026-06-11 14:18:45] [LAUNCH] task=prediction depth=4 width=224 candidate_index=12
+[2026-06-11 14:18:45] [LAUNCH] task=prediction depth=4 width=256 candidate_index=13
+[2026-06-11 14:19:05] [REQUEUE] task=prediction depth=4 width=128 code=1
+[2026-06-11 14:19:06] [LAUNCH] task=prediction depth=4 width=128 candidate_index=9
+[2026-06-11 14:24:11] [LAUNCH] task=prediction depth=6 width=64 candidate_index=14
+[2026-06-11 14:24:11] [LAUNCH] task=prediction depth=6 width=96 candidate_index=15
+[2026-06-11 14:24:11] [LAUNCH] task=prediction depth=6 width=128 candidate_index=16
+[2026-06-11 14:24:11] [LAUNCH] task=prediction depth=6 width=160 candidate_index=17
+[2026-06-11 14:24:11] [LAUNCH] task=prediction depth=6 width=192 candidate_index=18
+[2026-06-11 14:24:11] [LAUNCH] task=prediction depth=6 width=224 candidate_index=19
+[2026-06-11 14:24:11] [LAUNCH] task=prediction depth=6 width=256 candidate_index=20
+[2026-06-11 14:30:28] [LAUNCH] task=prediction depth=8 width=64 candidate_index=21
+[2026-06-11 14:30:28] [LAUNCH] task=prediction depth=8 width=96 candidate_index=22
+[2026-06-11 14:30:28] [LAUNCH] task=prediction depth=8 width=128 candidate_index=23
+[2026-06-11 14:30:28] [LAUNCH] task=prediction depth=8 width=160 candidate_index=24
+[2026-06-11 14:30:28] [LAUNCH] task=prediction depth=8 width=192 candidate_index=25
+[2026-06-11 14:30:28] [LAUNCH] task=prediction depth=8 width=224 candidate_index=26
+[2026-06-11 14:30:28] [LAUNCH] task=prediction depth=8 width=256 candidate_index=27
+[2026-06-11 14:30:48] [REQUEUE] task=prediction depth=8 width=64 code=1
+[2026-06-11 14:30:49] [LAUNCH] task=prediction depth=8 width=64 candidate_index=21
+[2026-06-11 14:37:21] [LAUNCH] task=prediction depth=10 width=64 candidate_index=28
+[2026-06-11 14:37:21] [LAUNCH] task=prediction depth=10 width=96 candidate_index=29
+[2026-06-11 14:37:21] [LAUNCH] task=prediction depth=10 width=128 candidate_index=30
+[2026-06-11 14:37:21] [LAUNCH] task=prediction depth=10 width=160 candidate_index=31
+[2026-06-11 14:37:21] [LAUNCH] task=prediction depth=10 width=192 candidate_index=32
+[2026-06-11 14:37:21] [LAUNCH] task=prediction depth=10 width=224 candidate_index=33
+[2026-06-11 14:37:21] [LAUNCH] task=prediction depth=10 width=256 candidate_index=34
+[2026-06-11 14:45:40] [PLOT] task=prediction plot=MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1/prediction/plots/prediction_loss_vs_params.png
+[2026-06-11 14:45:40] [TASK] done prediction

@@ -1,0 +1,148 @@
+{
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 9312,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "depth_expansion_patience": 2,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 100000000,
+    "max_neurons": 10000000,
+    "max_width": 256,
+    "metrics_every": 0,
+    "min_width": 64,
+    "num_workers": 0,
+    "parameter_band": null,
+    "parameter_matched": false,
+    "patience": 10,
+    "phases": [
+      "stl_ablation"
+    ],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1",
+    "seed": 0,
+    "stl_depth": 10,
+    "stl_width": 256,
+    "tasks": [
+      "simulation",
+      "prediction"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_count_per_depth": 7,
+    "width_expansion_patience": 10,
+    "width_stage_margin_patience": 0,
+    "width_stage_min_improve_pct": 1.0,
+    "width_step": 1
+  },
+  "device": "cpu",
+  "git_commit": "990479726adc08f730c3195927102807aac295e9",
+  "run_root": "MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1",
+  "source_run_root": "MLPS/tabular/shared/dae_dnn/results/archive/classification_trial1",
+  "suite": "small_grid",
+  "summary": {
+    "num_tasks_completed": 2,
+    "num_tasks_requested": 2,
+    "tasks_completed": [
+      "simulation",
+      "prediction"
+    ],
+    "tasks_requested": [
+      "simulation",
+      "prediction"
+    ]
+  },
+  "tasks": [
+    {
+      "best_candidate": {
+        "architecture": [
+          256,
+          256,
+          256,
+          256,
+          256,
+          256,
+          256,
+          256,
+          256,
+          256
+        ],
+        "best_epoch": 110,
+        "best_val": 0.0010491006541997194,
+        "candidate_dir": "MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1/simulation/stl_ablation/d10/w256/cand_000",
+        "candidate_index": 34,
+        "depth": 10,
+        "final_epoch": 120,
+        "params": 599809,
+        "phase": "stl_ablation_d10_w256_256_256_256_256_256_256_256_256_256_256",
+        "resumed": false,
+        "test_metrics": {
+          "test_loss": 0.011791184544563293
+        },
+        "width": 256
+      },
+      "candidate_count": 35,
+      "depths": [
+        3,
+        4,
+        6,
+        8,
+        10
+      ],
+      "task": "simulation",
+      "widths": [
+        64,
+        96,
+        128,
+        160,
+        192,
+        224,
+        256
+      ]
+    },
+    {
+      "best_candidate": {
+        "architecture": [
+          160,
+          160,
+          160
+        ],
+        "best_epoch": 176,
+        "best_val": 0.2731197774410248,
+        "candidate_dir": "MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1/prediction/stl_ablation/d03/w160/cand_000",
+        "candidate_index": 3,
+        "depth": 3,
+        "final_epoch": 186,
+        "params": 54081,
+        "phase": "stl_ablation_d03_w160_160_160_160",
+        "resumed": false,
+        "test_metrics": {
+          "test_loss": 0.27227044105529785
+        },
+        "width": 160
+      },
+      "candidate_count": 35,
+      "depths": [
+        3,
+        4,
+        6,
+        8,
+        10
+      ],
+      "task": "prediction",
+      "widths": [
+        64,
+        96,
+        128,
+        160,
+        192,
+        224,
+        256
+      ]
+    }
+  ]
+}
