@@ -4,6 +4,10 @@ This document records the exact code paths and workflow used for the tabular
 MLP experiments in this repo. Use it as the reference when running the same
 study on another machine.
 
+The results layout described here is the only accepted structure for future
+MLPS tabular DAE/DNN outputs in this repo, and the final state should be
+published on `main` only.
+
 ## Canonical task names
 
 Current task names:
@@ -83,6 +87,16 @@ organized as:
 Within `stl_ablation/`, depths are the outer folders and widths are the
 nested subfolders. Within `width_only/`, depth folders are the outer layer
 and the width candidates are nested below that.
+
+That exact nesting is the required structure for any future MLPS tabular
+result drop:
+
+- task at the top
+- `w2d/`, `width_only/`, `stl_ablation/` immediately below
+- depth folders inside `width_only/` and `stl_ablation/`
+- width folders inside each depth folder
+- cross-task rollups under `analysis/`
+- publish the final merged tree on `main`
 
 Recovered small-grid coverage today:
 
