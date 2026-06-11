@@ -46,6 +46,14 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--width-step", type=int, default=1)
     p.add_argument("--width-count-per-depth", type=int, default=10)
     p.add_argument("--min-depth", type=int, default=1)
+    p.add_argument(
+        "--depth-band",
+        nargs=2,
+        type=int,
+        metavar=("DEPTH_START", "DEPTH_END"),
+        default=None,
+        help="Convenience alias for --min-depth/--max-depth when splitting the massive STL run across machines.",
+    )
     p.add_argument("--repeat-count", type=int, default=5)
     p.add_argument("--concurrency", type=int, default=10)
     p.add_argument("--stl-width", type=int, default=128)
@@ -134,6 +142,14 @@ def build_worker_command(
         command.append("--no-bn")
     if bool(getattr(args, "legacy_architecture_grid", False)):
         command.append("--legacy-architecture-grid")
+    if getattr(args, "depth_band", None):
+        command.extend(
+            [
+                "--depth-band",
+                str(int(args.depth_band[0])),
+                str(int(args.depth_band[1])),
+            ]
+        )
     return command
 
 
@@ -395,10 +411,16 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
 
 def main() -> None:
     args = parse_args()
+    if getattr(args, "depth_band", None):
+        start, end = stl.normalize_depth_band(args.depth_band) or (None, None)
+        if start is not None and end is not None:
+            args.min_depth = int(start)
+            args.max_depth = int(end)
     tasks = [str(t).lower() for t in args.tasks]
     architectures = stl.build_architectures(args)
     if not architectures:
         raise SystemExit("No architectures requested.")
+    depth_band = stl.normalize_depth_band(getattr(args, "depth_band", None))
 
     run_root = Path(args.run_root) if args.run_root else Path(args.results_dir) / f"stl_ablation_parallel_{rg.now_stamp()}"
     run_root.mkdir(parents=True, exist_ok=True)
@@ -406,6 +428,8 @@ def main() -> None:
     logger.log_console(f"Run root: {run_root}")
     logger.log_console(f"Tasks: {tasks}")
     logger.log_console(f"Architectures: {[rg.format_architecture_for_report(a) for a in architectures]}")
+    if depth_band is not None:
+        logger.log_console(f"Depth band: {list(depth_band)}")
     logger.log_console(f"Repeat count: {int(args.repeat_count)}")
     logger.log_console(f"Concurrency: {int(args.concurrency)}")
     logger.log_console(f"Source run root: {args.source_run_root}")
@@ -444,6 +468,7 @@ def main() -> None:
         {
             "tasks": tasks,
             "architectures": architectures,
+            "depth_band": list(depth_band) if depth_band is not None else None,
             "source_run_root": str(args.source_run_root),
             "repeat_count": int(args.repeat_count),
             "concurrency": int(args.concurrency),
