@@ -40,7 +40,6 @@ ADP width-to-depth orchestration:
 - `MLPS/tabular/shared/dae_dnn/adp_search.py`
 - `utils/adp_contract.py`
 - `MLPS/tabular/shared/dae_dnn/run_adp_w2d_suite_parallel.py`
-- `MLPS/tabular/shared/dae_dnn/run_adp_w2d_suite_parallel_interleaved.py`
 
 Historical ADP W2D archives already restored into the repo:
 
@@ -50,22 +49,24 @@ Historical ADP W2D archives already restored into the repo:
 The staged legacy lineage is exposed in the repo-visible archive root as
 `classification` for that task lineage.
 
-## Interleaved ADP Resume
+## ADP Resume Order
 
-Use `run_adp_w2d_suite_parallel_interleaved.py` when a partially completed
-suite should keep the GPU full across repeat boundaries. It does not wait for
-all tasks in `repeat_01` to finish before starting `repeat_02`.
+Use `run_adp_w2d_suite_parallel.py` for resumable ADP width-to-depth suites.
+It works repeat by repeat:
 
-That launcher scans the existing run root in repeat/task order, resumes any
-unfinished task roots first, and then immediately tops up the remaining worker
-slots with the next pending repeat/task jobs until `--concurrency` is full.
+- inside a repeat, completed task roots are skipped
+- incomplete task roots are resumed from their saved task root
+- new task roots in that same repeat are started up to `--concurrency`
+- the launcher does not open the next repeat until the current repeat is
+  fully finished
 
-For the current `repeat4_plus_sim_pred5_v1` suite, that means:
+For the current `repeat4_plus_sim_pred5_v1` suite, the saved snapshot has:
 
-- `denoising` in `repeat_01` resumes from its saved checkpoint state
-- already completed `repeat_01` task roots are skipped
-- the remaining worker slots are filled by new repeat/task roots in normal
-  repeat order
+- `repeat_01/denoising` incomplete
+- all other `repeat_01` tasks complete
+
+So the next resume starts with `repeat_01/denoising` only. After that repeat
+finishes, the launcher opens `repeat_02` and starts all seven tasks there.
 
 ## Width-to-depth rule
 
