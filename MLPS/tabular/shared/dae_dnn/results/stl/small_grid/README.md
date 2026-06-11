@@ -1,25 +1,17 @@
 # Small STL Width Sweep Archive
 
-This folder restores the historical small / fixed-grid loss-vs-parameters study from git history.
+This archive is organized task-first. Each task root contains:
+- `w2d/`
+- `width_only/`
+- `stl_ablation/`
 
-Recovered task family:
-- `classification` (legacy label: `representation`)
-- `autoencoding`
-- `generation`
-- `denoising`
-- `anomaly`
+The recovered historical data lives under the task root for the relevant mode.
+Cross-task rollups live under `analysis/`.
 
-Not recovered in this small archive:
-- `simulation`
-- `prediction`
+Layout rules:
 
-Contents:
-- `csv/tasks/*.csv`: archived per-task rows recovered from git history
-- `csv/all_models_loss_by_task.csv`: combined task listing recovered from git history
-- `csv/best_per_task.csv`: best row per task recovered from git history
-- `graphs/*/*.png`: recovered loss-vs-parameters plots when present in history
-- `graphs/anomaly/anomaly_loss_vs_params.png`: regenerated from the archived anomaly rows because the original plot blob was not preserved in git history
+- `w2d/` contains the archived ADP width-to-depth phase trees for the task.
+- `width_only/` is organized by depth folders, then width folders.
+- `stl_ablation/` is organized by depth folders, then width folders.
 
-Notes:
-- `classification` is the repo-facing name for the old `representation` label.
-- This archive is separate from the live repeat-based ADP W2D suite.
+The old flat `csv/` and `graphs/` layout has been folded into this structure.

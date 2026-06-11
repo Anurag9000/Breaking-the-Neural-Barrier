@@ -4,7 +4,8 @@ This is the repo-visible home for the historical classification lineage.
 
 Present:
 
-- `adpw2d/` -> historical ADP W2D results
+- `w2d/` -> historical ADP W2D results
+- `width_only/` -> historical width-only results, if recovered
 - `stl_ablation/` -> historical STL results
 
 Legacy name:
