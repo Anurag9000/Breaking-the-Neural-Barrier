@@ -178,6 +178,13 @@ def build_probe_candidates(args: argparse.Namespace, run_root: Path) -> List[Pro
     return candidates
 
 
+def count_candidates_by_task(candidates: Sequence[ProbeCandidate]) -> Dict[str, int]:
+    counts: Dict[str, int] = {}
+    for candidate in candidates:
+        counts[candidate.task_name] = counts.get(candidate.task_name, 0) + 1
+    return counts
+
+
 def trial_command(
     *,
     args: argparse.Namespace,
@@ -350,6 +357,8 @@ def main() -> None:
         raise SystemExit("No probe candidates were generated.")
 
     logger.log_console(f"Probe candidates: {len(candidates)}")
+    counts_by_task = count_candidates_by_task(candidates)
+    logger.log_console("Candidates by task: " + ", ".join(f"{task}={count}" for task, count in sorted(counts_by_task.items())))
     logger.log_console("Largest candidates: " + ", ".join(
         f"{candidate.task_name}:{rg.format_architecture_for_report(candidate.architecture)}@{candidate.parameter_count}"
         for candidate in candidates[: min(5, len(candidates))]
@@ -398,6 +407,7 @@ def main() -> None:
         "start_n": int(start_n),
         "trial_sizes": trial_sizes,
         "candidate_count": len(candidates),
+        "candidate_count_by_task": counts_by_task,
         "recommended_parallelism": int(recommended_parallelism),
         "recommended_parallelism_file": str(recommended_file),
         "trials": trials,
