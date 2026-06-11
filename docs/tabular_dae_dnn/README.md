@@ -65,6 +65,15 @@ The current recommended fresh STL root is:
 MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1
 ```
 
+The preflight candidate-plan report lives under:
+
+```text
+MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1/analysis/planned_params
+```
+
+It writes one CSV pair and one plot per task so you can inspect how the
+parameter targets fall across the decades before launching the real run.
+
 Parallelism probes for the same STL bands should live under:
 
 ```text

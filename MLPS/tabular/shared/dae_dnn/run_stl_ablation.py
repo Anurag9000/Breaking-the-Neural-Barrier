@@ -273,13 +273,51 @@ def parameter_count_for_summary(task: rg.Task, task_root: Path, summary: Dict[st
     candidate_dir = task_root / phase / str(summary["candidate_dir"])
     metadata = rg.load_json_if_exists(candidate_dir / "metadata.json") or {}
     model_cfg = metadata.get("model") or {}
-    model = rg.make_model(
-        int(model_cfg.get("in_dim", task.in_dim)),
-        [int(v) for v in model_cfg.get("hidden_widths", summary.get("architecture", []))],
-        int(model_cfg.get("out_dim", task.out_dim)),
-        bool(model_cfg.get("use_bn", True)),
+    hidden_widths = [int(v) for v in model_cfg.get("hidden_widths", summary.get("architecture", []))]
+    return int(
+        parameter_count_for_architecture(
+            int(model_cfg.get("in_dim", task.in_dim)),
+            int(model_cfg.get("out_dim", task.out_dim)),
+            hidden_widths,
+            bool(model_cfg.get("use_bn", True)),
+        )
     )
-    return int(rg.count_model_parameters(model))
+
+
+def task_depth_max_width(task_name: str, depth: int) -> int:
+    depth = max(1, int(depth))
+    task_name = str(task_name).lower()
+    if task_name == "classification":
+        return int(
+            CLASSIFICATION_MAX_WIDTH_BY_DEPTH.get(depth, CLASSIFICATION_MAX_WIDTH_BY_DEPTH[max(CLASSIFICATION_MAX_WIDTH_BY_DEPTH)])
+        )
+    if task_name == "autoencoding":
+        return int(
+            AUTOENCODING_MAX_WIDTH_BY_DEPTH.get(depth, AUTOENCODING_MAX_WIDTH_BY_DEPTH[max(AUTOENCODING_MAX_WIDTH_BY_DEPTH)])
+        )
+    if task_name == "generation":
+        return int(GENERATION_MAX_WIDTH_BY_DEPTH.get(depth, GENERATION_MAX_WIDTH_BY_DEPTH[max(GENERATION_MAX_WIDTH_BY_DEPTH)]))
+    if task_name == "denoising":
+        return int(DENOISING_MAX_WIDTH_BY_DEPTH.get(depth, DENOISING_MAX_WIDTH_BY_DEPTH[max(DENOISING_MAX_WIDTH_BY_DEPTH)]))
+    if task_name == "anomaly" and depth in ANOMALY_MAX_WIDTH_BY_DEPTH:
+        return int(ANOMALY_MAX_WIDTH_BY_DEPTH[depth])
+    if task_name == "simulation":
+        return int(SIMULATION_MAX_WIDTH_BY_DEPTH.get(depth, SIMULATION_MAX_WIDTH_BY_DEPTH[max(SIMULATION_MAX_WIDTH_BY_DEPTH)]))
+    if task_name == "prediction":
+        return int(PREDICTION_MAX_WIDTH_BY_DEPTH.get(depth, PREDICTION_MAX_WIDTH_BY_DEPTH[max(PREDICTION_MAX_WIDTH_BY_DEPTH)]))
+    return int(DEFAULT_MAX_WIDTH)
+
+
+def parameter_count_for_architecture(in_dim: int, out_dim: int, hidden_widths: Sequence[int], use_bn: bool) -> int:
+    prev = int(in_dim)
+    total = 0
+    for width in [int(w) for w in hidden_widths]:
+        total += prev * width + width
+        if use_bn:
+            total += 2 * width
+        prev = width
+    total += prev * int(out_dim) + int(out_dim)
+    return int(total)
 
 
 def target_parameter_count(task: rg.Task, cfg: rg.RunConfig) -> int:
@@ -289,8 +327,7 @@ def target_parameter_count(task: rg.Task, cfg: rg.RunConfig) -> int:
     # consistent parameter target across depths.
     reference_width = max(1, int(cfg.max_width) // 4)
     reference_architecture = [reference_width for _ in range(effective_max_depth)]
-    model = rg.make_stl_model(task, reference_architecture, cfg.use_bn)
-    return int(rg.count_model_parameters(model))
+    return int(parameter_count_for_architecture(task.in_dim, task.out_dim, reference_architecture, cfg.use_bn))
 
 
 def stl_batch_size_for_task(task_name: str, task: rg.Task, override: int, step: int = 16) -> int:
@@ -327,8 +364,14 @@ def query_gpu_memory_used_mib(device_index: int = 0) -> Optional[int]:
 
 
 def _parameter_count_for_width(task: rg.Task, depth: int, width: int, cfg: rg.RunConfig) -> int:
-    model = rg.make_stl_model(task, [int(width) for _ in range(max(1, int(depth)))], cfg.use_bn)
-    return int(rg.count_model_parameters(model))
+    return int(
+        parameter_count_for_architecture(
+            task.in_dim,
+            task.out_dim,
+            [int(width) for _ in range(max(1, int(depth)))],
+            cfg.use_bn,
+        )
+    )
 
 
 def solve_parameter_matched_width(task: rg.Task, depth: int, cfg: rg.RunConfig, target_params: int) -> int:
@@ -428,39 +471,7 @@ def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig
     task_name = str(getattr(task, "name", "")).lower()
     if depth not in REMAINING_DEPTHS_BY_TASK.get(task_name, set()):
         return []
-    if task_name == "classification":
-        max_width = int(
-            CLASSIFICATION_MAX_WIDTH_BY_DEPTH.get(depth, CLASSIFICATION_MAX_WIDTH_BY_DEPTH[max(CLASSIFICATION_MAX_WIDTH_BY_DEPTH)])
-        )
-    elif task_name == "autoencoding":
-        max_width = int(
-            AUTOENCODING_MAX_WIDTH_BY_DEPTH.get(
-                depth,
-                AUTOENCODING_MAX_WIDTH_BY_DEPTH[max(AUTOENCODING_MAX_WIDTH_BY_DEPTH)],
-            )
-        )
-    elif task_name == "generation":
-        max_width = int(
-            GENERATION_MAX_WIDTH_BY_DEPTH.get(
-                depth,
-                GENERATION_MAX_WIDTH_BY_DEPTH[max(GENERATION_MAX_WIDTH_BY_DEPTH)],
-            )
-        )
-    elif task_name == "denoising":
-        max_width = int(
-            DENOISING_MAX_WIDTH_BY_DEPTH.get(
-                depth,
-                DENOISING_MAX_WIDTH_BY_DEPTH[max(DENOISING_MAX_WIDTH_BY_DEPTH)],
-            )
-        )
-    elif task_name == "anomaly" and depth in ANOMALY_MAX_WIDTH_BY_DEPTH:
-        max_width = int(ANOMALY_MAX_WIDTH_BY_DEPTH[depth])
-    elif task_name == "simulation":
-        max_width = int(SIMULATION_MAX_WIDTH_BY_DEPTH.get(depth, SIMULATION_MAX_WIDTH_BY_DEPTH[max(SIMULATION_MAX_WIDTH_BY_DEPTH)]))
-    elif task_name == "prediction":
-        max_width = int(PREDICTION_MAX_WIDTH_BY_DEPTH.get(depth, PREDICTION_MAX_WIDTH_BY_DEPTH[max(PREDICTION_MAX_WIDTH_BY_DEPTH)]))
-    else:
-        max_width = solve_parameter_matched_width(task, depth, cfg, target_parameter_count(task, cfg))
+    max_width = task_depth_max_width(task_name, depth)
     max_width = max(min_width, int(max_width))
     min_params = _parameter_count_for_width(task, depth, min_width, cfg)
     max_params = _parameter_count_for_width(task, depth, max_width, cfg)

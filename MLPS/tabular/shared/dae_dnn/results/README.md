@@ -30,6 +30,13 @@ Current recommended fresh roots:
 - small-grid STL: `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1`
 - ADP: `MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>/`
 
+The preflight candidate planner writes to:
+
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1/analysis/planned_params`
+
+That planner emits the combined `planned_params_by_task_depth_width.csv`, the
+raw sampled target CSV, and one per-task plot plus per-task CSVs.
+
 Massive STL split runs may stage under parameter-band roots such as:
 
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03`
