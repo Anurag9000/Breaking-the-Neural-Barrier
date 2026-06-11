@@ -75,10 +75,10 @@ It writes one CSV pair and one plot per task so you can inspect how the
 parameter targets fall across the decades before launching the real run.
 
 For ADP width-to-depth, use
-`MLPS/tabular/shared/dae_dnn/run_adp_w2d_suite_parallel_interleaved.py`
-whenever a partially completed suite should resume old task roots and start
-new repeat/task roots at the same time instead of finishing one repeat before
-opening the next.
+`MLPS/tabular/shared/dae_dnn/run_adp_w2d_suite_parallel.py`.
+It resumes incomplete task roots inside the current repeat, skips completed
+task roots, and moves to the next repeat only after the current repeat is
+fully finished.
 
 Parallelism probes for the same STL bands should live under:
 
