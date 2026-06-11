@@ -9,6 +9,10 @@ The catalog is the repo-facing organization layer for historical and supporting
 results. Keep any active run tree separate from the catalog while it is still
 in progress.
 
+This is the canonical layout rule for all MLPS tabular DAE/DNN results in this
+repo. Future outputs must be written into the task-first tree and then
+published on `main` only.
+
 The canonical result layout for current and future tabular DAE/DNN runs is:
 
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/<suite_name>/`
@@ -76,6 +80,16 @@ Each catalog task root mirrors the same three-mode layout:
 - `w2d/`
 - `width_only/`
 - `stl_ablation/`
+
+Enforce this exact structure for every new MLPS results drop:
+
+- task folder at the top level
+- `w2d/`, `width_only/`, and `stl_ablation/` directly under the task folder
+- depth folders under `width_only/` and `stl_ablation/`
+- width folders under each depth folder
+- aggregate rollups under `analysis/`
+- no alternate top-level result branch for the same run family
+- publish the final state on `main` only
 
 `simulation` and `prediction` are not part of the recovered small STL archive.
 They should be treated as absent from the historical STL material until new
