@@ -14,8 +14,12 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from MLPS.tabular.shared.dae_dnn.tasks import task_names
-import run_goliath as rg
 from utils.adp_logging import ContinuousLogger
+
+try:  # pragma: no cover - import shim for direct script execution
+    import run_goliath as rg
+except ModuleNotFoundError:  # pragma: no cover - import shim for package-style imports
+    from MLPS.tabular.shared.dae_dnn import run_goliath as rg
 
 
 DEFAULT_TASKS = [
