@@ -30,10 +30,12 @@ Current recommended fresh roots:
 - small-grid STL: `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1`
 - ADP: `MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>/`
 
-If an ADP suite is partially complete and you want to keep all worker slots
-busy across repeat boundaries, launch it with:
+If an ADP suite is partially complete, resume it with:
 
-- `MLPS/tabular/shared/dae_dnn/run_adp_w2d_suite_parallel_interleaved.py`
+- `MLPS/tabular/shared/dae_dnn/run_adp_w2d_suite_parallel.py`
+
+That launcher is repeat-ordered. It finishes the current repeat before moving
+to the next one.
 
 The preflight candidate planner writes to:
 
