@@ -31,6 +31,7 @@ STL sweep orchestration:
 - `MLPS/tabular/shared/dae_dnn/run_stl_ablation.py`
 - `MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py`
 - `MLPS/tabular/shared/dae_dnn/run_stl_parallelism_probe.py`
+- `MLPS/tabular/shared/dae_dnn/generate_stl_planned_params_report.py`
 - `MLPS/tabular/shared/dae_dnn/run_stl_small_grid.py`
 
 ADP width-to-depth orchestration:
@@ -179,6 +180,34 @@ The probe writes two files into its run root:
 
 The real launcher accepts `--concurrency-file` and can read the discovered
 value directly.
+
+If you want to inspect the full candidate layout before running anything,
+generate the per-task plan report first. It writes:
+
+- `planned_params_by_task_depth_width.csv`
+- `planned_target_samples_by_task_depth_width.csv`
+- per-task `planned_target_samples.csv`
+- per-task `planned_candidate_families.csv`
+- one plot per task showing the decade distribution and depth coverage
+
+Example planner command:
+
+```bash
+cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
+
+./.venv/bin/python MLPS/tabular/shared/dae_dnn/generate_stl_planned_params_report.py \
+  --data-dir ./data \
+  --results-dir MLPS/tabular/shared/dae_dnn/results \
+  --output-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1/analysis/planned_params \
+  --tasks classification autoencoding generation denoising anomaly simulation prediction \
+  --param-band 1 3 \
+  --num-workers 0 \
+  --batch-size 9312
+```
+
+The planner reports every sampled target per depth and the deduped candidate
+families that the actual run will execute. Use it when you want to see the
+exact candidate spread before launching the banded run.
 
 Example probe command:
 
