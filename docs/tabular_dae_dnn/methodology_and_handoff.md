@@ -14,6 +14,7 @@ Current task names:
 
 - `classification`
 - `autoencoding`
+- `generation`
 - `denoising`
 - `anomaly`
 - `simulation`

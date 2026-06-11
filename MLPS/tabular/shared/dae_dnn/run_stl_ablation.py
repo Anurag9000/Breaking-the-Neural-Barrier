@@ -23,6 +23,7 @@ except ModuleNotFoundError:  # pragma: no cover - import shim for package-style 
 DEFAULT_TASKS = [
     "classification",
     "autoencoding",
+    "generation",
     "denoising",
     "anomaly",
     "simulation",

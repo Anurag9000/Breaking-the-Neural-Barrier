@@ -9,6 +9,7 @@ Current STL and ADP runs should use:
 
 - `classification`
 - `autoencoding`
+- `generation`
 - `denoising`
 - `anomaly`
 - `simulation`
