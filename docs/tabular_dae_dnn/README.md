@@ -28,6 +28,9 @@ goliath trees, but it is not part of the current STL sweep.
 
 ## Canonical results layout
 
+This layout is mandatory for all MLPS tabular DAE/DNN result drops in this
+repo. Keep future outputs on `main` only and use the same task-first tree.
+
 Future runs should live under one of these roots:
 
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/<suite_name>/`
@@ -174,6 +177,15 @@ That catalog exposes the current task groups:
 
 The live ADP W2D suite uses the current launcher-selected `<suite_name>` under
 `results/adp/w2d/`. Do not hardcode a deleted run root here.
+
+Result structure rule:
+
+- top level: task name
+- inside each task: `w2d/`, `width_only/`, `stl_ablation/`
+- `width_only/` and `stl_ablation/`: depth folders first, then width folders
+- rollups and cross-task summaries: `analysis/`
+- no parallel branch-based result trees for the same MLPS family
+- commit and publish the final result state on `main`
 
 Recovered small-grid coverage today:
 
