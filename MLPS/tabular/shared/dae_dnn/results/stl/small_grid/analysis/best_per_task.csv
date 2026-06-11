@@ -1,0 +1,6 @@
+task,family,phase,architecture,best_val,best_epoch,final_epoch,source
+anomaly,STL_ablation,stl_ablation_d03_w192_192_192_192,"[192, 192, 192]",0.0020633828826248646,60,65,MLPS/tabular/shared/dae_dnn/results/stl_ablation_all_tasks_d3plus_w64plus/anomaly/stl_ablation_d03_w192_192_192_192/phase_summary.json
+autoencoding,ADP,ae_width_to_depth,[81],0.0014818490814646724,11,11,MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/autoencoding/task_summary.json
+denoising,ADP,ae_alt_width,[54],0.0008199942890532851,6,6,MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/denoising/task_summary.json
+generation,ADP,ae_alt_width,[59],0.0002478960616071772,9,9,MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/generation/task_summary.json
+classification,ADP,ae_width_to_depth,"[161, 160, 160, 160]",0.08618749312472872,6,6,MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/classification/task_summary.json

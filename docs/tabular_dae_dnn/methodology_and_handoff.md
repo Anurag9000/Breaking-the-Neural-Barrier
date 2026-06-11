@@ -73,6 +73,17 @@ The archived STL ablation grid is sparse and fixed:
 - widths: `64`, `96`, `128`, `160`, `192`, `224`, `256`
 - repeats: none
 
+The repo-facing task layout for this archive is task-first. Each task root is
+organized as:
+
+- `w2d/`
+- `width_only/`
+- `stl_ablation/`
+
+Within `stl_ablation/`, depths are the outer folders and widths are the
+nested subfolders. Within `width_only/`, depth folders are the outer layer
+and the width candidates are nested below that.
+
 It does not include dedicated `simulation` or `prediction` STL roots. Treat
 those two tasks as absent from the historical STL material until new results
 are generated.

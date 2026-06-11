@@ -6,7 +6,8 @@ tabular DAE/DNN results.
 Layout:
 
 - Each task folder has:
-  - `adpw2d/`
+  - `w2d/`
+  - `width_only/`
   - `stl_ablation/`
 
 The live repeat-5 ADP run stays separate at:

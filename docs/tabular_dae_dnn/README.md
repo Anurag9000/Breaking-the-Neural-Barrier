@@ -34,6 +34,7 @@ Future runs should live under one of these roots:
 - `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/<suite_name>/`
 - `MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>/`
 - `MLPS/tabular/shared/dae_dnn/results/archive/<legacy_suite>/`
+- `MLPS/tabular/shared/dae_dnn/results/catalog/<task>/{w2d,width_only,stl_ablation}/`
 
 The tree-level map lives in:
 
@@ -82,7 +83,9 @@ MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1
 ```
 
 Use `MLPS/tabular/shared/dae_dnn/run_stl_small_grid.py` for that no-repeat
-grid.
+grid. The task-facing archive layout for the small grid is task-first, with
+each task root containing `w2d/`, `width_only/`, and `stl_ablation/`, and
+aggregate rollups living under `analysis/`.
 
 The current recommended ADP root is:
 
