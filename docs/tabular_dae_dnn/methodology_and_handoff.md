@@ -111,6 +111,65 @@ This follow-up is separate from the massive all-task STL TODO and should not
 be mixed with the live repeat-4 ADP run. It is one run per `(task, depth,
 width)` candidate, with no repeats.
 
+## Massive STL depth-band split
+
+The massive STL ablation is still the main long-running study, but it is now
+split by depth bands so multiple laptops can work on disjoint slices in
+parallel and the results can be merged later.
+
+Use the same runner, but cap the depth range per machine:
+
+- machine 1: depths `1` and `2`
+- machine 2: depths `3` and `4`
+- machine 3: depths `5` and `6`
+- machine 4: depths `7` and `8`
+- machine 5: depths `9` and `10`
+
+The launcher now accepts `--depth-band START END`, which is a convenience
+alias for `--min-depth START --max-depth END`.
+
+Example for one band:
+
+```bash
+cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
+
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
+CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
+  --data-dir ./data \
+  --results-dir MLPS/tabular/shared/dae_dnn/results \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_01_02 \
+  --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current \
+  --tasks classification autoencoding generation denoising anomaly simulation prediction \
+  --depth-band 1 2 \
+  --repeat-count 5 \
+  --concurrency 7 \
+  --num-workers 0 \
+  --pin-memory \
+  --batch-size 9312
+```
+
+Repeat the same command on the other laptops, changing only the depth band and
+the `--run-root` suffix.
+
+After all bands finish, merge them into the canonical STL root:
+
+```bash
+cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
+
+./.venv/bin/python MLPS/tabular/shared/dae_dnn/merge_stl_ablation_bands.py \
+  --input-roots \
+    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_01_02 \
+    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_03_04 \
+    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_05_06 \
+    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_07_08 \
+    MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_09_10 \
+  --output-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1
+```
+
+The merge step rebuilds the combined task summaries and plots from the split
+band outputs. Keep the band roots as staging inputs until the combined root is
+regenerated.
+
 ## ADP repeat schedule
 
 The current ADP width-to-depth suite is launcher-driven. Keep the active
