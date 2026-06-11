@@ -153,6 +153,7 @@ class RunConfig:
     width_step: int = 16
     width_count_per_depth: int = 10
     parameter_matched: bool = False
+    parameter_band: Optional[Tuple[int, int]] = None
 
 
 @dataclass

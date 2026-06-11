@@ -149,24 +149,24 @@ def parse_csv_ints(text: str) -> List[int]:
     return [int(part.strip()) for part in str(text).split(",") if part.strip()]
 
 
-def normalize_depth_band(depth_band: Optional[Sequence[int]]) -> Optional[Tuple[int, int]]:
-    if not depth_band:
+def normalize_param_band(param_band: Optional[Sequence[int]]) -> Optional[Tuple[int, int]]:
+    if not param_band:
         return None
-    values = [max(1, int(v)) for v in depth_band]
+    values = [max(1, int(v)) for v in param_band]
     if len(values) != 2:
-        raise ValueError(f"depth band must contain exactly two values, got: {depth_band!r}")
+        raise ValueError(f"parameter band must contain exactly two values, got: {param_band!r}")
     start, end = values
     if end < start:
         start, end = end, start
     return int(start), int(end)
 
 
-def depth_band_label(depth_band: Optional[Sequence[int]]) -> Optional[str]:
-    normalized = normalize_depth_band(depth_band)
+def param_band_label(param_band: Optional[Sequence[int]]) -> Optional[str]:
+    normalized = normalize_param_band(param_band)
     if normalized is None:
         return None
     start, end = normalized
-    return f"depth_{start:02d}_{end:02d}"
+    return f"param_10pow{start:02d}_{end:02d}"
 
 
 def parse_architectures(values: Sequence[str]) -> List[List[int]]:
@@ -198,10 +198,6 @@ def dedupe_architectures(architectures: Iterable[Sequence[int]]) -> List[List[in
 
 
 def build_architectures(args) -> List[List[int]]:
-    depth_band = normalize_depth_band(getattr(args, "depth_band", None))
-    if depth_band is not None:
-        setattr(args, "min_depth", depth_band[0])
-        setattr(args, "max_depth", depth_band[1])
     architecture_arg = getattr(args, "architecture", None)
     widths_arg = getattr(args, "widths", None)
     depths_arg = getattr(args, "depths", None)
@@ -411,6 +407,16 @@ def generate_budgeted_parameter_targets(min_params: int, max_params: int, sample
     return deduped
 
 
+def parameter_target_in_band(target: int, param_band: Optional[Tuple[int, int]]) -> bool:
+    if param_band is None:
+        return True
+    if target <= 0:
+        return False
+    exponent = int(math.floor(math.log10(target)))
+    start, end = param_band
+    return int(start) <= exponent <= int(end)
+
+
 def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig) -> List[List[int]]:
     depth = max(1, int(depth))
     min_width = max(1, int(cfg.min_width))
@@ -455,9 +461,14 @@ def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig
     min_params = _parameter_count_for_width(task, depth, min_width, cfg)
     max_params = _parameter_count_for_width(task, depth, max_width, cfg)
     targets = generate_budgeted_parameter_targets(min_params, max_params, samples_per_decade)
-    widths: List[int] = [int(max_width), int(min_width)]
+    param_band = normalize_param_band(getattr(cfg, "parameter_band", None))
+    widths: List[int] = []
     for target in targets:
+        if not parameter_target_in_band(int(target), param_band):
+            continue
         widths.append(int(solve_parameter_matched_width(task, depth, cfg, int(target))))
+    if param_band is None:
+        widths.extend([int(max_width), int(min_width)])
     deduped_widths: List[int] = []
     seen_widths = set()
     for width in widths:
@@ -470,6 +481,7 @@ def parameter_matched_architectures(task: rg.Task, depth: int, cfg: rg.RunConfig
 
 
 def make_cfg(args, tasks: List[str], run_root: Path) -> rg.RunConfig:
+    param_band = normalize_param_band(getattr(args, "param_band", None))
     return rg.RunConfig(
         data_dir=args.data_dir,
         results_dir=args.results_dir,
@@ -503,6 +515,7 @@ def make_cfg(args, tasks: List[str], run_root: Path) -> rg.RunConfig:
         width_step=int(args.width_step),
         width_count_per_depth=int(args.width_count_per_depth),
         parameter_matched=not bool(getattr(args, "legacy_architecture_grid", False)),
+        parameter_band=param_band,
     )
 
 
@@ -894,12 +907,12 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument("--min-depth", type=int, default=DEFAULT_MIN_DEPTH)
     p.add_argument(
-        "--depth-band",
+        "--param-band",
         nargs=2,
         type=int,
-        metavar=("DEPTH_START", "DEPTH_END"),
+        metavar=("PARAM_EXP_START", "PARAM_EXP_END"),
         default=None,
-        help="Convenience alias for --min-depth/--max-depth when splitting the massive STL run across machines.",
+        help="Split the massive STL run by parameter-count decades, e.g. 1 3 for 10^1-10^3.",
     )
     p.add_argument("--repeat-count", type=int, default=DEFAULT_REPEAT_COUNT)
     p.add_argument("--repeat-index", type=int, default=None, help="Run exactly one repeat index, useful for parallel fan-out.")
@@ -928,10 +941,15 @@ def main() -> None:
     architectures = build_architectures(args)
     if not architectures:
         raise SystemExit("No architectures requested.")
-    depth_band = normalize_depth_band(getattr(args, "depth_band", None))
+    param_band = normalize_param_band(getattr(args, "param_band", None))
 
     source_run_root = Path(args.source_run_root)
-    run_root = Path(args.run_root) if args.run_root else Path(args.results_dir) / f"stl_ablation_{rg.now_stamp()}"
+    if args.run_root:
+        run_root = Path(args.run_root)
+    else:
+        band_label = param_band_label(param_band)
+        suffix = f"_{band_label}" if band_label else ""
+        run_root = Path(args.results_dir) / f"stl_ablation{suffix}_{rg.now_stamp()}"
     run_root.mkdir(parents=True, exist_ok=True)
 
     cfg = make_cfg(args, tasks, run_root)
@@ -943,8 +961,8 @@ def main() -> None:
     logger.log_console(f"Run root: {run_root}")
     logger.log_console(f"Tasks: {tasks}")
     logger.log_console(f"Architectures: {[rg.format_architecture_for_report(a) for a in architectures]}")
-    if depth_band is not None:
-        logger.log_console(f"Depth band: {list(depth_band)}")
+    if param_band is not None:
+        logger.log_console(f"Parameter decade band: {list(param_band)}")
     logger.log_console(f"Repeat count: {int(args.repeat_count)}")
     logger.log_console(f"Source run root: {source_run_root}")
     logger.log_console(f"Device: {device}")
@@ -998,7 +1016,7 @@ def main() -> None:
             {
             "tasks": tasks,
             "architectures": architectures,
-            "depth_band": list(depth_band) if depth_band is not None else None,
+            "param_band": list(param_band) if param_band is not None else None,
             "source_run_root": str(source_run_root),
             "repeat_count": int(args.repeat_count),
             "reports": task_reports,
