@@ -1,0 +1,853 @@
+[2026-06-11 14:37:36] Initialized ContinuousLogger for prediction_stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224 (Mode: stl_ablation_d10_w224_224_224_224_224_224_224_224_224_224_224)
+[2026-06-11 14:37:36] Logs: MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1/prediction/stl_ablation/d10/w224/cand_000/training_log.txt
+[2026-06-11 14:37:36] CSV: MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1/prediction/stl_ablation/d10/w224/cand_000/training_stats.csv
+[2026-06-11 14:37:38] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=1 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:37:39] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=1 batch=1/2 done gpu_used_mib=None host_available_mib=3011
+[2026-06-11 14:37:39] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=1 batch=1/2 batch_size=9312 running_batches=1 batch_loss=6.845285 running_loss=6.845285
+[2026-06-11 14:37:41] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=1 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:37:42] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=1 batch=2/2 done gpu_used_mib=None host_available_mib=3069
+[2026-06-11 14:37:42] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=1 batch=2/2 batch_size=7200 running_batches=2 batch_loss=4.900011 running_loss=5.997055
+[2026-06-11 14:37:42] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=1 starting validation
+[2026-06-11 14:37:42] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=1 finished validation val_loss=5.510190
+[2026-06-11 14:37:43] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=1 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2881
+[2026-06-11 14:37:43] [prediction][w224][cand_000] epoch=1 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=5.997055 val_loss=5.510190 candidate_best=5.510190 global_best=5.510190 es=0/10
+[2026-06-11 14:37:45] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=2 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:37:46] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=2 batch=1/2 done gpu_used_mib=None host_available_mib=2884
+[2026-06-11 14:37:46] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=2 batch=1/2 batch_size=9312 running_batches=1 batch_loss=5.814012 running_loss=5.814012
+[2026-06-11 14:37:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=2 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:37:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=2 batch=2/2 done gpu_used_mib=None host_available_mib=2664
+[2026-06-11 14:37:48] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=2 batch=2/2 batch_size=7200 running_batches=2 batch_loss=5.563567 running_loss=5.704806
+[2026-06-11 14:37:48] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=2 starting validation
+[2026-06-11 14:37:49] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=2 finished validation val_loss=5.251173
+[2026-06-11 14:37:49] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=2 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2903
+[2026-06-11 14:37:49] [prediction][w224][cand_000] epoch=2 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=5.704806 val_loss=5.251173 candidate_best=5.251173 global_best=5.251173 es=0/10
+[2026-06-11 14:37:52] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=3 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:37:52] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=3 batch=1/2 done gpu_used_mib=None host_available_mib=2877
+[2026-06-11 14:37:52] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=3 batch=1/2 batch_size=9312 running_batches=1 batch_loss=5.542010 running_loss=5.542010
+[2026-06-11 14:37:54] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=3 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:37:54] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=3 batch=2/2 done gpu_used_mib=None host_available_mib=2797
+[2026-06-11 14:37:54] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=3 batch=2/2 batch_size=7200 running_batches=2 batch_loss=5.280077 running_loss=5.427795
+[2026-06-11 14:37:54] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=3 starting validation
+[2026-06-11 14:37:55] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=3 finished validation val_loss=4.944176
+[2026-06-11 14:37:55] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=3 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2719
+[2026-06-11 14:37:55] [prediction][w224][cand_000] epoch=3 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=5.427795 val_loss=4.944176 candidate_best=4.944176 global_best=4.944176 es=0/10
+[2026-06-11 14:37:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=4 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:37:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=4 batch=1/2 done gpu_used_mib=None host_available_mib=2642
+[2026-06-11 14:37:59] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=4 batch=1/2 batch_size=9312 running_batches=1 batch_loss=5.224034 running_loss=5.224034
+[2026-06-11 14:38:01] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=4 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:01] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=4 batch=2/2 done gpu_used_mib=None host_available_mib=3037
+[2026-06-11 14:38:01] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=4 batch=2/2 batch_size=7200 running_batches=2 batch_loss=4.964636 running_loss=5.110924
+[2026-06-11 14:38:01] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=4 starting validation
+[2026-06-11 14:38:02] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=4 finished validation val_loss=4.601192
+[2026-06-11 14:38:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=4 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2812
+[2026-06-11 14:38:02] [prediction][w224][cand_000] epoch=4 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=5.110924 val_loss=4.601192 candidate_best=4.601192 global_best=4.601192 es=0/10
+[2026-06-11 14:38:06] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=5 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:06] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=5 batch=1/2 done gpu_used_mib=None host_available_mib=2806
+[2026-06-11 14:38:06] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=5 batch=1/2 batch_size=9312 running_batches=1 batch_loss=4.835196 running_loss=4.835196
+[2026-06-11 14:38:08] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=5 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:09] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=5 batch=2/2 done gpu_used_mib=None host_available_mib=3096
+[2026-06-11 14:38:09] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=5 batch=2/2 batch_size=7200 running_batches=2 batch_loss=4.616857 running_loss=4.739990
+[2026-06-11 14:38:09] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=5 starting validation
+[2026-06-11 14:38:09] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=5 finished validation val_loss=4.139250
+[2026-06-11 14:38:10] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=5 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2928
+[2026-06-11 14:38:10] [prediction][w224][cand_000] epoch=5 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=4.739990 val_loss=4.139250 candidate_best=4.139250 global_best=4.139250 es=0/10
+[2026-06-11 14:38:12] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=6 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:12] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=6 batch=1/2 done gpu_used_mib=None host_available_mib=2650
+[2026-06-11 14:38:12] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=6 batch=1/2 batch_size=9312 running_batches=1 batch_loss=4.364542 running_loss=4.364542
+[2026-06-11 14:38:14] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=6 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=6 batch=2/2 done gpu_used_mib=None host_available_mib=2696
+[2026-06-11 14:38:15] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=6 batch=2/2 batch_size=7200 running_batches=2 batch_loss=4.043694 running_loss=4.224638
+[2026-06-11 14:38:15] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=6 starting validation
+[2026-06-11 14:38:15] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=6 finished validation val_loss=3.444052
+[2026-06-11 14:38:16] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=6 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2815
+[2026-06-11 14:38:16] [prediction][w224][cand_000] epoch=6 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=4.224638 val_loss=3.444052 candidate_best=3.444052 global_best=3.444052 es=0/10
+[2026-06-11 14:38:18] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=7 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:19] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=7 batch=1/2 done gpu_used_mib=None host_available_mib=2628
+[2026-06-11 14:38:19] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=7 batch=1/2 batch_size=9312 running_batches=1 batch_loss=3.639982 running_loss=3.639982
+[2026-06-11 14:38:21] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=7 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:22] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=7 batch=2/2 done gpu_used_mib=None host_available_mib=2787
+[2026-06-11 14:38:22] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=7 batch=2/2 batch_size=7200 running_batches=2 batch_loss=3.180690 running_loss=3.439709
+[2026-06-11 14:38:22] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=7 starting validation
+[2026-06-11 14:38:22] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=7 finished validation val_loss=2.399630
+[2026-06-11 14:38:22] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=7 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2755
+[2026-06-11 14:38:22] [prediction][w224][cand_000] epoch=7 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=3.439709 val_loss=2.399630 candidate_best=2.399630 global_best=2.399630 es=0/10
+[2026-06-11 14:38:25] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=8 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:25] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=8 batch=1/2 done gpu_used_mib=None host_available_mib=2881
+[2026-06-11 14:38:25] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=8 batch=1/2 batch_size=9312 running_batches=1 batch_loss=2.617286 running_loss=2.617286
+[2026-06-11 14:38:27] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=8 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:27] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=8 batch=2/2 done gpu_used_mib=None host_available_mib=2672
+[2026-06-11 14:38:27] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=8 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.891207 running_loss=2.300682
+[2026-06-11 14:38:27] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=8 starting validation
+[2026-06-11 14:38:28] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=8 finished validation val_loss=1.272532
+[2026-06-11 14:38:28] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=8 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3031
+[2026-06-11 14:38:28] [prediction][w224][cand_000] epoch=8 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=2.300682 val_loss=1.272532 candidate_best=1.272532 global_best=1.272532 es=0/10
+[2026-06-11 14:38:31] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=9 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:31] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=9 batch=1/2 done gpu_used_mib=None host_available_mib=2840
+[2026-06-11 14:38:31] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=9 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.370021 running_loss=1.370021
+[2026-06-11 14:38:34] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=9 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:34] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=9 batch=2/2 done gpu_used_mib=None host_available_mib=2940
+[2026-06-11 14:38:34] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=9 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.482895 running_loss=1.419239
+[2026-06-11 14:38:34] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=9 starting validation
+[2026-06-11 14:38:34] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=9 finished validation val_loss=2.452873
+[2026-06-11 14:38:35] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=9 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2864
+[2026-06-11 14:38:35] [prediction][w224][cand_000] epoch=9 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=1.419239 val_loss=2.452873 candidate_best=1.272532 global_best=1.272532 es=1/10
+[2026-06-11 14:38:39] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=10 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:39] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=10 batch=1/2 done gpu_used_mib=None host_available_mib=2609
+[2026-06-11 14:38:39] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=10 batch=1/2 batch_size=9312 running_batches=1 batch_loss=2.281720 running_loss=2.281720
+[2026-06-11 14:38:41] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=10 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:41] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=10 batch=2/2 done gpu_used_mib=None host_available_mib=2866
+[2026-06-11 14:38:41] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=10 batch=2/2 batch_size=7200 running_batches=2 batch_loss=2.854163 running_loss=2.531332
+[2026-06-11 14:38:41] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=10 starting validation
+[2026-06-11 14:38:41] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=10 finished validation val_loss=2.680082
+[2026-06-11 14:38:41] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=10 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2843
+[2026-06-11 14:38:41] [prediction][w224][cand_000] epoch=10 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=2.531332 val_loss=2.680082 candidate_best=1.272532 global_best=1.272532 es=2/10
+[2026-06-11 14:38:45] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=11 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:45] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=11 batch=1/2 done gpu_used_mib=None host_available_mib=2891
+[2026-06-11 14:38:45] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=11 batch=1/2 batch_size=9312 running_batches=1 batch_loss=2.607404 running_loss=2.607404
+[2026-06-11 14:38:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=11 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=11 batch=2/2 done gpu_used_mib=None host_available_mib=2893
+[2026-06-11 14:38:48] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=11 batch=2/2 batch_size=7200 running_batches=2 batch_loss=2.158108 running_loss=2.411490
+[2026-06-11 14:38:48] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=11 starting validation
+[2026-06-11 14:38:48] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=11 finished validation val_loss=1.630144
+[2026-06-11 14:38:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=11 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2946
+[2026-06-11 14:38:48] [prediction][w224][cand_000] epoch=11 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=2.411490 val_loss=1.630144 candidate_best=1.272532 global_best=1.272532 es=3/10
+[2026-06-11 14:38:52] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=12 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:53] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=12 batch=1/2 done gpu_used_mib=None host_available_mib=2817
+[2026-06-11 14:38:53] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=12 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.687922 running_loss=1.687922
+[2026-06-11 14:38:56] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=12 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:56] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=12 batch=2/2 done gpu_used_mib=None host_available_mib=2951
+[2026-06-11 14:38:56] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=12 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.344493 running_loss=1.538171
+[2026-06-11 14:38:56] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=12 starting validation
+[2026-06-11 14:38:56] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=12 finished validation val_loss=1.155884
+[2026-06-11 14:38:57] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=12 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2904
+[2026-06-11 14:38:57] [prediction][w224][cand_000] epoch=12 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=1.538171 val_loss=1.155884 candidate_best=1.155884 global_best=1.155884 es=0/10
+[2026-06-11 14:38:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=13 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:38:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=13 batch=1/2 done gpu_used_mib=None host_available_mib=3093
+[2026-06-11 14:38:59] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=13 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.233468 running_loss=1.233468
+[2026-06-11 14:39:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=13 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=13 batch=2/2 done gpu_used_mib=None host_available_mib=2871
+[2026-06-11 14:39:02] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=13 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.261744 running_loss=1.245797
+[2026-06-11 14:39:02] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=13 starting validation
+[2026-06-11 14:39:02] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=13 finished validation val_loss=1.152980
+[2026-06-11 14:39:03] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=13 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3068
+[2026-06-11 14:39:03] [prediction][w224][cand_000] epoch=13 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=1.245797 val_loss=1.152980 candidate_best=1.152980 global_best=1.152980 es=0/10
+[2026-06-11 14:39:05] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=14 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:05] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=14 batch=1/2 done gpu_used_mib=None host_available_mib=2804
+[2026-06-11 14:39:05] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=14 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.287244 running_loss=1.287244
+[2026-06-11 14:39:08] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=14 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:08] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=14 batch=2/2 done gpu_used_mib=None host_available_mib=2811
+[2026-06-11 14:39:08] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=14 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.194345 running_loss=1.246736
+[2026-06-11 14:39:08] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=14 starting validation
+[2026-06-11 14:39:09] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=14 finished validation val_loss=1.011189
+[2026-06-11 14:39:09] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=14 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2978
+[2026-06-11 14:39:09] [prediction][w224][cand_000] epoch=14 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=1.246736 val_loss=1.011189 candidate_best=1.011189 global_best=1.011189 es=0/10
+[2026-06-11 14:39:12] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=15 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:12] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=15 batch=1/2 done gpu_used_mib=None host_available_mib=2628
+[2026-06-11 14:39:12] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=15 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.100801 running_loss=1.100801
+[2026-06-11 14:39:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=15 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=15 batch=2/2 done gpu_used_mib=None host_available_mib=2929
+[2026-06-11 14:39:15] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=15 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.931679 running_loss=1.027056
+[2026-06-11 14:39:15] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=15 starting validation
+[2026-06-11 14:39:16] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=15 finished validation val_loss=0.726381
+[2026-06-11 14:39:16] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=15 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3023
+[2026-06-11 14:39:16] [prediction][w224][cand_000] epoch=15 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=1.027056 val_loss=0.726381 candidate_best=0.726381 global_best=0.726381 es=0/10
+[2026-06-11 14:39:20] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=16 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:20] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=16 batch=1/2 done gpu_used_mib=None host_available_mib=2896
+[2026-06-11 14:39:20] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=16 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.770038 running_loss=0.770038
+[2026-06-11 14:39:22] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=16 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:22] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=16 batch=2/2 done gpu_used_mib=None host_available_mib=2769
+[2026-06-11 14:39:22] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=16 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.949436 running_loss=0.848264
+[2026-06-11 14:39:22] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=16 starting validation
+[2026-06-11 14:39:23] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=16 finished validation val_loss=1.195987
+[2026-06-11 14:39:23] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=16 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2896
+[2026-06-11 14:39:23] [prediction][w224][cand_000] epoch=16 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.848264 val_loss=1.195987 candidate_best=0.726381 global_best=0.726381 es=1/10
+[2026-06-11 14:39:26] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=17 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:26] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=17 batch=1/2 done gpu_used_mib=None host_available_mib=2583
+[2026-06-11 14:39:26] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=17 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.179101 running_loss=1.179101
+[2026-06-11 14:39:28] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=17 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:28] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=17 batch=2/2 done gpu_used_mib=None host_available_mib=2870
+[2026-06-11 14:39:28] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=17 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.092978 running_loss=1.141547
+[2026-06-11 14:39:28] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=17 starting validation
+[2026-06-11 14:39:29] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=17 finished validation val_loss=0.778838
+[2026-06-11 14:39:29] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=17 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2764
+[2026-06-11 14:39:29] [prediction][w224][cand_000] epoch=17 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=1.141547 val_loss=0.778838 candidate_best=0.726381 global_best=0.726381 es=2/10
+[2026-06-11 14:39:31] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=18 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:31] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=18 batch=1/2 done gpu_used_mib=None host_available_mib=2674
+[2026-06-11 14:39:31] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=18 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.795144 running_loss=0.795144
+[2026-06-11 14:39:34] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=18 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:34] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=18 batch=2/2 done gpu_used_mib=None host_available_mib=2750
+[2026-06-11 14:39:34] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=18 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.686983 running_loss=0.747980
+[2026-06-11 14:39:34] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=18 starting validation
+[2026-06-11 14:39:34] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=18 finished validation val_loss=0.693139
+[2026-06-11 14:39:35] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=18 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2894
+[2026-06-11 14:39:35] [prediction][w224][cand_000] epoch=18 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.747980 val_loss=0.693139 candidate_best=0.693139 global_best=0.693139 es=0/10
+[2026-06-11 14:39:38] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=19 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:38] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=19 batch=1/2 done gpu_used_mib=None host_available_mib=2777
+[2026-06-11 14:39:38] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=19 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.739866 running_loss=0.739866
+[2026-06-11 14:39:40] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=19 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:41] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=19 batch=2/2 done gpu_used_mib=None host_available_mib=2861
+[2026-06-11 14:39:41] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=19 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.758958 running_loss=0.748191
+[2026-06-11 14:39:41] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=19 starting validation
+[2026-06-11 14:39:41] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=19 finished validation val_loss=0.646081
+[2026-06-11 14:39:42] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=19 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2724
+[2026-06-11 14:39:42] [prediction][w224][cand_000] epoch=19 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.748191 val_loss=0.646081 candidate_best=0.646081 global_best=0.646081 es=0/10
+[2026-06-11 14:39:45] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=20 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:45] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=20 batch=1/2 done gpu_used_mib=None host_available_mib=2771
+[2026-06-11 14:39:45] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=20 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.691179 running_loss=0.691179
+[2026-06-11 14:39:47] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=20 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=20 batch=2/2 done gpu_used_mib=None host_available_mib=3003
+[2026-06-11 14:39:48] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=20 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.627801 running_loss=0.663544
+[2026-06-11 14:39:48] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=20 starting validation
+[2026-06-11 14:39:48] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=20 finished validation val_loss=0.679950
+[2026-06-11 14:39:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=20 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2735
+[2026-06-11 14:39:48] [prediction][w224][cand_000] epoch=20 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.663544 val_loss=0.679950 candidate_best=0.646081 global_best=0.646081 es=1/10
+[2026-06-11 14:39:52] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=21 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:52] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=21 batch=1/2 done gpu_used_mib=None host_available_mib=2927
+[2026-06-11 14:39:52] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=21 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.684067 running_loss=0.684067
+[2026-06-11 14:39:54] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=21 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:55] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=21 batch=2/2 done gpu_used_mib=None host_available_mib=2916
+[2026-06-11 14:39:55] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=21 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.786384 running_loss=0.728682
+[2026-06-11 14:39:55] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=21 starting validation
+[2026-06-11 14:39:55] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=21 finished validation val_loss=0.715812
+[2026-06-11 14:39:55] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=21 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2938
+[2026-06-11 14:39:55] [prediction][w224][cand_000] epoch=21 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.728682 val_loss=0.715812 candidate_best=0.646081 global_best=0.646081 es=2/10
+[2026-06-11 14:39:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=22 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:39:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=22 batch=1/2 done gpu_used_mib=None host_available_mib=2848
+[2026-06-11 14:39:59] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=22 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.721243 running_loss=0.721243
+[2026-06-11 14:40:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=22 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=22 batch=2/2 done gpu_used_mib=None host_available_mib=2878
+[2026-06-11 14:40:02] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=22 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.591720 running_loss=0.664765
+[2026-06-11 14:40:02] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=22 starting validation
+[2026-06-11 14:40:03] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=22 finished validation val_loss=0.561334
+[2026-06-11 14:40:03] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=22 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2970
+[2026-06-11 14:40:03] [prediction][w224][cand_000] epoch=22 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.664765 val_loss=0.561334 candidate_best=0.561334 global_best=0.561334 es=0/10
+[2026-06-11 14:40:07] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=23 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:07] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=23 batch=1/2 done gpu_used_mib=None host_available_mib=2945
+[2026-06-11 14:40:07] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=23 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.607623 running_loss=0.607623
+[2026-06-11 14:40:10] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=23 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:11] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=23 batch=2/2 done gpu_used_mib=None host_available_mib=3026
+[2026-06-11 14:40:11] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=23 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.622792 running_loss=0.614237
+[2026-06-11 14:40:11] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=23 starting validation
+[2026-06-11 14:40:11] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=23 finished validation val_loss=0.585905
+[2026-06-11 14:40:11] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=23 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3060
+[2026-06-11 14:40:11] [prediction][w224][cand_000] epoch=23 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.614237 val_loss=0.585905 candidate_best=0.561334 global_best=0.561334 es=1/10
+[2026-06-11 14:40:14] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=24 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=24 batch=1/2 done gpu_used_mib=None host_available_mib=3005
+[2026-06-11 14:40:15] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=24 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.632325 running_loss=0.632325
+[2026-06-11 14:40:17] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=24 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:18] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=24 batch=2/2 done gpu_used_mib=None host_available_mib=2998
+[2026-06-11 14:40:18] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=24 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.560345 running_loss=0.600938
+[2026-06-11 14:40:18] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=24 starting validation
+[2026-06-11 14:40:18] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=24 finished validation val_loss=0.519534
+[2026-06-11 14:40:19] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=24 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2964
+[2026-06-11 14:40:19] [prediction][w224][cand_000] epoch=24 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.600938 val_loss=0.519534 candidate_best=0.519534 global_best=0.519534 es=0/10
+[2026-06-11 14:40:22] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=25 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:22] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=25 batch=1/2 done gpu_used_mib=None host_available_mib=2803
+[2026-06-11 14:40:22] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=25 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.535803 running_loss=0.535803
+[2026-06-11 14:40:24] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=25 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:24] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=25 batch=2/2 done gpu_used_mib=None host_available_mib=2873
+[2026-06-11 14:40:24] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=25 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.535886 running_loss=0.535839
+[2026-06-11 14:40:24] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=25 starting validation
+[2026-06-11 14:40:25] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=25 finished validation val_loss=0.505796
+[2026-06-11 14:40:25] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=25 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2915
+[2026-06-11 14:40:25] [prediction][w224][cand_000] epoch=25 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.535839 val_loss=0.505796 candidate_best=0.505796 global_best=0.505796 es=0/10
+[2026-06-11 14:40:28] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=26 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:28] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=26 batch=1/2 done gpu_used_mib=None host_available_mib=2715
+[2026-06-11 14:40:28] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=26 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.519790 running_loss=0.519790
+[2026-06-11 14:40:30] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=26 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:30] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=26 batch=2/2 done gpu_used_mib=None host_available_mib=2861
+[2026-06-11 14:40:30] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=26 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.472645 running_loss=0.499233
+[2026-06-11 14:40:30] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=26 starting validation
+[2026-06-11 14:40:31] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=26 finished validation val_loss=0.467442
+[2026-06-11 14:40:31] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=26 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3103
+[2026-06-11 14:40:31] [prediction][w224][cand_000] epoch=26 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.499233 val_loss=0.467442 candidate_best=0.467442 global_best=0.467442 es=0/10
+[2026-06-11 14:40:34] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=27 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:34] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=27 batch=1/2 done gpu_used_mib=None host_available_mib=2961
+[2026-06-11 14:40:34] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=27 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.496601 running_loss=0.496601
+[2026-06-11 14:40:38] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=27 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:38] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=27 batch=2/2 done gpu_used_mib=None host_available_mib=2686
+[2026-06-11 14:40:38] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=27 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.452005 running_loss=0.477155
+[2026-06-11 14:40:38] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=27 starting validation
+[2026-06-11 14:40:38] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=27 finished validation val_loss=0.455748
+[2026-06-11 14:40:39] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=27 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2987
+[2026-06-11 14:40:39] [prediction][w224][cand_000] epoch=27 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.477155 val_loss=0.455748 candidate_best=0.455748 global_best=0.455748 es=0/10
+[2026-06-11 14:40:42] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=28 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:42] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=28 batch=1/2 done gpu_used_mib=None host_available_mib=3007
+[2026-06-11 14:40:42] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=28 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.464533 running_loss=0.464533
+[2026-06-11 14:40:44] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=28 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:44] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=28 batch=2/2 done gpu_used_mib=None host_available_mib=2882
+[2026-06-11 14:40:44] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=28 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.438496 running_loss=0.453180
+[2026-06-11 14:40:44] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=28 starting validation
+[2026-06-11 14:40:45] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=28 finished validation val_loss=0.419664
+[2026-06-11 14:40:46] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=28 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2817
+[2026-06-11 14:40:46] [prediction][w224][cand_000] epoch=28 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.453180 val_loss=0.419664 candidate_best=0.419664 global_best=0.419664 es=0/10
+[2026-06-11 14:40:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=29 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=29 batch=1/2 done gpu_used_mib=None host_available_mib=2749
+[2026-06-11 14:40:48] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=29 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.427743 running_loss=0.427743
+[2026-06-11 14:40:51] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=29 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:51] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=29 batch=2/2 done gpu_used_mib=None host_available_mib=2793
+[2026-06-11 14:40:51] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=29 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.414396 running_loss=0.421923
+[2026-06-11 14:40:51] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=29 starting validation
+[2026-06-11 14:40:51] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=29 finished validation val_loss=0.419363
+[2026-06-11 14:40:52] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=29 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2796
+[2026-06-11 14:40:52] [prediction][w224][cand_000] epoch=29 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.421923 val_loss=0.419363 candidate_best=0.419363 global_best=0.419363 es=0/10
+[2026-06-11 14:40:55] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=30 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:55] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=30 batch=1/2 done gpu_used_mib=None host_available_mib=2867
+[2026-06-11 14:40:55] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=30 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.414586 running_loss=0.414586
+[2026-06-11 14:40:57] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=30 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:40:57] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=30 batch=2/2 done gpu_used_mib=None host_available_mib=2840
+[2026-06-11 14:40:57] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=30 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.398458 running_loss=0.407554
+[2026-06-11 14:40:57] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=30 starting validation
+[2026-06-11 14:40:58] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=30 finished validation val_loss=0.414217
+[2026-06-11 14:40:58] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=30 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2793
+[2026-06-11 14:40:58] [prediction][w224][cand_000] epoch=30 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.407554 val_loss=0.414217 candidate_best=0.414217 global_best=0.414217 es=0/10
+[2026-06-11 14:41:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=31 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=31 batch=1/2 done gpu_used_mib=None host_available_mib=2884
+[2026-06-11 14:41:02] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=31 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.418464 running_loss=0.418464
+[2026-06-11 14:41:05] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=31 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:05] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=31 batch=2/2 done gpu_used_mib=None host_available_mib=2846
+[2026-06-11 14:41:05] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=31 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.408781 running_loss=0.414242
+[2026-06-11 14:41:05] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=31 starting validation
+[2026-06-11 14:41:06] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=31 finished validation val_loss=0.397350
+[2026-06-11 14:41:07] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=31 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3009
+[2026-06-11 14:41:07] [prediction][w224][cand_000] epoch=31 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.414242 val_loss=0.397350 candidate_best=0.397350 global_best=0.397350 es=0/10
+[2026-06-11 14:41:10] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=32 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:10] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=32 batch=1/2 done gpu_used_mib=None host_available_mib=2938
+[2026-06-11 14:41:10] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=32 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.382220 running_loss=0.382220
+[2026-06-11 14:41:13] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=32 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:13] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=32 batch=2/2 done gpu_used_mib=None host_available_mib=2816
+[2026-06-11 14:41:13] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=32 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.395320 running_loss=0.387932
+[2026-06-11 14:41:13] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=32 starting validation
+[2026-06-11 14:41:14] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=32 finished validation val_loss=0.391544
+[2026-06-11 14:41:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=32 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3087
+[2026-06-11 14:41:15] [prediction][w224][cand_000] epoch=32 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.387932 val_loss=0.391544 candidate_best=0.391544 global_best=0.391544 es=0/10
+[2026-06-11 14:41:18] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=33 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:18] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=33 batch=1/2 done gpu_used_mib=None host_available_mib=2839
+[2026-06-11 14:41:18] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=33 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.386207 running_loss=0.386207
+[2026-06-11 14:41:21] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=33 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:21] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=33 batch=2/2 done gpu_used_mib=None host_available_mib=2879
+[2026-06-11 14:41:21] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=33 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.369362 running_loss=0.378862
+[2026-06-11 14:41:21] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=33 starting validation
+[2026-06-11 14:41:22] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=33 finished validation val_loss=0.380430
+[2026-06-11 14:41:22] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=33 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2800
+[2026-06-11 14:41:22] [prediction][w224][cand_000] epoch=33 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.378862 val_loss=0.380430 candidate_best=0.380430 global_best=0.380430 es=0/10
+[2026-06-11 14:41:24] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=34 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:24] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=34 batch=1/2 done gpu_used_mib=None host_available_mib=2958
+[2026-06-11 14:41:24] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=34 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.371685 running_loss=0.371685
+[2026-06-11 14:41:27] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=34 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:28] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=34 batch=2/2 done gpu_used_mib=None host_available_mib=3005
+[2026-06-11 14:41:28] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=34 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.388271 running_loss=0.378917
+[2026-06-11 14:41:28] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=34 starting validation
+[2026-06-11 14:41:28] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=34 finished validation val_loss=0.421599
+[2026-06-11 14:41:28] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=34 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2879
+[2026-06-11 14:41:28] [prediction][w224][cand_000] epoch=34 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.378917 val_loss=0.421599 candidate_best=0.380430 global_best=0.380430 es=1/10
+[2026-06-11 14:41:32] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=35 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:32] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=35 batch=1/2 done gpu_used_mib=None host_available_mib=3044
+[2026-06-11 14:41:32] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=35 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.390849 running_loss=0.390849
+[2026-06-11 14:41:35] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=35 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:35] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=35 batch=2/2 done gpu_used_mib=None host_available_mib=2923
+[2026-06-11 14:41:35] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=35 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.358703 running_loss=0.376831
+[2026-06-11 14:41:35] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=35 starting validation
+[2026-06-11 14:41:36] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=35 finished validation val_loss=0.395860
+[2026-06-11 14:41:36] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=35 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3049
+[2026-06-11 14:41:36] [prediction][w224][cand_000] epoch=35 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.376831 val_loss=0.395860 candidate_best=0.380430 global_best=0.380430 es=2/10
+[2026-06-11 14:41:38] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=36 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:39] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=36 batch=1/2 done gpu_used_mib=None host_available_mib=2907
+[2026-06-11 14:41:39] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=36 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.406825 running_loss=0.406825
+[2026-06-11 14:41:41] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=36 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:42] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=36 batch=2/2 done gpu_used_mib=None host_available_mib=2772
+[2026-06-11 14:41:42] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=36 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.391591 running_loss=0.400182
+[2026-06-11 14:41:42] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=36 starting validation
+[2026-06-11 14:41:42] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=36 finished validation val_loss=0.366039
+[2026-06-11 14:41:42] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=36 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2858
+[2026-06-11 14:41:42] [prediction][w224][cand_000] epoch=36 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.400182 val_loss=0.366039 candidate_best=0.366039 global_best=0.366039 es=0/10
+[2026-06-11 14:41:45] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=37 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:45] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=37 batch=1/2 done gpu_used_mib=None host_available_mib=2790
+[2026-06-11 14:41:45] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=37 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.363384 running_loss=0.363384
+[2026-06-11 14:41:47] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=37 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=37 batch=2/2 done gpu_used_mib=None host_available_mib=2926
+[2026-06-11 14:41:48] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=37 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.411377 running_loss=0.384311
+[2026-06-11 14:41:48] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=37 starting validation
+[2026-06-11 14:41:48] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=37 finished validation val_loss=0.529072
+[2026-06-11 14:41:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=37 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3030
+[2026-06-11 14:41:48] [prediction][w224][cand_000] epoch=37 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.384311 val_loss=0.529072 candidate_best=0.366039 global_best=0.366039 es=1/10
+[2026-06-11 14:41:51] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=38 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:51] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=38 batch=1/2 done gpu_used_mib=None host_available_mib=2930
+[2026-06-11 14:41:51] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=38 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.494875 running_loss=0.494875
+[2026-06-11 14:41:55] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=38 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:55] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=38 batch=2/2 done gpu_used_mib=None host_available_mib=2626
+[2026-06-11 14:41:55] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=38 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.437633 running_loss=0.469915
+[2026-06-11 14:41:55] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=38 starting validation
+[2026-06-11 14:41:55] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=38 finished validation val_loss=0.373996
+[2026-06-11 14:41:55] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=38 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2711
+[2026-06-11 14:41:55] [prediction][w224][cand_000] epoch=38 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.469915 val_loss=0.373996 candidate_best=0.366039 global_best=0.366039 es=2/10
+[2026-06-11 14:41:58] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=39 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:41:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=39 batch=1/2 done gpu_used_mib=None host_available_mib=2673
+[2026-06-11 14:41:59] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=39 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.368213 running_loss=0.368213
+[2026-06-11 14:42:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=39 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=39 batch=2/2 done gpu_used_mib=None host_available_mib=2946
+[2026-06-11 14:42:02] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=39 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.392747 running_loss=0.378911
+[2026-06-11 14:42:02] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=39 starting validation
+[2026-06-11 14:42:03] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=39 finished validation val_loss=0.439847
+[2026-06-11 14:42:03] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=39 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2948
+[2026-06-11 14:42:03] [prediction][w224][cand_000] epoch=39 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.378911 val_loss=0.439847 candidate_best=0.366039 global_best=0.366039 es=3/10
+[2026-06-11 14:42:06] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=40 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:06] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=40 batch=1/2 done gpu_used_mib=None host_available_mib=2831
+[2026-06-11 14:42:06] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=40 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.470555 running_loss=0.470555
+[2026-06-11 14:42:09] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=40 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:09] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=40 batch=2/2 done gpu_used_mib=None host_available_mib=2843
+[2026-06-11 14:42:09] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=40 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.408216 running_loss=0.443372
+[2026-06-11 14:42:09] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=40 starting validation
+[2026-06-11 14:42:10] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=40 finished validation val_loss=0.369854
+[2026-06-11 14:42:10] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=40 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2921
+[2026-06-11 14:42:10] [prediction][w224][cand_000] epoch=40 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.443372 val_loss=0.369854 candidate_best=0.366039 global_best=0.366039 es=4/10
+[2026-06-11 14:42:13] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=41 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:13] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=41 batch=1/2 done gpu_used_mib=None host_available_mib=2838
+[2026-06-11 14:42:13] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=41 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.358872 running_loss=0.358872
+[2026-06-11 14:42:16] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=41 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:16] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=41 batch=2/2 done gpu_used_mib=None host_available_mib=2818
+[2026-06-11 14:42:16] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=41 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.392439 running_loss=0.373509
+[2026-06-11 14:42:16] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=41 starting validation
+[2026-06-11 14:42:17] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=41 finished validation val_loss=0.509770
+[2026-06-11 14:42:17] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=41 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3139
+[2026-06-11 14:42:17] [prediction][w224][cand_000] epoch=41 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.373509 val_loss=0.509770 candidate_best=0.366039 global_best=0.366039 es=5/10
+[2026-06-11 14:42:21] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=42 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:21] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=42 batch=1/2 done gpu_used_mib=None host_available_mib=2765
+[2026-06-11 14:42:21] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=42 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.470889 running_loss=0.470889
+[2026-06-11 14:42:23] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=42 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:23] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=42 batch=2/2 done gpu_used_mib=None host_available_mib=2731
+[2026-06-11 14:42:23] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=42 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.440106 running_loss=0.457466
+[2026-06-11 14:42:23] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=42 starting validation
+[2026-06-11 14:42:24] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=42 finished validation val_loss=0.381624
+[2026-06-11 14:42:24] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=42 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2776
+[2026-06-11 14:42:24] [prediction][w224][cand_000] epoch=42 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.457466 val_loss=0.381624 candidate_best=0.366039 global_best=0.366039 es=6/10
+[2026-06-11 14:42:27] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=43 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:27] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=43 batch=1/2 done gpu_used_mib=None host_available_mib=2493
+[2026-06-11 14:42:27] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=43 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.362489 running_loss=0.362489
+[2026-06-11 14:42:29] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=43 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:30] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=43 batch=2/2 done gpu_used_mib=None host_available_mib=2759
+[2026-06-11 14:42:30] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=43 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.375064 running_loss=0.367972
+[2026-06-11 14:42:30] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=43 starting validation
+[2026-06-11 14:42:30] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=43 finished validation val_loss=0.402925
+[2026-06-11 14:42:30] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=43 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2692
+[2026-06-11 14:42:30] [prediction][w224][cand_000] epoch=43 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.367972 val_loss=0.402925 candidate_best=0.366039 global_best=0.366039 es=7/10
+[2026-06-11 14:42:33] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=44 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:33] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=44 batch=1/2 done gpu_used_mib=None host_available_mib=2713
+[2026-06-11 14:42:33] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=44 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.419772 running_loss=0.419772
+[2026-06-11 14:42:35] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=44 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:36] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=44 batch=2/2 done gpu_used_mib=None host_available_mib=2939
+[2026-06-11 14:42:36] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=44 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.388427 running_loss=0.406104
+[2026-06-11 14:42:36] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=44 starting validation
+[2026-06-11 14:42:36] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=44 finished validation val_loss=0.359143
+[2026-06-11 14:42:37] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=44 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2864
+[2026-06-11 14:42:37] [prediction][w224][cand_000] epoch=44 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.406104 val_loss=0.359143 candidate_best=0.359143 global_best=0.359143 es=0/10
+[2026-06-11 14:42:39] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=45 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:40] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=45 batch=1/2 done gpu_used_mib=None host_available_mib=2668
+[2026-06-11 14:42:40] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=45 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.358584 running_loss=0.358584
+[2026-06-11 14:42:43] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=45 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:43] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=45 batch=2/2 done gpu_used_mib=None host_available_mib=2737
+[2026-06-11 14:42:43] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=45 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.371432 running_loss=0.364186
+[2026-06-11 14:42:43] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=45 starting validation
+[2026-06-11 14:42:43] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=45 finished validation val_loss=0.464437
+[2026-06-11 14:42:44] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=45 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2947
+[2026-06-11 14:42:44] [prediction][w224][cand_000] epoch=45 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.364186 val_loss=0.464437 candidate_best=0.359143 global_best=0.359143 es=1/10
+[2026-06-11 14:42:46] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=46 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:47] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=46 batch=1/2 done gpu_used_mib=None host_available_mib=2730
+[2026-06-11 14:42:47] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=46 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.420680 running_loss=0.420680
+[2026-06-11 14:42:49] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=46 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:50] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=46 batch=2/2 done gpu_used_mib=None host_available_mib=2850
+[2026-06-11 14:42:50] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=46 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.403678 running_loss=0.413266
+[2026-06-11 14:42:50] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=46 starting validation
+[2026-06-11 14:42:50] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=46 finished validation val_loss=0.352670
+[2026-06-11 14:42:51] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=46 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2984
+[2026-06-11 14:42:51] [prediction][w224][cand_000] epoch=46 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.413266 val_loss=0.352670 candidate_best=0.352670 global_best=0.352670 es=0/10
+[2026-06-11 14:42:54] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=47 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:54] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=47 batch=1/2 done gpu_used_mib=None host_available_mib=2858
+[2026-06-11 14:42:54] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=47 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.333080 running_loss=0.333080
+[2026-06-11 14:42:57] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=47 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:42:57] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=47 batch=2/2 done gpu_used_mib=None host_available_mib=2896
+[2026-06-11 14:42:57] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=47 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.363093 running_loss=0.346167
+[2026-06-11 14:42:58] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=47 starting validation
+[2026-06-11 14:42:58] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=47 finished validation val_loss=0.399110
+[2026-06-11 14:42:58] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=47 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2942
+[2026-06-11 14:42:58] [prediction][w224][cand_000] epoch=47 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.346167 val_loss=0.399110 candidate_best=0.352670 global_best=0.352670 es=1/10
+[2026-06-11 14:43:01] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=48 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=48 batch=1/2 done gpu_used_mib=None host_available_mib=2976
+[2026-06-11 14:43:02] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=48 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.397763 running_loss=0.397763
+[2026-06-11 14:43:04] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=48 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:04] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=48 batch=2/2 done gpu_used_mib=None host_available_mib=2810
+[2026-06-11 14:43:04] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=48 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.388018 running_loss=0.393514
+[2026-06-11 14:43:04] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=48 starting validation
+[2026-06-11 14:43:05] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=48 finished validation val_loss=0.342987
+[2026-06-11 14:43:05] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=48 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2872
+[2026-06-11 14:43:05] [prediction][w224][cand_000] epoch=48 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.393514 val_loss=0.342987 candidate_best=0.342987 global_best=0.342987 es=0/10
+[2026-06-11 14:43:08] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=49 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:08] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=49 batch=1/2 done gpu_used_mib=None host_available_mib=2681
+[2026-06-11 14:43:08] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=49 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.334944 running_loss=0.334944
+[2026-06-11 14:43:11] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=49 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:11] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=49 batch=2/2 done gpu_used_mib=None host_available_mib=2774
+[2026-06-11 14:43:11] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=49 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.382911 running_loss=0.355860
+[2026-06-11 14:43:11] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=49 starting validation
+[2026-06-11 14:43:12] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=49 finished validation val_loss=0.511970
+[2026-06-11 14:43:12] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=49 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2950
+[2026-06-11 14:43:12] [prediction][w224][cand_000] epoch=49 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.355860 val_loss=0.511970 candidate_best=0.342987 global_best=0.342987 es=1/10
+[2026-06-11 14:43:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=50 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=50 batch=1/2 done gpu_used_mib=None host_available_mib=2695
+[2026-06-11 14:43:15] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=50 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.456960 running_loss=0.456960
+[2026-06-11 14:43:18] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=50 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:19] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=50 batch=2/2 done gpu_used_mib=None host_available_mib=2892
+[2026-06-11 14:43:19] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=50 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.464216 running_loss=0.460124
+[2026-06-11 14:43:19] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=50 starting validation
+[2026-06-11 14:43:19] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=50 finished validation val_loss=0.384188
+[2026-06-11 14:43:19] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=50 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2921
+[2026-06-11 14:43:19] [prediction][w224][cand_000] epoch=50 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.460124 val_loss=0.384188 candidate_best=0.342987 global_best=0.342987 es=2/10
+[2026-06-11 14:43:22] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=51 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:22] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=51 batch=1/2 done gpu_used_mib=None host_available_mib=3022
+[2026-06-11 14:43:22] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=51 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.366029 running_loss=0.366029
+[2026-06-11 14:43:25] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=51 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:25] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=51 batch=2/2 done gpu_used_mib=None host_available_mib=2989
+[2026-06-11 14:43:25] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=51 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.315764 running_loss=0.344111
+[2026-06-11 14:43:25] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=51 starting validation
+[2026-06-11 14:43:26] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=51 finished validation val_loss=0.372935
+[2026-06-11 14:43:26] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=51 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3067
+[2026-06-11 14:43:26] [prediction][w224][cand_000] epoch=51 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.344111 val_loss=0.372935 candidate_best=0.342987 global_best=0.342987 es=3/10
+[2026-06-11 14:43:29] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=52 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:30] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=52 batch=1/2 done gpu_used_mib=None host_available_mib=2724
+[2026-06-11 14:43:30] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=52 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.363843 running_loss=0.363843
+[2026-06-11 14:43:32] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=52 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:33] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=52 batch=2/2 done gpu_used_mib=None host_available_mib=2938
+[2026-06-11 14:43:33] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=52 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.372782 running_loss=0.367741
+[2026-06-11 14:43:33] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=52 starting validation
+[2026-06-11 14:43:33] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=52 finished validation val_loss=0.337282
+[2026-06-11 14:43:34] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=52 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=2832
+[2026-06-11 14:43:34] [prediction][w224][cand_000] epoch=52 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.367741 val_loss=0.337282 candidate_best=0.337282 global_best=0.337282 es=0/10
+[2026-06-11 14:43:36] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=53 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:37] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=53 batch=1/2 done gpu_used_mib=None host_available_mib=2884
+[2026-06-11 14:43:37] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=53 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.324102 running_loss=0.324102
+[2026-06-11 14:43:39] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=53 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:40] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=53 batch=2/2 done gpu_used_mib=None host_available_mib=3483
+[2026-06-11 14:43:40] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=53 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.351031 running_loss=0.335844
+[2026-06-11 14:43:40] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=53 starting validation
+[2026-06-11 14:43:40] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=53 finished validation val_loss=0.417325
+[2026-06-11 14:43:40] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=53 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3389
+[2026-06-11 14:43:40] [prediction][w224][cand_000] epoch=53 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.335844 val_loss=0.417325 candidate_best=0.337282 global_best=0.337282 es=1/10
+[2026-06-11 14:43:42] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=54 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:43] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=54 batch=1/2 done gpu_used_mib=None host_available_mib=3392
+[2026-06-11 14:43:43] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=54 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.384497 running_loss=0.384497
+[2026-06-11 14:43:45] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=54 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:45] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=54 batch=2/2 done gpu_used_mib=None host_available_mib=3251
+[2026-06-11 14:43:45] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=54 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.348823 running_loss=0.368941
+[2026-06-11 14:43:45] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=54 starting validation
+[2026-06-11 14:43:45] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=54 finished validation val_loss=0.336857
+[2026-06-11 14:43:46] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=54 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3264
+[2026-06-11 14:43:46] [prediction][w224][cand_000] epoch=54 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.368941 val_loss=0.336857 candidate_best=0.336857 global_best=0.336857 es=0/10
+[2026-06-11 14:43:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=55 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=55 batch=1/2 done gpu_used_mib=None host_available_mib=3216
+[2026-06-11 14:43:48] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=55 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.321177 running_loss=0.321177
+[2026-06-11 14:43:50] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=55 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:51] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=55 batch=2/2 done gpu_used_mib=None host_available_mib=3280
+[2026-06-11 14:43:51] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=55 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.329162 running_loss=0.324659
+[2026-06-11 14:43:51] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=55 starting validation
+[2026-06-11 14:43:51] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=55 finished validation val_loss=0.332830
+[2026-06-11 14:43:52] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=55 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3291
+[2026-06-11 14:43:52] [prediction][w224][cand_000] epoch=55 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.324659 val_loss=0.332830 candidate_best=0.332830 global_best=0.332830 es=0/10
+[2026-06-11 14:43:54] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=56 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:54] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=56 batch=1/2 done gpu_used_mib=None host_available_mib=3289
+[2026-06-11 14:43:54] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=56 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.330301 running_loss=0.330301
+[2026-06-11 14:43:56] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=56 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:56] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=56 batch=2/2 done gpu_used_mib=None host_available_mib=3224
+[2026-06-11 14:43:56] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=56 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.315654 running_loss=0.323914
+[2026-06-11 14:43:56] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=56 starting validation
+[2026-06-11 14:43:56] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=56 finished validation val_loss=0.346023
+[2026-06-11 14:43:56] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=56 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3222
+[2026-06-11 14:43:56] [prediction][w224][cand_000] epoch=56 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.323914 val_loss=0.346023 candidate_best=0.332830 global_best=0.332830 es=1/10
+[2026-06-11 14:43:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=57 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:43:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=57 batch=1/2 done gpu_used_mib=None host_available_mib=3524
+[2026-06-11 14:43:59] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=57 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.329985 running_loss=0.329985
+[2026-06-11 14:44:00] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=57 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:00] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=57 batch=2/2 done gpu_used_mib=None host_available_mib=3621
+[2026-06-11 14:44:00] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=57 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.297513 running_loss=0.315825
+[2026-06-11 14:44:00] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=57 starting validation
+[2026-06-11 14:44:01] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=57 finished validation val_loss=0.335563
+[2026-06-11 14:44:01] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=57 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=3734
+[2026-06-11 14:44:01] [prediction][w224][cand_000] epoch=57 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.315825 val_loss=0.335563 candidate_best=0.332830 global_best=0.332830 es=2/10
+[2026-06-11 14:44:03] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=58 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:03] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=58 batch=1/2 done gpu_used_mib=None host_available_mib=3608
+[2026-06-11 14:44:03] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=58 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.320300 running_loss=0.320300
+[2026-06-11 14:44:04] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=58 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:05] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=58 batch=2/2 done gpu_used_mib=None host_available_mib=4233
+[2026-06-11 14:44:05] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=58 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.313090 running_loss=0.317156
+[2026-06-11 14:44:05] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=58 starting validation
+[2026-06-11 14:44:05] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=58 finished validation val_loss=0.343696
+[2026-06-11 14:44:05] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=58 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4299
+[2026-06-11 14:44:05] [prediction][w224][cand_000] epoch=58 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.317156 val_loss=0.343696 candidate_best=0.332830 global_best=0.332830 es=3/10
+[2026-06-11 14:44:07] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=59 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:07] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=59 batch=1/2 done gpu_used_mib=None host_available_mib=4316
+[2026-06-11 14:44:07] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=59 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.322771 running_loss=0.322771
+[2026-06-11 14:44:08] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=59 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:08] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=59 batch=2/2 done gpu_used_mib=None host_available_mib=4338
+[2026-06-11 14:44:08] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=59 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.307005 running_loss=0.315896
+[2026-06-11 14:44:08] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=59 starting validation
+[2026-06-11 14:44:09] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=59 finished validation val_loss=0.323432
+[2026-06-11 14:44:09] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=59 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4436
+[2026-06-11 14:44:09] [prediction][w224][cand_000] epoch=59 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.315896 val_loss=0.323432 candidate_best=0.323432 global_best=0.323432 es=0/10
+[2026-06-11 14:44:11] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=60 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:11] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=60 batch=1/2 done gpu_used_mib=None host_available_mib=4226
+[2026-06-11 14:44:11] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=60 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.325478 running_loss=0.325478
+[2026-06-11 14:44:12] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=60 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:13] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=60 batch=2/2 done gpu_used_mib=None host_available_mib=4204
+[2026-06-11 14:44:13] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=60 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.284549 running_loss=0.307631
+[2026-06-11 14:44:13] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=60 starting validation
+[2026-06-11 14:44:13] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=60 finished validation val_loss=0.332947
+[2026-06-11 14:44:13] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=60 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4402
+[2026-06-11 14:44:13] [prediction][w224][cand_000] epoch=60 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.307631 val_loss=0.332947 candidate_best=0.323432 global_best=0.323432 es=1/10
+[2026-06-11 14:44:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=61 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=61 batch=1/2 done gpu_used_mib=None host_available_mib=4152
+[2026-06-11 14:44:15] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=61 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.310759 running_loss=0.310759
+[2026-06-11 14:44:16] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=61 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:16] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=61 batch=2/2 done gpu_used_mib=None host_available_mib=4356
+[2026-06-11 14:44:16] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=61 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.294483 running_loss=0.303662
+[2026-06-11 14:44:16] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=61 starting validation
+[2026-06-11 14:44:17] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=61 finished validation val_loss=0.317833
+[2026-06-11 14:44:17] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=61 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4301
+[2026-06-11 14:44:17] [prediction][w224][cand_000] epoch=61 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.303662 val_loss=0.317833 candidate_best=0.317833 global_best=0.317833 es=0/10
+[2026-06-11 14:44:18] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=62 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:18] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=62 batch=1/2 done gpu_used_mib=None host_available_mib=4330
+[2026-06-11 14:44:18] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=62 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.301529 running_loss=0.301529
+[2026-06-11 14:44:20] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=62 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:20] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=62 batch=2/2 done gpu_used_mib=None host_available_mib=4408
+[2026-06-11 14:44:20] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=62 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.296350 running_loss=0.299271
+[2026-06-11 14:44:20] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=62 starting validation
+[2026-06-11 14:44:20] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=62 finished validation val_loss=0.321977
+[2026-06-11 14:44:20] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=62 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4409
+[2026-06-11 14:44:20] [prediction][w224][cand_000] epoch=62 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.299271 val_loss=0.321977 candidate_best=0.317833 global_best=0.317833 es=1/10
+[2026-06-11 14:44:22] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=63 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:22] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=63 batch=1/2 done gpu_used_mib=None host_available_mib=4288
+[2026-06-11 14:44:22] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=63 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.299088 running_loss=0.299088
+[2026-06-11 14:44:23] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=63 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:23] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=63 batch=2/2 done gpu_used_mib=None host_available_mib=4206
+[2026-06-11 14:44:23] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=63 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.290832 running_loss=0.295488
+[2026-06-11 14:44:23] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=63 starting validation
+[2026-06-11 14:44:23] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=63 finished validation val_loss=0.315197
+[2026-06-11 14:44:24] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=63 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4248
+[2026-06-11 14:44:24] [prediction][w224][cand_000] epoch=63 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.295488 val_loss=0.315197 candidate_best=0.315197 global_best=0.315197 es=0/10
+[2026-06-11 14:44:25] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=64 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:25] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=64 batch=1/2 done gpu_used_mib=None host_available_mib=4459
+[2026-06-11 14:44:25] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=64 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.292243 running_loss=0.292243
+[2026-06-11 14:44:27] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=64 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:27] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=64 batch=2/2 done gpu_used_mib=None host_available_mib=4296
+[2026-06-11 14:44:27] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=64 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.291728 running_loss=0.292018
+[2026-06-11 14:44:27] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=64 starting validation
+[2026-06-11 14:44:27] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=64 finished validation val_loss=0.310866
+[2026-06-11 14:44:28] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=64 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4245
+[2026-06-11 14:44:28] [prediction][w224][cand_000] epoch=64 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.292018 val_loss=0.310866 candidate_best=0.310866 global_best=0.310866 es=0/10
+[2026-06-11 14:44:29] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=65 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:29] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=65 batch=1/2 done gpu_used_mib=None host_available_mib=4164
+[2026-06-11 14:44:29] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=65 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.289884 running_loss=0.289884
+[2026-06-11 14:44:31] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=65 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:31] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=65 batch=2/2 done gpu_used_mib=None host_available_mib=4335
+[2026-06-11 14:44:31] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=65 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.284526 running_loss=0.287548
+[2026-06-11 14:44:31] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=65 starting validation
+[2026-06-11 14:44:31] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=65 finished validation val_loss=0.309161
+[2026-06-11 14:44:31] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=65 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4282
+[2026-06-11 14:44:31] [prediction][w224][cand_000] epoch=65 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.287548 val_loss=0.309161 candidate_best=0.309161 global_best=0.309161 es=0/10
+[2026-06-11 14:44:33] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=66 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:33] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=66 batch=1/2 done gpu_used_mib=None host_available_mib=4358
+[2026-06-11 14:44:33] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=66 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.279367 running_loss=0.279367
+[2026-06-11 14:44:34] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=66 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:35] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=66 batch=2/2 done gpu_used_mib=None host_available_mib=4334
+[2026-06-11 14:44:35] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=66 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.288283 running_loss=0.283255
+[2026-06-11 14:44:35] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=66 starting validation
+[2026-06-11 14:44:35] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=66 finished validation val_loss=0.303862
+[2026-06-11 14:44:35] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=66 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4336
+[2026-06-11 14:44:35] [prediction][w224][cand_000] epoch=66 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.283255 val_loss=0.303862 candidate_best=0.303862 global_best=0.303862 es=0/10
+[2026-06-11 14:44:37] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=67 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:37] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=67 batch=1/2 done gpu_used_mib=None host_available_mib=4257
+[2026-06-11 14:44:37] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=67 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.274273 running_loss=0.274273
+[2026-06-11 14:44:38] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=67 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:38] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=67 batch=2/2 done gpu_used_mib=None host_available_mib=4725
+[2026-06-11 14:44:38] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=67 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.288409 running_loss=0.280437
+[2026-06-11 14:44:38] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=67 starting validation
+[2026-06-11 14:44:39] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=67 finished validation val_loss=0.301127
+[2026-06-11 14:44:39] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=67 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4725
+[2026-06-11 14:44:39] [prediction][w224][cand_000] epoch=67 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.280437 val_loss=0.301127 candidate_best=0.301127 global_best=0.301127 es=0/10
+[2026-06-11 14:44:40] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=68 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:40] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=68 batch=1/2 done gpu_used_mib=None host_available_mib=4808
+[2026-06-11 14:44:40] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=68 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.277166 running_loss=0.277166
+[2026-06-11 14:44:41] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=68 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:41] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=68 batch=2/2 done gpu_used_mib=None host_available_mib=4731
+[2026-06-11 14:44:41] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=68 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.275296 running_loss=0.276350
+[2026-06-11 14:44:41] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=68 starting validation
+[2026-06-11 14:44:41] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=68 finished validation val_loss=0.306297
+[2026-06-11 14:44:42] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=68 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4899
+[2026-06-11 14:44:42] [prediction][w224][cand_000] epoch=68 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.276350 val_loss=0.306297 candidate_best=0.301127 global_best=0.301127 es=1/10
+[2026-06-11 14:44:43] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=69 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:43] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=69 batch=1/2 done gpu_used_mib=None host_available_mib=4807
+[2026-06-11 14:44:43] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=69 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.282013 running_loss=0.282013
+[2026-06-11 14:44:44] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=69 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:45] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=69 batch=2/2 done gpu_used_mib=None host_available_mib=4788
+[2026-06-11 14:44:45] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=69 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.264016 running_loss=0.274166
+[2026-06-11 14:44:45] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=69 starting validation
+[2026-06-11 14:44:45] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=69 finished validation val_loss=0.294082
+[2026-06-11 14:44:45] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=69 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4773
+[2026-06-11 14:44:45] [prediction][w224][cand_000] epoch=69 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.274166 val_loss=0.294082 candidate_best=0.294082 global_best=0.294082 es=0/10
+[2026-06-11 14:44:47] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=70 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:47] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=70 batch=1/2 done gpu_used_mib=None host_available_mib=4703
+[2026-06-11 14:44:47] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=70 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.285864 running_loss=0.285864
+[2026-06-11 14:44:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=70 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=70 batch=2/2 done gpu_used_mib=None host_available_mib=4706
+[2026-06-11 14:44:48] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=70 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.261952 running_loss=0.275437
+[2026-06-11 14:44:48] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=70 starting validation
+[2026-06-11 14:44:48] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=70 finished validation val_loss=0.295310
+[2026-06-11 14:44:48] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=70 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4799
+[2026-06-11 14:44:48] [prediction][w224][cand_000] epoch=70 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.275437 val_loss=0.295310 candidate_best=0.294082 global_best=0.294082 es=1/10
+[2026-06-11 14:44:50] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=71 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:50] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=71 batch=1/2 done gpu_used_mib=None host_available_mib=4588
+[2026-06-11 14:44:50] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=71 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.266168 running_loss=0.266168
+[2026-06-11 14:44:50] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=71 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:51] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=71 batch=2/2 done gpu_used_mib=None host_available_mib=4861
+[2026-06-11 14:44:51] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=71 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.276072 running_loss=0.270487
+[2026-06-11 14:44:51] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=71 starting validation
+[2026-06-11 14:44:51] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=71 finished validation val_loss=0.307201
+[2026-06-11 14:44:51] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=71 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4735
+[2026-06-11 14:44:51] [prediction][w224][cand_000] epoch=71 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.270487 val_loss=0.307201 candidate_best=0.294082 global_best=0.294082 es=2/10
+[2026-06-11 14:44:52] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=72 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:52] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=72 batch=1/2 done gpu_used_mib=None host_available_mib=4838
+[2026-06-11 14:44:52] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=72 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.269137 running_loss=0.269137
+[2026-06-11 14:44:53] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=72 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:53] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=72 batch=2/2 done gpu_used_mib=None host_available_mib=4586
+[2026-06-11 14:44:53] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=72 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.276066 running_loss=0.272158
+[2026-06-11 14:44:53] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=72 starting validation
+[2026-06-11 14:44:53] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=72 finished validation val_loss=0.289651
+[2026-06-11 14:44:54] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=72 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4701
+[2026-06-11 14:44:54] [prediction][w224][cand_000] epoch=72 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.272158 val_loss=0.289651 candidate_best=0.289651 global_best=0.289651 es=0/10
+[2026-06-11 14:44:55] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=73 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:55] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=73 batch=1/2 done gpu_used_mib=None host_available_mib=4854
+[2026-06-11 14:44:55] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=73 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.254762 running_loss=0.254762
+[2026-06-11 14:44:56] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=73 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:56] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=73 batch=2/2 done gpu_used_mib=None host_available_mib=4728
+[2026-06-11 14:44:56] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=73 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.285506 running_loss=0.268168
+[2026-06-11 14:44:56] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=73 starting validation
+[2026-06-11 14:44:57] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=73 finished validation val_loss=0.288093
+[2026-06-11 14:44:57] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=73 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4729
+[2026-06-11 14:44:57] [prediction][w224][cand_000] epoch=73 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.268168 val_loss=0.288093 candidate_best=0.288093 global_best=0.288093 es=0/10
+[2026-06-11 14:44:58] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=74 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:58] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=74 batch=1/2 done gpu_used_mib=None host_available_mib=4702
+[2026-06-11 14:44:58] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=74 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.264855 running_loss=0.264855
+[2026-06-11 14:44:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=74 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:44:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=74 batch=2/2 done gpu_used_mib=None host_available_mib=4736
+[2026-06-11 14:44:59] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=74 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.265620 running_loss=0.265188
+[2026-06-11 14:44:59] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=74 starting validation
+[2026-06-11 14:44:59] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=74 finished validation val_loss=0.297254
+[2026-06-11 14:44:59] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=74 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=4773
+[2026-06-11 14:44:59] [prediction][w224][cand_000] epoch=74 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.265188 val_loss=0.297254 candidate_best=0.288093 global_best=0.288093 es=1/10
+[2026-06-11 14:45:01] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=75 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:01] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=75 batch=1/2 done gpu_used_mib=None host_available_mib=4830
+[2026-06-11 14:45:01] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=75 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.272344 running_loss=0.272344
+[2026-06-11 14:45:01] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=75 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=75 batch=2/2 done gpu_used_mib=None host_available_mib=5286
+[2026-06-11 14:45:02] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=75 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.255262 running_loss=0.264895
+[2026-06-11 14:45:02] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=75 starting validation
+[2026-06-11 14:45:02] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=75 finished validation val_loss=0.285224
+[2026-06-11 14:45:02] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=75 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=5303
+[2026-06-11 14:45:02] [prediction][w224][cand_000] epoch=75 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.264895 val_loss=0.285224 candidate_best=0.285224 global_best=0.285224 es=0/10
+[2026-06-11 14:45:03] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=76 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:03] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=76 batch=1/2 done gpu_used_mib=None host_available_mib=5378
+[2026-06-11 14:45:03] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=76 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.263357 running_loss=0.263357
+[2026-06-11 14:45:04] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=76 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:04] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=76 batch=2/2 done gpu_used_mib=None host_available_mib=5314
+[2026-06-11 14:45:04] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=76 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.255769 running_loss=0.260048
+[2026-06-11 14:45:04] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=76 starting validation
+[2026-06-11 14:45:04] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=76 finished validation val_loss=0.286921
+[2026-06-11 14:45:04] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=76 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=5329
+[2026-06-11 14:45:04] [prediction][w224][cand_000] epoch=76 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.260048 val_loss=0.286921 candidate_best=0.285224 global_best=0.285224 es=1/10
+[2026-06-11 14:45:05] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=77 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:05] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=77 batch=1/2 done gpu_used_mib=None host_available_mib=5380
+[2026-06-11 14:45:05] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=77 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.259973 running_loss=0.259973
+[2026-06-11 14:45:06] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=77 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:06] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=77 batch=2/2 done gpu_used_mib=None host_available_mib=5284
+[2026-06-11 14:45:06] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=77 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.265633 running_loss=0.262441
+[2026-06-11 14:45:06] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=77 starting validation
+[2026-06-11 14:45:06] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=77 finished validation val_loss=0.288554
+[2026-06-11 14:45:06] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=77 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=5257
+[2026-06-11 14:45:06] [prediction][w224][cand_000] epoch=77 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.262441 val_loss=0.288554 candidate_best=0.285224 global_best=0.285224 es=2/10
+[2026-06-11 14:45:07] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=78 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:07] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=78 batch=1/2 done gpu_used_mib=None host_available_mib=5333
+[2026-06-11 14:45:07] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=78 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.259430 running_loss=0.259430
+[2026-06-11 14:45:07] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=78 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:07] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=78 batch=2/2 done gpu_used_mib=None host_available_mib=5397
+[2026-06-11 14:45:07] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=78 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.264509 running_loss=0.261645
+[2026-06-11 14:45:07] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=78 starting validation
+[2026-06-11 14:45:08] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=78 finished validation val_loss=0.295519
+[2026-06-11 14:45:08] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=78 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=5393
+[2026-06-11 14:45:08] [prediction][w224][cand_000] epoch=78 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.261645 val_loss=0.295519 candidate_best=0.285224 global_best=0.285224 es=3/10
+[2026-06-11 14:45:09] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=79 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:09] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=79 batch=1/2 done gpu_used_mib=None host_available_mib=5413
+[2026-06-11 14:45:09] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=79 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.257073 running_loss=0.257073
+[2026-06-11 14:45:09] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=79 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:09] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=79 batch=2/2 done gpu_used_mib=None host_available_mib=5424
+[2026-06-11 14:45:09] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=79 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.255262 running_loss=0.256283
+[2026-06-11 14:45:09] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=79 starting validation
+[2026-06-11 14:45:09] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=79 finished validation val_loss=0.292945
+[2026-06-11 14:45:10] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=79 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=5536
+[2026-06-11 14:45:10] [prediction][w224][cand_000] epoch=79 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.256283 val_loss=0.292945 candidate_best=0.285224 global_best=0.285224 es=4/10
+[2026-06-11 14:45:10] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=80 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:11] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=80 batch=1/2 done gpu_used_mib=None host_available_mib=5406
+[2026-06-11 14:45:11] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=80 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.259124 running_loss=0.259124
+[2026-06-11 14:45:11] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=80 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:11] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=80 batch=2/2 done gpu_used_mib=None host_available_mib=5330
+[2026-06-11 14:45:11] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=80 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.258528 running_loss=0.258864
+[2026-06-11 14:45:11] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=80 starting validation
+[2026-06-11 14:45:11] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=80 finished validation val_loss=0.294950
+[2026-06-11 14:45:12] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=80 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=5268
+[2026-06-11 14:45:12] [prediction][w224][cand_000] epoch=80 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.258864 val_loss=0.294950 candidate_best=0.285224 global_best=0.285224 es=5/10
+[2026-06-11 14:45:12] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=81 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:12] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=81 batch=1/2 done gpu_used_mib=None host_available_mib=5351
+[2026-06-11 14:45:12] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=81 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.260183 running_loss=0.260183
+[2026-06-11 14:45:13] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=81 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:13] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=81 batch=2/2 done gpu_used_mib=None host_available_mib=5376
+[2026-06-11 14:45:13] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=81 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.263749 running_loss=0.261738
+[2026-06-11 14:45:13] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=81 starting validation
+[2026-06-11 14:45:13] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=81 finished validation val_loss=0.304810
+[2026-06-11 14:45:13] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=81 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=5376
+[2026-06-11 14:45:13] [prediction][w224][cand_000] epoch=81 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.261738 val_loss=0.304810 candidate_best=0.285224 global_best=0.285224 es=6/10
+[2026-06-11 14:45:14] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=82 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:14] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=82 batch=1/2 done gpu_used_mib=None host_available_mib=5188
+[2026-06-11 14:45:14] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=82 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.262654 running_loss=0.262654
+[2026-06-11 14:45:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=82 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=82 batch=2/2 done gpu_used_mib=None host_available_mib=5371
+[2026-06-11 14:45:15] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=82 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.277841 running_loss=0.269276
+[2026-06-11 14:45:15] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=82 starting validation
+[2026-06-11 14:45:15] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=82 finished validation val_loss=0.290593
+[2026-06-11 14:45:15] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=82 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=5379
+[2026-06-11 14:45:15] [prediction][w224][cand_000] epoch=82 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.269276 val_loss=0.290593 candidate_best=0.285224 global_best=0.285224 es=7/10
+[2026-06-11 14:45:16] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=83 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:16] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=83 batch=1/2 done gpu_used_mib=None host_available_mib=5233
+[2026-06-11 14:45:16] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=83 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.263537 running_loss=0.263537
+[2026-06-11 14:45:17] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=83 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:17] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=83 batch=2/2 done gpu_used_mib=None host_available_mib=5210
+[2026-06-11 14:45:17] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=83 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.252713 running_loss=0.258817
+[2026-06-11 14:45:17] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=83 starting validation
+[2026-06-11 14:45:17] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=83 finished validation val_loss=0.298645
+[2026-06-11 14:45:17] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=83 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=5210
+[2026-06-11 14:45:17] [prediction][w224][cand_000] epoch=83 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.258817 val_loss=0.298645 candidate_best=0.285224 global_best=0.285224 es=8/10
+[2026-06-11 14:45:18] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=84 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:18] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=84 batch=1/2 done gpu_used_mib=None host_available_mib=5313
+[2026-06-11 14:45:18] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=84 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.260945 running_loss=0.260945
+[2026-06-11 14:45:19] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=84 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:19] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=84 batch=2/2 done gpu_used_mib=None host_available_mib=5325
+[2026-06-11 14:45:19] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=84 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.251691 running_loss=0.256910
+[2026-06-11 14:45:19] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=84 starting validation
+[2026-06-11 14:45:19] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=84 finished validation val_loss=0.292286
+[2026-06-11 14:45:19] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=84 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=5325
+[2026-06-11 14:45:19] [prediction][w224][cand_000] epoch=84 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.256910 val_loss=0.292286 candidate_best=0.285224 global_best=0.285224 es=9/10
+[2026-06-11 14:45:20] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=85 batch=1/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:20] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=85 batch=1/2 done gpu_used_mib=None host_available_mib=5333
+[2026-06-11 14:45:20] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=85 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.261715 running_loss=0.261715
+[2026-06-11 14:45:21] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=85 batch=2/2 start path=checkpoint_last.pt
+[2026-06-11 14:45:21] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=85 batch=2/2 done gpu_used_mib=None host_available_mib=5347
+[2026-06-11 14:45:21] [BATCH] task=prediction phase=w224 candidate=cand_000 epoch=85 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.241510 running_loss=0.252905
+[2026-06-11 14:45:21] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=85 starting validation
+[2026-06-11 14:45:21] [VAL] task=prediction phase=w224 candidate=cand_000 epoch=85 finished validation val_loss=0.288623
+[2026-06-11 14:45:21] [CKPT] task=prediction phase=w224 candidate=cand_000 epoch=85 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=5344
+[2026-06-11 14:45:21] [prediction][w224][cand_000] epoch=85 architecture=[224, 224, 224, 224, 224, 224, 224, 224, 224, 224] train_loss=0.252905 val_loss=0.288623 candidate_best=0.285224 global_best=0.285224 es=10/10

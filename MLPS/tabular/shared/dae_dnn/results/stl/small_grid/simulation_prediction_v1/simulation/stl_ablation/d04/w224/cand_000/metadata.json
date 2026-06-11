@@ -1,0 +1,65 @@
+{
+  "candidate_index": 0,
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 9312,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "depth_expansion_patience": 2,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 4,
+    "max_epochs": 100000000,
+    "max_neurons": 10000000,
+    "max_width": 224,
+    "metrics_every": 0,
+    "min_width": 224,
+    "num_workers": 0,
+    "parameter_band": null,
+    "parameter_matched": false,
+    "patience": 10,
+    "phases": [
+      "stl_ablation"
+    ],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1",
+    "seed": 0,
+    "stl_depth": 4,
+    "stl_width": 224,
+    "tasks": [
+      "simulation"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_count_per_depth": 1,
+    "width_expansion_patience": 10,
+    "width_stage_margin_patience": 0,
+    "width_stage_min_improve_pct": 1.0,
+    "width_step": 1
+  },
+  "dataset_sizes": {
+    "test": 2064,
+    "train": 16512,
+    "val": 2064
+  },
+  "git_commit": "990479726adc08f730c3195927102807aac295e9",
+  "model": {
+    "hidden_widths": [
+      224,
+      224,
+      224,
+      224
+    ],
+    "in_dim": 8,
+    "out_dim": 1,
+    "use_bn": true
+  },
+  "phase_kind": "candidate",
+  "phase_name": "w224",
+  "reconstruct": false,
+  "task": "simulation",
+  "task_extra": {},
+  "task_type": "regression"
+}
