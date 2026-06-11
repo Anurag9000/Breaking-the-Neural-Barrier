@@ -149,6 +149,26 @@ def parse_csv_ints(text: str) -> List[int]:
     return [int(part.strip()) for part in str(text).split(",") if part.strip()]
 
 
+def normalize_depth_band(depth_band: Optional[Sequence[int]]) -> Optional[Tuple[int, int]]:
+    if not depth_band:
+        return None
+    values = [max(1, int(v)) for v in depth_band]
+    if len(values) != 2:
+        raise ValueError(f"depth band must contain exactly two values, got: {depth_band!r}")
+    start, end = values
+    if end < start:
+        start, end = end, start
+    return int(start), int(end)
+
+
+def depth_band_label(depth_band: Optional[Sequence[int]]) -> Optional[str]:
+    normalized = normalize_depth_band(depth_band)
+    if normalized is None:
+        return None
+    start, end = normalized
+    return f"depth_{start:02d}_{end:02d}"
+
+
 def parse_architectures(values: Sequence[str]) -> List[List[int]]:
     architectures: List[List[int]] = []
     for item in values:
@@ -178,6 +198,10 @@ def dedupe_architectures(architectures: Iterable[Sequence[int]]) -> List[List[in
 
 
 def build_architectures(args) -> List[List[int]]:
+    depth_band = normalize_depth_band(getattr(args, "depth_band", None))
+    if depth_band is not None:
+        setattr(args, "min_depth", depth_band[0])
+        setattr(args, "max_depth", depth_band[1])
     architecture_arg = getattr(args, "architecture", None)
     widths_arg = getattr(args, "widths", None)
     depths_arg = getattr(args, "depths", None)
@@ -869,6 +893,14 @@ def parse_args() -> argparse.Namespace:
         help="Parameter-count samples per decade when generating a task/depth family from the learned max-width ceiling down to the minimum width.",
     )
     p.add_argument("--min-depth", type=int, default=DEFAULT_MIN_DEPTH)
+    p.add_argument(
+        "--depth-band",
+        nargs=2,
+        type=int,
+        metavar=("DEPTH_START", "DEPTH_END"),
+        default=None,
+        help="Convenience alias for --min-depth/--max-depth when splitting the massive STL run across machines.",
+    )
     p.add_argument("--repeat-count", type=int, default=DEFAULT_REPEAT_COUNT)
     p.add_argument("--repeat-index", type=int, default=None, help="Run exactly one repeat index, useful for parallel fan-out.")
     p.add_argument("--stl-width", type=int, default=128)
@@ -896,6 +928,7 @@ def main() -> None:
     architectures = build_architectures(args)
     if not architectures:
         raise SystemExit("No architectures requested.")
+    depth_band = normalize_depth_band(getattr(args, "depth_band", None))
 
     source_run_root = Path(args.source_run_root)
     run_root = Path(args.run_root) if args.run_root else Path(args.results_dir) / f"stl_ablation_{rg.now_stamp()}"
@@ -910,6 +943,8 @@ def main() -> None:
     logger.log_console(f"Run root: {run_root}")
     logger.log_console(f"Tasks: {tasks}")
     logger.log_console(f"Architectures: {[rg.format_architecture_for_report(a) for a in architectures]}")
+    if depth_band is not None:
+        logger.log_console(f"Depth band: {list(depth_band)}")
     logger.log_console(f"Repeat count: {int(args.repeat_count)}")
     logger.log_console(f"Source run root: {source_run_root}")
     logger.log_console(f"Device: {device}")
@@ -961,13 +996,14 @@ def main() -> None:
         rg.write_json(
             run_root / "comparison_summary.json",
             {
-                "tasks": tasks,
-                "architectures": architectures,
-                "source_run_root": str(source_run_root),
-                "repeat_count": int(args.repeat_count),
-                "reports": task_reports,
-            },
-        )
+            "tasks": tasks,
+            "architectures": architectures,
+            "depth_band": list(depth_band) if depth_band is not None else None,
+            "source_run_root": str(source_run_root),
+            "repeat_count": int(args.repeat_count),
+            "reports": task_reports,
+        },
+    )
     finally:
         rg.cleanup_runtime()
         logger.close()

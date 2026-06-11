@@ -60,6 +60,18 @@ The current recommended fresh STL root is:
 MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1
 ```
 
+When splitting the massive STL run across multiple laptops, stage each depth
+band under its own sibling root, for example:
+
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_01_02`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_03_04`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_05_06`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_07_08`
+- `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_depth_09_10`
+
+Merge them back into the canonical root with
+`MLPS/tabular/shared/dae_dnn/merge_stl_ablation_bands.py`.
+
 The planned schedule CSV for that run root is:
 
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1/planned_params_by_task_depth_width.csv`
