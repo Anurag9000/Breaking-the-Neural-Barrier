@@ -1,4 +1,9 @@
 # Simulation STL Ablation
 
-No dedicated simulation STL ablation root is currently cataloged here.
+Recovered small-grid simulation STL ablation results live at:
 
+- `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation/stl_ablation`
+
+Suite-level provenance is preserved at:
+
+- `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/analysis/simulation_prediction_v1`
