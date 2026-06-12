@@ -127,22 +127,27 @@ Recovered small-grid coverage today:
 - `generation`: STL ablation, W2D, and width-only recovered for depths `d1` through `d6`
 - `denoising`: STL ablation, W2D, and width-only recovered for depths `d1` through `d10`
 - `anomaly`: STL ablation and W2D recovered; width-only is a placeholder
-- `simulation`: task-root placeholder only for W2D/STL/width_only
-- `prediction`: task-root placeholder only for W2D/STL/width_only
+- `simulation`: STL ablation recovered for depths `d03`, `d04`, `d06`, `d08`, `d10`; W2D and width-only are placeholders
+- `prediction`: STL ablation recovered for depths `d03`, `d04`, `d06`, `d08`, `d10`; W2D and width-only are placeholders
 
-It does not include dedicated `simulation` or `prediction` STL roots. Treat
-those two tasks as absent from the historical STL material until new results
-are generated.
+The `simulation` and `prediction` slave-laptop follow-up has already been
+assimilated into the canonical task roots:
+
+- `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation`
+- `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/prediction`
+
+Its suite-level provenance remains under:
+
+- `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/analysis/simulation_prediction_v1`
 
 Same `--run-root` means resume. Keep this separate from the massive all-task
 STL sweep.
 
 ## Small STL follow-up on slave laptops
 
-If you want to run the missing `simulation` and `prediction` tasks as a
-separate, lightweight follow-up on a slave machine, use the dedicated
-no-repeat grid runner and keep it out of the massive all-task STL ablation
-tree.
+If you want to rerun the `simulation` and `prediction` small-grid follow-up on
+a slave machine, use the dedicated no-repeat grid runner and keep it out of
+the massive all-task STL ablation tree.
 
 Use this command:
 
