@@ -484,7 +484,25 @@ def _run_resumable_candidate_training(
     del scheduler_state  # Reserved for wrappers that add schedulers later.
 
     if payload.get("model_state") is not None and hasattr(model, "load_state_dict"):
-        model.load_state_dict(payload["model_state"], strict=False)
+        try:
+            model.load_state_dict(payload["model_state"], strict=False)
+        except RuntimeError as exc:
+            message = str(exc)
+            if "size mismatch" not in message:
+                raise
+            if logger is not None and hasattr(logger, "log_console"):
+                logger.log_console(
+                    "[RESUME] incompatible checkpoint shape detected; "
+                    "restarting candidate from the current model state"
+                )
+            payload = {}
+            completed_epochs = 0
+            history = []
+            best_val = float("inf")
+            best_epoch = 0
+            best_snapshot = None
+            es_counter = 0
+            optimizer_state = None
     _restore_rng_state(payload.get("rng_state"))
 
     max_epochs = int(getattr(acfg, "max_epochs", 1))
@@ -949,6 +967,29 @@ def run_module_adp(
             return True
         return False
 
+    def persist_search_progress(
+        *,
+        phase: str,
+        current_width_fail: int,
+        current_depth_fail: int,
+        current_margin_fail: int,
+    ) -> None:
+        save_search_state(
+            {
+                "completed": False,
+                "module": module_name,
+                "mode": mode,
+                "candidate_index": int(candidate_index),
+                "current_phase": phase,
+                "best_val": float(global_best_val),
+                "best_candidate_dir": best_candidate_dir.name if best_candidate_dir is not None else None,
+                "best_checkpoint": str(best_checkpoint) if best_checkpoint is not None else None,
+                "width_fail": int(current_width_fail),
+                "depth_fail": int(current_depth_fail),
+                "width_stage_margin_fail": int(current_margin_fail),
+            }
+        )
+
     def ensure_uniform_width(
         cur_model: Any,
         *,
@@ -973,8 +1014,16 @@ def run_module_adp(
             cur_model = restore(candidate, cand_snap)
             last_val = cand_val
             last_snap = cand_snap
+            improved_global = False
             if update_global:
-                update_global_best(cur_model, cand_val, cand_snap, candidate_dir, delta_width)
+                improved_global = update_global_best(cur_model, cand_val, cand_snap, candidate_dir, delta_width)
+                if improved_global:
+                    persist_search_progress(
+                        phase="width_fill",
+                        current_width_fail=current_width_fail,
+                        current_depth_fail=current_depth_fail,
+                        current_margin_fail=current_margin_fail,
+                    )
             progressed = True
             record_phase_progress(
                 {
@@ -988,7 +1037,7 @@ def run_module_adp(
                     "final_epoch": int(final_epoch),
                     "best_checkpoint": str(candidate_dir / "checkpoint_best.pt"),
                     "last_checkpoint": str(candidate_dir / "checkpoint_last.pt"),
-                    "improved_over_global": bool(cand_val <= global_best_val),
+                    "improved_over_global": bool(improved_global),
                     "search_phase": "width_fill",
                     "width_fail": int(current_width_fail),
                     "depth_fail": int(current_depth_fail),
@@ -1007,6 +1056,13 @@ def run_module_adp(
             cand_val, cand_snap, candidate_dir, best_epoch, final_epoch = train(candidate, search_phase="width")
             cur_model = restore(candidate, cand_snap)
             improved_global = update_global_best(cur_model, cand_val, cand_snap, candidate_dir, delta_width)
+            if improved_global:
+                persist_search_progress(
+                    phase="width",
+                    current_width_fail=current_width_fail,
+                    current_depth_fail=current_depth_fail,
+                    current_margin_fail=current_margin_fail,
+                )
             progressed = True
             record_phase_progress(
                 {
@@ -1055,20 +1111,11 @@ def run_module_adp(
                     f"global_best={global_best_val:.6f} width_fail={local_width_fail}/{patience_width} "
                     f"margin_fail={local_margin_fail}/{width_stage_margin_patience}"
                 )
-            save_search_state(
-                {
-                    "completed": False,
-                    "module": module_name,
-                    "mode": mode,
-                    "candidate_index": int(candidate_index),
-                    "current_phase": "width",
-                    "best_val": float(global_best_val),
-                    "best_candidate_dir": best_candidate_dir.name if best_candidate_dir is not None else None,
-                    "best_checkpoint": str(best_checkpoint) if best_checkpoint is not None else None,
-                    "width_fail": int(local_width_fail),
-                    "depth_fail": int(current_depth_fail),
-                    "width_stage_margin_fail": int(local_margin_fail),
-                }
+            persist_search_progress(
+                phase="width",
+                current_width_fail=local_width_fail,
+                current_depth_fail=current_depth_fail,
+                current_margin_fail=local_margin_fail,
             )
             if local_width_fail >= patience_width or local_margin_fail >= width_stage_margin_patience:
                 break
@@ -1104,6 +1151,13 @@ def run_module_adp(
             improved = False
             if compare_after_warmup:
                 improved = update_global_best(cur_model, cand_val, cand_snap, candidate_dir, delta_depth)
+                if improved:
+                    persist_search_progress(
+                        phase="depth",
+                        current_width_fail=current_width_fail,
+                        current_depth_fail=current_depth_fail,
+                        current_margin_fail=current_margin_fail,
+                    )
             record_phase_progress(
                 {
                     "module": module_name,
@@ -1125,6 +1179,16 @@ def run_module_adp(
             return cur_model, True, improved, current_width_fail, current_depth_fail, current_margin_fail
         warmup_val, warmup_snap, warmup_dir, warmup_best_epoch, warmup_final_epoch = train(candidate, search_phase="depth_warmup")
         warm_model = restore(candidate, warmup_snap)
+        warmup_improved = False
+        if compare_after_warmup:
+            warmup_improved = update_global_best(warm_model, warmup_val, warmup_snap, warmup_dir, delta_depth)
+            if warmup_improved:
+                persist_search_progress(
+                    phase="depth_warmup",
+                    current_width_fail=current_width_fail,
+                    current_depth_fail=current_depth_fail,
+                    current_margin_fail=current_margin_fail,
+                )
         record_phase_progress(
             {
                 "module": module_name,
@@ -1137,7 +1201,7 @@ def run_module_adp(
                 "final_epoch": int(warmup_final_epoch),
                 "best_checkpoint": str(warmup_dir / "checkpoint_best.pt"),
                 "last_checkpoint": str(warmup_dir / "checkpoint_last.pt"),
-                "improved_over_global": False,
+                "improved_over_global": bool(warmup_improved),
                 "search_phase": "depth_warmup",
                 "width_fail": int(current_width_fail),
                 "depth_fail": int(current_depth_fail),
@@ -1202,20 +1266,11 @@ def run_module_adp(
                 any_phase_improvement = True
             depth_margin_fail = 0 if stage_pct >= depth_stage_min_improve_pct else depth_margin_fail + 1
             depth_stage_anchor = float(global_best_val)
-            save_search_state(
-                {
-                    "completed": False,
-                    "module": module_name,
-                    "mode": mode,
-                    "candidate_index": int(candidate_index),
-                    "current_phase": "depth",
-                    "best_val": float(global_best_val),
-                    "best_candidate_dir": best_candidate_dir.name if best_candidate_dir is not None else None,
-                    "best_checkpoint": str(best_checkpoint) if best_checkpoint is not None else None,
-                    "width_fail": int(current_width_fail),
-                    "depth_fail": int(local_depth_fail),
-                    "width_stage_margin_fail": int(current_margin_fail),
-                }
+            persist_search_progress(
+                phase="depth",
+                current_width_fail=current_width_fail,
+                current_depth_fail=local_depth_fail,
+                current_margin_fail=current_margin_fail,
             )
             if float(global_best_val) >= before_val and not improved and depth_margin_fail >= depth_stage_margin_patience:
                 break
