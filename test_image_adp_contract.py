@@ -71,11 +71,11 @@ class ADPContractImageTests(unittest.TestCase):
 
         return _train
 
-    def make_module_globals(self, losses, visited):
+    def make_module_globals(self, losses, visited, expand_depth_fn=fake_expand_depth):
         return {
             "train_with_early_stopping": self.make_train_fn(losses, visited),
             "expand_width": fake_expand_width,
-            "expand_depth": fake_expand_depth,
+            "expand_depth": expand_depth_fn,
             "snapshot_arch_and_state": fake_snapshot,
             "restore_arch_and_state": fake_restore,
             "total_neurons": fake_total_neurons,
@@ -184,6 +184,43 @@ class ADPContractImageTests(unittest.TestCase):
         self.assertEqual(visited[:3], [(3, 2), (3, 3), (3, 3, 3)])
         self.assertEqual(model.hidden_widths, [3, 3, 3])
         self.assertAlmostEqual(best_val, 3.0)
+
+    def test_width_to_depth_keeps_best_from_depth_warmup_before_uniform(self):
+        def staged_expand_depth(model, max_depth):
+            if not model.hidden_widths or len(model.hidden_widths) >= max_depth:
+                return None
+            if len(set(model.hidden_widths)) != 1:
+                return None
+            model.hidden_widths = list(model.hidden_widths) + [1]
+            return model
+
+        losses = {
+            (2,): 10.0,
+            (3,): 9.0,
+            (3, 1): 1.0,
+            (3, 2): 4.0,
+            (3, 3): 5.0,
+        }
+        visited = []
+        with tempfile.TemporaryDirectory() as tmpdir:
+            best_val, model = run_module_adp(
+                self.make_module_globals(losses, visited, expand_depth_fn=staged_expand_depth),
+                FakeModel([2]),
+                None,
+                None,
+                FakeConfig(
+                    adp_mode="width_to_depth",
+                    max_width=3,
+                    max_depth=2,
+                    width_stage_margin_patience=1,
+                    width_stage_min_improve_pct=1_000.0,
+                ),
+                "cpu",
+                results_dir=Path(tmpdir),
+            )
+        self.assertEqual(visited, [(2,), (3,), (3, 1), (3, 2), (3, 3)])
+        self.assertEqual(model.hidden_widths, [3, 1])
+        self.assertAlmostEqual(best_val, 1.0)
 
 
 if __name__ == "__main__":
