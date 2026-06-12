@@ -27,7 +27,7 @@ instead of adding more sibling result trees at the top level.
 Current recommended fresh roots:
 
 - STL: `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1`
-- small-grid STL: `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1`
+- small-grid STL: `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/<task>/`
 - ADP: `MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>/`
 
 If an ADP suite is partially complete, resume it with:
@@ -121,9 +121,9 @@ Enforce this exact structure for every new MLPS results drop:
 - no alternate top-level result branch for the same run family
 - publish the final state on `main` only
 
-`simulation` and `prediction` are not part of the recovered small STL archive.
-They should be treated as absent from the historical STL material until new
-results are generated.
+`simulation` and `prediction` small-grid STL ablations are now recovered and
+assimilated into the canonical task-first tree. Their suite-level provenance is
+kept under `results/stl/small_grid/analysis/simulation_prediction_v1`.
 
 Recovered small-grid coverage today:
 
@@ -132,12 +132,8 @@ Recovered small-grid coverage today:
 - `generation`: task-first archive present; STL ablation, W2D, and width-only recovered for depths `d1` through `d6`
 - `denoising`: task-first archive present; STL ablation, W2D, and width-only recovered for depths `d1` through `d10`
 - `anomaly`: task-first archive present; STL ablation and W2D recovered; width-only is a placeholder
-- `simulation`: task-first archive present; W2D placeholder recovered; STL ablation and width-only are placeholders
-- `prediction`: task-first archive present; W2D placeholder recovered; STL ablation and width-only are placeholders
-
-For the missing `simulation` and `prediction` follow-up, use the dedicated
-no-repeat small-grid runner. It writes to `results/stl/small_grid/<suite_name>/`
-and nests each candidate under a depth/width path.
+- `simulation`: task-first archive present; STL ablation recovered for depths `d03`, `d04`, `d06`, `d08`, `d10`; W2D and width-only are placeholders
+- `prediction`: task-first archive present; STL ablation recovered for depths `d03`, `d04`, `d06`, `d08`, `d10`; W2D and width-only are placeholders
 
 STL ablation is still a flagged TODO in the repo docs. Do not treat the
 archived STL tree as finished state; it is the history backing the current

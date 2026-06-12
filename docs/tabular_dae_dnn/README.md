@@ -105,16 +105,26 @@ The planned schedule CSV for that run root is:
 
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1/planned_params_by_task_depth_width.csv`
 
-The current recommended small-grid follow-up root is:
+The current canonical small-grid task roots are:
 
 ```text
-MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation_prediction_v1
+MLPS/tabular/shared/dae_dnn/results/stl/small_grid/<task>
 ```
 
 Use `MLPS/tabular/shared/dae_dnn/run_stl_small_grid.py` for that no-repeat
 grid. The task-facing archive layout for the small grid is task-first, with
 each task root containing `w2d/`, `width_only/`, and `stl_ablation/`, and
 aggregate rollups living under `analysis/`.
+
+The `simulation` and `prediction` slave-laptop follow-up has already been
+assimilated into:
+
+- `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/simulation`
+- `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/prediction`
+
+Its suite-level provenance remains under:
+
+- `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/analysis/simulation_prediction_v1`
 
 The current recommended ADP root is:
 
@@ -180,10 +190,9 @@ contains the older small study for:
 It does not contain dedicated STL ablation roots for `simulation` or
 `prediction`.
 
-`simulation` and `prediction` are not part of the recovered small STL archive
-and there is no archived one-off W2D root for them in the current repo.
-If you need to run them, use the separate no-repeat small-grid runner
-documented in `docs/tabular_dae_dnn/methodology_and_handoff.md`.
+`simulation` and `prediction` are now part of the recovered small-grid STL
+archive. There is still no archived one-off W2D root for them in the current
+repo.
 
 The curated result catalog now lives under:
 
@@ -220,8 +229,8 @@ Recovered small-grid coverage today:
 - `generation`: task-first archive present; STL ablation, W2D, and width-only recovered for depths `d1` through `d6`
 - `denoising`: task-first archive present; STL ablation, W2D, and width-only recovered for depths `d1` through `d10`
 - `anomaly`: task-first archive present; STL ablation and W2D recovered; width-only is a placeholder
-- `simulation`: task-first archive present; W2D placeholder recovered; STL ablation and width-only are placeholders
-- `prediction`: task-first archive present; W2D placeholder recovered; STL ablation and width-only are placeholders
+- `simulation`: task-first archive present; STL ablation recovered for depths `d03`, `d04`, `d06`, `d08`, `d10`; W2D and width-only are placeholders
+- `prediction`: task-first archive present; STL ablation recovered for depths `d03`, `d04`, `d06`, `d08`, `d10`; W2D and width-only are placeholders
 
 ## Resume rule
 
