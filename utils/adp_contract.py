@@ -243,8 +243,13 @@ def _tupleify(value: Any) -> Any:
 
 
 def _as_byte_tensor(value: Any) -> Any:
-    if value is None or torch.is_tensor(value):
+    if value is None:
         return value
+    if torch.is_tensor(value):
+        try:
+            return value.detach().to(device="cpu", dtype=torch.uint8)
+        except Exception:
+            return value
     try:
         return torch.tensor(value, dtype=torch.uint8)
     except Exception:
