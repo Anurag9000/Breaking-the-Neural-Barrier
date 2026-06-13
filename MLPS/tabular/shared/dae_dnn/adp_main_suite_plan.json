@@ -1,0 +1,26 @@
+{
+  "phases": [
+    {
+      "name": "repeat_03",
+      "jobs": [
+        {"repeat": 3, "task": "classification"},
+        {"repeat": 3, "task": "autoencoding"},
+        {"repeat": 3, "task": "generation"},
+        {"repeat": 3, "task": "anomaly"},
+        {"repeat": 3, "task": "prediction"},
+        {"repeat": 3, "task": "simulation"}
+      ]
+    },
+    {
+      "name": "repeat_04",
+      "jobs": [
+        {"repeat": 4, "task": "classification"},
+        {"repeat": 4, "task": "autoencoding"},
+        {"repeat": 4, "task": "generation"},
+        {"repeat": 4, "task": "anomaly"},
+        {"repeat": 4, "task": "prediction"},
+        {"repeat": 4, "task": "simulation"}
+      ]
+    }
+  ]
+}
