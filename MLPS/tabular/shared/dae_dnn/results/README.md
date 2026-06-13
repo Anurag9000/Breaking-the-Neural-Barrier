@@ -69,6 +69,11 @@ parallelism probe for the same band. The probe starts at `N=2`, launches the
 epochs, and stops when a trial fails. The last successful `N` becomes the
 recommended concurrency for the real run.
 
+The real massive STL ablation is not supposed to inherit that short epoch cap.
+It should train until early stopping, with the real launcher default now set
+to `--max-epochs 100000000` so patience, not a small hard epoch ceiling,
+decides when each candidate stops.
+
 Probe outputs to keep:
 
 - `recommended_parallelism.txt`
