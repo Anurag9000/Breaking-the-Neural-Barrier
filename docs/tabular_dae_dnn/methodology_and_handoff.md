@@ -190,6 +190,13 @@ The launcher now accepts `--param-band START END`, where the values are
 parameter-count exponents. For example, `--param-band 1 3` keeps targets in
 the `10^1` through `10^3` range.
 
+For the real massive STL ablation, training is intended to stop by early
+stopping only. There is no intended short epoch cap on the actual ablation
+run. The real runner default is effectively unbounded (`--max-epochs
+100000000`) so patience is the stopping mechanism. The only intentionally
+short run in this workflow is the parallelism probe, which is capped at two
+epochs on purpose.
+
 Before starting the real ablation on a given laptop, run the parallelism
 probe for the same parameter band. The probe starts at `N=2`, launches the
 `N` largest parameter-count candidates first, runs each of them for exactly
@@ -268,6 +275,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --param-band 1 3 \
   --concurrency-file MLPS/tabular/shared/dae_dnn/results/stl/parallelism_probe/param_10pow01_03/recommended_parallelism.txt \
   --repeat-count 5 \
+  --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
   --batch-size 9312
@@ -288,6 +296,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --param-band 1 3 \
   --repeat-count 5 \
   --concurrency 7 \
+  --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
   --batch-size 9312

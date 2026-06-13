@@ -903,7 +903,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
     p.add_argument("--delta", type=float, default=1e-4)
-    p.add_argument("--max-epochs", type=int, default=200)
+    p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--lr", type=float, default=1e-3)
     p.add_argument("--weight-decay", type=float, default=1e-4)
     p.add_argument("--grad-clip", type=float, default=1.0)
