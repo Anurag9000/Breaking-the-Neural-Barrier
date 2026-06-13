@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import copy
 from pathlib import Path
+import random
 import tempfile
 import unittest
 
 import torch
 import torch.nn as nn
 
-from utils.adp_contract import _run_resumable_candidate_training, run_module_adp
+from utils.adp_contract import _json_safe, _restore_rng_state, _run_resumable_candidate_training, run_module_adp
 
 
 DEPTH_EXPANSIONS = 0
@@ -310,6 +311,33 @@ class ResumeContractTest(unittest.TestCase):
         self.assertEqual(final_epoch, 1)
         self.assertEqual(history, [0.5])
         self.assertEqual(best_snapshot["width"], 2)
+
+    def test_restore_rng_state_accepts_json_safe_shapes(self) -> None:
+        python_state = random.getstate()
+        torch_state = torch.get_rng_state()
+        try:
+            import numpy as np
+        except Exception:  # pragma: no cover
+            self.skipTest("numpy unavailable")
+        numpy_state = np.random.get_state()
+
+        json_safe_state = {
+            "python": _json_safe(python_state),
+            "torch": _json_safe(torch_state.tolist()),
+            "numpy": _json_safe(
+                (
+                    numpy_state[0],
+                    numpy_state[1].tolist(),
+                    numpy_state[2],
+                    numpy_state[3],
+                    numpy_state[4],
+                )
+            ),
+        }
+        if torch.cuda.is_available():
+            json_safe_state["cuda"] = [_json_safe(state.tolist()) for state in torch.cuda.get_rng_state_all()]
+
+        _restore_rng_state(json_safe_state)
 
 
 if __name__ == "__main__":

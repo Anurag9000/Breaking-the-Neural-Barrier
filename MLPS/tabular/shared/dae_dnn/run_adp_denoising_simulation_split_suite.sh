@@ -10,7 +10,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_adp_ex
   --results-dir MLPS/tabular/shared/dae_dnn/results \
   --run-root MLPS/tabular/shared/dae_dnn/results/adp/w2d/denoising_plus_sim5_v1 \
   --plan-file MLPS/tabular/shared/dae_dnn/adp_denoising_simulation_suite_plan.json \
-  --concurrency 2 \
+  --concurrency 6 \
   --num-workers 0 \
   --pin-memory \
   --batch-size 9312 \

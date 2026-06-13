@@ -236,22 +236,43 @@ def _capture_rng_state() -> Dict[str, Any]:
     return state
 
 
+def _tupleify(value: Any) -> Any:
+    if isinstance(value, list):
+        return tuple(_tupleify(item) for item in value)
+    return value
+
+
+def _as_byte_tensor(value: Any) -> Any:
+    if value is None or torch.is_tensor(value):
+        return value
+    try:
+        return torch.tensor(value, dtype=torch.uint8)
+    except Exception:
+        return value
+
+
 def _restore_rng_state(state: Optional[Dict[str, Any]]) -> None:
     if not state:
         return
     if "python" in state:
-        random.setstate(state["python"])
+        random.setstate(_tupleify(state["python"]))
     if "torch" in state:
-        torch.set_rng_state(state["torch"])
+        torch.set_rng_state(_as_byte_tensor(state["torch"]))
     if "numpy" in state:
         try:
             import numpy as np
 
-            np.random.set_state(state["numpy"])
+            numpy_state = _tupleify(state["numpy"])
+            if isinstance(numpy_state, tuple) and len(numpy_state) >= 2 and not isinstance(numpy_state[1], np.ndarray):
+                numpy_state = (numpy_state[0], np.array(numpy_state[1], dtype=np.uint32), *numpy_state[2:])
+            np.random.set_state(numpy_state)
         except Exception:
             pass
     if "cuda" in state and torch.cuda.is_available():
-        torch.cuda.set_rng_state_all(state["cuda"])
+        cuda_state = state["cuda"]
+        if isinstance(cuda_state, (list, tuple)):
+            cuda_state = [_as_byte_tensor(item) for item in cuda_state]
+        torch.cuda.set_rng_state_all(cuda_state)
 
 
 def _optimizer_to_device(optimizer: torch.optim.Optimizer, device: Any) -> None:
