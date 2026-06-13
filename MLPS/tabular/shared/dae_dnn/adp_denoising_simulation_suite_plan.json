@@ -1,32 +1,12 @@
 {
   "phases": [
     {
-      "name": "repeat_01_resume",
+      "name": "all_parallel",
       "jobs": [
-        {"repeat": 1, "task": "denoising"}
-      ]
-    },
-    {
-      "name": "repeat_02_resume",
-      "jobs": [
-        {"repeat": 2, "task": "denoising"}
-      ]
-    },
-    {
-      "name": "repeat_03",
-      "jobs": [
-        {"repeat": 3, "task": "denoising"}
-      ]
-    },
-    {
-      "name": "repeat_04",
-      "jobs": [
-        {"repeat": 4, "task": "denoising"}
-      ]
-    },
-    {
-      "name": "repeat_05",
-      "jobs": [
+        {"repeat": 1, "task": "denoising"},
+        {"repeat": 2, "task": "denoising"},
+        {"repeat": 3, "task": "denoising"},
+        {"repeat": 4, "task": "denoising"},
         {"repeat": 5, "task": "denoising"},
         {"repeat": 5, "task": "simulation"}
       ]
