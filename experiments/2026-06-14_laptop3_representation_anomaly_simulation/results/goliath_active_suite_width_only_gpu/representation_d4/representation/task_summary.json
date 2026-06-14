@@ -1,0 +1,137 @@
+{
+  "adp_runs": [
+    {
+      "architecture": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "best_candidate_dir": "cand_556_d4_w140",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d4/representation/ae_width_only/cand_556_d4_w140/checkpoint_best.pt",
+      "best_epoch": 11,
+      "best_val": 0.08835405926592402,
+      "final_epoch": 11,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": false,
+      "task": "representation"
+    }
+  ],
+  "comparisons": [
+    {
+      "adp_architecture": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "adp_best_val": 0.08835405926592402,
+      "adp_phase": "ae_width_only",
+      "stl_architecture": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "stl_best_val": 0.1725695832343777,
+      "stl_phase": "stl_from_ae_width_only",
+      "task": "representation",
+      "winner": "adp",
+      "winner_phase": "ae_width_only",
+      "winner_value": 0.08835405926592402
+    }
+  ],
+  "paired_stl_runs": [
+    {
+      "architecture": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "best_epoch": 115,
+      "best_val": 0.1725695832343777,
+      "candidate_dir": "cand_000_d4_w140",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d4/representation/stl_from_ae_width_only/cand_000_d4_w140/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d4/representation/stl_from_ae_width_only/cand_000_d4_w140/checkpoint_last.pt",
+      "final_epoch": 125,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "representation",
+      "test_metrics": {
+        "cluster_nmi": 0.4296714192769595,
+        "knn_acc": 0.9481248171287929,
+        "test_acc": 0.9319805166864598,
+        "test_loss": 0.1720846033344474
+      }
+    }
+  ],
+  "phases": [
+    {
+      "architecture": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "best_candidate_dir": "cand_556_d4_w140",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d4/representation/ae_width_only/cand_556_d4_w140/checkpoint_best.pt",
+      "best_epoch": 11,
+      "best_val": 0.08835405926592402,
+      "final_epoch": 11,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": false,
+      "task": "representation"
+    },
+    {
+      "architecture": [
+        140,
+        140,
+        140,
+        140
+      ],
+      "best_epoch": 115,
+      "best_val": 0.1725695832343777,
+      "candidate_dir": "cand_000_d4_w140",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d4/representation/stl_from_ae_width_only/cand_000_d4_w140/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/representation_d4/representation/stl_from_ae_width_only/cand_000_d4_w140/checkpoint_last.pt",
+      "final_epoch": 125,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "representation",
+      "test_metrics": {
+        "cluster_nmi": 0.4296714192769595,
+        "knn_acc": 0.9481248171287929,
+        "test_acc": 0.9319805166864598,
+        "test_loss": 0.1720846033344474
+      }
+    }
+  ],
+  "task": "representation",
+  "winner": {
+    "adp_architecture": [
+      140,
+      140,
+      140,
+      140
+    ],
+    "adp_best_val": 0.08835405926592402,
+    "adp_phase": "ae_width_only",
+    "stl_architecture": [
+      140,
+      140,
+      140,
+      140
+    ],
+    "stl_best_val": 0.1725695832343777,
+    "stl_phase": "stl_from_ae_width_only",
+    "task": "representation",
+    "winner": "adp",
+    "winner_phase": "ae_width_only",
+    "winner_value": 0.08835405926592402
+  }
+}

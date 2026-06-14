@@ -1,0 +1,149 @@
+{
+  "adp_runs": [
+    {
+      "architecture": [
+        86,
+        85,
+        85,
+        85,
+        85,
+        85
+      ],
+      "best_candidate_dir": "cand_505_d6_w86",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/anomaly_d6/anomaly/ae_width_only/cand_505_d6_w86/checkpoint_best.pt",
+      "best_epoch": 22,
+      "best_val": 0.0008876986103132367,
+      "final_epoch": 22,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "anomaly"
+    }
+  ],
+  "comparisons": [
+    {
+      "adp_architecture": [
+        86,
+        85,
+        85,
+        85,
+        85,
+        85
+      ],
+      "adp_best_val": 0.0008876986103132367,
+      "adp_phase": "ae_width_only",
+      "stl_architecture": [
+        86,
+        85,
+        85,
+        85,
+        85,
+        85
+      ],
+      "stl_best_val": 0.007396989967674017,
+      "stl_phase": "stl_from_ae_width_only",
+      "task": "anomaly",
+      "winner": "adp",
+      "winner_phase": "ae_width_only",
+      "winner_value": 0.0008876986103132367
+    }
+  ],
+  "paired_stl_runs": [
+    {
+      "architecture": [
+        86,
+        85,
+        85,
+        85,
+        85,
+        85
+      ],
+      "best_epoch": 116,
+      "best_val": 0.007396989967674017,
+      "candidate_dir": "cand_000_d6_w86",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/anomaly_d6/anomaly/stl_from_ae_width_only/cand_000_d6_w86/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/anomaly_d6/anomaly/stl_from_ae_width_only/cand_000_d6_w86/checkpoint_last.pt",
+      "final_epoch": 126,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "anomaly",
+      "test_metrics": {
+        "auroc": 0.755366210686417,
+        "test_loss": 0.4747042222797837
+      }
+    }
+  ],
+  "phases": [
+    {
+      "architecture": [
+        86,
+        85,
+        85,
+        85,
+        85,
+        85
+      ],
+      "best_candidate_dir": "cand_505_d6_w86",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/anomaly_d6/anomaly/ae_width_only/cand_505_d6_w86/checkpoint_best.pt",
+      "best_epoch": 22,
+      "best_val": 0.0008876986103132367,
+      "final_epoch": 22,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "anomaly"
+    },
+    {
+      "architecture": [
+        86,
+        85,
+        85,
+        85,
+        85,
+        85
+      ],
+      "best_epoch": 116,
+      "best_val": 0.007396989967674017,
+      "candidate_dir": "cand_000_d6_w86",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/anomaly_d6/anomaly/stl_from_ae_width_only/cand_000_d6_w86/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/anomaly_d6/anomaly/stl_from_ae_width_only/cand_000_d6_w86/checkpoint_last.pt",
+      "final_epoch": 126,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "anomaly",
+      "test_metrics": {
+        "auroc": 0.755366210686417,
+        "test_loss": 0.4747042222797837
+      }
+    }
+  ],
+  "task": "anomaly",
+  "winner": {
+    "adp_architecture": [
+      86,
+      85,
+      85,
+      85,
+      85,
+      85
+    ],
+    "adp_best_val": 0.0008876986103132367,
+    "adp_phase": "ae_width_only",
+    "stl_architecture": [
+      86,
+      85,
+      85,
+      85,
+      85,
+      85
+    ],
+    "stl_best_val": 0.007396989967674017,
+    "stl_phase": "stl_from_ae_width_only",
+    "task": "anomaly",
+    "winner": "adp",
+    "winner_phase": "ae_width_only",
+    "winner_value": 0.0008876986103132367
+  }
+}

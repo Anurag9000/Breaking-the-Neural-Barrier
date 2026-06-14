@@ -1,0 +1,15 @@
+# DAE/DNN Goliath Final Report
+
+- Run root: `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/simulation_d5`
+- Git commit: `179b42b51337382feb7be02f91979d14aacbe698`
+- Device: `cpu`
+- Tasks completed: `['simulation']`
+
+## Task: simulation
+- Overall winner: `adp` via `ae_width_only` at `0.000477`
+- Winner ADP architecture: `[43, 43, 43, 42, 42]`
+- Winner STL architecture: `[43, 43, 43, 42, 42]`
+
+| ADP variant | ADP best arch | ADP best val | STL refit arch | STL refit best val | Winner |
+|---|---|---:|---|---:|---|
+| ae_width_only | [43, 43, 43, 42, 42] | 0.000477 | [43, 43, 43, 42, 42] | 1.156813 | adp |
