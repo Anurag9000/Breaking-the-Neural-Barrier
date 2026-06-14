@@ -1,0 +1,48 @@
+diff --git a/MLPS/tabular/shared/dae_dnn/EXPERIMENT_HANDOFF.md b/MLPS/tabular/shared/dae_dnn/EXPERIMENT_HANDOFF.md
+index bf7e0f45bd..a15715618f 100644
+--- a/MLPS/tabular/shared/dae_dnn/EXPERIMENT_HANDOFF.md
++++ b/MLPS/tabular/shared/dae_dnn/EXPERIMENT_HANDOFF.md
+@@ -52,6 +52,9 @@ The unit of resumption is the per-depth directory, not the whole task wave.
+ If a machine dies or a job is interrupted, rerun the exact same command with the same `--run-root`.
+ The candidate metadata and `phase_progress.csv` will be reused. If the matching checkpoint files are present on disk, the optimizer state and best state resume exactly; otherwise the run restarts from the best recoverable metadata state.
+ 
++For `denoising` on this laptop, the practical depth range is `1 2 3 4 5 6`.
++Depths `7 8 9 10` were not yielding enough additional value to justify the extra wall time, so future launches on this machine should stop at depth 6.
++
+ ## Suggested execution split
+ 
+ To parallelize across laptops without overlapping work, split the depth range into waves:
+@@ -94,6 +97,8 @@ Use the same shape for the other waves by swapping the depth list:
+ - `depths=(6 7 8)`
+ - `depths=(9 10)`
+ 
++For `denoising` specifically on this machine, use `depths=(1 2 3 4 5 6)` and do not launch `7 8 9 10`.
++
+ If you want strict single-process execution per depth, remove the trailing `&` and `wait`.
+ 
+ ## Push / pull consolidation protocol
+diff --git a/MLPS/tabular/shared/dae_dnn/RUN_SPLIT_PLAN.md b/MLPS/tabular/shared/dae_dnn/RUN_SPLIT_PLAN.md
+index e13d66c89d..0548ae4502 100644
+--- a/MLPS/tabular/shared/dae_dnn/RUN_SPLIT_PLAN.md
++++ b/MLPS/tabular/shared/dae_dnn/RUN_SPLIT_PLAN.md
+@@ -65,8 +65,9 @@ Task:
+ Execution order:
+ 
+ 1. depths `1 2 3 4 5`
+-2. depths `6 7 8`
+-3. depths `9 10`
++2. depth `6`
++
++Depths `7 8 9 10` are intentionally omitted on this machine.
+ 
+ ## Exact command template
+ 
+@@ -89,7 +90,7 @@ git pull origin main
+   --num-workers 0
+ ```
+ 
+-For a wave, launch the four or two depth jobs in parallel, then wait for them to finish.
++For a wave, launch the selected depth jobs in parallel, then wait for them to finish.
+ 
+ ## This laptop: representation wave commands
+ 
