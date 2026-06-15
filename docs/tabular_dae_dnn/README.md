@@ -94,6 +94,9 @@ Key pressure-aware flags:
 - `--host-ram-pressure-limit-pct 90`
 - `--host-ram-resume-pct 85`
 - `--max-active-jobs 0` for no hard slot cap beyond RAM pressure
+- `--max-retries-per-job 10`
+- `--pressure-poll-interval-sec 0.5`
+- `--pressure-settle-sec 1.0`
 
 Parallelism probes for the same STL bands, if you still want a fixed-slot
 concurrency recommendation for a specific laptop, should live under:

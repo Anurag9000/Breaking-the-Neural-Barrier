@@ -215,6 +215,9 @@ Relevant flags:
 - `--host-ram-pressure-limit-pct 90`
 - `--host-ram-resume-pct 85`
 - `--max-active-jobs 0`
+- `--max-retries-per-job 10`
+- `--pressure-poll-interval-sec 0.5`
+- `--pressure-settle-sec 1.0`
 
 The old probe path is still available if you want a fixed-slot concurrency
 number for a specific laptop. The probe starts at `N=2`, launches the `N`
