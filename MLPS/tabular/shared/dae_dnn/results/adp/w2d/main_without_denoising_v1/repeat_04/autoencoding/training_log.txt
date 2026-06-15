@@ -1,0 +1,82 @@
+[2026-06-15 06:46:28] Initialized ContinuousLogger for dnn_autoencoding (Mode: width_to_depth)
+[2026-06-15 06:46:28] Logs: MLPS/tabular/shared/dae_dnn/results/adp/w2d/main_without_denoising_v1/repeat_04/autoencoding/training_log.txt
+[2026-06-15 06:46:28] CSV: MLPS/tabular/shared/dae_dnn/results/adp/w2d/main_without_denoising_v1/repeat_04/autoencoding/training_stats.csv
+[2026-06-15 06:46:28] Task=autoencoding mode=adp adp_mode=width_to_depth hidden=[1] in_dim=54 out_dim=54
+[2026-06-15 06:46:28] ADP: ex_k=1 trials_width=10 trials_depth=2 max_width=4096 max_depth=10 max_neurons=10000000
+[2026-06-15 06:46:28] Train: batch_size=9312 lr=1e-3 weight_decay=1e-4 es_patience=10 max_epochs=100000000
+[2026-06-15 06:46:28] Device: cuda
+[2026-06-15 06:56:52] [STAGED][WIDTH] [1] -> [2]
+[2026-06-15 07:03:46] [STAGED][WIDTH] completed arch=[2] stage_improved=True stage_pct=4.3266 global_best=0.913679 width_fail=0/10 margin_fail=0/10
+[2026-06-15 07:03:46] [STAGED][WIDTH] [2] -> [3]
+[2026-06-15 07:31:52] [STAGED][WIDTH] completed arch=[3] stage_improved=True stage_pct=6.1151 global_best=0.857807 width_fail=0/10 margin_fail=0/10
+[2026-06-15 07:31:52] [STAGED][WIDTH] [3] -> [4]
+[2026-06-15 07:37:33] [STAGED][WIDTH] completed arch=[4] stage_improved=True stage_pct=4.3623 global_best=0.820387 width_fail=0/10 margin_fail=0/10
+[2026-06-15 07:37:33] [STAGED][WIDTH] [4] -> [5]
+[2026-06-15 07:53:53] [STAGED][WIDTH] completed arch=[5] stage_improved=True stage_pct=4.3826 global_best=0.784433 width_fail=0/10 margin_fail=0/10
+[2026-06-15 07:53:53] [STAGED][WIDTH] [5] -> [6]
+[2026-06-15 08:01:24] [STAGED][WIDTH] completed arch=[6] stage_improved=True stage_pct=2.9567 global_best=0.761240 width_fail=0/10 margin_fail=0/10
+[2026-06-15 08:01:24] [STAGED][WIDTH] [6] -> [7]
+[2026-06-15 08:05:05] [STAGED][WIDTH] completed arch=[7] stage_improved=True stage_pct=2.6898 global_best=0.740764 width_fail=0/10 margin_fail=0/10
+[2026-06-15 08:05:05] [STAGED][WIDTH] [7] -> [8]
+[2026-06-15 08:18:13] [STAGED][WIDTH] completed arch=[8] stage_improved=True stage_pct=3.3990 global_best=0.715586 width_fail=0/10 margin_fail=0/10
+[2026-06-15 08:18:13] [STAGED][WIDTH] [8] -> [9]
+[2026-06-15 08:30:05] [STAGED][WIDTH] completed arch=[9] stage_improved=True stage_pct=2.9609 global_best=0.694398 width_fail=0/10 margin_fail=0/10
+[2026-06-15 08:30:05] [STAGED][WIDTH] [9] -> [10]
+[2026-06-15 08:48:20] [STAGED][WIDTH] completed arch=[10] stage_improved=True stage_pct=3.4442 global_best=0.670481 width_fail=0/10 margin_fail=0/10
+[2026-06-15 08:48:20] [STAGED][WIDTH] [10] -> [11]
+[2026-06-15 08:58:31] [STAGED][WIDTH] completed arch=[11] stage_improved=True stage_pct=3.2147 global_best=0.648927 width_fail=0/10 margin_fail=0/10
+[2026-06-15 08:58:31] [STAGED][WIDTH] [11] -> [12]
+[2026-06-15 09:12:05] [STAGED][WIDTH] completed arch=[12] stage_improved=True stage_pct=3.1312 global_best=0.628608 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:12:05] [STAGED][WIDTH] [12] -> [13]
+[2026-06-15 09:15:32] [STAGED][WIDTH] completed arch=[13] stage_improved=True stage_pct=3.1784 global_best=0.608628 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:15:32] [STAGED][WIDTH] [13] -> [14]
+[2026-06-15 09:17:37] [STAGED][WIDTH] completed arch=[14] stage_improved=True stage_pct=3.2311 global_best=0.588963 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:17:37] [STAGED][WIDTH] [14] -> [15]
+[2026-06-15 09:19:19] [STAGED][WIDTH] completed arch=[15] stage_improved=True stage_pct=3.4120 global_best=0.568868 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:19:19] [STAGED][WIDTH] [15] -> [16]
+[2026-06-15 09:21:11] [STAGED][WIDTH] completed arch=[16] stage_improved=True stage_pct=3.6505 global_best=0.548101 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:21:11] [STAGED][WIDTH] [16] -> [17]
+[2026-06-15 09:22:32] [STAGED][WIDTH] completed arch=[17] stage_improved=True stage_pct=3.7162 global_best=0.527732 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:22:32] [STAGED][WIDTH] [17] -> [18]
+[2026-06-15 09:24:00] [STAGED][WIDTH] completed arch=[18] stage_improved=True stage_pct=3.6405 global_best=0.508520 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:24:00] [STAGED][WIDTH] [18] -> [19]
+[2026-06-15 09:25:15] [STAGED][WIDTH] completed arch=[19] stage_improved=True stage_pct=3.6204 global_best=0.490110 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:25:15] [STAGED][WIDTH] [19] -> [20]
+[2026-06-15 09:26:34] [STAGED][WIDTH] completed arch=[20] stage_improved=True stage_pct=3.7033 global_best=0.471959 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:26:34] [STAGED][WIDTH] [20] -> [21]
+[2026-06-15 09:28:49] [STAGED][WIDTH] completed arch=[21] stage_improved=True stage_pct=3.9748 global_best=0.453200 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:28:49] [STAGED][WIDTH] [21] -> [22]
+[2026-06-15 09:30:56] [STAGED][WIDTH] completed arch=[22] stage_improved=True stage_pct=4.1492 global_best=0.434396 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:30:56] [STAGED][WIDTH] [22] -> [23]
+[2026-06-15 09:34:00] [STAGED][WIDTH] completed arch=[23] stage_improved=True stage_pct=4.3929 global_best=0.415313 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:34:00] [STAGED][WIDTH] [23] -> [24]
+[2026-06-15 09:38:03] [STAGED][WIDTH] completed arch=[24] stage_improved=True stage_pct=4.7388 global_best=0.395632 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:38:03] [STAGED][WIDTH] [24] -> [25]
+[2026-06-15 09:40:08] [STAGED][WIDTH] completed arch=[25] stage_improved=True stage_pct=4.9305 global_best=0.376126 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:40:08] [STAGED][WIDTH] [25] -> [26]
+[2026-06-15 09:42:13] [STAGED][WIDTH] completed arch=[26] stage_improved=True stage_pct=5.3555 global_best=0.355982 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:42:13] [STAGED][WIDTH] [26] -> [27]
+[2026-06-15 09:43:59] [STAGED][WIDTH] completed arch=[27] stage_improved=True stage_pct=5.4461 global_best=0.336595 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:43:59] [STAGED][WIDTH] [27] -> [28]
+[2026-06-15 09:46:06] [STAGED][WIDTH] completed arch=[28] stage_improved=True stage_pct=5.8494 global_best=0.316907 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:46:06] [STAGED][WIDTH] [28] -> [29]
+[2026-06-15 09:48:27] [STAGED][WIDTH] completed arch=[29] stage_improved=True stage_pct=5.7690 global_best=0.298624 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:48:27] [STAGED][WIDTH] [29] -> [30]
+[2026-06-15 09:50:53] [STAGED][WIDTH] completed arch=[30] stage_improved=True stage_pct=6.4530 global_best=0.279354 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:50:53] [STAGED][WIDTH] [30] -> [31]
+[2026-06-15 09:53:00] [STAGED][WIDTH] completed arch=[31] stage_improved=True stage_pct=6.9388 global_best=0.259970 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:53:00] [STAGED][WIDTH] [31] -> [32]
+[2026-06-15 09:56:50] [STAGED][WIDTH] completed arch=[32] stage_improved=True stage_pct=7.2227 global_best=0.241193 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:56:50] [STAGED][WIDTH] [32] -> [33]
+[2026-06-15 09:59:49] [STAGED][WIDTH] completed arch=[33] stage_improved=True stage_pct=7.7320 global_best=0.222544 width_fail=0/10 margin_fail=0/10
+[2026-06-15 09:59:49] [STAGED][WIDTH] [33] -> [34]
+[2026-06-15 10:01:24] [STAGED][WIDTH] completed arch=[34] stage_improved=True stage_pct=9.5253 global_best=0.201346 width_fail=0/10 margin_fail=0/10
+[2026-06-15 10:01:24] [STAGED][WIDTH] [34] -> [35]
+[2026-06-15 10:03:07] [STAGED][WIDTH] completed arch=[35] stage_improved=True stage_pct=10.8187 global_best=0.179563 width_fail=0/10 margin_fail=0/10
+[2026-06-15 10:03:07] [STAGED][WIDTH] [35] -> [36]
+[2026-06-15 10:08:22] [STAGED][WIDTH] completed arch=[36] stage_improved=True stage_pct=12.3857 global_best=0.157323 width_fail=0/10 margin_fail=0/10
+[2026-06-15 10:08:22] [STAGED][WIDTH] [36] -> [37]
+[2026-06-15 10:10:44] [STAGED][WIDTH] completed arch=[37] stage_improved=True stage_pct=14.1465 global_best=0.135067 width_fail=0/10 margin_fail=0/10
+[2026-06-15 10:10:44] [STAGED][WIDTH] [37] -> [38]
+[2026-06-15 10:16:38] [STAGED][WIDTH] completed arch=[38] stage_improved=True stage_pct=13.8510 global_best=0.116359 width_fail=0/10 margin_fail=0/10
+[2026-06-15 10:16:38] [STAGED][WIDTH] [38] -> [39]
