@@ -217,6 +217,16 @@ again, the scheduler relaunches the paused child from the same run directory,
 so resumability is handled by the normal STL checkpoints and
 `ablation_state.json`.
 
+Admission is completion-gated after the initial saturation phase. The launcher
+starts with launches enabled so it can fill the machine. Once any child is
+paused for memory pressure, or exits with a retryable failure, the launcher
+closes the admission window. It does not treat the pause itself as a reason to
+launch something else. Instead it waits for one of the surviving children to
+finish cleanly. That successful completion reopens the admission window, and
+the next launch attempt resumes a paused or partial child before considering
+untouched work. If that resumed child still does not fit and is paused again,
+the admission window closes again until another genuine completion happens.
+
 Relevant flags:
 
 - `--scheduler pressure_aware`

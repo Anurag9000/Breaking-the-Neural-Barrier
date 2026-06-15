@@ -95,6 +95,14 @@ again as soon as a device slot becomes available. Children always resume from
 the same child root and reuse the normal STL checkpoints and
 `ablation_state.json`.
 
+The admission rule is completion-gated. The scheduler starts with launches
+enabled so it can initially fill the machine. After that, any pressure pause
+or retryable child failure closes the admission window immediately. While the
+window is closed, the scheduler does not admit fresh work just because memory
+usage dipped back below the resume threshold. A new launch is only unlocked by
+a genuine child completion. When the next admission opens, paused or partial
+children are resumed before untouched jobs.
+
 Key pressure-aware flags:
 
 - `--scheduler pressure_aware`

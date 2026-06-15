@@ -30,7 +30,7 @@ class FakeProc:
         if self.completed:
             return 0
         self.poll_calls += 1
-        if self.job_name == "small" and self.launch_counts["large"] >= 2 and self.poll_calls >= 3:
+        if self.job_name == "small" and self.launch_counts["large"] >= 1 and self.poll_calls >= 3:
             self.completed_roots.add(self.child_root)
             self.completed = True
             return 0
@@ -112,6 +112,8 @@ class STLPressureSchedulerTests(unittest.TestCase):
             def fake_launch(cmd, env=None, log_path=None):
                 name = cmd[0]
                 root = large_root if name == "large" else small_root
+                if name == "large" and launch_counts["large"] >= 1:
+                    self.assertIn(small_root, completed_roots)
                 launch_counts[name] += 1
                 proc = FakeProc(name, root, completed_roots, launch_counts)
                 live.append(proc)
@@ -159,6 +161,117 @@ class STLPressureSchedulerTests(unittest.TestCase):
             self.assertTrue(large_state.get("completed"))
             self.assertEqual(int(large_state.get("pause_count", 0)), 1)
             self.assertIn(large_root, completed_roots)
+
+    def test_pause_does_not_unlock_new_launch_until_real_completion(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_root = Path(tmp) / "run"
+            small_root = run_root / "task_c" / "_children" / "small"
+            large_root = run_root / "task_c" / "_children" / "large"
+            medium_root = run_root / "task_c" / "_children" / "medium"
+            jobs_by_task = {
+                "task_c": [
+                    parallel.ChildJob("task_c", (1,), small_root, 10, 1, "small"),
+                    parallel.ChildJob("task_c", (3,), large_root, 20, 1, "large"),
+                    parallel.ChildJob("task_c", (2,), medium_root, 30, 1, "medium"),
+                ]
+            }
+            completed_roots: set[Path] = set()
+            launch_counts = {"small": 0, "medium": 0, "large": 0}
+            live: list["GateProc"] = []
+            launch_order: list[str] = []
+
+            class GateProc:
+                _next_pid = 5000
+
+                def __init__(self, job_name: str, child_root: Path) -> None:
+                    self.job_name = job_name
+                    self.child_root = child_root
+                    self.pid = GateProc._next_pid
+                    GateProc._next_pid += 1
+                    self.terminated = False
+                    self.completed = False
+                    self.poll_calls = 0
+
+                def poll(self) -> int | None:
+                    if self.terminated:
+                        return 143
+                    if self.completed:
+                        return 0
+                    self.poll_calls += 1
+                    if self.job_name == "small" and launch_counts["large"] >= 1 and self.poll_calls >= 4:
+                        completed_roots.add(self.child_root)
+                        self.completed = True
+                        return 0
+                    if self.job_name == "medium" and self.poll_calls >= 2:
+                        completed_roots.add(self.child_root)
+                        self.completed = True
+                        return 0
+                    if self.job_name == "large" and launch_counts["medium"] >= 1 and self.poll_calls >= 2:
+                        completed_roots.add(self.child_root)
+                        self.completed = True
+                        return 0
+                    return None
+
+            def fake_build_jobs(args, tasks, root):
+                return jobs_by_task
+
+            def fake_build_cmd(*, args, task_name, architecture, child_run_root, device_mode):
+                if child_run_root == small_root:
+                    return ["small"]
+                if child_run_root == medium_root:
+                    return ["medium"]
+                return ["large"]
+
+            def fake_launch(cmd, env=None, log_path=None):
+                name = cmd[0]
+                if name == "large" and launch_counts["large"] >= 1:
+                    self.assertIn(small_root, completed_roots)
+                root = {"small": small_root, "medium": medium_root, "large": large_root}[name]
+                launch_counts[name] += 1
+                launch_order.append(name)
+                proc = GateProc(name, root)
+                live.append(proc)
+                return proc, None
+
+            def fake_terminate(proc):
+                proc.terminated = True
+
+            def fake_child_completed(child_root, task_name):
+                return child_root in completed_roots
+
+            def fake_memory_sample():
+                active_names = {proc.job_name for proc in live if not proc.terminated and not proc.completed}
+                if active_names == {"small", "large"}:
+                    return parallel.MemoryPressureSample(total_mib=1000, available_mib=50, used_pct=95.0)
+                return parallel.MemoryPressureSample(total_mib=1000, available_mib=500, used_pct=50.0)
+
+            def fake_aggregate(task_name, task_root, child_roots):
+                return {"task": task_name, "comparisons": []}
+
+            logger = mock.Mock()
+            args = self.make_args()
+            args.max_active_jobs = 2
+
+            with mock.patch.object(parallel, "build_task_jobs", side_effect=fake_build_jobs), \
+                mock.patch.object(parallel, "build_worker_command", side_effect=fake_build_cmd), \
+                mock.patch.object(parallel, "launch_child_process", side_effect=fake_launch), \
+                mock.patch.object(parallel, "terminate_child_process", side_effect=fake_terminate), \
+                mock.patch.object(parallel, "child_completed", side_effect=fake_child_completed), \
+                mock.patch.object(parallel, "sample_host_memory_pressure", side_effect=fake_memory_sample), \
+                mock.patch.object(parallel, "sample_gpu_memory_pressure", return_value=parallel.GpuPressureSample(total_mib=0, used_mib=0, used_pct=0.0)), \
+                mock.patch.object(parallel, "aggregate_task", side_effect=fake_aggregate), \
+                mock.patch.object(parallel.time, "sleep", return_value=None):
+                reports = parallel.run_pressure_aware(args, run_root, ["task_c"], logger)
+
+            self.assertEqual(len(reports), 1)
+            self.assertEqual(launch_order[:2], ["small", "large"])
+            self.assertGreaterEqual(launch_counts["large"], 1)
+            self.assertEqual(launch_counts["medium"], 1)
+            self.assertGreaterEqual(len(launch_order), 4)
+            self.assertEqual(launch_order[2], "large")
+            self.assertEqual(launch_order[3], "medium")
+            self.assertIn(small_root, completed_roots)
+            self.assertIn(medium_root, completed_roots)
 
     def test_launch_child_process_uses_new_session(self) -> None:
         proc, handle = parallel.launch_child_process(["sleep", "30"])
