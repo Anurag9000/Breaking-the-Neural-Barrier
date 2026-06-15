@@ -63,11 +63,28 @@ Merge those staged roots back into the canonical STL root with:
   --output-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1
 ```
 
-Before launching any of those parameter-band roots on a given laptop, run the
-parallelism probe for the same band. The probe starts at `N=2`, launches the
-`N` largest parameter-count candidates first, runs them for exactly two
-epochs, and stops when a trial fails. The last successful `N` becomes the
-recommended concurrency for the real run.
+Before launching any of those parameter-band roots on a given laptop, prefer
+the pressure-aware scheduler in
+`MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py`. In its default
+mode it expands all concrete STL child runs for the chosen tasks/band, sorts
+them globally smallest-to-largest by parameter count, and keeps launching
+work while host RAM pressure stays under the configured threshold. If RAM
+pressure exceeds the limit, it requests a pause on the largest active child,
+terminates only that child process group, and later relaunches the same child
+root so the run resumes from its normal STL checkpoints.
+
+Relevant flags:
+
+- `--scheduler pressure_aware`
+- `--host-ram-pressure-limit-pct`
+- `--host-ram-resume-pct`
+- `--max-active-jobs`
+
+The parallelism probe is still available as an optional fixed-slot fallback.
+It starts at `N=2`, launches the `N` largest parameter-count candidates
+first, runs them for exactly two epochs, and stops when a trial fails. The
+last successful `N` becomes the recommended concurrency for a legacy
+fixed-slot run.
 
 The real massive STL ablation is not supposed to inherit that short epoch cap.
 It should train until early stopping, with the real launcher default now set
@@ -79,10 +96,10 @@ Probe outputs to keep:
 - `recommended_parallelism.txt`
 - `parallelism_probe_summary.json`
 
-The real launcher accepts `--concurrency-file` and can read the probe result
-directly. The actual STL run order inside each candidate family is
-smallest-to-largest; the probe uses largest-to-smallest to stress test the
-hardware first.
+The real launcher still accepts `--concurrency-file` for the legacy
+fixed-slot path, but the pressure-aware path does not require it. Concrete
+STL children are scheduled smallest-to-largest across the whole band; the
+probe remains largest-to-smallest because it is intentionally adversarial.
 
 The ADP W2D suite uses task-specific repeat counts. Keep the current launcher
 configuration in sync with the active run root and do not reuse a deleted root.

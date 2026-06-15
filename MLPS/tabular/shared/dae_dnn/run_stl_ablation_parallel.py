@@ -6,9 +6,10 @@ import signal
 import subprocess
 import sys
 import time
-from collections import deque
+from collections import defaultdict, deque
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Deque, Dict, List, Optional, Sequence, Tuple
 
 import torch
 
@@ -23,8 +24,33 @@ except ModuleNotFoundError:  # pragma: no cover - import shim for package-style 
     from MLPS.tabular.shared.dae_dnn import run_stl_ablation as stl
 
 
+@dataclass(frozen=True)
+class ChildJob:
+    task_name: str
+    architecture: Tuple[int, ...]
+    child_root: Path
+    parameter_count: int
+    depth: int
+    phase_name: str
+
+
+@dataclass
+class ActiveChildJob:
+    job: ChildJob
+    cmd: List[str]
+    pause_requested: bool = False
+    launch_count: int = 0
+
+
+@dataclass(frozen=True)
+class MemoryPressureSample:
+    total_mib: int
+    available_mib: int
+    used_pct: float
+
+
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Parallel STL ablation launcher with per-architecture child run roots.")
+    p = argparse.ArgumentParser(description="Parallel STL ablation launcher with resumable child runs.")
     p.add_argument("--data-dir", default="./data")
     p.add_argument("--results-dir", default="MLPS/tabular/shared/dae_dnn/results")
     p.add_argument("--run-root", default=None)
@@ -64,6 +90,48 @@ def parse_args() -> argparse.Namespace:
         "--concurrency-file",
         default=None,
         help="Optional text file containing the concurrency value to use instead of --concurrency.",
+    )
+    p.add_argument(
+        "--scheduler",
+        choices=["pressure_aware", "fixed"],
+        default="pressure_aware",
+        help="Use the pressure-aware global scheduler or the legacy fixed-slot task scheduler.",
+    )
+    p.add_argument(
+        "--max-active-jobs",
+        type=int,
+        default=0,
+        help="Hard cap for pressure-aware child jobs. 0 means no hard cap beyond RAM pressure.",
+    )
+    p.add_argument(
+        "--host-ram-pressure-limit-pct",
+        type=float,
+        default=90.0,
+        help="Pause the largest active child when used host RAM exceeds this percentage.",
+    )
+    p.add_argument(
+        "--host-ram-resume-pct",
+        type=float,
+        default=85.0,
+        help="Only launch or relaunch a child when used host RAM is at or below this percentage.",
+    )
+    p.add_argument(
+        "--pressure-poll-interval-sec",
+        type=float,
+        default=2.0,
+        help="Polling interval for child completion and host RAM pressure checks.",
+    )
+    p.add_argument(
+        "--pressure-settle-sec",
+        type=float,
+        default=5.0,
+        help="Wait this long after each launch or pause so RAM pressure can settle before the next decision.",
+    )
+    p.add_argument(
+        "--max-retries-per-job",
+        type=int,
+        default=3,
+        help="Retry budget for unexpected child exits. Intentional pressure pauses do not consume retries.",
     )
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
@@ -187,8 +255,24 @@ def child_state_path(child_run_root: Path) -> Path:
     return child_run_root / "child_run_state.json"
 
 
+def load_child_state(child_run_root: Path) -> Dict[str, Any]:
+    data = rg.load_json_if_exists(child_state_path(child_run_root))
+    return data if isinstance(data, dict) else {}
+
+
+def write_child_state(child_run_root: Path, payload: Dict[str, Any]) -> None:
+    rg.write_json(child_state_path(child_run_root), payload)
+
+
+def update_child_state(child_run_root: Path, updates: Dict[str, Any]) -> Dict[str, Any]:
+    state = load_child_state(child_run_root)
+    state.update(updates)
+    write_child_state(child_run_root, state)
+    return state
+
+
 def child_completed(child_run_root: Path, task_name: str) -> bool:
-    state = rg.load_json_if_exists(child_state_path(child_run_root)) or {}
+    state = load_child_state(child_run_root)
     if bool(state.get("failed", False)):
         return False
     if bool(state.get("completed", False)):
@@ -214,7 +298,7 @@ def load_task_child_summary(child_run_root: Path, task_name: str) -> Dict[str, A
     path = child_summary_path(child_run_root, task_name)
     data = rg.load_json_if_exists(path)
     if not isinstance(data, dict):
-        state = rg.load_json_if_exists(child_state_path(child_run_root)) or {}
+        state = load_child_state(child_run_root)
         if bool(state.get("failed", False)):
             return {
                 "task": task_name,
@@ -232,16 +316,126 @@ def load_task_child_summary(child_run_root: Path, task_name: str) -> Dict[str, A
     return data
 
 
-def mark_child_failed(child_root: Path, task_name: str, architecture: Sequence[int], exit_code: int, cmd: Sequence[str]) -> None:
-    rg.write_json(
-        child_state_path(child_root),
+def mark_child_running(child_root: Path, job: ChildJob, cmd: Sequence[str], launch_count: int) -> None:
+    existing = load_child_state(child_root)
+    update_child_state(
+        child_root,
         {
-            "task": task_name,
-            "architecture": [int(v) for v in architecture],
-            "exit_code": int(exit_code),
+            "task": job.task_name,
+            "architecture": [int(v) for v in job.architecture],
+            "phase_name": job.phase_name,
+            "parameter_count": int(job.parameter_count),
+            "command": list(cmd),
+            "launch_count": int(launch_count),
+            "pause_count": int(existing.get("pause_count", 0)),
+            "failure_count": int(existing.get("failure_count", 0)),
+            "completed": False,
+            "failed": False,
+            "status": "running",
+            "last_started_at": time.time(),
+        },
+    )
+
+
+def mark_child_pause_requested(child_root: Path, job: ChildJob, reason: str) -> None:
+    existing = load_child_state(child_root)
+    update_child_state(
+        child_root,
+        {
+            "task": job.task_name,
+            "architecture": [int(v) for v in job.architecture],
+            "phase_name": job.phase_name,
+            "parameter_count": int(job.parameter_count),
+            "completed": False,
+            "failed": False,
+            "status": "pausing",
+            "pause_requested": True,
+            "pause_count": int(existing.get("pause_count", 0)),
+            "last_pause_reason": str(reason),
+            "last_pause_requested_at": time.time(),
+        },
+    )
+
+
+def mark_child_paused(child_root: Path, job: ChildJob, exit_code: int, reason: str) -> None:
+    existing = load_child_state(child_root)
+    update_child_state(
+        child_root,
+        {
+            "task": job.task_name,
+            "architecture": [int(v) for v in job.architecture],
+            "phase_name": job.phase_name,
+            "parameter_count": int(job.parameter_count),
+            "completed": False,
+            "failed": False,
+            "status": "paused",
+            "pause_requested": False,
+            "pause_count": int(existing.get("pause_count", 0)) + 1,
+            "last_pause_reason": str(reason),
+            "last_exit_code": int(exit_code),
+            "last_paused_at": time.time(),
+        },
+    )
+
+
+def mark_child_retrying(child_root: Path, job: ChildJob, exit_code: int, cmd: Sequence[str], failure_count: int) -> None:
+    existing = load_child_state(child_root)
+    update_child_state(
+        child_root,
+        {
+            "task": job.task_name,
+            "architecture": [int(v) for v in job.architecture],
+            "phase_name": job.phase_name,
+            "parameter_count": int(job.parameter_count),
+            "command": list(cmd),
+            "completed": False,
+            "failed": False,
+            "status": "retrying",
+            "pause_requested": False,
+            "pause_count": int(existing.get("pause_count", 0)),
+            "failure_count": int(failure_count),
+            "last_exit_code": int(exit_code),
+            "last_failed_at": time.time(),
+        },
+    )
+
+
+def mark_child_failed(child_root: Path, job: ChildJob, exit_code: int, cmd: Sequence[str], failure_count: int) -> None:
+    update_child_state(
+        child_root,
+        {
+            "task": job.task_name,
+            "architecture": [int(v) for v in job.architecture],
+            "phase_name": job.phase_name,
+            "parameter_count": int(job.parameter_count),
             "command": list(cmd),
             "completed": False,
             "failed": True,
+            "status": "failed",
+            "pause_requested": False,
+            "failure_count": int(failure_count),
+            "exit_code": int(exit_code),
+            "last_failed_at": time.time(),
+        },
+    )
+
+
+def mark_child_completed(child_root: Path, job: ChildJob) -> None:
+    existing = load_child_state(child_root)
+    update_child_state(
+        child_root,
+        {
+            "task": job.task_name,
+            "architecture": [int(v) for v in job.architecture],
+            "phase_name": job.phase_name,
+            "parameter_count": int(job.parameter_count),
+            "completed": True,
+            "failed": False,
+            "status": "completed",
+            "pause_requested": False,
+            "pause_count": int(existing.get("pause_count", 0)),
+            "failure_count": int(existing.get("failure_count", 0)),
+            "completed_at": time.time(),
         },
     )
 
@@ -375,6 +569,78 @@ def aggregate_task(task_name: str, task_root: Path, child_roots: Sequence[Path])
     }
 
 
+def sample_host_memory_pressure() -> MemoryPressureSample:
+    total_mib = 0
+    available_mib = 0
+    try:
+        with open("/proc/meminfo", "r", encoding="utf-8") as handle:
+            for line in handle:
+                if line.startswith("MemTotal:"):
+                    total_mib = int(int(line.split()[1]) // 1024)
+                elif line.startswith("MemAvailable:"):
+                    available_mib = int(int(line.split()[1]) // 1024)
+                if total_mib and available_mib:
+                    break
+    except Exception:
+        pass
+    if total_mib <= 0:
+        total_mib = 1
+    if available_mib < 0:
+        available_mib = 0
+    used_pct = max(0.0, min(100.0, (1.0 - (float(available_mib) / float(total_mib))) * 100.0))
+    return MemoryPressureSample(total_mib=int(total_mib), available_mib=int(available_mib), used_pct=float(used_pct))
+
+
+def concrete_job_sort_key(job: ChildJob) -> Tuple[int, int, str, Tuple[int, ...]]:
+    return (int(job.parameter_count), int(job.depth), str(job.task_name), tuple(job.architecture))
+
+
+def build_task_jobs(args: argparse.Namespace, tasks: Sequence[str], run_root: Path) -> Dict[str, List[ChildJob]]:
+    cfg = stl.make_cfg(args, list(tasks), run_root)
+    base_architectures = stl.build_architectures(args)
+    jobs_by_task: Dict[str, List[ChildJob]] = {}
+    for task_name in tasks:
+        task_root = run_root / task_name
+        child_base = task_root / "_children"
+        child_base.mkdir(parents=True, exist_ok=True)
+        task = build_task(task_name, cfg.data_dir, 1, cfg.num_workers, cfg.seed, pin_memory=bool(args.pin_memory))
+        task_jobs: List[ChildJob] = []
+        for architecture in base_architectures:
+            family = [list(architecture)]
+            if cfg.parameter_matched and len(architecture) == 1:
+                family = stl.parameter_matched_architectures(task, int(architecture[0]), cfg)
+            family = stl.dedupe_architectures(family)
+            for expanded_architecture in family:
+                architecture_tuple = tuple(int(v) for v in expanded_architecture)
+                phase_name = stl.phase_name_for_architecture(expanded_architecture, 1)
+                child_root = resolve_child_root(child_base, phase_name)
+                parameter_count = int(rg.count_model_parameters(rg.make_stl_model(task, expanded_architecture, bool(args.use_bn))))
+                task_jobs.append(
+                    ChildJob(
+                        task_name=task_name,
+                        architecture=architecture_tuple,
+                        child_root=child_root,
+                        parameter_count=parameter_count,
+                        depth=len(architecture_tuple),
+                        phase_name=phase_name,
+                    )
+                )
+        task_jobs.sort(key=concrete_job_sort_key)
+        jobs_by_task[task_name] = task_jobs
+    return jobs_by_task
+
+
+def active_job_limit(args: argparse.Namespace, job_count: int) -> int:
+    limit = int(getattr(args, "max_active_jobs", 0) or 0)
+    if limit <= 0:
+        return max(1, int(job_count))
+    return max(1, int(limit))
+
+
+def launch_child_process(cmd: Sequence[str]) -> subprocess.Popen[Any]:
+    return subprocess.Popen(list(cmd), start_new_session=True)
+
+
 def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, architectures: Sequence[Sequence[int]]) -> Dict[str, Any]:
     task_root = run_root / task_name
     child_base = task_root / "_children"
@@ -401,7 +667,7 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
                 child_run_root=child_root,
             )
             child_root.mkdir(parents=True, exist_ok=True)
-            proc = subprocess.Popen(cmd)
+            proc = launch_child_process(cmd)
             active[proc] = (architecture, child_root, cmd)
             launch_count += 1
 
@@ -413,12 +679,18 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
             code = proc.poll()
             if code is None:
                 continue
-            if code != 0:
-                architecture, child_root, cmd = active[proc]
+            architecture, child_root, cmd = active[proc]
+            if code != 0 and not child_completed(child_root, task_name):
                 log = f"Child job failed (arch={architecture}, root={child_root}, code={code}): {' '.join(cmd)}"
                 print(log, flush=True)
                 terminate_child_process(proc)
-                mark_child_failed(child_root, task_name, architecture, code, cmd)
+                mark_child_failed(
+                    child_root,
+                    ChildJob(task_name=task_name, architecture=tuple(architecture), child_root=child_root, parameter_count=0, depth=len(architecture), phase_name=child_root.name),
+                    code,
+                    cmd,
+                    1,
+                )
                 jobs.appendleft((architecture, child_root))
                 finished.append(proc)
                 continue
@@ -426,7 +698,8 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
             finished.append(proc)
 
         for proc in finished:
-            architecture, child_root, cmd = active.pop(proc)
+            architecture, child_root, _ = active.pop(proc)
+            del architecture
             completed_children.append(child_root)
 
         if active:
@@ -435,9 +708,148 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
     return aggregate_task(task_name, task_root, completed_children)
 
 
+def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence[str], logger: ContinuousLogger) -> List[Dict[str, Any]]:
+    jobs_by_task = build_task_jobs(args, tasks, run_root)
+    pending: Deque[ChildJob] = deque(sorted((job for jobs in jobs_by_task.values() for job in jobs), key=concrete_job_sort_key))
+    task_child_roots: Dict[str, List[Path]] = {task_name: [job.child_root for job in jobs] for task_name, jobs in jobs_by_task.items()}
+    active: Dict[subprocess.Popen[Any], ActiveChildJob] = {}
+    failure_counts: Dict[Path, int] = defaultdict(int)
+    launches_total = 0
+    active_limit = active_job_limit(args, len(pending))
+
+    while pending or active:
+        finished: List[subprocess.Popen[Any]] = []
+        for proc, active_job in list(active.items()):
+            code = proc.poll()
+            if code is None:
+                continue
+            finished.append(proc)
+            job = active_job.job
+            if child_completed(job.child_root, job.task_name):
+                logger.log_console(
+                    f"[TASK] completed task={job.task_name} phase={job.phase_name} params={job.parameter_count}"
+                )
+                mark_child_completed(job.child_root, job)
+                continue
+            if active_job.pause_requested:
+                logger.log_console(
+                    f"[PRESSURE] paused task={job.task_name} phase={job.phase_name} params={job.parameter_count} exit={code}"
+                )
+                mark_child_paused(job.child_root, job, int(code or 0), "host_ram_pressure")
+                pending.appendleft(job)
+                continue
+            failure_counts[job.child_root] += 1
+            if failure_counts[job.child_root] <= int(args.max_retries_per_job):
+                logger.log_console(
+                    f"[TASK] retry task={job.task_name} phase={job.phase_name} params={job.parameter_count} "
+                    f"exit={code} retry={failure_counts[job.child_root]}/{int(args.max_retries_per_job)}"
+                )
+                mark_child_retrying(job.child_root, job, int(code or 0), active_job.cmd, failure_counts[job.child_root])
+                pending.appendleft(job)
+                continue
+            mark_child_failed(job.child_root, job, int(code or 0), active_job.cmd, failure_counts[job.child_root])
+            raise RuntimeError(
+                f"Child job failed permanently after {int(args.max_retries_per_job)} retries: "
+                f"task={job.task_name} phase={job.phase_name} root={job.child_root} exit={code}"
+            )
+
+        for proc in finished:
+            active.pop(proc, None)
+
+        pressure = sample_host_memory_pressure()
+        if active and pressure.used_pct > float(args.host_ram_pressure_limit_pct):
+            pausable = [entry for entry in active.values() if not entry.pause_requested]
+            if len(active) > 1 and pausable:
+                largest = max(pausable, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.task_name))
+                largest.pause_requested = True
+                mark_child_pause_requested(largest.job.child_root, largest.job, "host_ram_pressure")
+                logger.log_console(
+                    f"[PRESSURE] request_pause task={largest.job.task_name} phase={largest.job.phase_name} "
+                    f"params={largest.job.parameter_count} used_pct={pressure.used_pct:.2f} "
+                    f"avail_mib={pressure.available_mib}/{pressure.total_mib}"
+                )
+                terminate_child_process(next(proc for proc, entry in active.items() if entry is largest))
+                time.sleep(max(0.0, float(args.pressure_settle_sec)))
+                continue
+
+        under_active_limit = len(active) < int(active_limit)
+        can_launch = pressure.used_pct <= float(args.host_ram_resume_pct)
+        if pending and under_active_limit and (can_launch or not active):
+            job = pending.popleft()
+            if child_completed(job.child_root, job.task_name):
+                mark_child_completed(job.child_root, job)
+                logger.log_console(
+                    f"[TASK] already_complete task={job.task_name} phase={job.phase_name} params={job.parameter_count}"
+                )
+                continue
+            cmd = build_worker_command(
+                args=args,
+                task_name=job.task_name,
+                architecture=job.architecture,
+                child_run_root=job.child_root,
+            )
+            launches_total += 1
+            mark_child_running(job.child_root, job, cmd, launches_total)
+            proc = launch_child_process(cmd)
+            active[proc] = ActiveChildJob(job=job, cmd=cmd, pause_requested=False, launch_count=launches_total)
+            logger.log_console(
+                f"[TASK] launch task={job.task_name} phase={job.phase_name} params={job.parameter_count} "
+                f"used_pct={pressure.used_pct:.2f} avail_mib={pressure.available_mib}/{pressure.total_mib} "
+                f"active={len(active)}/{active_limit}"
+            )
+            time.sleep(max(0.0, float(args.pressure_settle_sec)))
+            continue
+
+        if active or pending:
+            time.sleep(max(0.1, float(args.pressure_poll_interval_sec)))
+
+    task_reports: List[Dict[str, Any]] = []
+    comparison_rows: List[Dict[str, Any]] = []
+    for task_name in tasks:
+        report = aggregate_task(task_name, run_root / task_name, task_child_roots.get(task_name, []))
+        task_reports.append(report)
+        comparison_rows.extend(report.get("comparisons", []))
+
+    if comparison_rows:
+        rg.write_csv(
+            run_root / "comparison_summary.csv",
+            comparison_rows,
+            fieldnames=[
+                "task",
+                "repeat",
+                "ablation_phase",
+                "ablation_architecture",
+                "ablation_parameter_count",
+                "ablation_best_val",
+                "reference_kind",
+                "reference_phase",
+                "reference_architecture",
+                "reference_best_val",
+                "winner",
+                "winner_value",
+            ],
+        )
+    rg.write_json(
+        run_root / "comparison_summary.json",
+        {
+            "tasks": list(tasks),
+            "scheduler": "pressure_aware",
+            "param_band": list(stl.normalize_param_band(getattr(args, "param_band", None))) if getattr(args, "param_band", None) else None,
+            "host_ram_pressure_limit_pct": float(args.host_ram_pressure_limit_pct),
+            "host_ram_resume_pct": float(args.host_ram_resume_pct),
+            "max_active_jobs": int(active_limit),
+            "repeat_count": int(args.repeat_count),
+            "reports": task_reports,
+        },
+    )
+    return task_reports
+
+
 def main() -> None:
     args = parse_args()
     args.concurrency = resolve_concurrency(args)
+    if float(args.host_ram_resume_pct) > float(args.host_ram_pressure_limit_pct):
+        raise SystemExit("--host-ram-resume-pct must be <= --host-ram-pressure-limit-pct")
     tasks = [str(t).lower() for t in args.tasks]
     architectures = stl.build_architectures(args)
     if not architectures:
@@ -458,12 +870,23 @@ def main() -> None:
     if param_band is not None:
         logger.log_console(f"Parameter decade band: {list(param_band)}")
     logger.log_console(f"Repeat count: {int(args.repeat_count)}")
+    logger.log_console(f"Scheduler: {args.scheduler}")
     logger.log_console(f"Concurrency: {int(args.concurrency)}")
     if getattr(args, "concurrency_file", None):
         logger.log_console(f"Concurrency file: {args.concurrency_file}")
+    if args.scheduler == "pressure_aware":
+        logger.log_console(f"Host RAM pressure limit pct: {float(args.host_ram_pressure_limit_pct):.2f}")
+        logger.log_console(f"Host RAM resume pct: {float(args.host_ram_resume_pct):.2f}")
+        logger.log_console(f"Max active jobs: {int(args.max_active_jobs)}")
+        logger.log_console(f"Max retries per job: {int(args.max_retries_per_job)}")
     logger.log_console(f"Source run root: {args.source_run_root}")
     logger.log_console(f"Device: {torch.device('cuda' if torch.cuda.is_available() else 'cpu')}")
     logger.log_console(f"Git commit: {rg.git_commit()}")
+
+    if args.scheduler == "pressure_aware":
+        run_pressure_aware(args, run_root, tasks, logger)
+        logger.close()
+        return
 
     task_reports: List[Dict[str, Any]] = []
     comparison_rows: List[Dict[str, Any]] = []
@@ -498,6 +921,7 @@ def main() -> None:
             "tasks": tasks,
             "architectures": architectures,
             "param_band": list(param_band) if param_band is not None else None,
+            "scheduler": "fixed",
             "concurrency": int(args.concurrency),
             "concurrency_file": str(args.concurrency_file) if getattr(args, "concurrency_file", None) else None,
             "source_run_root": str(args.source_run_root),
