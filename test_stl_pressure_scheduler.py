@@ -74,9 +74,12 @@ class STLPressureSchedulerTests(unittest.TestCase):
             max_active_jobs=0,
             host_ram_pressure_limit_pct=90.0,
             host_ram_resume_pct=85.0,
+            gpu_memory_pressure_limit_pct=90.0,
+            gpu_memory_resume_pct=85.0,
+            gpu_device_index=0,
             pressure_poll_interval_sec=0.0,
             pressure_settle_sec=0.0,
-            max_retries_per_job=1,
+            max_retries_per_job=0,
             data_dir="./data",
             results_dir="MLPS/tabular/shared/dae_dnn/results",
             source_run_root="MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current",
@@ -102,17 +105,17 @@ class STLPressureSchedulerTests(unittest.TestCase):
                 self.assertEqual(root, run_root)
                 return jobs_by_task
 
-            def fake_build_cmd(*, args, task_name, architecture, child_run_root):
+            def fake_build_cmd(*, args, task_name, architecture, child_run_root, device_mode):
                 name = "large" if child_run_root == large_root else "small"
                 return [name]
 
-            def fake_launch(cmd):
+            def fake_launch(cmd, env=None, log_path=None):
                 name = cmd[0]
                 root = large_root if name == "large" else small_root
                 launch_counts[name] += 1
                 proc = FakeProc(name, root, completed_roots, launch_counts)
                 live.append(proc)
-                return proc
+                return proc, None
 
             def fake_terminate(proc):
                 proc.terminated = True
@@ -158,12 +161,72 @@ class STLPressureSchedulerTests(unittest.TestCase):
             self.assertIn(large_root, completed_roots)
 
     def test_launch_child_process_uses_new_session(self) -> None:
-        proc = parallel.launch_child_process(["sleep", "30"])
+        proc, handle = parallel.launch_child_process(["sleep", "30"])
         try:
             self.assertNotEqual(os.getpgid(proc.pid), os.getpgrp())
         finally:
             parallel.terminate_child_process(proc)
+            parallel.close_child_log(handle)
             proc.wait(timeout=5)
+
+    def test_child_failure_is_requeued_without_parent_abort(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_root = Path(tmp) / "run"
+            failing_root = run_root / "task_b" / "_children" / "failing"
+            jobs_by_task = {
+                "task_b": [
+                    parallel.ChildJob("task_b", (3,), failing_root, 30, 1, "failing"),
+                ]
+            }
+            launch_counts = {"failing": 0}
+
+            class RetryProc:
+                _next_pid = 3000
+
+                def __init__(self) -> None:
+                    self.pid = RetryProc._next_pid
+                    RetryProc._next_pid += 1
+                    self.done = False
+
+                def poll(self):
+                    if not self.done:
+                        self.done = True
+                        return 1
+                    return 1
+
+            def fake_build_jobs(args, tasks, root):
+                return jobs_by_task
+
+            def fake_build_cmd(*, args, task_name, architecture, child_run_root, device_mode):
+                return ["failing"]
+
+            def fake_launch(cmd, env=None, log_path=None):
+                launch_counts["failing"] += 1
+                if launch_counts["failing"] >= 3:
+                    raise KeyboardInterrupt
+                return RetryProc(), None
+
+            def fake_child_completed(child_root, task_name):
+                return False
+
+            logger = mock.Mock()
+            args = self.make_args()
+
+            with mock.patch.object(parallel, "build_task_jobs", side_effect=fake_build_jobs), \
+                mock.patch.object(parallel, "build_worker_command", side_effect=fake_build_cmd), \
+                mock.patch.object(parallel, "launch_child_process", side_effect=fake_launch), \
+                mock.patch.object(parallel, "child_completed", side_effect=fake_child_completed), \
+                mock.patch.object(parallel, "sample_host_memory_pressure", return_value=parallel.MemoryPressureSample(total_mib=1000, available_mib=900, used_pct=10.0)), \
+                mock.patch.object(parallel, "sample_gpu_memory_pressure", return_value=parallel.GpuPressureSample(total_mib=0, used_mib=0, used_pct=0.0)), \
+                mock.patch.object(parallel.time, "sleep", return_value=None):
+                with self.assertRaises(KeyboardInterrupt):
+                    parallel.run_pressure_aware(args, run_root, ["task_b"], logger)
+
+            self.assertGreaterEqual(launch_counts["failing"], 3)
+            state = parallel.load_child_state(failing_root)
+            self.assertIn(state.get("status"), {"retrying", "running"})
+            self.assertFalse(bool(state.get("failed", False)))
+            self.assertGreaterEqual(int(state.get("failure_count", 0)), 2)
 
 
 if __name__ == "__main__":

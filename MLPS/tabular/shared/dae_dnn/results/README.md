@@ -67,21 +67,33 @@ Before launching any of those parameter-band roots on a given laptop, prefer
 the pressure-aware scheduler in
 `MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py`. In its default
 mode it expands all concrete STL child runs for the chosen tasks/band, sorts
-them globally smallest-to-largest by parameter count, and keeps launching
-work while host RAM pressure stays under the configured threshold. If RAM
+them globally smallest-to-largest by parameter count, but partial child roots
+with existing resume state are always considered before untouched jobs. It
+fills GPU first up to the GPU memory threshold and then spills extra children
+onto CPU while host RAM is still below its resume threshold. If host RAM
 pressure exceeds the limit, it requests a pause on the largest active child,
 terminates only that child process group, and later relaunches the same child
-root so the run resumes from its normal STL checkpoints.
+root so the run resumes from its normal STL checkpoints. If a child exits
+with CUDA OOM or `CUBLAS_STATUS_ALLOC_FAILED`, the scheduler requests a pause
+on the largest active GPU child, requeues the failed child at the front of
+the queue, and retries it again when resources free up.
 
 Relevant flags:
 
 - `--scheduler pressure_aware`
 - `--host-ram-pressure-limit-pct`
 - `--host-ram-resume-pct`
+- `--gpu-memory-pressure-limit-pct`
+- `--gpu-memory-resume-pct`
+- `--gpu-device-index`
 - `--max-active-jobs`
-- `--max-retries-per-job`
+- `--max-retries-per-job` as a legacy compatibility flag; pressure-aware mode requeues failed children indefinitely
 - `--pressure-poll-interval-sec`
 - `--pressure-settle-sec`
+
+Each pressure-aware child also writes `_child_process.log` in its child root.
+That file is used to detect CUDA OOM and cuBLAS allocation failures during
+GPU-specific recovery.
 
 The parallelism probe is still available as an optional fixed-slot fallback.
 It starts at `N=2`, launches the `N` largest parameter-count candidates

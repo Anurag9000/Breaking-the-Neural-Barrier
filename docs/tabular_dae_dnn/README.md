@@ -83,20 +83,35 @@ fully finished.
 The preferred massive STL launcher is now the pressure-aware scheduler in
 `MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py`. It expands each
 task/depth family into concrete STL child runs, sorts them globally
-smallest-to-largest by parameter count, launches as many as fit, and pauses
-the largest active child if host RAM pressure crosses the configured
-threshold. Paused children resume from the same child root and reuse the
-normal STL checkpoints and `ablation_state.json`.
+smallest-to-largest by parameter count, but it gives priority to any child
+root that already has partial resume state before untouched jobs. It launches
+as many children as fit, fills GPU slots first up to the configured GPU
+memory threshold, and then spills additional children onto CPU while host RAM
+is still below the configured resume threshold. If host RAM pressure crosses
+the configured threshold, it pauses the largest active child. If a child dies
+with a CUDA OOM signature, the scheduler pauses the largest active GPU child,
+requeues the failed child at the front of the pending queue, and retries it
+again as soon as a device slot becomes available. Children always resume from
+the same child root and reuse the normal STL checkpoints and
+`ablation_state.json`.
 
 Key pressure-aware flags:
 
 - `--scheduler pressure_aware`
 - `--host-ram-pressure-limit-pct 90`
 - `--host-ram-resume-pct 85`
+- `--gpu-memory-pressure-limit-pct 90`
+- `--gpu-memory-resume-pct 85`
+- `--gpu-device-index 0`
 - `--max-active-jobs 0` for no hard slot cap beyond RAM pressure
-- `--max-retries-per-job 10`
+- `--max-retries-per-job 0` as a legacy compatibility flag; pressure-aware mode now requeues failed children indefinitely
 - `--pressure-poll-interval-sec 0.5`
 - `--pressure-settle-sec 1.0`
+
+Each pressure-aware child also writes a local `_child_process.log` under its
+child root. The scheduler uses that file to detect CUDA OOM and cuBLAS
+allocation failures when deciding whether to evict a GPU peer and immediately
+requeue the failed child.
 
 Parallelism probes for the same STL bands, if you still want a fixed-slot
 concurrency recommendation for a specific laptop, should live under:
