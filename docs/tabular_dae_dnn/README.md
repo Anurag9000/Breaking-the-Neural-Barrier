@@ -80,15 +80,32 @@ It resumes incomplete task roots inside the current repeat, skips completed
 task roots, and moves to the next repeat only after the current repeat is
 fully finished.
 
-Parallelism probes for the same STL bands should live under:
+The preferred massive STL launcher is now the pressure-aware scheduler in
+`MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py`. It expands each
+task/depth family into concrete STL child runs, sorts them globally
+smallest-to-largest by parameter count, launches as many as fit, and pauses
+the largest active child if host RAM pressure crosses the configured
+threshold. Paused children resume from the same child root and reuse the
+normal STL checkpoints and `ablation_state.json`.
+
+Key pressure-aware flags:
+
+- `--scheduler pressure_aware`
+- `--host-ram-pressure-limit-pct 90`
+- `--host-ram-resume-pct 85`
+- `--max-active-jobs 0` for no hard slot cap beyond RAM pressure
+
+Parallelism probes for the same STL bands, if you still want a fixed-slot
+concurrency recommendation for a specific laptop, should live under:
 
 ```text
 MLPS/tabular/shared/dae_dnn/results/stl/parallelism_probe/<band_name>
 ```
 
-Use the probe output file to feed the real launcher through
-`--concurrency-file`. The probe runs the heaviest candidates first for two
-epochs; the real ablation runs the same family smallest-to-largest.
+The probe path is now optional compatibility tooling. It still writes a
+recommended fixed concurrency and still runs the heaviest candidates first
+for two epochs, but the preferred real run path is the pressure-aware
+scheduler rather than `--concurrency-file`.
 
 When splitting the massive STL run across multiple laptops, stage each
 parameter-decade band under its own sibling root, for example:

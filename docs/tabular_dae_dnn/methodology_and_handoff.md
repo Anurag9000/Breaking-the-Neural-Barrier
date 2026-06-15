@@ -197,12 +197,31 @@ run. The real runner default is effectively unbounded (`--max-epochs
 short run in this workflow is the parallelism probe, which is capped at two
 epochs on purpose.
 
-Before starting the real ablation on a given laptop, run the parallelism
-probe for the same parameter band. The probe starts at `N=2`, launches the
-`N` largest parameter-count candidates first, runs each of them for exactly
-two epochs through the normal checkpoint/resume path, and increases `N`
-until a trial fails. The last successful `N` is the concurrency to use on
-that laptop.
+Before starting the real ablation on a given laptop, prefer the
+pressure-aware scheduler in
+`MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py`. It now expands
+the concrete STL child runs for the chosen band, sorts them globally from
+smallest to largest parameter count, and opportunistically fills the machine
+with as many children as fit. It monitors host RAM usage from `/proc/meminfo`.
+If used RAM crosses the configured pressure threshold, it requests a pause on
+the largest active child, terminates only that child process group, and
+requeues that same child root. When enough RAM is free again, the scheduler
+relaunches the paused child from the same run directory, so resumability is
+handled by the normal STL checkpoints and `ablation_state.json`.
+
+Relevant flags:
+
+- `--scheduler pressure_aware`
+- `--host-ram-pressure-limit-pct 90`
+- `--host-ram-resume-pct 85`
+- `--max-active-jobs 0`
+
+The old probe path is still available if you want a fixed-slot concurrency
+number for a specific laptop. The probe starts at `N=2`, launches the `N`
+largest parameter-count candidates first, runs each of them for exactly two
+epochs through the normal checkpoint/resume path, and increases `N` until a
+trial fails. The last successful `N` is the fixed concurrency to use for the
+legacy scheduler.
 
 The probe writes two files into its run root:
 
@@ -240,7 +259,7 @@ The planner reports every sampled target per depth and the deduped candidate
 families that the actual run will execute. Use it when you want to see the
 exact candidate spread before launching the banded run.
 
-Example probe command:
+Example optional probe command:
 
 ```bash
 cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
@@ -260,7 +279,31 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_pa
   --batch-size 9312
 ```
 
-Example real run command using the probe output:
+Example real run command using the pressure-aware scheduler:
+
+```bash
+cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
+
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
+CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
+  --data-dir ./data \
+  --results-dir MLPS/tabular/shared/dae_dnn/results \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03 \
+  --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current \
+  --tasks classification autoencoding generation denoising anomaly simulation prediction \
+  --param-band 1 3 \
+  --repeat-count 5 \
+  --scheduler pressure_aware \
+  --host-ram-pressure-limit-pct 90 \
+  --host-ram-resume-pct 85 \
+  --max-active-jobs 0 \
+  --max-epochs 100000000 \
+  --num-workers 0 \
+  --pin-memory \
+  --batch-size 9312
+```
+
+Example legacy fixed-slot run using the probe output:
 
 ```bash
 cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
@@ -305,9 +348,10 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
 Repeat the same command on the other laptops, changing only the parameter band
 and the `--run-root` suffix.
 
-The real ablation order within each candidate family is now smallest-to-
-largest. The probe uses the opposite order and is intentionally adversarial:
-it stress tests the heaviest models first.
+The pressure-aware scheduler runs concrete children globally from
+smallest-to-largest and may temporarily pause the largest one if host memory
+pressure spikes. The probe uses the opposite order and is intentionally
+adversarial: it stress tests the heaviest models first.
 
 After all bands finish, merge them into the canonical STL root:
 
