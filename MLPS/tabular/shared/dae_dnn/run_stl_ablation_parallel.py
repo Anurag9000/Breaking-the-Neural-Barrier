@@ -823,6 +823,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
     launches_total = 0
     active_limit = active_job_limit(args, len(pending))
     gpu_available = bool(torch.cuda.is_available())
+    launches_enabled = True
 
     def build_child_env(device_mode: str) -> Dict[str, str]:
         env = os.environ.copy()
@@ -853,6 +854,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     f"[TASK] completed task={job.task_name} phase={job.phase_name} params={job.parameter_count}"
                 )
                 mark_child_completed(job.child_root, job)
+                launches_enabled = True
                 continue
             if active_job.pause_requested:
                 logger.log_console(
@@ -860,6 +862,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 )
                 mark_child_paused(job.child_root, job, int(code or 0), "host_ram_pressure")
                 pending.appendleft(job)
+                launches_enabled = False
                 continue
             failure_counts[job.child_root] += 1
             if active_job.device_mode == "cuda" and child_log_indicates_cuda_oom(active_job.log_path):
@@ -883,6 +886,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     )
                     terminate_child_process(next(peer_proc for peer_proc, entry in active.items() if entry is largest_gpu))
                 pending.appendleft(job)
+                launches_enabled = False
                 continue
             logger.log_console(
                 f"[TASK] retry_forever task={job.task_name} phase={job.phase_name} params={job.parameter_count} "
@@ -890,6 +894,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             )
             mark_child_retrying(job.child_root, job, int(code or 0), active_job.cmd, failure_counts[job.child_root])
             pending.appendleft(job)
+            launches_enabled = False
             continue
 
         for proc in finished:
@@ -929,7 +934,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
 
         under_active_limit = len(active) < int(active_limit)
         chosen_device_mode = choose_device_mode(pressure, gpu_pressure)
-        if pending and under_active_limit and (chosen_device_mode is not None or not active):
+        can_launch_now = launches_enabled or not active
+        if pending and under_active_limit and can_launch_now and (chosen_device_mode is not None or not active):
             job = pending.popleft()
             if child_completed(job.child_root, job.task_name):
                 mark_child_completed(job.child_root, job)

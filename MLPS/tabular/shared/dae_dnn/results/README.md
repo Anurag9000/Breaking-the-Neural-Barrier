@@ -78,6 +78,12 @@ with CUDA OOM or `CUBLAS_STATUS_ALLOC_FAILED`, the scheduler requests a pause
 on the largest active GPU child, requeues the failed child at the front of
 the queue, and retries it again when resources free up.
 
+After the initial fill, new launches are completion-gated. A memory-pressure
+pause or retryable child failure closes the admission window immediately. The
+scheduler then waits for a true child completion before it considers another
+launch attempt, and that next attempt resumes paused or partial work before it
+admits untouched jobs.
+
 Relevant flags:
 
 - `--scheduler pressure_aware`
