@@ -79,6 +79,9 @@ Relevant flags:
 - `--host-ram-pressure-limit-pct`
 - `--host-ram-resume-pct`
 - `--max-active-jobs`
+- `--max-retries-per-job`
+- `--pressure-poll-interval-sec`
+- `--pressure-settle-sec`
 
 The parallelism probe is still available as an optional fixed-slot fallback.
 It starts at `N=2`, launches the `N` largest parameter-count candidates
