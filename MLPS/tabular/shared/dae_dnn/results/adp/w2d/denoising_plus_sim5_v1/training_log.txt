@@ -30,3 +30,27 @@
 [2026-06-13 20:02:21] Concurrency: 6
 [2026-06-13 20:02:21] Git commit: dd79782d07321f8694fe0a3d3f250d9c60d0d8fc
 [2026-06-13 20:02:21] [PHASE] start name=all_parallel jobs=6 repeat_01=['denoising'], repeat_02=['denoising'], repeat_03=['denoising'], repeat_04=['denoising'], repeat_05=['denoising', 'simulation']
+[2026-06-13 20:18:28] Initialized ContinuousLogger for adp_w2d_explicit_plan (Mode: adp_width_to_depth)
+[2026-06-13 20:18:28] Logs: MLPS/tabular/shared/dae_dnn/results/adp/w2d/denoising_plus_sim5_v1/training_log.txt
+[2026-06-13 20:18:28] CSV: MLPS/tabular/shared/dae_dnn/results/adp/w2d/denoising_plus_sim5_v1/training_stats.csv
+[2026-06-13 20:18:28] Run root: MLPS/tabular/shared/dae_dnn/results/adp/w2d/denoising_plus_sim5_v1
+[2026-06-13 20:18:28] Plan file: MLPS/tabular/shared/dae_dnn/adp_denoising_simulation_suite_plan.json
+[2026-06-13 20:18:28] Batch size: 9312
+[2026-06-13 20:18:28] Hidden seed: [1]
+[2026-06-13 20:18:28] Concurrency: 6
+[2026-06-13 20:18:28] Git commit: d3202cdc2c5580173dc39cf03b43286761544e56
+[2026-06-13 20:18:28] [PHASE] start name=all_parallel jobs=6 repeat_01=['denoising'], repeat_02=['denoising'], repeat_03=['denoising'], repeat_04=['denoising'], repeat_05=['simulation', 'prediction']
+[2026-06-13 20:52:53] [TASK] completed phase=all_parallel repeat=5 task=prediction
+[2026-06-13 21:51:06] [TASK] completed phase=all_parallel repeat=5 task=simulation
+[2026-06-14 04:08:25] [TASK] completed phase=all_parallel repeat=1 task=denoising
+[2026-06-14 14:42:35] Initialized ContinuousLogger for adp_w2d_explicit_plan (Mode: adp_width_to_depth)
+[2026-06-14 14:42:35] Logs: MLPS/tabular/shared/dae_dnn/results/adp/w2d/denoising_plus_sim5_v1/training_log.txt
+[2026-06-14 14:42:35] CSV: MLPS/tabular/shared/dae_dnn/results/adp/w2d/denoising_plus_sim5_v1/training_stats.csv
+[2026-06-14 14:42:35] Run root: MLPS/tabular/shared/dae_dnn/results/adp/w2d/denoising_plus_sim5_v1
+[2026-06-14 14:42:35] Plan file: MLPS/tabular/shared/dae_dnn/adp_denoising_simulation_suite_plan.json
+[2026-06-14 14:42:35] Batch size: 9312
+[2026-06-14 14:42:35] Hidden seed: [1]
+[2026-06-14 14:42:35] Concurrency: 6
+[2026-06-14 14:42:35] Git commit: d3202cdc2c5580173dc39cf03b43286761544e56
+[2026-06-14 14:42:35] [PHASE] start name=all_parallel jobs=6 repeat_01=['denoising'], repeat_02=['denoising'], repeat_03=['denoising'], repeat_04=['denoising'], repeat_05=['simulation', 'prediction']
+[2026-06-15 03:52:31] [TASK] completed phase=all_parallel repeat=2 task=denoising
