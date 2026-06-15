@@ -942,6 +942,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--depths", default="")
     p.add_argument("--architecture", action="append", default=[], help="Explicit hidden widths, e.g. --architecture 64,64,64")
     p.add_argument(
+        "--device",
+        choices=["auto", "cuda", "cpu"],
+        default="auto",
+        help="Explicit device selection for this child run. 'auto' keeps the existing CUDA-if-available behavior.",
+    )
+    p.add_argument(
         "--legacy-architecture-grid",
         action="store_true",
         default=False,
@@ -969,7 +975,14 @@ def main() -> None:
 
     cfg = make_cfg(args, tasks, run_root)
     rg.seed_everything(cfg.seed)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if args.device == "cuda":
+        if not torch.cuda.is_available():
+            raise SystemExit("--device cuda requested but CUDA is not available in this process.")
+        device = torch.device("cuda")
+    elif args.device == "cpu":
+        device = torch.device("cpu")
+    else:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     batch_controller = None
 
     logger = ContinuousLogger(run_root, "stl_ablation", "stl_ablation")

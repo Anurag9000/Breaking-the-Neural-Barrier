@@ -201,23 +201,39 @@ Before starting the real ablation on a given laptop, prefer the
 pressure-aware scheduler in
 `MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py`. It now expands
 the concrete STL child runs for the chosen band, sorts them globally from
-smallest to largest parameter count, and opportunistically fills the machine
-with as many children as fit. It monitors host RAM usage from `/proc/meminfo`.
-If used RAM crosses the configured pressure threshold, it requests a pause on
-the largest active child, terminates only that child process group, and
-requeues that same child root. When enough RAM is free again, the scheduler
-relaunches the paused child from the same run directory, so resumability is
-handled by the normal STL checkpoints and `ablation_state.json`.
+smallest to largest parameter count, but partial child roots with existing
+resume state are always considered before untouched jobs. It opportunistically
+fills the machine with as many children as fit, using GPU first until the GPU
+memory resume threshold is reached and then spilling additional children onto
+CPU while host RAM is still below its resume threshold. It monitors host RAM
+usage from `/proc/meminfo` and GPU memory via `nvidia-smi`. If used RAM
+crosses the configured host threshold, it requests a pause on the largest
+active child, terminates only that child process group, and requeues that
+same child root. If a child exits with a CUDA OOM or cuBLAS allocation
+failure, the scheduler requests a pause on the largest active GPU child,
+requeues the failed child at the front of the pending queue, and tries it
+again as soon as a slot is available. When enough RAM or GPU memory is free
+again, the scheduler relaunches the paused child from the same run directory,
+so resumability is handled by the normal STL checkpoints and
+`ablation_state.json`.
 
 Relevant flags:
 
 - `--scheduler pressure_aware`
 - `--host-ram-pressure-limit-pct 90`
 - `--host-ram-resume-pct 85`
+- `--gpu-memory-pressure-limit-pct 90`
+- `--gpu-memory-resume-pct 85`
+- `--gpu-device-index 0`
 - `--max-active-jobs 0`
-- `--max-retries-per-job 10`
+- `--max-retries-per-job 0` as a legacy compatibility flag; pressure-aware mode requeues failed children indefinitely
 - `--pressure-poll-interval-sec 0.5`
 - `--pressure-settle-sec 1.0`
+
+Every pressure-aware child also writes `_child_process.log` in its child root.
+That file is used by the scheduler to recognize CUDA OOM and
+`CUBLAS_STATUS_ALLOC_FAILED` exits when deciding whether to evict a GPU peer
+and immediately requeue the failed child.
 
 The old probe path is still available if you want a fixed-slot concurrency
 number for a specific laptop. The probe starts at `N=2`, launches the `N`
@@ -299,6 +315,9 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --scheduler pressure_aware \
   --host-ram-pressure-limit-pct 90 \
   --host-ram-resume-pct 85 \
+  --gpu-memory-pressure-limit-pct 90 \
+  --gpu-memory-resume-pct 85 \
+  --gpu-device-index 0 \
   --max-active-jobs 0 \
   --max-epochs 100000000 \
   --num-workers 0 \
