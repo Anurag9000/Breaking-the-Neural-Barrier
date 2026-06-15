@@ -118,19 +118,19 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--pressure-poll-interval-sec",
         type=float,
-        default=2.0,
+        default=0.5,
         help="Polling interval for child completion and host RAM pressure checks.",
     )
     p.add_argument(
         "--pressure-settle-sec",
         type=float,
-        default=5.0,
+        default=1.0,
         help="Wait this long after each launch or pause so RAM pressure can settle before the next decision.",
     )
     p.add_argument(
         "--max-retries-per-job",
         type=int,
-        default=3,
+        default=10,
         help="Retry budget for unexpected child exits. Intentional pressure pauses do not consume retries.",
     )
     p.add_argument("--stl-width", type=int, default=128)
