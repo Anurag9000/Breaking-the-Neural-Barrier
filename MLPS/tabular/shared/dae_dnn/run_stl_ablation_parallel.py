@@ -9,7 +9,7 @@ import time
 from collections import defaultdict, deque
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Deque, Dict, List, Optional, Sequence, Tuple
+from typing import IO, Any, Callable, Deque, Dict, List, Optional, Sequence, Tuple
 
 import torch
 
@@ -38,6 +38,9 @@ class ChildJob:
 class ActiveChildJob:
     job: ChildJob
     cmd: List[str]
+    device_mode: str
+    log_path: Path
+    log_handle: Optional[IO[str]] = None
     pause_requested: bool = False
     launch_count: int = 0
 
@@ -46,6 +49,13 @@ class ActiveChildJob:
 class MemoryPressureSample:
     total_mib: int
     available_mib: int
+    used_pct: float
+
+
+@dataclass(frozen=True)
+class GpuPressureSample:
+    total_mib: int
+    used_mib: int
     used_pct: float
 
 
@@ -130,8 +140,26 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--max-retries-per-job",
         type=int,
-        default=10,
-        help="Retry budget for unexpected child exits. Intentional pressure pauses do not consume retries.",
+        default=0,
+        help="Legacy compatibility flag. Pressure-aware mode now requeues failed children indefinitely; 0 reflects unlimited retries.",
+    )
+    p.add_argument(
+        "--gpu-memory-pressure-limit-pct",
+        type=float,
+        default=90.0,
+        help="Pause the largest active GPU child when used GPU memory exceeds this percentage.",
+    )
+    p.add_argument(
+        "--gpu-memory-resume-pct",
+        type=float,
+        default=85.0,
+        help="Only launch or relaunch a child on GPU when used GPU memory is at or below this percentage.",
+    )
+    p.add_argument(
+        "--gpu-device-index",
+        type=int,
+        default=0,
+        help="CUDA device index to use for GPU child launches.",
     )
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
@@ -170,6 +198,7 @@ def build_worker_command(
     task_name: str,
     architecture: Sequence[int],
     child_run_root: Path,
+    device_mode: str,
 ) -> List[str]:
     command = [
         sys.executable,
@@ -231,6 +260,8 @@ def build_worker_command(
         str(int(args.stl_depth)),
         "--metrics-every",
         str(int(args.metrics_every)),
+        "--device",
+        str(device_mode),
     ]
     if not bool(args.use_bn):
         command.append("--no-bn")
@@ -253,6 +284,10 @@ def child_summary_path(child_run_root: Path, task_name: str) -> Path:
 
 def child_state_path(child_run_root: Path) -> Path:
     return child_run_root / "child_run_state.json"
+
+
+def child_process_log_path(child_run_root: Path) -> Path:
+    return child_run_root / "_child_process.log"
 
 
 def load_child_state(child_run_root: Path) -> Dict[str, Any]:
@@ -400,26 +435,6 @@ def mark_child_retrying(child_root: Path, job: ChildJob, exit_code: int, cmd: Se
     )
 
 
-def mark_child_failed(child_root: Path, job: ChildJob, exit_code: int, cmd: Sequence[str], failure_count: int) -> None:
-    update_child_state(
-        child_root,
-        {
-            "task": job.task_name,
-            "architecture": [int(v) for v in job.architecture],
-            "phase_name": job.phase_name,
-            "parameter_count": int(job.parameter_count),
-            "command": list(cmd),
-            "completed": False,
-            "failed": True,
-            "status": "failed",
-            "pause_requested": False,
-            "failure_count": int(failure_count),
-            "exit_code": int(exit_code),
-            "last_failed_at": time.time(),
-        },
-    )
-
-
 def mark_child_completed(child_root: Path, job: ChildJob) -> None:
     existing = load_child_state(child_root)
     update_child_state(
@@ -489,6 +504,36 @@ def terminate_child_process(proc: subprocess.Popen[Any], timeout_sec: float = 10
         proc.wait(timeout=timeout_sec)
     except Exception:
         pass
+
+
+def close_child_log(handle: Optional[IO[str]]) -> None:
+    if handle is None:
+        return
+    try:
+        handle.flush()
+    except Exception:
+        pass
+    try:
+        handle.close()
+    except Exception:
+        pass
+
+
+def child_log_indicates_cuda_oom(log_path: Path) -> bool:
+    if not log_path.exists():
+        return False
+    try:
+        text = log_path.read_text(encoding="utf-8", errors="ignore")
+    except Exception:
+        return False
+    markers = (
+        "cuda error: out of memory",
+        "cuda out of memory",
+        "cublas_status_alloc_failed",
+        "cuda error: cublas_status_alloc_failed",
+    )
+    lowered = text.lower()
+    return any(marker in lowered for marker in markers)
 
 
 def aggregate_task(task_name: str, task_root: Path, child_roots: Sequence[Path]) -> Dict[str, Any]:
@@ -591,8 +636,52 @@ def sample_host_memory_pressure() -> MemoryPressureSample:
     return MemoryPressureSample(total_mib=int(total_mib), available_mib=int(available_mib), used_pct=float(used_pct))
 
 
+def sample_gpu_memory_pressure(device_index: int = 0) -> GpuPressureSample:
+    total_mib = 0
+    used_mib = 0
+    try:
+        out = subprocess.check_output(
+            [
+                "nvidia-smi",
+                f"--id={int(device_index)}",
+                "--query-gpu=memory.total,memory.used",
+                "--format=csv,noheader,nounits",
+            ],
+            stderr=subprocess.DEVNULL,
+        )
+        row = out.decode("utf-8").strip().splitlines()[0]
+        total_text, used_text = [part.strip() for part in row.split(",", 1)]
+        total_mib = int(float(total_text))
+        used_mib = int(float(used_text))
+    except Exception:
+        pass
+    if total_mib <= 0:
+        return GpuPressureSample(total_mib=0, used_mib=0, used_pct=0.0)
+    used_pct = max(0.0, min(100.0, (float(used_mib) / float(total_mib)) * 100.0))
+    return GpuPressureSample(total_mib=int(total_mib), used_mib=int(used_mib), used_pct=float(used_pct))
+
+
 def concrete_job_sort_key(job: ChildJob) -> Tuple[int, int, str, Tuple[int, ...]]:
     return (int(job.parameter_count), int(job.depth), str(job.task_name), tuple(job.architecture))
+
+
+def child_has_resume_state(job: ChildJob) -> bool:
+    task_root = job.child_root / job.task_name
+    if (task_root / "ablation_state.json").exists():
+        return True
+    if (task_root / "ablation_summary.json").exists():
+        return True
+    if child_state_path(job.child_root).exists():
+        return True
+    try:
+        return any(job.child_root.iterdir())
+    except Exception:
+        return False
+
+
+def pending_job_sort_key(job: ChildJob) -> Tuple[int, int, int, str, Tuple[int, ...]]:
+    resume_rank = 0 if child_has_resume_state(job) and not child_completed(job.child_root, job.task_name) else 1
+    return (resume_rank, int(job.parameter_count), int(job.depth), str(job.task_name), tuple(job.architecture))
 
 
 def build_task_jobs(args: argparse.Namespace, tasks: Sequence[str], run_root: Path) -> Dict[str, List[ChildJob]]:
@@ -637,8 +726,24 @@ def active_job_limit(args: argparse.Namespace, job_count: int) -> int:
     return max(1, int(limit))
 
 
-def launch_child_process(cmd: Sequence[str]) -> subprocess.Popen[Any]:
-    return subprocess.Popen(list(cmd), start_new_session=True)
+def launch_child_process(
+    cmd: Sequence[str],
+    env: Optional[Dict[str, str]] = None,
+    log_path: Optional[Path] = None,
+) -> Tuple[subprocess.Popen[Any], Optional[IO[str]]]:
+    handle: Optional[IO[str]] = None
+    if log_path is not None:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        handle = log_path.open("a", encoding="utf-8")
+    proc = subprocess.Popen(
+        list(cmd),
+        start_new_session=True,
+        env=env,
+        stdout=handle if handle is not None else None,
+        stderr=handle if handle is not None else None,
+        text=True,
+    )
+    return proc, handle
 
 
 def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, architectures: Sequence[Sequence[int]]) -> Dict[str, Any]:
@@ -665,9 +770,10 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
                 task_name=task_name,
                 architecture=architecture,
                 child_run_root=child_root,
+                device_mode="auto",
             )
             child_root.mkdir(parents=True, exist_ok=True)
-            proc = launch_child_process(cmd)
+            proc, _ = launch_child_process(cmd)
             active[proc] = (architecture, child_root, cmd)
             launch_count += 1
 
@@ -710,12 +816,28 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
 
 def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence[str], logger: ContinuousLogger) -> List[Dict[str, Any]]:
     jobs_by_task = build_task_jobs(args, tasks, run_root)
-    pending: Deque[ChildJob] = deque(sorted((job for jobs in jobs_by_task.values() for job in jobs), key=concrete_job_sort_key))
+    pending: Deque[ChildJob] = deque(sorted((job for jobs in jobs_by_task.values() for job in jobs), key=pending_job_sort_key))
     task_child_roots: Dict[str, List[Path]] = {task_name: [job.child_root for job in jobs] for task_name, jobs in jobs_by_task.items()}
     active: Dict[subprocess.Popen[Any], ActiveChildJob] = {}
     failure_counts: Dict[Path, int] = defaultdict(int)
     launches_total = 0
     active_limit = active_job_limit(args, len(pending))
+    gpu_available = bool(torch.cuda.is_available())
+
+    def build_child_env(device_mode: str) -> Dict[str, str]:
+        env = os.environ.copy()
+        if device_mode == "cpu":
+            env["CUDA_VISIBLE_DEVICES"] = ""
+        elif device_mode == "cuda":
+            env["CUDA_VISIBLE_DEVICES"] = str(int(args.gpu_device_index))
+        return env
+
+    def choose_device_mode(host_pressure: MemoryPressureSample, gpu_pressure: GpuPressureSample) -> Optional[str]:
+        if host_pressure.used_pct > float(args.host_ram_resume_pct):
+            return None
+        if gpu_available and gpu_pressure.total_mib > 0 and gpu_pressure.used_pct <= float(args.gpu_memory_resume_pct):
+            return "cuda"
+        return "cpu"
 
     while pending or active:
         finished: List[subprocess.Popen[Any]] = []
@@ -725,6 +847,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 continue
             finished.append(proc)
             job = active_job.job
+            close_child_log(active_job.log_handle)
             if child_completed(job.child_root, job.task_name):
                 logger.log_console(
                     f"[TASK] completed task={job.task_name} phase={job.phase_name} params={job.parameter_count}"
@@ -739,24 +862,56 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 pending.appendleft(job)
                 continue
             failure_counts[job.child_root] += 1
-            if failure_counts[job.child_root] <= int(args.max_retries_per_job):
+            if active_job.device_mode == "cuda" and child_log_indicates_cuda_oom(active_job.log_path):
                 logger.log_console(
-                    f"[TASK] retry task={job.task_name} phase={job.phase_name} params={job.parameter_count} "
-                    f"exit={code} retry={failure_counts[job.child_root]}/{int(args.max_retries_per_job)}"
+                    f"[GPU_OOM] retry_forever task={job.task_name} phase={job.phase_name} params={job.parameter_count} "
+                    f"exit={code} retry_count={failure_counts[job.child_root]}"
                 )
                 mark_child_retrying(job.child_root, job, int(code or 0), active_job.cmd, failure_counts[job.child_root])
+                gpu_peers = [
+                    entry
+                    for peer_proc, entry in active.items()
+                    if peer_proc is not proc and entry.device_mode == "cuda" and not entry.pause_requested
+                ]
+                if gpu_peers:
+                    largest_gpu = max(gpu_peers, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.task_name))
+                    largest_gpu.pause_requested = True
+                    mark_child_pause_requested(largest_gpu.job.child_root, largest_gpu.job, "peer_cuda_oom")
+                    logger.log_console(
+                        f"[GPU_OOM] request_pause_peer task={largest_gpu.job.task_name} phase={largest_gpu.job.phase_name} "
+                        f"params={largest_gpu.job.parameter_count} because_failed_task={job.task_name} because_failed_phase={job.phase_name}"
+                    )
+                    terminate_child_process(next(peer_proc for peer_proc, entry in active.items() if entry is largest_gpu))
                 pending.appendleft(job)
                 continue
-            mark_child_failed(job.child_root, job, int(code or 0), active_job.cmd, failure_counts[job.child_root])
-            raise RuntimeError(
-                f"Child job failed permanently after {int(args.max_retries_per_job)} retries: "
-                f"task={job.task_name} phase={job.phase_name} root={job.child_root} exit={code}"
+            logger.log_console(
+                f"[TASK] retry_forever task={job.task_name} phase={job.phase_name} params={job.parameter_count} "
+                f"exit={code} retry_count={failure_counts[job.child_root]}"
             )
+            mark_child_retrying(job.child_root, job, int(code or 0), active_job.cmd, failure_counts[job.child_root])
+            pending.appendleft(job)
+            continue
 
         for proc in finished:
             active.pop(proc, None)
 
         pressure = sample_host_memory_pressure()
+        gpu_pressure = sample_gpu_memory_pressure(int(args.gpu_device_index))
+        if active and gpu_available and gpu_pressure.total_mib > 0 and gpu_pressure.used_pct > float(args.gpu_memory_pressure_limit_pct):
+            pausable_gpu = [entry for entry in active.values() if entry.device_mode == "cuda" and not entry.pause_requested]
+            if pausable_gpu:
+                largest_gpu = max(pausable_gpu, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.task_name))
+                largest_gpu.pause_requested = True
+                mark_child_pause_requested(largest_gpu.job.child_root, largest_gpu.job, "gpu_memory_pressure")
+                logger.log_console(
+                    f"[PRESSURE] request_pause_gpu task={largest_gpu.job.task_name} phase={largest_gpu.job.phase_name} "
+                    f"params={largest_gpu.job.parameter_count} gpu_used_pct={gpu_pressure.used_pct:.2f} "
+                    f"gpu_used_mib={gpu_pressure.used_mib}/{gpu_pressure.total_mib}"
+                )
+                terminate_child_process(next(proc for proc, entry in active.items() if entry is largest_gpu))
+                time.sleep(max(0.0, float(args.pressure_settle_sec)))
+                continue
+
         if active and pressure.used_pct > float(args.host_ram_pressure_limit_pct):
             pausable = [entry for entry in active.values() if not entry.pause_requested]
             if len(active) > 1 and pausable:
@@ -773,8 +928,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 continue
 
         under_active_limit = len(active) < int(active_limit)
-        can_launch = pressure.used_pct <= float(args.host_ram_resume_pct)
-        if pending and under_active_limit and (can_launch or not active):
+        chosen_device_mode = choose_device_mode(pressure, gpu_pressure)
+        if pending and under_active_limit and (chosen_device_mode is not None or not active):
             job = pending.popleft()
             if child_completed(job.child_root, job.task_name):
                 mark_child_completed(job.child_root, job)
@@ -782,19 +937,31 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     f"[TASK] already_complete task={job.task_name} phase={job.phase_name} params={job.parameter_count}"
                 )
                 continue
+            device_mode = chosen_device_mode or "cpu"
             cmd = build_worker_command(
                 args=args,
                 task_name=job.task_name,
                 architecture=job.architecture,
                 child_run_root=job.child_root,
+                device_mode=device_mode,
             )
             launches_total += 1
             mark_child_running(job.child_root, job, cmd, launches_total)
-            proc = launch_child_process(cmd)
-            active[proc] = ActiveChildJob(job=job, cmd=cmd, pause_requested=False, launch_count=launches_total)
+            log_path = child_process_log_path(job.child_root)
+            proc, log_handle = launch_child_process(cmd, env=build_child_env(device_mode), log_path=log_path)
+            active[proc] = ActiveChildJob(
+                job=job,
+                cmd=cmd,
+                device_mode=device_mode,
+                log_path=log_path,
+                log_handle=log_handle,
+                pause_requested=False,
+                launch_count=launches_total,
+            )
             logger.log_console(
                 f"[TASK] launch task={job.task_name} phase={job.phase_name} params={job.parameter_count} "
-                f"used_pct={pressure.used_pct:.2f} avail_mib={pressure.available_mib}/{pressure.total_mib} "
+                f"device={device_mode} host_used_pct={pressure.used_pct:.2f} avail_mib={pressure.available_mib}/{pressure.total_mib} "
+                f"gpu_used_pct={gpu_pressure.used_pct:.2f} gpu_used_mib={gpu_pressure.used_mib}/{gpu_pressure.total_mib} "
                 f"active={len(active)}/{active_limit}"
             )
             time.sleep(max(0.0, float(args.pressure_settle_sec)))
@@ -837,6 +1004,9 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             "param_band": list(stl.normalize_param_band(getattr(args, "param_band", None))) if getattr(args, "param_band", None) else None,
             "host_ram_pressure_limit_pct": float(args.host_ram_pressure_limit_pct),
             "host_ram_resume_pct": float(args.host_ram_resume_pct),
+            "gpu_memory_pressure_limit_pct": float(args.gpu_memory_pressure_limit_pct),
+            "gpu_memory_resume_pct": float(args.gpu_memory_resume_pct),
+            "gpu_device_index": int(args.gpu_device_index),
             "max_active_jobs": int(active_limit),
             "repeat_count": int(args.repeat_count),
             "reports": task_reports,
@@ -850,6 +1020,8 @@ def main() -> None:
     args.concurrency = resolve_concurrency(args)
     if float(args.host_ram_resume_pct) > float(args.host_ram_pressure_limit_pct):
         raise SystemExit("--host-ram-resume-pct must be <= --host-ram-pressure-limit-pct")
+    if float(args.gpu_memory_resume_pct) > float(args.gpu_memory_pressure_limit_pct):
+        raise SystemExit("--gpu-memory-resume-pct must be <= --gpu-memory-pressure-limit-pct")
     tasks = [str(t).lower() for t in args.tasks]
     architectures = stl.build_architectures(args)
     if not architectures:
@@ -877,6 +1049,9 @@ def main() -> None:
     if args.scheduler == "pressure_aware":
         logger.log_console(f"Host RAM pressure limit pct: {float(args.host_ram_pressure_limit_pct):.2f}")
         logger.log_console(f"Host RAM resume pct: {float(args.host_ram_resume_pct):.2f}")
+        logger.log_console(f"GPU memory pressure limit pct: {float(args.gpu_memory_pressure_limit_pct):.2f}")
+        logger.log_console(f"GPU memory resume pct: {float(args.gpu_memory_resume_pct):.2f}")
+        logger.log_console(f"GPU device index: {int(args.gpu_device_index)}")
         logger.log_console(f"Max active jobs: {int(args.max_active_jobs)}")
         logger.log_console(f"Max retries per job: {int(args.max_retries_per_job)}")
     logger.log_console(f"Source run root: {args.source_run_root}")
