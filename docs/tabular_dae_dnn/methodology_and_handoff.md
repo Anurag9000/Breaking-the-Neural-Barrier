@@ -264,6 +264,12 @@ resources remain available.
 If a child has already been GPU-paused once, the retry is forced onto CPU so
 the recovery runner does not keep relaunching the same child into the same
 GPU pressure condition.
+For the recovery runner, `--max-active-jobs 0` resolves to an automatic
+bounded CPU-lane cap. On the 20-core laptop that is two active lanes, with
+each child receiving a separate 10-core affinity slice. This avoids both the
+old one-core fallback behavior and uncontrolled CPU oversubscription.
+Override with `TABULAR_RECOVERY_AUTO_ACTIVE_JOBS=<n>` or an explicit
+`--max-active-jobs <n>` only after confirming memory headroom.
 
 This is an aggressive runtime policy. It is intended to keep the CPU side of
 the tabular runs busy when the workload can use the extra parallelism.
