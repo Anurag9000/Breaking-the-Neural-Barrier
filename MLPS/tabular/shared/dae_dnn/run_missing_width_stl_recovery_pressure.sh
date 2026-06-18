@@ -35,6 +35,8 @@ CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" \
   --host-ram-resume-pct 85 \
   --gpu-memory-pressure-limit-pct 90 \
   --gpu-memory-resume-pct 85 \
+  --swap-pressure-limit-pct 60 \
+  --swap-resume-pct 25 \
   --gpu-device-index 0 \
   --pressure-poll-interval-sec 0.5 \
   --pressure-settle-sec 30 \

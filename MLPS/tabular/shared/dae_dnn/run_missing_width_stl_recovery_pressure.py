@@ -78,6 +78,13 @@ class ActiveRecoveryJob:
     pause_reason: str = ""
 
 
+@dataclass(frozen=True)
+class SwapPressureSample:
+    total_mib: int
+    used_mib: int
+    used_pct: float
+
+
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Pressure-aware recovery runner for missing width-only and small STL-grid results.")
     p.add_argument("--data-dir", default="./data")
@@ -106,6 +113,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--host-ram-resume-pct", type=float, default=85.0)
     p.add_argument("--gpu-memory-pressure-limit-pct", type=float, default=90.0)
     p.add_argument("--gpu-memory-resume-pct", type=float, default=85.0)
+    p.add_argument("--swap-pressure-limit-pct", type=float, default=60.0)
+    p.add_argument("--swap-resume-pct", type=float, default=25.0)
     p.add_argument("--gpu-device-index", type=int, default=0)
     p.add_argument("--pressure-poll-interval-sec", type=float, default=0.5)
     p.add_argument("--pressure-settle-sec", type=float, default=1.0)
@@ -370,6 +379,27 @@ def gpu_active_limit(args: argparse.Namespace) -> int:
     return max(0, limit)
 
 
+def sample_swap_pressure() -> SwapPressureSample:
+    total_mib = 0
+    free_mib = 0
+    try:
+        with open("/proc/meminfo", "r", encoding="utf-8") as handle:
+            for line in handle:
+                if line.startswith("SwapTotal:"):
+                    total_mib = int(int(line.split()[1]) // 1024)
+                elif line.startswith("SwapFree:"):
+                    free_mib = int(int(line.split()[1]) // 1024)
+                if total_mib and free_mib:
+                    break
+    except Exception:
+        pass
+    if total_mib <= 0:
+        return SwapPressureSample(total_mib=0, used_mib=0, used_pct=0.0)
+    used_mib = max(0, int(total_mib) - int(free_mib))
+    used_pct = max(0.0, min(100.0, (float(used_mib) / float(total_mib)) * 100.0))
+    return SwapPressureSample(total_mib=int(total_mib), used_mib=int(used_mib), used_pct=float(used_pct))
+
+
 def env_for(device_mode: str, gpu_index: int) -> Dict[str, str]:
     env = os.environ.copy()
     if device_mode == "cpu":
@@ -381,8 +411,11 @@ def env_for(device_mode: str, gpu_index: int) -> Dict[str, str]:
 
 def choose_device(args: argparse.Namespace) -> Optional[str]:
     host = pressure.sample_host_memory_pressure()
+    swap = sample_swap_pressure()
     gpu = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index))
     if host.used_pct > float(args.host_ram_resume_pct):
+        return None
+    if swap.total_mib > 0 and swap.used_pct > float(args.swap_resume_pct):
         return None
     if torch.cuda.is_available() and gpu.total_mib > 0 and gpu.used_pct <= float(args.gpu_memory_resume_pct):
         return "cuda"
@@ -397,7 +430,10 @@ def choose_device_for_job(
 ) -> Optional[str]:
     if job_should_force_cpu(job, forced_cpu_jobs):
         host = pressure.sample_host_memory_pressure()
+        swap = sample_swap_pressure()
         if host.used_pct > float(args.host_ram_resume_pct):
+            return None
+        if swap.total_mib > 0 and swap.used_pct > float(args.swap_resume_pct):
             return None
         return "cpu"
     gpu_limit = gpu_active_limit(args)
@@ -536,7 +572,7 @@ def run(args: argparse.Namespace) -> None:
             if active_job.pause_requested and active_job.pause_reason == "gpu_memory_pressure":
                 gpu_pause_count += 1
                 forced_cpu_jobs.add(str(job.root))
-            if active_job.pause_requested and active_job.pause_reason == "host_ram_pressure":
+            if active_job.pause_requested and active_job.pause_reason in {"host_ram_pressure", "swap_pressure"}:
                 host_pause_count += 1
             update_job_state(job.root, {"status": "paused" if active_job.pause_requested else "retrying", "completed": False, "exit_code": int(code or 0), "updated_at": time.time()})
             if gpu_pause_count or host_pause_count:
@@ -558,6 +594,7 @@ def run(args: argparse.Namespace) -> None:
                 free_slots.add(entry.slot_index)
 
         host = pressure.sample_host_memory_pressure()
+        swap = sample_swap_pressure()
         gpu = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index))
         if active and gpu.total_mib > 0 and gpu.used_pct > float(args.gpu_memory_pressure_limit_pct):
             gpu_active = [entry for entry in active.values() if entry.device_mode == "cuda" and not entry.pause_requested]
@@ -570,20 +607,24 @@ def run(args: argparse.Namespace) -> None:
                 terminate(next(proc for proc, entry in active.items() if entry is victim))
                 time.sleep(max(0.0, float(args.pressure_settle_sec)))
                 continue
-        if active and host.used_pct > float(args.host_ram_pressure_limit_pct):
+        swap_pressure = swap.total_mib > 0 and swap.used_pct > float(args.swap_pressure_limit_pct)
+        if active and (host.used_pct > float(args.host_ram_pressure_limit_pct) or swap_pressure):
             pausable = [entry for entry in active.values() if not entry.pause_requested]
             if len(active) > 1 and pausable:
                 pause_count = 1
-                if host.used_pct >= float(args.host_ram_pressure_limit_pct) + 5.0:
+                if host.used_pct >= float(args.host_ram_pressure_limit_pct) + 5.0 or swap_pressure:
                     pause_count = max(1, min(len(pausable) - 1, len(pausable) // 3))
                 victims = sorted(pausable, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.name), reverse=True)[
                     :pause_count
                 ]
                 for victim in victims:
                     victim.pause_requested = True
-                    victim.pause_reason = "host_ram_pressure"
-                    update_job_state(victim.job.root, {"status": "pausing", "reason": "host_ram_pressure", "completed": False})
-                    logger.log_console(f"[PRESSURE] pause_host {victim.job.name} host_used_pct={host.used_pct:.2f}")
+                    victim.pause_reason = "swap_pressure" if swap_pressure else "host_ram_pressure"
+                    update_job_state(victim.job.root, {"status": "pausing", "reason": victim.pause_reason, "completed": False})
+                    logger.log_console(
+                        f"[PRESSURE] pause_host {victim.job.name} host_used_pct={host.used_pct:.2f} "
+                        f"swap_used_pct={swap.used_pct:.2f}"
+                    )
                     terminate(next(proc for proc, entry in active.items() if entry is victim))
                 time.sleep(max(0.0, float(args.pressure_settle_sec)))
                 continue
@@ -608,7 +649,8 @@ def run(args: argparse.Namespace) -> None:
             update_job_state(job.root, {"status": "running", "completed": False, "device": chosen, "started_at": time.time(), "command": command_for_device(job, chosen)})
             logger.log_console(
                 f"[TASK] launch {job.name} params={job.parameter_count} device={chosen} "
-                f"host_used_pct={host.used_pct:.2f} gpu_used_pct={gpu.used_pct:.2f} active={len(active)}/{limit}"
+                f"host_used_pct={host.used_pct:.2f} swap_used_pct={swap.used_pct:.2f} "
+                f"gpu_used_pct={gpu.used_pct:.2f} active={len(active)}/{limit}"
             )
             time.sleep(max(0.0, float(args.pressure_settle_sec)))
             continue
@@ -625,6 +667,8 @@ def main() -> None:
         raise SystemExit("--host-ram-resume-pct must be <= --host-ram-pressure-limit-pct")
     if float(args.gpu_memory_resume_pct) > float(args.gpu_memory_pressure_limit_pct):
         raise SystemExit("--gpu-memory-resume-pct must be <= --gpu-memory-pressure-limit-pct")
+    if float(args.swap_resume_pct) > float(args.swap_pressure_limit_pct):
+        raise SystemExit("--swap-resume-pct must be <= --swap-pressure-limit-pct")
     run(args)
 
 
