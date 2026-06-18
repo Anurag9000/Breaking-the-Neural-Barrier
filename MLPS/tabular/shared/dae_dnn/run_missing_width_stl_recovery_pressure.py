@@ -460,7 +460,6 @@ def run(args: argparse.Namespace) -> None:
     active: Dict[subprocess.Popen[Any], ActiveRecoveryJob] = {}
     slot_count = max(1, min(int(detect_cpu_cores()), int(active_limit(args, len(jobs)))))
     free_slots = set(range(slot_count))
-    launches_enabled = True
     limit = active_limit(args, len(jobs))
     while pending or active:
         finished: List[subprocess.Popen[Any]] = []
@@ -482,7 +481,6 @@ def run(args: argparse.Namespace) -> None:
                 continue
             update_job_state(job.root, {"status": "paused" if active_job.pause_requested else "retrying", "completed": False, "exit_code": int(code or 0), "updated_at": time.time()})
             pending.appendleft(job)
-            launches_enabled = False
             logger.log_console(f"[TASK] requeued {job.name} exit={code} pause={active_job.pause_requested}")
 
         for proc in finished:
@@ -514,7 +512,7 @@ def run(args: argparse.Namespace) -> None:
                 continue
 
         device_mode = choose_device(args)
-        if pending and len(active) < limit and free_slots and launches_enabled and (device_mode is not None or not active):
+        if pending and len(active) < limit and free_slots and (device_mode is not None or not active):
             job = pending.popleft()
             if job_completed(job):
                 update_job_state(job.root, {"status": "completed", "completed": True, "completed_at": time.time()})
