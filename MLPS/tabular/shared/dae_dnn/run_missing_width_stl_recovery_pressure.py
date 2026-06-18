@@ -190,14 +190,13 @@ def job_pause_counts(job: RecoveryJob) -> Tuple[int, int]:
 
 def job_should_force_cpu(job: RecoveryJob, forced_cpu_jobs: Optional[set[str]] = None) -> bool:
     state = load_json(job_state_path(job.root))
-    if bool(state.get("force_cpu", False)):
+    if bool(state.get("force_cpu_after_cuda_oom", False)):
         return True
     gpu_pause_count, host_pause_count = job_pause_counts(job)
-    if gpu_pause_count > 0:
-        return True
     if forced_cpu_jobs is not None and str(job.root) in forced_cpu_jobs:
         return True
-    return host_pause_count > 0
+    del gpu_pause_count, host_pause_count
+    return False
 
 
 def task_dims(task_name: str, args: argparse.Namespace, cache: Dict[str, Tuple[int, int]]) -> Tuple[int, int]:
@@ -532,7 +531,7 @@ def run(args: argparse.Namespace) -> None:
     forced_cpu_jobs: set[str] = set()
     for job in jobs:
         state = load_json(job_state_path(job.root))
-        if bool(state.get("force_cpu", False)) or int(state.get("gpu_pause_count", 0) or 0) > 0:
+        if bool(state.get("force_cpu_after_cuda_oom", False)):
             forced_cpu_jobs.add(str(job.root))
     logger.log_console(f"Run root: {run_root}")
     logger.log_console(f"Jobs: {len(jobs)}")
@@ -572,7 +571,6 @@ def run(args: argparse.Namespace) -> None:
             gpu_pause_count, host_pause_count = job_pause_counts(job)
             if active_job.pause_requested and active_job.pause_reason == "gpu_memory_pressure":
                 gpu_pause_count += 1
-                forced_cpu_jobs.add(str(job.root))
             if active_job.pause_requested and active_job.pause_reason in {"host_ram_pressure", "swap_pressure"}:
                 host_pause_count += 1
             update_job_state(job.root, {"status": "paused" if active_job.pause_requested else "retrying", "completed": False, "exit_code": int(code or 0), "updated_at": time.time()})
@@ -583,7 +581,6 @@ def run(args: argparse.Namespace) -> None:
                         "gpu_pause_count": int(gpu_pause_count),
                         "host_pause_count": int(host_pause_count),
                         "last_pause_reason": active_job.pause_reason,
-                        "force_cpu": bool(str(job.root) in forced_cpu_jobs),
                     },
                 )
             pending.appendleft(job)
@@ -642,7 +639,6 @@ def run(args: argparse.Namespace) -> None:
             if job_should_force_cpu(job, forced_cpu_jobs):
                 chosen = "cpu"
                 forced_cpu_jobs.add(str(job.root))
-                update_job_state(job.root, {"force_cpu": True})
             slot_index = min(free_slots)
             free_slots.remove(slot_index)
             proc, handle = launch(job, chosen, int(args.gpu_device_index), concurrency_hint=int(limit), slot_index=slot_index)
