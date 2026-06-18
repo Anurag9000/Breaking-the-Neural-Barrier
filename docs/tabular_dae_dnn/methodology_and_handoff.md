@@ -165,7 +165,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_sm
   --widths 64 96 128 160 192 224 256 \
   --num-workers 0 \
   --patience 10 \
-  --batch-size 9312 \
+  --batch-size 37248 \
   --max-epochs 100000000
 ```
 
@@ -277,7 +277,7 @@ cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
   --tasks classification autoencoding generation denoising anomaly simulation prediction \
   --param-band 1 3 \
   --num-workers 0 \
-  --batch-size 9312
+  --batch-size 37248
 ```
 
 The planner reports every sampled target per depth and the deduped candidate
@@ -301,7 +301,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_pa
   --start-n 2 \
   --num-workers 0 \
   --pin-memory \
-  --batch-size 9312
+  --batch-size 37248
 ```
 
 Example real run command using the pressure-aware scheduler:
@@ -329,7 +329,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
-  --batch-size 9312
+  --batch-size 37248
 ```
 
 Example legacy fixed-slot run using the probe output:
@@ -350,7 +350,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
-  --batch-size 9312
+  --batch-size 37248
 ```
 
 Example for one band:
@@ -372,7 +372,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
-  --batch-size 9312
+  --batch-size 37248
 ```
 
 Repeat the same command on the other laptops, changing only the parameter band

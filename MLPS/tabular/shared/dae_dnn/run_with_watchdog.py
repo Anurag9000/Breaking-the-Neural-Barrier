@@ -258,7 +258,7 @@ def candidate_summary_payload(candidate_dir: Path, device: torch.device) -> Opti
         return None
 
     data_dir = str(cfg.get("data_dir", "./data"))
-    batch_size = max(1, int(cfg.get("batch_size", 32768) or 1))
+    batch_size = max(1, int(cfg.get("batch_size", 131072) or 1))
     num_workers = int(cfg.get("num_workers", 0))
     seed = int(cfg.get("seed", 0))
 
