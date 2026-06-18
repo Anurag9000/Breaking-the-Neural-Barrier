@@ -113,13 +113,17 @@ Use them to verify behavior, then delete the generated `results/recovery/*`,
 `*_plan.json`, and similar scratch artifacts before publishing a results
 snapshot.
 
-The recovery family now has two wrappers that share the same result root and
-checkpoint layout:
+The recovery family has wrappers for both shell families that share the same
+result root and checkpoint layout:
 
 - `MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.sh`
-  is the CPU-only default.
+  is the CPU-only default for Linux, WSL, and Git Bash.
 - `MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure_gpu_cpu.sh`
-  is the mixed GPU+CPU runner.
+  is the mixed GPU+CPU runner for Linux, WSL, and Git Bash.
+- `MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.ps1`
+  is the native PowerShell CPU-only default.
+- `MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure_gpu_cpu.ps1`
+  is the native PowerShell mixed GPU+CPU runner.
 
 Both wrappers write into
 `MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1`
@@ -160,6 +164,13 @@ requests a pause on the largest active GPU child, requeues the failed child
 at the front of the queue, and retries it again when resources free up. The
 default settle window is 30 seconds.
 
+The Python launchers use `platform_runtime.py` for host memory sampling and
+process-tree termination. Linux/WSL use `/proc` and POSIX process groups;
+native Windows uses `GlobalMemoryStatusEx`, `CREATE_NEW_PROCESS_GROUP`, and
+`taskkill /T /F` as the final hard-stop fallback. Linux priority tuning
+features remain Linux-only, but checkpoint/resume behavior and result roots
+are portable.
+
 Relevant flags:
 
 - `--scheduler pressure_aware`
@@ -177,6 +188,12 @@ For a fresh full strict-band rerun, the repo now includes:
 
 ```bash
 ./MLPS/tabular/shared/dae_dnn/run_stl_massive_band_04_06_fresh.sh
+```
+
+On native PowerShell, use:
+
+```powershell
+.\MLPS\tabular\shared\dae_dnn\run_stl_massive_band_04_06_fresh.ps1
 ```
 
 That wrapper targets:

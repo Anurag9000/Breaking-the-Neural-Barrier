@@ -38,6 +38,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tupl
 import torch
 
 from MLPS.tabular.shared.dae_dnn.run_goliath import save_checkpoint
+from MLPS.tabular.shared.dae_dnn.platform_runtime import sample_host_memory_mib
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.train_utils import unpack_batch
 
@@ -300,17 +301,10 @@ def sample_gpu_pressure_mib(device_index: int = 0) -> Optional[Dict[str, int]]:
 
 
 def sample_host_available_mib() -> Optional[int]:
-    try:
-        with open("/proc/meminfo", "r", encoding="utf-8") as f:
-            for line in f:
-                if line.startswith("MemAvailable:"):
-                    parts = line.split()
-                    if len(parts) >= 2:
-                        return int(int(parts[1]) // 1024)
-                    break
-    except Exception:
+    total_mib, available_mib = sample_host_memory_mib()
+    if int(total_mib) <= 0:
         return None
-    return None
+    return int(available_mib)
 
 
 def terminate_stale_processes(exclude_pids: Optional[Sequence[int]] = None) -> None:

@@ -13,6 +13,7 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 
 import torch
 
+from MLPS.tabular.shared.dae_dnn.platform_runtime import popen_process_group_kwargs, terminate_process_tree
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, detect_cpu_cores, launcher_child_env
 from utils.adp_logging import ContinuousLogger
@@ -481,34 +482,19 @@ def launch(job: RecoveryJob, device_mode: str, gpu_index: int, concurrency_hint:
         affinity_slot=slot_index,
         shared_cpu=True,
     )
-    proc = subprocess.Popen(cmd, start_new_session=True, env=env, stdout=log_handle, stderr=log_handle, text=True)
+    proc = subprocess.Popen(
+        cmd,
+        env=env,
+        stdout=log_handle,
+        stderr=log_handle,
+        text=True,
+        **popen_process_group_kwargs(),
+    )
     return proc, log_handle
 
 
 def terminate(proc: subprocess.Popen[Any], timeout_sec: float = 10.0) -> None:
-    try:
-        pgid = os.getpgid(proc.pid)
-    except Exception:
-        pgid = None
-    try:
-        if pgid is not None:
-            os.killpg(pgid, signal.SIGTERM)
-        else:
-            proc.terminate()
-    except Exception:
-        pass
-    try:
-        proc.wait(timeout=timeout_sec)
-        return
-    except Exception:
-        pass
-    try:
-        if pgid is not None:
-            os.killpg(pgid, signal.SIGKILL)
-        else:
-            proc.kill()
-    except Exception:
-        pass
+    terminate_process_tree(proc, timeout_sec=timeout_sec)
 
 
 def write_plan(run_root: Path, jobs: Sequence[RecoveryJob]) -> None:

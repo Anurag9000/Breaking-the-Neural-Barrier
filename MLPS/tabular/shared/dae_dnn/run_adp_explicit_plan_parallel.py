@@ -12,6 +12,7 @@ from typing import Any, Deque, Dict, List, Tuple
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
+from MLPS.tabular.shared.dae_dnn.platform_runtime import popen_process_group_kwargs
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, detect_cpu_cores, launcher_child_env
 from utils.adp_logging import ContinuousLogger
 
@@ -135,6 +136,7 @@ def main() -> None:
                             job_key=f"{phase_name}:repeat_{current_repeat:02d}:{task_name}:{task_root}",
                             affinity_slot=slot_index,
                         ),
+                        **popen_process_group_kwargs(),
                     )
                     active[proc] = (phase_name, current_repeat, task_name, task_root, cmd, slot_index)
 

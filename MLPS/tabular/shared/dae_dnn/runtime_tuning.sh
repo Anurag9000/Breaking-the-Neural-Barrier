@@ -20,6 +20,26 @@ tabular_runtime_detect_cpu_cores() {
   printf '%s\n' "${cores}"
 }
 
+tabular_runtime_python() {
+  if [[ -x "./.venv/bin/python" ]]; then
+    printf '%s\n' "./.venv/bin/python"
+    return
+  fi
+  if [[ -x "./.venv/Scripts/python.exe" ]]; then
+    printf '%s\n' "./.venv/Scripts/python.exe"
+    return
+  fi
+  if command -v python3 >/dev/null 2>&1; then
+    command -v python3
+    return
+  fi
+  if command -v python >/dev/null 2>&1; then
+    command -v python
+    return
+  fi
+  printf '%s\n' "python"
+}
+
 tabular_runtime_bootstrap() {
   local cpu_cores
   cpu_cores="$(tabular_runtime_detect_cpu_cores)"

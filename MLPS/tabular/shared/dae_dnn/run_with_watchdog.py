@@ -27,6 +27,11 @@ from MLPS.tabular.shared.dae_dnn.run_goliath import (
     refresh_task_loaders,
     write_json,
 )
+from MLPS.tabular.shared.dae_dnn.platform_runtime import (
+    popen_process_group_kwargs,
+    sample_host_memory_mib,
+    terminate_process_tree,
+)
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
 
 
@@ -73,31 +78,17 @@ def training_log_paths(run_root: Path) -> List[Path]:
 
 
 def sample_host_available_mib() -> Optional[int]:
-    try:
-        with open("/proc/meminfo", "r", encoding="utf-8") as f:
-            for line in f:
-                if line.startswith("MemAvailable:"):
-                    parts = line.split()
-                    if len(parts) >= 2:
-                        return int(int(parts[1]) // 1024)
-                    break
-    except Exception:
+    total_mib, available_mib = sample_host_memory_mib()
+    if int(total_mib) <= 0:
         return None
-    return None
+    return int(available_mib)
 
 
 def sample_host_total_mib() -> Optional[int]:
-    try:
-        with open("/proc/meminfo", "r", encoding="utf-8") as f:
-            for line in f:
-                if line.startswith("MemTotal:"):
-                    parts = line.split()
-                    if len(parts) >= 2:
-                        return int(int(parts[1]) // 1024)
-                    break
-    except Exception:
+    total_mib, _available_mib = sample_host_memory_mib()
+    if int(total_mib) <= 0:
         return None
-    return None
+    return int(total_mib)
 
 
 def sample_host_used_mib() -> Optional[int]:
@@ -345,25 +336,7 @@ def finalize_candidate(candidate_dir: Path, device: torch.device, *, materialize
 def terminate_process(proc: subprocess.Popen[Any], grace_seconds: int) -> None:
     if proc.poll() is not None:
         return
-    try:
-        os.killpg(proc.pid, signal.SIGTERM)
-    except Exception:
-        try:
-            proc.terminate()
-        except Exception:
-            pass
-    deadline = time.monotonic() + float(grace_seconds)
-    while time.monotonic() < deadline:
-        if proc.poll() is not None:
-            return
-        time.sleep(0.5)
-    try:
-        os.killpg(proc.pid, signal.SIGKILL)
-    except Exception:
-        try:
-            proc.kill()
-        except Exception:
-            pass
+    terminate_process_tree(proc, timeout_sec=float(grace_seconds))
 
 
 def flush_local_cuda() -> None:
@@ -437,8 +410,8 @@ def run_supervised(
         log_line(f"Starting supervised command: {' '.join(prepared_command)}")
         proc = subprocess.Popen(
             prepared_command,
-            start_new_session=True,
             env=launcher_child_env(concurrency_hint=1, job_key=str(run_root)),
+            **popen_process_group_kwargs(),
         )
         last_progress_at = time.monotonic()
         last_resource_poll_at = 0.0

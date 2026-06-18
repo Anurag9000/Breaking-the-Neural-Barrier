@@ -36,6 +36,19 @@ Primary entry points:
 - `probe_capacity.py` - capacity probing helper
 - `summarize_repeat_metrics.py` - repeat-level summary generation
 
+Windows entry points:
+- `run_missing_width_stl_recovery_pressure.ps1` - native PowerShell CPU-only
+  default recovery launcher
+- `run_missing_width_stl_recovery_pressure_gpu_cpu.ps1` - native PowerShell
+  mixed GPU+CPU recovery launcher
+- `run_stl_massive_band_04_06_fresh.ps1` - native PowerShell strict STL
+  band `4-6` launcher
+
+The `.sh` wrappers remain the canonical Linux, WSL, and Git Bash entry
+points. Native `cmd.exe` and PowerShell do not execute `./.../*.sh` directly;
+use the matching `.ps1` wrapper there. All wrappers call the same Python
+launchers and write the same result roots.
+
 The CPU-only wrapper is now the default launcher for this recovery family.
 It hides CUDA before bootstrap, uses the same
 `MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1` root,
@@ -61,6 +74,8 @@ Recovery wrapper contract:
    `100 / 100`
 9. use `--max-active-jobs 0` as the all-visible-CPU default and keep
    `--pressure-settle-sec 30` as the standard settle window
+10. use shared platform helpers for host memory sampling and child-process
+    tree termination on Linux, WSL, Git Bash, and native Windows
 
 Canonical result layout:
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/<suite_name>/`

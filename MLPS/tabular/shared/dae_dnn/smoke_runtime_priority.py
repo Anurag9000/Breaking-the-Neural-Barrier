@@ -9,6 +9,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Sequence, Tuple
 
+from MLPS.tabular.shared.dae_dnn.platform_runtime import popen_process_group_kwargs
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import (
     bootstrap_runtime,
     detect_cpu_cores,
@@ -69,6 +70,18 @@ def _busy_loop(seconds: float) -> None:
 
 
 def run_child(args: argparse.Namespace) -> int:
+    if os.name != "posix" or not Path("/proc/self/cgroup").exists():
+        print(
+            json.dumps(
+                {
+                    "status": "skipped",
+                    "reason": "runtime priority smoke child requires POSIX /proc and scheduler APIs",
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
+        return 0
     info = bootstrap_runtime("smoke_runtime_priority_child")
     payload = {
         "pid": os.getpid(),
@@ -108,6 +121,18 @@ def _check_affinity_disjoint(payloads: Sequence[Dict[str, Any]]) -> Tuple[bool, 
 
 
 def run_parent(args: argparse.Namespace) -> int:
+    if os.name != "posix" or not Path("/proc/stat").exists():
+        print(
+            json.dumps(
+                {
+                    "status": "skipped",
+                    "reason": "runtime priority smoke test requires POSIX /proc and scheduler APIs",
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
+        return 0
     parent_info = bootstrap_runtime("smoke_runtime_priority_parent")
     workers = int(args.workers) if int(args.workers) > 0 else int(detect_cpu_cores())
     workers = max(1, workers)
@@ -123,11 +148,11 @@ def run_parent(args: argparse.Namespace) -> int:
             )
             proc = subprocess.Popen(
                 cmd,
-                start_new_session=True,
                 env=env,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
+                **popen_process_group_kwargs(),
             )
             processes.append(proc)
 

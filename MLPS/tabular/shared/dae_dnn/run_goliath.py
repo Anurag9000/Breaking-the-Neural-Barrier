@@ -28,6 +28,7 @@ sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from MLPS.tabular.shared.dae_dnn.adp_search import expand_depth, expand_width, model_depth, model_width
 from MLPS.tabular.shared.dae_dnn.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.platform_runtime import sample_host_memory_mib
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.tasks import Task, build_task, clone_loader, refresh_task_loaders, task_names
 from MLPS.tabular.shared.dae_dnn.train_utils import AdaptiveBatchController
@@ -66,17 +67,10 @@ def sample_gpu_mib(device_index: int = 0) -> Optional[int]:
 
 
 def sample_host_available_mib() -> Optional[int]:
-    try:
-        with open("/proc/meminfo", "r", encoding="utf-8") as f:
-            for line in f:
-                if line.startswith("MemAvailable:"):
-                    parts = line.split()
-                    if len(parts) >= 2:
-                        return int(int(parts[1]) // 1024)
-                    break
-    except Exception:
+    total_mib, available_mib = sample_host_memory_mib()
+    if int(total_mib) <= 0:
         return None
-    return None
+    return int(available_mib)
 
 
 def cleanup_runtime() -> None:
@@ -618,7 +612,13 @@ def save_checkpoint(
         tmp_path = Path(tmp.name)
     try:
         previous_handler = None
-        if float(timeout_sec) > 0:
+        alarm_supported = bool(
+            float(timeout_sec) > 0
+            and hasattr(signal, "SIGALRM")
+            and hasattr(signal, "setitimer")
+            and hasattr(signal, "ITIMER_REAL")
+        )
+        if alarm_supported:
             def _checkpoint_timeout_handler(signum, frame):
                 raise CheckpointTimeoutError(f"checkpoint_timeout_sec_exceeded:{float(timeout_sec):.3f}")
 
@@ -628,7 +628,7 @@ def save_checkpoint(
         try:
             torch.save(payload, tmp_path)
         finally:
-            if float(timeout_sec) > 0:
+            if alarm_supported:
                 signal.setitimer(signal.ITIMER_REAL, 0.0)
                 if previous_handler is not None:
                     signal.signal(signal.SIGALRM, previous_handler)

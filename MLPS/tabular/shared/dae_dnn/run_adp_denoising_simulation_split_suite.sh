@@ -6,9 +6,10 @@ cd "$ROOT_DIR"
 
 source MLPS/tabular/shared/dae_dnn/runtime_tuning.sh
 tabular_runtime_bootstrap
+PYTHON_BIN="$(tabular_runtime_python)"
 
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
-CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_adp_explicit_plan_parallel.py \
+CUDA_VISIBLE_DEVICES=0 "${PYTHON_BIN}" MLPS/tabular/shared/dae_dnn/run_adp_explicit_plan_parallel.py \
   --data-dir ./data \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
   --run-root MLPS/tabular/shared/dae_dnn/results/adp/w2d/denoising_plus_sim5_v1 \

@@ -13,6 +13,7 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
+from MLPS.tabular.shared.dae_dnn.platform_runtime import popen_process_group_kwargs, terminate_process_tree
 from MLPS.tabular.shared.dae_dnn.tasks import task_names
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, detect_cpu_cores, launcher_child_env
 from utils.adp_logging import ContinuousLogger
@@ -97,54 +98,7 @@ def repeat_count_for_task(task_name: str, base_repeat_count: int) -> int:
 
 
 def terminate_child_process(proc: subprocess.Popen[Any], timeout_sec: float = 10.0) -> None:
-    try:
-        pgid = os.getpgid(proc.pid)
-    except Exception:
-        pgid = None
-
-    if pgid is not None:
-        try:
-            os.killpg(pgid, signal.SIGTERM)
-        except ProcessLookupError:
-            pass
-        except Exception:
-            try:
-                proc.terminate()
-            except Exception:
-                pass
-    else:
-        try:
-            proc.terminate()
-        except Exception:
-            pass
-
-    try:
-        proc.wait(timeout=timeout_sec)
-        return
-    except subprocess.TimeoutExpired:
-        pass
-    except Exception:
-        return
-
-    if pgid is not None:
-        try:
-            os.killpg(pgid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        except Exception:
-            try:
-                proc.kill()
-            except Exception:
-                pass
-    else:
-        try:
-            proc.kill()
-        except Exception:
-            pass
-    try:
-        proc.wait(timeout=timeout_sec)
-    except Exception:
-        pass
+    terminate_process_tree(proc, timeout_sec=timeout_sec)
 
 
 def build_worker_command(args: argparse.Namespace, task_name: str, task_root: Path) -> List[str]:
@@ -224,6 +178,7 @@ def run_task(
             job_key=f"{task_name}:{task_root}",
             affinity_slot=0,
         ),
+        **popen_process_group_kwargs(),
     )
     try:
         code = proc.wait()
@@ -320,6 +275,7 @@ def main() -> None:
                             job_key=f"repeat_{current_repeat:02d}:{task_name}:{task_root}",
                             affinity_slot=slot_index,
                         ),
+                        **popen_process_group_kwargs(),
                     )
                     active[proc] = (current_repeat, task_name, task_root, cmd, slot_index)
 

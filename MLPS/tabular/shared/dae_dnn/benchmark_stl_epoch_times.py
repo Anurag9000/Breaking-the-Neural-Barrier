@@ -12,6 +12,7 @@ import torch
 
 import run_goliath as rg
 import run_stl_ablation as stl
+from MLPS.tabular.shared.dae_dnn.platform_runtime import sample_host_memory_mib
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from utils.adp_logging import ContinuousLogger
@@ -137,17 +138,10 @@ def sample_gpu_pressure_mib(device_index: int = 0) -> Dict[str, int | None]:
 
 
 def sample_host_available_mib() -> int | None:
-    try:
-        with open("/proc/meminfo", "r", encoding="utf-8") as f:
-            for line in f:
-                if line.startswith("MemAvailable:"):
-                    parts = line.split()
-                    if len(parts) >= 2:
-                        return int(int(parts[1]) // 1024)
-                    break
-    except Exception:
+    total_mib, available_mib = sample_host_memory_mib()
+    if int(total_mib) <= 0:
         return None
-    return None
+    return int(available_mib)
 
 
 def build_task_for_benchmark(
