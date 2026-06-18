@@ -17,3 +17,8 @@ The live repeat-5 ADP run stays separate at:
 The catalog folders are lightweight pointers and placeholders. The actual
 archived result roots remain in the repo under their historical locations so
 the live run is not disturbed.
+
+For the current forensic coverage state, including which payloads were found
+under legacy names and which expected runs are still missing, read:
+
+- `COVERAGE_REPORT.md`
