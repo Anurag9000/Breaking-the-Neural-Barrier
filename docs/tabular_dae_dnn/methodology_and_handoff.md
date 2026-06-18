@@ -261,6 +261,9 @@ before a results tree is treated as final.
 The pressure-aware recovery queue stays live after a pause/requeue event:
 one paused child does not block unrelated pending work from launching while
 resources remain available.
+If a child has already been GPU-paused once, the retry is forced onto CPU so
+the recovery runner does not keep relaunching the same child into the same
+GPU pressure condition.
 
 This is an aggressive runtime policy. It is intended to keep the CPU side of
 the tabular runs busy when the workload can use the extra parallelism.
