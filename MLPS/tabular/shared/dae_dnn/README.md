@@ -34,6 +34,11 @@ Primary entry points:
 - `probe_capacity.py` - capacity probing helper
 - `summarize_repeat_metrics.py` - repeat-level summary generation
 
+The recovery launcher is GPU-first when VRAM is available, spills to CPU when
+GPU admission is blocked, and keeps the host-wide gate closed only for
+host-RAM or swap pressure pauses. GPU pauses only block GPU retries until a
+GPU child completes cleanly.
+
 Canonical result layout:
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/<suite_name>/`
 - `MLPS/tabular/shared/dae_dnn/results/adp/w2d/<suite_name>/`

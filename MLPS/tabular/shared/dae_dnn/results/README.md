@@ -113,11 +113,19 @@ Use them to verify behavior, then delete the generated `results/recovery/*`,
 `*_plan.json`, and similar scratch artifacts before publishing a results
 snapshot.
 
-The pressure-aware recovery runner does not globally freeze after a single
-paused child. Requeued children return to the pending queue and the launcher
-keeps admitting other eligible work as long as pressure thresholds allow it.
-If a child has already been GPU-paused once, its retry is forced onto CPU so
-it does not keep thrashing the same GPU slot.
+The pressure-aware recovery runner uses split admission gates:
+
+- GPU pauses only block GPU admissions until a GPU child finishes cleanly.
+- host RAM or swap pauses block all new admissions until pressure recovers
+  and a child completion clears the gate.
+- CPU spillover remains available whenever host RAM is healthy and GPU
+  admission is blocked.
+
+Requeued children return to the pending queue and the launcher keeps
+considering other eligible work as the active gates allow it. If a child has
+already been GPU-paused once, its retry is preferred on CPU so it does not
+keep thrashing the same GPU slot.
+
 For this recovery runner and the massive STL pressure scheduler,
 `--max-active-jobs 0` means all visible logical CPUs are available as job
 lanes. On the 20-core laptop that means up to 20 active children, each with a
@@ -130,16 +138,14 @@ child-count cap.
 This is intentionally aggressive. It is meant to keep the CPU side of the
 tabular runs busy when the workload can use the extra parallelism.
 
-waits for a true child completion before it considers another launch attempt,
-and that next attempt resumes paused or partial work before it admits
-untouched jobs. If host RAM pressure exceeds the limit, it requests a pause
-on the largest active child, terminates only that child process group, and
-later relaunches the same child root so the run resumes from its normal STL
-checkpoints. If a child exits with CUDA OOM or `CUBLAS_STATUS_ALLOC_FAILED`,
-the scheduler requests a pause on the largest active GPU child, requeues the
-failed child at the front of the queue, and retries it again when resources
-free up. For the slower laptop split, set `--pressure-settle-sec 120` so
-each launch gets a two-minute settle window.
+If host RAM pressure exceeds the limit, it requests a pause on the largest
+active child, terminates only that child process group, and later relaunches
+the same child root so the run resumes from its normal STL checkpoints. If a
+child exits with CUDA OOM or `CUBLAS_STATUS_ALLOC_FAILED`, the scheduler
+requests a pause on the largest active GPU child, requeues the failed child
+at the front of the queue, and retries it again when resources free up. The
+slower laptop split still works with a longer settle window, but the current
+recovery wrapper uses a 30 second settle period.
 
 Relevant flags:
 
