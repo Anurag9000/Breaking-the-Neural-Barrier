@@ -132,6 +132,10 @@ Runtime tuning for the tabular launchers is centralized as well:
   same runtime path and verifies scope placement, `SCHED_BATCH`, disjoint
   affinity slices, and high aggregate CPU utilization
 
+Smoke, dry-run, and recovery-probe outputs are not canonical experiment
+results. Keep them only long enough to validate launcher behavior, then
+remove the generated scratch tree before publishing a results snapshot.
+
 That policy is aggressive by design. It keeps the CPU side busy when the
 current workload can exploit the extra parallelism.
 
