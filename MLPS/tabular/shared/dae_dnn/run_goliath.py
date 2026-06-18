@@ -98,13 +98,13 @@ def cleanup_runtime() -> None:
         gc.collect()
 
 PER_TASK_BATCH_SIZES = {
-    "prediction": 32768,
-    "classification": 32768,
-    "autoencoding": 32768,
-    "generation": 32768,
-    "denoising": 32768,
-    "anomaly": 32768,
-    "simulation": 32768,
+    "prediction": 131072,
+    "classification": 131072,
+    "autoencoding": 131072,
+    "generation": 131072,
+    "denoising": 131072,
+    "anomaly": 131072,
+    "simulation": 131072,
 }
 
 GOLIATH_ADP_PHASES = [
@@ -471,7 +471,7 @@ def adp_seed_hidden_for_mode(mode: Optional[str]) -> List[int]:
 
 
 def default_batch_size_for_task(task_name: str) -> int:
-    return int(PER_TASK_BATCH_SIZES.get(task_name.lower(), 32768))
+    return int(PER_TASK_BATCH_SIZES.get(task_name.lower(), 131072))
 
 
 def batch_size_for_task(task_name: str, override: int) -> int:
@@ -3100,7 +3100,7 @@ def main() -> None:
         nargs="+",
         default=["ae_alt_width", "ae_alt_depth", "ae_width_to_depth", "ae_depth_to_width"],
     )
-    p.add_argument("--batch-size", type=int, default=81920, help="Global batch-size default/override.")
+    p.add_argument("--batch-size", type=int, default=327680, help="Global batch-size default/override.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--stl-width", type=int, default=128)

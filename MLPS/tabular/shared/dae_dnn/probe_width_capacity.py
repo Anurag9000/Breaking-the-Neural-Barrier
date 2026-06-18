@@ -33,12 +33,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--results-dir", default="MLPS/tabular/shared/dae_dnn/results")
     p.add_argument("--run-root", default=None)
     p.add_argument("--tasks", nargs="+", default=list(DEFAULT_TASKS))
-    p.add_argument("--batch-size", type=int, default=40960)
+    p.add_argument("--batch-size", type=int, default=163840)
     p.add_argument(
         "--task-batch-size",
         action="append",
         default=[],
-        help="Override batch size for a specific task, e.g. classification=9312. May be passed multiple times.",
+        help="Override batch size for a specific task, e.g. classification=37248. May be passed multiple times.",
     )
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
