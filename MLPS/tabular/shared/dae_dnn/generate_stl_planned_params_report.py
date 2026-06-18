@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 import matplotlib.pyplot as plt
 
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - import shim for direct script execution
@@ -338,6 +339,8 @@ def render_task_plot(
 
 
 def main() -> None:
+    bootstrap_runtime("generate_stl_planned_params_report")
+
     args = parse_args()
     tasks = [str(task).lower() for task in args.tasks]
     output_root = Path(args.output_root)

@@ -93,7 +93,9 @@ class AdaptiveBatchController:
                     self.shrink_factor = float(payload["shrink_factor"])
             except Exception:
                 restored_batch_size = None
-        self._current_batch_size = max(self.min_batch_size, int(restored_batch_size or initial_batch_size))
+        requested_batch_size = max(self.min_batch_size, int(initial_batch_size))
+        restored_batch_size = max(self.min_batch_size, int(restored_batch_size or requested_batch_size))
+        self._current_batch_size = max(requested_batch_size, restored_batch_size)
         self._last_poll = 0.0
         self._last_vram_mb: Optional[int] = None
         self._device_index = int(torch.cuda.current_device()) if torch.cuda.is_available() else 0

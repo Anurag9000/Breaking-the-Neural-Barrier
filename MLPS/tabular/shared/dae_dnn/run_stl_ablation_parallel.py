@@ -13,6 +13,7 @@ from typing import IO, Any, Callable, Deque, Dict, List, Optional, Sequence, Tup
 
 import torch
 
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
 from utils.adp_logging import ContinuousLogger
 
@@ -1028,6 +1029,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
 
 
 def main() -> None:
+    bootstrap_runtime("run_stl_ablation_parallel")
+
     args = parse_args()
     args.concurrency = resolve_concurrency(args)
     if float(args.host_ram_resume_pct) > float(args.host_ram_pressure_limit_pct):
