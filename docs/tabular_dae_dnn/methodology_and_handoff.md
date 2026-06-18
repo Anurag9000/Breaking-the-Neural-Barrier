@@ -206,7 +206,9 @@ resume state are always considered before untouched jobs. It opportunistically
 fills the machine with as many children as fit, using GPU first until the GPU
 memory resume threshold is reached and then spilling additional children onto
 CPU while host RAM is still below its resume threshold. It monitors host RAM
-usage from `/proc/meminfo` and GPU memory via `nvidia-smi`. After the initial
+through `platform_runtime.py`: `/proc/meminfo` on Linux/WSL,
+`GlobalMemoryStatusEx` on native Windows, and `psutil` as a fallback. GPU
+memory is sampled through `nvidia-smi`. After the initial
 saturation phase, admission is completion-gated: any memory-pressure pause or
 retryable child failure closes the admission window immediately. The launcher
 does not treat the pause itself as a reason to launch something else. It waits
@@ -229,6 +231,10 @@ instruction that faulted. On the slower laptop split, set
 Runtime policy for the tabular runners is centralized:
 
 - shell launchers source `MLPS/tabular/shared/dae_dnn/runtime_tuning.sh`
+- shell launchers detect either `.venv/bin/python` or
+  `.venv/Scripts/python.exe`
+- native Windows should use the checked-in `.ps1` wrappers; PowerShell and
+  `cmd.exe` do not execute `./.../*.sh` directly
 - Python runners call `bootstrap_runtime()` before they build tasks or start
   the main loop; the top-level process re-execs itself under
   `systemd-run --user --scope` in `app-mlps-training.slice` when the user
@@ -248,7 +254,13 @@ Runtime policy for the tabular runners is centralized:
   also enables `OMP_WAIT_POLICY=ACTIVE`, `OMP_PROC_BIND=spread`, and
   `OMP_PLACES=cores`; the run still proceeds if the OS denies those calls
 - both shell and Python bootstraps attempt `SCHED_BATCH` for long-running
-  throughput-oriented CPU work
+  throughput-oriented CPU work where the OS exposes it
+- Windows does not provide the Linux `systemd-run`, `renice`, `ionice`,
+  `SCHED_BATCH`, `/proc`, or `sched_setaffinity` behavior used on this
+  laptop. Those pieces are best-effort and skipped there; the cross-platform
+  contract is the same launcher algorithm, same run roots, same checkpoints,
+  same thread environment defaults, same pressure thresholds, and safe
+  Windows process-tree termination.
 - `MLPS/tabular/shared/dae_dnn/install_linux_runtime_priority.sh` installs the
   persistent host settings used here: `kernel.sched_autogroup_enabled=0`,
   `user-UID.slice` high CPU/IO weights plus `TasksMax=infinity`, and

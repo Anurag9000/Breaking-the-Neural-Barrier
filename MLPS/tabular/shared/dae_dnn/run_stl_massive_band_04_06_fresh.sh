@@ -6,9 +6,10 @@ cd "$(dirname "$0")/../../../.."
 RUN_ROOT="${RUN_ROOT:-MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_fresh_v1}"
 source MLPS/tabular/shared/dae_dnn/runtime_tuning.sh
 tabular_runtime_bootstrap
+PYTHON_BIN="$(tabular_runtime_python)"
 PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True,max_split_size_mb:128}" \
 CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" \
-./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
+"${PYTHON_BIN}" MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
   --data-dir ./data \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
   --run-root "${RUN_ROOT}" \

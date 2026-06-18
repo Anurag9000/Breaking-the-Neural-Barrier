@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import torch
 
+from MLPS.tabular.shared.dae_dnn.platform_runtime import popen_process_group_kwargs
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
 from utils.adp_logging import ContinuousLogger
@@ -292,12 +293,12 @@ def run_trial(args: argparse.Namespace, trial_root: Path, selected: Sequence[Pro
         cmd = trial_command(args=args, trial_root=trial_root, candidate=candidate, rank=rank)
         proc = subprocess.Popen(
             cmd,
-            start_new_session=True,
             env=launcher_child_env(
                 concurrency_hint=len(selected),
                 job_key=f"{candidate.task_name}:{candidate.architecture}:{trial_root}",
                 affinity_slot=rank - 1,
             ),
+            **popen_process_group_kwargs(),
         )
         active[proc] = (candidate, cmd)
 

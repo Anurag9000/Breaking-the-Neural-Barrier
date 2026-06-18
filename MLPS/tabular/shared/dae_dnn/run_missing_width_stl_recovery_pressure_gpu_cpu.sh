@@ -8,10 +8,11 @@ cd "$(dirname "$0")/../../../.."
 # candidate state can move between CPU and GPU launches without any layout fork.
 source MLPS/tabular/shared/dae_dnn/runtime_tuning.sh
 tabular_runtime_bootstrap
+PYTHON_BIN="$(tabular_runtime_python)"
 
 PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True,max_split_size_mb:128}" \
 CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" \
-./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.py \
+"${PYTHON_BIN}" MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.py \
   --data-dir ./data \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
   --run-root MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1 \

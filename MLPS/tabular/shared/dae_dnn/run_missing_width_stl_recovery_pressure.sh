@@ -10,18 +10,21 @@ export CUDA_VISIBLE_DEVICES=""
 export NVIDIA_VISIBLE_DEVICES="none"
 unset PYTORCH_CUDA_ALLOC_CONF
 
-# CPU performance tuning for the default runner.
-export OMP_NUM_THREADS="${OMP_NUM_THREADS:-$(nproc)}"
-export MKL_NUM_THREADS="${MKL_NUM_THREADS:-$(nproc)}"
-export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-$(nproc)}"
-export NUMEXPR_NUM_THREADS="${NUMEXPR_NUM_THREADS:-$(nproc)}"
-
 source MLPS/tabular/shared/dae_dnn/runtime_tuning.sh
+CPU_CORES="$(tabular_runtime_detect_cpu_cores)"
+
+# CPU performance tuning for the default runner.
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-${CPU_CORES}}"
+export MKL_NUM_THREADS="${MKL_NUM_THREADS:-${CPU_CORES}}"
+export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-${CPU_CORES}}"
+export NUMEXPR_NUM_THREADS="${NUMEXPR_NUM_THREADS:-${CPU_CORES}}"
+
 tabular_runtime_bootstrap
+PYTHON_BIN="$(tabular_runtime_python)"
 
 CUDA_VISIBLE_DEVICES="" \
 NVIDIA_VISIBLE_DEVICES="none" \
-./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.py \
+"${PYTHON_BIN}" MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.py \
   --data-dir ./data \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
   --run-root MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1 \

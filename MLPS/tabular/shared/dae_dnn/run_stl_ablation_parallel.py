@@ -13,6 +13,11 @@ from typing import IO, Any, Callable, Deque, Dict, List, Optional, Sequence, Tup
 
 import torch
 
+from MLPS.tabular.shared.dae_dnn.platform_runtime import (
+    popen_process_group_kwargs,
+    sample_host_memory_mib,
+    terminate_process_tree,
+)
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, detect_cpu_cores, launcher_child_env
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
 from utils.adp_logging import ContinuousLogger
@@ -470,54 +475,7 @@ def mark_child_completed(child_root: Path, job: ChildJob) -> None:
 
 
 def terminate_child_process(proc: subprocess.Popen[Any], timeout_sec: float = 10.0) -> None:
-    try:
-        pgid = os.getpgid(proc.pid)
-    except Exception:
-        pgid = None
-
-    if pgid is not None:
-        try:
-            os.killpg(pgid, signal.SIGTERM)
-        except ProcessLookupError:
-            pass
-        except Exception:
-            try:
-                proc.terminate()
-            except Exception:
-                pass
-    else:
-        try:
-            proc.terminate()
-        except Exception:
-            pass
-
-    try:
-        proc.wait(timeout=timeout_sec)
-        return
-    except subprocess.TimeoutExpired:
-        pass
-    except Exception:
-        return
-
-    if pgid is not None:
-        try:
-            os.killpg(pgid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        except Exception:
-            try:
-                proc.kill()
-            except Exception:
-                pass
-    else:
-        try:
-            proc.kill()
-        except Exception:
-            pass
-    try:
-        proc.wait(timeout=timeout_sec)
-    except Exception:
-        pass
+    terminate_process_tree(proc, timeout_sec=timeout_sec)
 
 
 def close_child_log(handle: Optional[IO[str]]) -> None:
@@ -629,19 +587,7 @@ def aggregate_task(task_name: str, task_root: Path, child_roots: Sequence[Path])
 
 
 def sample_host_memory_pressure() -> MemoryPressureSample:
-    total_mib = 0
-    available_mib = 0
-    try:
-        with open("/proc/meminfo", "r", encoding="utf-8") as handle:
-            for line in handle:
-                if line.startswith("MemTotal:"):
-                    total_mib = int(int(line.split()[1]) // 1024)
-                elif line.startswith("MemAvailable:"):
-                    available_mib = int(int(line.split()[1]) // 1024)
-                if total_mib and available_mib:
-                    break
-    except Exception:
-        pass
+    total_mib, available_mib = sample_host_memory_mib()
     if total_mib <= 0:
         total_mib = 1
     if available_mib < 0:
@@ -755,11 +701,11 @@ def launch_child_process(
         handle = log_path.open("a", encoding="utf-8")
     proc = subprocess.Popen(
         list(cmd),
-        start_new_session=True,
         env=env,
         stdout=handle if handle is not None else None,
         stderr=handle if handle is not None else None,
         text=True,
+        **popen_process_group_kwargs(),
     )
     return proc, handle
 
