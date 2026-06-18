@@ -45,10 +45,26 @@ def _current_affinity_cpus() -> Tuple[int, ...]:
     try:
         affinity = os.sched_getaffinity(0)
         if affinity:
-            return tuple(sorted(int(cpu) for cpu in affinity))
+            return _order_cpus_by_capacity(tuple(int(cpu) for cpu in affinity))
     except Exception:
         pass
-    return tuple(range(max(1, int(os.cpu_count() or 1))))
+    return _order_cpus_by_capacity(tuple(range(max(1, int(os.cpu_count() or 1)))))
+
+
+def _cpu_capacity_khz(cpu: int) -> int:
+    cpu_dir = f"/sys/devices/system/cpu/cpu{int(cpu)}/cpufreq"
+    for name in ("cpuinfo_max_freq", "scaling_max_freq", "base_frequency"):
+        path = os.path.join(cpu_dir, name)
+        try:
+            with open(path, "r", encoding="utf-8") as handle:
+                return int(handle.read().strip() or "0")
+        except Exception:
+            pass
+    return 0
+
+
+def _order_cpus_by_capacity(cpus: Sequence[int]) -> Tuple[int, ...]:
+    return tuple(sorted((int(cpu) for cpu in cpus), key=lambda cpu: (-_cpu_capacity_khz(cpu), int(cpu))))
 
 
 def _format_cpu_list(cpus: Sequence[int]) -> str:
@@ -276,7 +292,10 @@ def launcher_child_env(
         slot = _deterministic_slot(job_key, slot_count)
         affinity_cpus = _partition_cpus(affinity_cpus, slot_count, slot)
     if affinity_cpus:
-        env["TABULAR_CPU_AFFINITY_CPUS"] = _format_cpu_list(affinity_cpus)
+        affinity_text = _format_cpu_list(affinity_cpus)
+        env["TABULAR_CPU_AFFINITY_CPUS"] = affinity_text
+        if shared_cpu:
+            env["GOMP_CPU_AFFINITY"] = affinity_text
     for key in (
         "OMP_NUM_THREADS",
         "MKL_NUM_THREADS",
@@ -291,6 +310,10 @@ def launcher_child_env(
     env["OMP_DYNAMIC"] = "FALSE"
     env["MKL_DYNAMIC"] = "FALSE"
     env["OMP_WAIT_POLICY"] = "ACTIVE"
+    if shared_cpu:
+        env["OMP_PROC_BIND"] = "spread"
+        env["OMP_PLACES"] = "cores"
+        env["KMP_AFFINITY"] = "granularity=fine,compact,1,0"
     env["TABULAR_CPU_THREADS"] = str(thread_budget)
     env["TABULAR_CPU_WORKERS"] = str(worker_budget)
     env["TABULAR_CPU_CORES"] = str(cores)
