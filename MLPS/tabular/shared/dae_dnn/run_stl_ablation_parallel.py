@@ -113,7 +113,7 @@ def parse_args() -> argparse.Namespace:
         "--max-active-jobs",
         type=int,
         default=0,
-        help="Hard cap for pressure-aware child jobs. 0 means no hard cap beyond RAM pressure.",
+        help="Hard cap for pressure-aware child jobs. 0 means use all visible logical CPUs as job lanes.",
     )
     p.add_argument(
         "--host-ram-pressure-limit-pct",
@@ -162,6 +162,12 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=0,
         help="CUDA device index to use for GPU child launches.",
+    )
+    p.add_argument(
+        "--max-active-gpu-jobs",
+        type=int,
+        default=1,
+        help="Maximum concurrent GPU children; additional eligible children spill to CPU.",
     )
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
@@ -730,8 +736,12 @@ def build_task_jobs(args: argparse.Namespace, tasks: Sequence[str], run_root: Pa
 def active_job_limit(args: argparse.Namespace, job_count: int) -> int:
     limit = int(getattr(args, "max_active_jobs", 0) or 0)
     if limit <= 0:
-        return max(1, int(job_count))
+        return max(1, min(int(job_count), int(detect_cpu_cores())))
     return max(1, int(limit))
+
+
+def active_gpu_job_limit(args: argparse.Namespace) -> int:
+    return max(0, int(getattr(args, "max_active_gpu_jobs", 1) or 0))
 
 
 def launch_child_process(
@@ -855,9 +865,15 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             env["CUDA_VISIBLE_DEVICES"] = str(int(args.gpu_device_index))
         return env
 
-    def choose_device_mode(host_pressure: MemoryPressureSample, gpu_pressure: GpuPressureSample) -> Optional[str]:
+    def choose_device_mode(
+        host_pressure: MemoryPressureSample,
+        gpu_pressure: GpuPressureSample,
+        active_gpu_jobs: int,
+    ) -> Optional[str]:
         if host_pressure.used_pct > float(args.host_ram_resume_pct):
             return None
+        if int(active_gpu_jobs) >= active_gpu_job_limit(args):
+            return "cpu"
         if gpu_available and gpu_pressure.total_mib > 0 and gpu_pressure.used_pct <= float(args.gpu_memory_resume_pct):
             return "cuda"
         return "cpu"
@@ -957,7 +973,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 continue
 
         under_active_limit = len(active) < int(active_limit)
-        chosen_device_mode = choose_device_mode(pressure, gpu_pressure)
+        active_gpu_jobs = sum(1 for entry in active.values() if entry.device_mode == "cuda")
+        chosen_device_mode = choose_device_mode(pressure, gpu_pressure, active_gpu_jobs)
         can_launch_now = launches_enabled
         if pending and under_active_limit and free_slots and can_launch_now and (chosen_device_mode is not None or not active):
             job = pending.popleft()
