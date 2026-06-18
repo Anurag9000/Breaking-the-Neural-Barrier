@@ -109,7 +109,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--gpu-device-index", type=int, default=0)
     p.add_argument("--pressure-poll-interval-sec", type=float, default=0.5)
     p.add_argument("--pressure-settle-sec", type=float, default=1.0)
-    p.add_argument("--max-active-jobs", type=int, default=0, help="0 means no slot cap beyond pressure gates.")
+    p.add_argument("--max-active-jobs", type=int, default=0, help="0 means auto-select a bounded CPU-lane cap.")
     p.add_argument("--include-width-only", action="store_true", default=True)
     p.add_argument("--no-include-width-only", dest="include_width_only", action="store_false")
     p.add_argument("--include-small-stl", action="store_true", default=True)
@@ -358,7 +358,19 @@ def build_jobs(args: argparse.Namespace) -> List[RecoveryJob]:
 
 def active_limit(args: argparse.Namespace, total_jobs: int) -> int:
     limit = int(args.max_active_jobs or 0)
-    return max(1, total_jobs if limit <= 0 else limit)
+    if limit > 0:
+        return max(1, min(int(total_jobs), int(limit)))
+    env_limit = os.environ.get("TABULAR_RECOVERY_AUTO_ACTIVE_JOBS")
+    if env_limit:
+        try:
+            parsed = int(env_limit)
+            if parsed > 0:
+                return max(1, min(int(total_jobs), parsed))
+        except Exception:
+            pass
+    cores = int(detect_cpu_cores())
+    auto_limit = max(2, min(4, max(1, cores // 8)))
+    return max(1, min(int(total_jobs), auto_limit))
 
 
 def env_for(device_mode: str, gpu_index: int) -> Dict[str, str]:
@@ -464,12 +476,13 @@ def write_plan(run_root: Path, jobs: Sequence[RecoveryJob]) -> None:
 
 
 def run(args: argparse.Namespace) -> None:
-    os.environ["TABULAR_CPU_JOB_CONCURRENCY"] = str(int(detect_cpu_cores()))
     run_root = Path(args.run_root)
     run_root.mkdir(parents=True, exist_ok=True)
     logger = ContinuousLogger(run_root, "missing_width_stl_recovery", "pressure_aware_recovery", resume=(run_root / "training_log.txt").exists())
     jobs = build_jobs(args)
     write_plan(run_root, jobs)
+    limit = active_limit(args, len(jobs))
+    os.environ["TABULAR_CPU_JOB_CONCURRENCY"] = str(int(limit))
     forced_cpu_jobs: set[str] = set()
     for job in jobs:
         state = load_json(job_state_path(job.root))
@@ -477,7 +490,7 @@ def run(args: argparse.Namespace) -> None:
             forced_cpu_jobs.add(str(job.root))
     logger.log_console(f"Run root: {run_root}")
     logger.log_console(f"Jobs: {len(jobs)}")
-    logger.log_console(f"Max active jobs: {active_limit(args, len(jobs))}")
+    logger.log_console(f"Max active jobs: {limit}")
     if forced_cpu_jobs:
         logger.log_console(f"[STATE] CPU-forced jobs restored: {len(forced_cpu_jobs)}")
     if bool(args.dry_run):
@@ -489,9 +502,8 @@ def run(args: argparse.Namespace) -> None:
 
     pending: Deque[RecoveryJob] = deque(jobs)
     active: Dict[subprocess.Popen[Any], ActiveRecoveryJob] = {}
-    slot_count = max(1, min(int(detect_cpu_cores()), int(active_limit(args, len(jobs)))))
+    slot_count = max(1, min(int(detect_cpu_cores()), int(limit)))
     free_slots = set(range(slot_count))
-    limit = active_limit(args, len(jobs))
     while pending or active:
         finished: List[subprocess.Popen[Any]] = []
         for proc, active_job in list(active.items()):
@@ -574,7 +586,7 @@ def run(args: argparse.Namespace) -> None:
                 update_job_state(job.root, {"force_cpu": True})
             slot_index = min(free_slots)
             free_slots.remove(slot_index)
-            proc, handle = launch(job, chosen, int(args.gpu_device_index), concurrency_hint=len(active) + 1, slot_index=slot_index)
+            proc, handle = launch(job, chosen, int(args.gpu_device_index), concurrency_hint=int(limit), slot_index=slot_index)
             active[proc] = ActiveRecoveryJob(job=job, device_mode=chosen, log_path=job_log_path(job.root), log_handle=handle, slot_index=slot_index)
             update_job_state(job.root, {"status": "running", "completed": False, "device": chosen, "started_at": time.time(), "command": command_for_device(job, chosen)})
             logger.log_console(
