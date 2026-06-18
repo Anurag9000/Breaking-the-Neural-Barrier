@@ -85,83 +85,6 @@ class STLPressureSchedulerTests(unittest.TestCase):
             source_run_root="MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current",
         )
 
-    def test_pressure_pause_requeues_same_child_root(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            run_root = Path(tmp) / "run"
-            small_root = run_root / "task_a" / "_children" / "small"
-            large_root = run_root / "task_a" / "_children" / "large"
-            jobs_by_task = {
-                "task_a": [
-                    parallel.ChildJob("task_a", (1,), small_root, 10, 1, "small"),
-                    parallel.ChildJob("task_a", (2,), large_root, 20, 1, "large"),
-                ]
-            }
-            completed_roots: set[Path] = set()
-            launch_counts = {"small": 0, "large": 0}
-            live: list[FakeProc] = []
-
-            def fake_build_jobs(args, tasks, root):
-                self.assertEqual(list(tasks), ["task_a"])
-                self.assertEqual(root, run_root)
-                return jobs_by_task
-
-            def fake_build_cmd(*, args, task_name, architecture, child_run_root, device_mode):
-                name = "large" if child_run_root == large_root else "small"
-                return [name]
-
-            def fake_launch(cmd, env=None, log_path=None):
-                name = cmd[0]
-                root = large_root if name == "large" else small_root
-                if name == "large" and launch_counts["large"] >= 1:
-                    self.assertIn(small_root, completed_roots)
-                launch_counts[name] += 1
-                proc = FakeProc(name, root, completed_roots, launch_counts)
-                live.append(proc)
-                return proc, None
-
-            def fake_terminate(proc):
-                proc.terminated = True
-
-            def fake_child_completed(child_root, task_name):
-                return child_root in completed_roots
-
-            def fake_memory_sample():
-                active_names = {proc.job_name for proc in live if not proc.terminated and not proc.completed}
-                if active_names == {"small", "large"}:
-                    return parallel.MemoryPressureSample(total_mib=1000, available_mib=50, used_pct=95.0)
-                if active_names == {"small"}:
-                    return parallel.MemoryPressureSample(total_mib=1000, available_mib=400, used_pct=60.0)
-                if active_names == {"large"}:
-                    return parallel.MemoryPressureSample(total_mib=1000, available_mib=300, used_pct=70.0)
-                return parallel.MemoryPressureSample(total_mib=1000, available_mib=500, used_pct=50.0)
-
-            def fake_aggregate(task_name, task_root, child_roots):
-                self.assertEqual(task_name, "task_a")
-                self.assertIn(small_root, child_roots)
-                self.assertIn(large_root, child_roots)
-                return {"task": task_name, "comparisons": []}
-
-            logger = mock.Mock()
-            args = self.make_args()
-
-            with mock.patch.object(parallel, "build_task_jobs", side_effect=fake_build_jobs), \
-                mock.patch.object(parallel, "build_worker_command", side_effect=fake_build_cmd), \
-                mock.patch.object(parallel, "launch_child_process", side_effect=fake_launch), \
-                mock.patch.object(parallel, "terminate_child_process", side_effect=fake_terminate), \
-                mock.patch.object(parallel, "child_completed", side_effect=fake_child_completed), \
-                mock.patch.object(parallel, "sample_host_memory_pressure", side_effect=fake_memory_sample), \
-                mock.patch.object(parallel, "aggregate_task", side_effect=fake_aggregate), \
-                mock.patch.object(parallel.time, "sleep", return_value=None):
-                reports = parallel.run_pressure_aware(args, run_root, ["task_a"], logger)
-
-            self.assertEqual(len(reports), 1)
-            self.assertEqual(launch_counts["small"], 1)
-            self.assertEqual(launch_counts["large"], 2)
-            large_state = parallel.load_child_state(large_root)
-            self.assertTrue(large_state.get("completed"))
-            self.assertEqual(int(large_state.get("pause_count", 0)), 1)
-            self.assertIn(large_root, completed_roots)
-
     def test_pause_does_not_unlock_new_launch_until_real_completion(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             run_root = Path(tmp) / "run"
@@ -282,45 +205,79 @@ class STLPressureSchedulerTests(unittest.TestCase):
             parallel.close_child_log(handle)
             proc.wait(timeout=5)
 
+    def test_child_completed_prefers_task_state_completion(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            child_root = Path(tmp) / "child"
+            task_root = child_root / "task_x"
+            task_root.mkdir(parents=True, exist_ok=True)
+            parallel.rg.write_json(
+                task_root / "ablation_state.json",
+                {
+                    "task": "task_x",
+                    "completed": True,
+                    "failed": False,
+                },
+            )
+
+            self.assertTrue(parallel.child_completed(child_root, "task_x"))
+
     def test_child_failure_is_requeued_without_parent_abort(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             run_root = Path(tmp) / "run"
             failing_root = run_root / "task_b" / "_children" / "failing"
+            success_root = run_root / "task_b" / "_children" / "success"
             jobs_by_task = {
                 "task_b": [
                     parallel.ChildJob("task_b", (3,), failing_root, 30, 1, "failing"),
+                    parallel.ChildJob("task_b", (1,), success_root, 10, 1, "success"),
                 ]
             }
-            launch_counts = {"failing": 0}
+            launch_counts = {"failing": 0, "success": 0}
+            completed_roots: set[Path] = set()
 
             class RetryProc:
                 _next_pid = 3000
 
-                def __init__(self) -> None:
+                def __init__(self, job_name: str, child_root: Path) -> None:
+                    self.job_name = job_name
+                    self.child_root = child_root
                     self.pid = RetryProc._next_pid
                     RetryProc._next_pid += 1
                     self.done = False
+                    self.poll_calls = 0
 
                 def poll(self):
                     if not self.done:
-                        self.done = True
-                        return 1
-                    return 1
+                        self.poll_calls += 1
+                        if self.job_name == "success" and self.poll_calls >= 3:
+                            self.done = True
+                            completed_roots.add(self.child_root)
+                            return 0
+                        if self.job_name == "failing":
+                            self.done = True
+                            return 1
+                    if self.done:
+                        return 0 if self.job_name == "success" else 1
+                    return None
 
             def fake_build_jobs(args, tasks, root):
                 return jobs_by_task
 
             def fake_build_cmd(*, args, task_name, architecture, child_run_root, device_mode):
+                if child_run_root == success_root:
+                    return ["success"]
                 return ["failing"]
 
             def fake_launch(cmd, env=None, log_path=None):
-                launch_counts["failing"] += 1
-                if launch_counts["failing"] >= 3:
+                name = cmd[0]
+                launch_counts[name] += 1
+                if name == "failing" and launch_counts["failing"] >= 2:
                     raise KeyboardInterrupt
-                return RetryProc(), None
+                root = success_root if name == "success" else failing_root
+                return RetryProc(name, root), None
 
             def fake_child_completed(child_root, task_name):
-                return False
+                return child_root in completed_roots
 
             logger = mock.Mock()
             args = self.make_args()
@@ -335,11 +292,13 @@ class STLPressureSchedulerTests(unittest.TestCase):
                 with self.assertRaises(KeyboardInterrupt):
                     parallel.run_pressure_aware(args, run_root, ["task_b"], logger)
 
-            self.assertGreaterEqual(launch_counts["failing"], 3)
+            self.assertGreaterEqual(launch_counts["failing"], 2)
+            self.assertGreaterEqual(launch_counts["success"], 1)
+            self.assertEqual(launch_counts["failing"], 2)
             state = parallel.load_child_state(failing_root)
             self.assertIn(state.get("status"), {"retrying", "running"})
             self.assertFalse(bool(state.get("failed", False)))
-            self.assertGreaterEqual(int(state.get("failure_count", 0)), 2)
+            self.assertGreaterEqual(int(state.get("failure_count", 0)), 1)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,946 @@
+[2026-06-16 15:00:02] Initialized ContinuousLogger for simulation_stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 (Mode: stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38)
+[2026-06-16 15:00:02] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/simulation/_children/stl_ablation_r01_d07_w0038_38_38_38_38_38_38_38/simulation/stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38/cand_000_d7_w38/training_log.txt
+[2026-06-16 15:00:02] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/simulation/_children/stl_ablation_r01_d07_w0038_38_38_38_38_38_38_38/simulation/stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38/cand_000_d7_w38/training_stats.csv
+[2026-06-16 15:00:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=1 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:00:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=1 batch=1/2 done gpu_used_mib=15 host_available_mib=1938
+[2026-06-16 15:00:15] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=1 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.321889 running_loss=1.321889
+[2026-06-16 15:00:26] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=1 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:00:26] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=1 batch=2/2 done gpu_used_mib=15 host_available_mib=1912
+[2026-06-16 15:00:26] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=1 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.067070 running_loss=1.210776
+[2026-06-16 15:00:26] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=1 starting validation
+[2026-06-16 15:00:28] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=1 finished validation val_loss=1.130356
+[2026-06-16 15:00:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=1 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1942
+[2026-06-16 15:00:29] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=1 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.210776 val_loss=1.130356 candidate_best=1.130356 global_best=1.130356 es=0/10
+[2026-06-16 15:00:36] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=2 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:00:36] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=2 batch=1/2 done gpu_used_mib=15 host_available_mib=1931
+[2026-06-16 15:00:36] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=2 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.185614 running_loss=1.185614
+[2026-06-16 15:00:44] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=2 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:00:44] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=2 batch=2/2 done gpu_used_mib=15 host_available_mib=1887
+[2026-06-16 15:00:44] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=2 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.031384 running_loss=1.118363
+[2026-06-16 15:00:44] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=2 starting validation
+[2026-06-16 15:00:47] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=2 finished validation val_loss=1.128814
+[2026-06-16 15:00:47] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=2 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1913
+[2026-06-16 15:00:47] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=2 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.118363 val_loss=1.128814 candidate_best=1.128814 global_best=1.128814 es=0/10
+[2026-06-16 15:00:55] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=3 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:00:55] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=3 batch=1/2 done gpu_used_mib=15 host_available_mib=1923
+[2026-06-16 15:00:55] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=3 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.105435 running_loss=1.105435
+[2026-06-16 15:01:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=3 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:01:05] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=3 batch=2/2 done gpu_used_mib=15 host_available_mib=2147
+[2026-06-16 15:01:05] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=3 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.131019 running_loss=1.116591
+[2026-06-16 15:01:05] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=3 starting validation
+[2026-06-16 15:01:07] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=3 finished validation val_loss=1.127137
+[2026-06-16 15:01:07] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=3 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1986
+[2026-06-16 15:01:07] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=3 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.116591 val_loss=1.127137 candidate_best=1.127137 global_best=1.127137 es=0/10
+[2026-06-16 15:01:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=4 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:01:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=4 batch=1/2 done gpu_used_mib=15 host_available_mib=1930
+[2026-06-16 15:01:15] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=4 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.150660 running_loss=1.150660
+[2026-06-16 15:01:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=4 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:01:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=4 batch=2/2 done gpu_used_mib=15 host_available_mib=1934
+[2026-06-16 15:01:23] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=4 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.068341 running_loss=1.114765
+[2026-06-16 15:01:23] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=4 starting validation
+[2026-06-16 15:01:26] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=4 finished validation val_loss=1.125664
+[2026-06-16 15:01:26] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=4 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1936
+[2026-06-16 15:01:26] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=4 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.114765 val_loss=1.125664 candidate_best=1.125664 global_best=1.125664 es=0/10
+[2026-06-16 15:01:33] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=5 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:01:33] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=5 batch=1/2 done gpu_used_mib=15 host_available_mib=1912
+[2026-06-16 15:01:33] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=5 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.080268 running_loss=1.080268
+[2026-06-16 15:01:41] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=5 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:01:42] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=5 batch=2/2 done gpu_used_mib=15 host_available_mib=1908
+[2026-06-16 15:01:42] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=5 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.155830 running_loss=1.113216
+[2026-06-16 15:01:42] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=5 starting validation
+[2026-06-16 15:01:44] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=5 finished validation val_loss=1.124363
+[2026-06-16 15:01:44] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=5 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1911
+[2026-06-16 15:01:44] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=5 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.113216 val_loss=1.124363 candidate_best=1.124363 global_best=1.124363 es=0/10
+[2026-06-16 15:01:53] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=6 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:01:53] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=6 batch=1/2 done gpu_used_mib=15 host_available_mib=1955
+[2026-06-16 15:01:53] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=6 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.086302 running_loss=1.086302
+[2026-06-16 15:02:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=6 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:02:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=6 batch=2/2 done gpu_used_mib=15 host_available_mib=1932
+[2026-06-16 15:02:01] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=6 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.144954 running_loss=1.111877
+[2026-06-16 15:02:01] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=6 starting validation
+[2026-06-16 15:02:04] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=6 finished validation val_loss=1.123310
+[2026-06-16 15:02:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=6 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1902
+[2026-06-16 15:02:04] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=6 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.111877 val_loss=1.123310 candidate_best=1.123310 global_best=1.123310 es=0/10
+[2026-06-16 15:02:12] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=7 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:02:12] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=7 batch=1/2 done gpu_used_mib=15 host_available_mib=1893
+[2026-06-16 15:02:12] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=7 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.117258 running_loss=1.117258
+[2026-06-16 15:02:20] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=7 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:02:21] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=7 batch=2/2 done gpu_used_mib=15 host_available_mib=1919
+[2026-06-16 15:02:21] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=7 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.102313 running_loss=1.110741
+[2026-06-16 15:02:21] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=7 starting validation
+[2026-06-16 15:02:23] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=7 finished validation val_loss=1.122572
+[2026-06-16 15:02:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=7 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1912
+[2026-06-16 15:02:23] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=7 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.110741 val_loss=1.122572 candidate_best=1.122572 global_best=1.122572 es=0/10
+[2026-06-16 15:02:33] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=8 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:02:33] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=8 batch=1/2 done gpu_used_mib=15 host_available_mib=1934
+[2026-06-16 15:02:33] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=8 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.182940 running_loss=1.182940
+[2026-06-16 15:02:41] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=8 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:02:41] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=8 batch=2/2 done gpu_used_mib=15 host_available_mib=1970
+[2026-06-16 15:02:41] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=8 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.015271 running_loss=1.109829
+[2026-06-16 15:02:41] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=8 starting validation
+[2026-06-16 15:02:43] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=8 finished validation val_loss=1.122133
+[2026-06-16 15:02:44] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=8 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1982
+[2026-06-16 15:02:44] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=8 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.109829 val_loss=1.122133 candidate_best=1.122133 global_best=1.122133 es=0/10
+[2026-06-16 15:02:51] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=9 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:02:52] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=9 batch=1/2 done gpu_used_mib=15 host_available_mib=1884
+[2026-06-16 15:02:52] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=9 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.049080 running_loss=1.049080
+[2026-06-16 15:02:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=9 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:02:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=9 batch=2/2 done gpu_used_mib=15 host_available_mib=1876
+[2026-06-16 15:02:59] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=9 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.187381 running_loss=1.109386
+[2026-06-16 15:02:59] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=9 starting validation
+[2026-06-16 15:03:01] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=9 finished validation val_loss=1.121921
+[2026-06-16 15:03:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=9 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1882
+[2026-06-16 15:03:01] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=9 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.109386 val_loss=1.121921 candidate_best=1.121921 global_best=1.121921 es=0/10
+[2026-06-16 15:03:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=10 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:03:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=10 batch=1/2 done gpu_used_mib=15 host_available_mib=1910
+[2026-06-16 15:03:09] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=10 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.096948 running_loss=1.096948
+[2026-06-16 15:03:18] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=10 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:03:18] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=10 batch=2/2 done gpu_used_mib=15 host_available_mib=1895
+[2026-06-16 15:03:18] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=10 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.124617 running_loss=1.109013
+[2026-06-16 15:03:18] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=10 starting validation
+[2026-06-16 15:03:20] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=10 finished validation val_loss=1.121809
+[2026-06-16 15:03:21] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=10 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1884
+[2026-06-16 15:03:21] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=10 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.109013 val_loss=1.121809 candidate_best=1.121809 global_best=1.121809 es=0/10
+[2026-06-16 15:03:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=11 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:03:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=11 batch=1/2 done gpu_used_mib=15 host_available_mib=1928
+[2026-06-16 15:03:29] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=11 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.117001 running_loss=1.117001
+[2026-06-16 15:03:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=11 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:03:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=11 batch=2/2 done gpu_used_mib=15 host_available_mib=1894
+[2026-06-16 15:03:37] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=11 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.098091 running_loss=1.108755
+[2026-06-16 15:03:37] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=11 starting validation
+[2026-06-16 15:03:39] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=11 finished validation val_loss=1.121719
+[2026-06-16 15:03:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=11 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1879
+[2026-06-16 15:03:40] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=11 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.108755 val_loss=1.121719 candidate_best=1.121809 global_best=1.121809 es=1/10
+[2026-06-16 15:03:47] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=12 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:03:47] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=12 batch=1/2 done gpu_used_mib=15 host_available_mib=1923
+[2026-06-16 15:03:47] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=12 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.112170 running_loss=1.112170
+[2026-06-16 15:03:55] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=12 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:03:55] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=12 batch=2/2 done gpu_used_mib=15 host_available_mib=1929
+[2026-06-16 15:03:55] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=12 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.103884 running_loss=1.108557
+[2026-06-16 15:03:55] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=12 starting validation
+[2026-06-16 15:03:58] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=12 finished validation val_loss=1.121603
+[2026-06-16 15:03:58] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=12 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1944
+[2026-06-16 15:03:58] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=12 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.108557 val_loss=1.121603 candidate_best=1.121603 global_best=1.121603 es=0/10
+[2026-06-16 15:04:07] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=13 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:04:07] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=13 batch=1/2 done gpu_used_mib=15 host_available_mib=1894
+[2026-06-16 15:04:07] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=13 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.102171 running_loss=1.102171
+[2026-06-16 15:04:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=13 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:04:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=13 batch=2/2 done gpu_used_mib=15 host_available_mib=1885
+[2026-06-16 15:04:15] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=13 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.116385 running_loss=1.108369
+[2026-06-16 15:04:15] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=13 starting validation
+[2026-06-16 15:04:17] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=13 finished validation val_loss=1.121447
+[2026-06-16 15:04:18] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=13 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1888
+[2026-06-16 15:04:18] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=13 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.108369 val_loss=1.121447 candidate_best=1.121447 global_best=1.121447 es=0/10
+[2026-06-16 15:04:25] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=14 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:04:26] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=14 batch=1/2 done gpu_used_mib=15 host_available_mib=1879
+[2026-06-16 15:04:26] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=14 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.048897 running_loss=1.048897
+[2026-06-16 15:04:33] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=14 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:04:34] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=14 batch=2/2 done gpu_used_mib=15 host_available_mib=1901
+[2026-06-16 15:04:34] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=14 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.184724 running_loss=1.108124
+[2026-06-16 15:04:34] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=14 starting validation
+[2026-06-16 15:04:36] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=14 finished validation val_loss=1.121189
+[2026-06-16 15:04:36] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=14 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1927
+[2026-06-16 15:04:36] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=14 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.108124 val_loss=1.121189 candidate_best=1.121189 global_best=1.121189 es=0/10
+[2026-06-16 15:04:44] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=15 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:04:44] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=15 batch=1/2 done gpu_used_mib=15 host_available_mib=1897
+[2026-06-16 15:04:44] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=15 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.059465 running_loss=1.059465
+[2026-06-16 15:04:53] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=15 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:04:54] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=15 batch=2/2 done gpu_used_mib=15 host_available_mib=1901
+[2026-06-16 15:04:54] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=15 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.170236 running_loss=1.107766
+[2026-06-16 15:04:54] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=15 starting validation
+[2026-06-16 15:04:56] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=15 finished validation val_loss=1.120757
+[2026-06-16 15:04:56] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=15 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2123
+[2026-06-16 15:04:56] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=15 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.107766 val_loss=1.120757 candidate_best=1.120757 global_best=1.120757 es=0/10
+[2026-06-16 15:05:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=16 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:05:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=16 batch=1/2 done gpu_used_mib=15 host_available_mib=1922
+[2026-06-16 15:05:04] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=16 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.059764 running_loss=1.059764
+[2026-06-16 15:05:11] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=16 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:05:11] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=16 batch=2/2 done gpu_used_mib=15 host_available_mib=1933
+[2026-06-16 15:05:11] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=16 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.168669 running_loss=1.107251
+[2026-06-16 15:05:11] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=16 starting validation
+[2026-06-16 15:05:14] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=16 finished validation val_loss=1.120121
+[2026-06-16 15:05:14] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=16 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1918
+[2026-06-16 15:05:14] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=16 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.107251 val_loss=1.120121 candidate_best=1.120121 global_best=1.120121 es=0/10
+[2026-06-16 15:05:22] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=17 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:05:22] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=17 batch=1/2 done gpu_used_mib=15 host_available_mib=1929
+[2026-06-16 15:05:22] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=17 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.112399 running_loss=1.112399
+[2026-06-16 15:05:30] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=17 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:05:30] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=17 batch=2/2 done gpu_used_mib=15 host_available_mib=1906
+[2026-06-16 15:05:30] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=17 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.098961 running_loss=1.106539
+[2026-06-16 15:05:30] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=17 starting validation
+[2026-06-16 15:05:32] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=17 finished validation val_loss=1.119293
+[2026-06-16 15:05:33] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=17 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1909
+[2026-06-16 15:05:33] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=17 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.106539 val_loss=1.119293 candidate_best=1.119293 global_best=1.119293 es=0/10
+[2026-06-16 15:05:42] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=18 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:05:42] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=18 batch=1/2 done gpu_used_mib=15 host_available_mib=1940
+[2026-06-16 15:05:42] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=18 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.139535 running_loss=1.139535
+[2026-06-16 15:05:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=18 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:05:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=18 batch=2/2 done gpu_used_mib=15 host_available_mib=1957
+[2026-06-16 15:05:50] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=18 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.061850 running_loss=1.105660
+[2026-06-16 15:05:50] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=18 starting validation
+[2026-06-16 15:05:52] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=18 finished validation val_loss=1.118239
+[2026-06-16 15:05:52] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=18 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1892
+[2026-06-16 15:05:52] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=18 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.105660 val_loss=1.118239 candidate_best=1.118239 global_best=1.118239 es=0/10
+[2026-06-16 15:06:00] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=19 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:06:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=19 batch=1/2 done gpu_used_mib=15 host_available_mib=1895
+[2026-06-16 15:06:01] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=19 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.081085 running_loss=1.081085
+[2026-06-16 15:06:08] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=19 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:06:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=19 batch=2/2 done gpu_used_mib=15 host_available_mib=1920
+[2026-06-16 15:06:09] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=19 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.134920 running_loss=1.104560
+[2026-06-16 15:06:09] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=19 starting validation
+[2026-06-16 15:06:11] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=19 finished validation val_loss=1.116991
+[2026-06-16 15:06:11] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=19 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1934
+[2026-06-16 15:06:11] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=19 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.104560 val_loss=1.116991 candidate_best=1.116991 global_best=1.116991 es=0/10
+[2026-06-16 15:06:20] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=20 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:06:20] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=20 batch=1/2 done gpu_used_mib=15 host_available_mib=1904
+[2026-06-16 15:06:20] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=20 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.126218 running_loss=1.126218
+[2026-06-16 15:06:28] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=20 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:06:28] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=20 batch=2/2 done gpu_used_mib=15 host_available_mib=2143
+[2026-06-16 15:06:28] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=20 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.073375 running_loss=1.103176
+[2026-06-16 15:06:28] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=20 starting validation
+[2026-06-16 15:06:31] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=20 finished validation val_loss=1.115374
+[2026-06-16 15:06:31] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=20 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1979
+[2026-06-16 15:06:31] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=20 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.103176 val_loss=1.115374 candidate_best=1.115374 global_best=1.115374 es=0/10
+[2026-06-16 15:06:39] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=21 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:06:39] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=21 batch=1/2 done gpu_used_mib=15 host_available_mib=1891
+[2026-06-16 15:06:39] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=21 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.117808 running_loss=1.117808
+[2026-06-16 15:06:47] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=21 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:06:47] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=21 batch=2/2 done gpu_used_mib=15 host_available_mib=1896
+[2026-06-16 15:06:47] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=21 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.080012 running_loss=1.101327
+[2026-06-16 15:06:47] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=21 starting validation
+[2026-06-16 15:06:49] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=21 finished validation val_loss=1.113147
+[2026-06-16 15:06:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=21 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1858
+[2026-06-16 15:06:50] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=21 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.101327 val_loss=1.113147 candidate_best=1.113147 global_best=1.113147 es=0/10
+[2026-06-16 15:06:57] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=22 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:06:58] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=22 batch=1/2 done gpu_used_mib=15 host_available_mib=1897
+[2026-06-16 15:06:58] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=22 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.077552 running_loss=1.077552
+[2026-06-16 15:07:08] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=22 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:07:08] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=22 batch=2/2 done gpu_used_mib=15 host_available_mib=1904
+[2026-06-16 15:07:08] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=22 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.126297 running_loss=1.098807
+[2026-06-16 15:07:08] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=22 starting validation
+[2026-06-16 15:07:10] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=22 finished validation val_loss=1.110231
+[2026-06-16 15:07:11] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=22 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1888
+[2026-06-16 15:07:11] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=22 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.098807 val_loss=1.110231 candidate_best=1.110231 global_best=1.110231 es=0/10
+[2026-06-16 15:07:18] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=23 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:07:19] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=23 batch=1/2 done gpu_used_mib=15 host_available_mib=1861
+[2026-06-16 15:07:19] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=23 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.051210 running_loss=1.051210
+[2026-06-16 15:07:26] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=23 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:07:27] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=23 batch=2/2 done gpu_used_mib=15 host_available_mib=1889
+[2026-06-16 15:07:27] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=23 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.152879 running_loss=1.095542
+[2026-06-16 15:07:27] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=23 starting validation
+[2026-06-16 15:07:29] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=23 finished validation val_loss=1.106489
+[2026-06-16 15:07:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=23 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1867
+[2026-06-16 15:07:29] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=23 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.095542 val_loss=1.106489 candidate_best=1.106489 global_best=1.106489 es=0/10
+[2026-06-16 15:07:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=24 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:07:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=24 batch=1/2 done gpu_used_mib=15 host_available_mib=1963
+[2026-06-16 15:07:37] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=24 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.059871 running_loss=1.059871
+[2026-06-16 15:07:46] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=24 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:07:46] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=24 batch=2/2 done gpu_used_mib=15 host_available_mib=1962
+[2026-06-16 15:07:46] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=24 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.132193 running_loss=1.091407
+[2026-06-16 15:07:46] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=24 starting validation
+[2026-06-16 15:07:48] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=24 finished validation val_loss=1.101689
+[2026-06-16 15:07:49] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=24 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1899
+[2026-06-16 15:07:49] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=24 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.091407 val_loss=1.101689 candidate_best=1.101689 global_best=1.101689 es=0/10
+[2026-06-16 15:07:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=25 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:08:00] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=25 batch=1/2 done gpu_used_mib=15 host_available_mib=1913
+[2026-06-16 15:08:00] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=25 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.018348 running_loss=1.018348
+[2026-06-16 15:08:07] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=25 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:08:07] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=25 batch=2/2 done gpu_used_mib=15 host_available_mib=1921
+[2026-06-16 15:08:07] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=25 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.173798 running_loss=1.086132
+[2026-06-16 15:08:07] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=25 starting validation
+[2026-06-16 15:08:09] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=25 finished validation val_loss=1.095348
+[2026-06-16 15:08:10] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=25 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1914
+[2026-06-16 15:08:10] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=25 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.086132 val_loss=1.095348 candidate_best=1.095348 global_best=1.095348 es=0/10
+[2026-06-16 15:08:17] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=26 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:08:17] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=26 batch=1/2 done gpu_used_mib=15 host_available_mib=1959
+[2026-06-16 15:08:17] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=26 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.034485 running_loss=1.034485
+[2026-06-16 15:08:25] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=26 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:08:25] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=26 batch=2/2 done gpu_used_mib=15 host_available_mib=1914
+[2026-06-16 15:08:25] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=26 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.137062 running_loss=1.079214
+[2026-06-16 15:08:25] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=26 starting validation
+[2026-06-16 15:08:28] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=26 finished validation val_loss=1.086812
+[2026-06-16 15:08:28] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=26 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1919
+[2026-06-16 15:08:28] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=26 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.079214 val_loss=1.086812 candidate_best=1.086812 global_best=1.086812 es=0/10
+[2026-06-16 15:08:36] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=27 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:08:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=27 batch=1/2 done gpu_used_mib=15 host_available_mib=1865
+[2026-06-16 15:08:37] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=27 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.101984 running_loss=1.101984
+[2026-06-16 15:08:46] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=27 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:08:46] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=27 batch=2/2 done gpu_used_mib=15 host_available_mib=1939
+[2026-06-16 15:08:46] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=27 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.028589 running_loss=1.069981
+[2026-06-16 15:08:46] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=27 starting validation
+[2026-06-16 15:08:48] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=27 finished validation val_loss=1.075261
+[2026-06-16 15:08:48] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=27 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1914
+[2026-06-16 15:08:48] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=27 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.069981 val_loss=1.075261 candidate_best=1.075261 global_best=1.075261 es=0/10
+[2026-06-16 15:08:56] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=28 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:08:57] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=28 batch=1/2 done gpu_used_mib=15 host_available_mib=1989
+[2026-06-16 15:08:57] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=28 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.055872 running_loss=1.055872
+[2026-06-16 15:09:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=28 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:09:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=28 batch=2/2 done gpu_used_mib=15 host_available_mib=1918
+[2026-06-16 15:09:04] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=28 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.059229 running_loss=1.057336
+[2026-06-16 15:09:04] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=28 starting validation
+[2026-06-16 15:09:07] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=28 finished validation val_loss=1.059597
+[2026-06-16 15:09:07] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=28 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1897
+[2026-06-16 15:09:07] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=28 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.057336 val_loss=1.059597 candidate_best=1.059597 global_best=1.059597 es=0/10
+[2026-06-16 15:09:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=29 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:09:16] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=29 batch=1/2 done gpu_used_mib=15 host_available_mib=1877
+[2026-06-16 15:09:16] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=29 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.064530 running_loss=1.064530
+[2026-06-16 15:09:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=29 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:09:24] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=29 batch=2/2 done gpu_used_mib=15 host_available_mib=1910
+[2026-06-16 15:09:24] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=29 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.009019 running_loss=1.040324
+[2026-06-16 15:09:24] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=29 starting validation
+[2026-06-16 15:09:26] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=29 finished validation val_loss=1.038498
+[2026-06-16 15:09:26] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=29 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2044
+[2026-06-16 15:09:26] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=29 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.040324 val_loss=1.038498 candidate_best=1.038498 global_best=1.038498 es=0/10
+[2026-06-16 15:09:36] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=30 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:09:36] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=30 batch=1/2 done gpu_used_mib=15 host_available_mib=1923
+[2026-06-16 15:09:36] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=30 batch=1/2 batch_size=9312 running_batches=1 batch_loss=1.081602 running_loss=1.081602
+[2026-06-16 15:09:43] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=30 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:09:44] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=30 batch=2/2 done gpu_used_mib=15 host_available_mib=1997
+[2026-06-16 15:09:44] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=30 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.935060 running_loss=1.017703
+[2026-06-16 15:09:44] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=30 starting validation
+[2026-06-16 15:09:46] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=30 finished validation val_loss=1.010971
+[2026-06-16 15:09:46] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=30 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1951
+[2026-06-16 15:09:46] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=30 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.017703 val_loss=1.010971 candidate_best=1.010971 global_best=1.010971 es=0/10
+[2026-06-16 15:09:54] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=31 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:09:55] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=31 batch=1/2 done gpu_used_mib=15 host_available_mib=1912
+[2026-06-16 15:09:55] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=31 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.959877 running_loss=0.959877
+[2026-06-16 15:10:02] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=31 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:10:03] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=31 batch=2/2 done gpu_used_mib=15 host_available_mib=1969
+[2026-06-16 15:10:03] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=31 batch=2/2 batch_size=7200 running_batches=2 batch_loss=1.024507 running_loss=0.988058
+[2026-06-16 15:10:03] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=31 starting validation
+[2026-06-16 15:10:05] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=31 finished validation val_loss=0.976378
+[2026-06-16 15:10:05] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=31 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1999
+[2026-06-16 15:10:05] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=31 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.988058 val_loss=0.976378 candidate_best=0.976378 global_best=0.976378 es=0/10
+[2026-06-16 15:10:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=32 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:10:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=32 batch=1/2 done gpu_used_mib=15 host_available_mib=1924
+[2026-06-16 15:10:15] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=32 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.938571 running_loss=0.938571
+[2026-06-16 15:10:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=32 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:10:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=32 batch=2/2 done gpu_used_mib=15 host_available_mib=1864
+[2026-06-16 15:10:23] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=32 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.968207 running_loss=0.951493
+[2026-06-16 15:10:23] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=32 starting validation
+[2026-06-16 15:10:25] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=32 finished validation val_loss=0.934106
+[2026-06-16 15:10:26] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=32 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1888
+[2026-06-16 15:10:26] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=32 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.951493 val_loss=0.934106 candidate_best=0.934106 global_best=0.934106 es=0/10
+[2026-06-16 15:10:33] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=33 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:10:33] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=33 batch=1/2 done gpu_used_mib=15 host_available_mib=1906
+[2026-06-16 15:10:33] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=33 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.890044 running_loss=0.890044
+[2026-06-16 15:10:41] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=33 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:10:41] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=33 batch=2/2 done gpu_used_mib=15 host_available_mib=1890
+[2026-06-16 15:10:41] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=33 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.928163 running_loss=0.906666
+[2026-06-16 15:10:41] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=33 starting validation
+[2026-06-16 15:10:43] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=33 finished validation val_loss=0.883354
+[2026-06-16 15:10:44] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=33 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1883
+[2026-06-16 15:10:44] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=33 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.906666 val_loss=0.883354 candidate_best=0.883354 global_best=0.883354 es=0/10
+[2026-06-16 15:10:52] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=34 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:10:52] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=34 batch=1/2 done gpu_used_mib=15 host_available_mib=1872
+[2026-06-16 15:10:52] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=34 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.878740 running_loss=0.878740
+[2026-06-16 15:11:02] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=34 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:11:02] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=34 batch=2/2 done gpu_used_mib=15 host_available_mib=1918
+[2026-06-16 15:11:02] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=34 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.823342 running_loss=0.854584
+[2026-06-16 15:11:02] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=34 starting validation
+[2026-06-16 15:11:05] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=34 finished validation val_loss=0.825355
+[2026-06-16 15:11:05] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=34 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1880
+[2026-06-16 15:11:05] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=34 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.854584 val_loss=0.825355 candidate_best=0.825355 global_best=0.825355 es=0/10
+[2026-06-16 15:11:13] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=35 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:11:13] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=35 batch=1/2 done gpu_used_mib=15 host_available_mib=1969
+[2026-06-16 15:11:13] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=35 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.835223 running_loss=0.835223
+[2026-06-16 15:11:21] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=35 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:11:21] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=35 batch=2/2 done gpu_used_mib=15 host_available_mib=2141
+[2026-06-16 15:11:21] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=35 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.744059 running_loss=0.795471
+[2026-06-16 15:11:21] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=35 starting validation
+[2026-06-16 15:11:23] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=35 finished validation val_loss=0.760588
+[2026-06-16 15:11:24] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=35 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1922
+[2026-06-16 15:11:24] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=35 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.795471 val_loss=0.760588 candidate_best=0.760588 global_best=0.760588 es=0/10
+[2026-06-16 15:11:32] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=36 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:11:32] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=36 batch=1/2 done gpu_used_mib=15 host_available_mib=1903
+[2026-06-16 15:11:32] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=36 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.750991 running_loss=0.750991
+[2026-06-16 15:11:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=36 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:11:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=36 batch=2/2 done gpu_used_mib=15 host_available_mib=1872
+[2026-06-16 15:11:40] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=36 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.700794 running_loss=0.729103
+[2026-06-16 15:11:40] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=36 starting validation
+[2026-06-16 15:11:42] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=36 finished validation val_loss=0.688899
+[2026-06-16 15:11:43] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=36 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1853
+[2026-06-16 15:11:43] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=36 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.729103 val_loss=0.688899 candidate_best=0.688899 global_best=0.688899 es=0/10
+[2026-06-16 15:11:53] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=37 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:11:54] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=37 batch=1/2 done gpu_used_mib=15 host_available_mib=1875
+[2026-06-16 15:11:54] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=37 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.691394 running_loss=0.691394
+[2026-06-16 15:12:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=37 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:12:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=37 batch=2/2 done gpu_used_mib=15 host_available_mib=1890
+[2026-06-16 15:12:01] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=37 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.612947 running_loss=0.657188
+[2026-06-16 15:12:01] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=37 starting validation
+[2026-06-16 15:12:04] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=37 finished validation val_loss=0.614478
+[2026-06-16 15:12:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=37 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1851
+[2026-06-16 15:12:04] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=37 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.657188 val_loss=0.614478 candidate_best=0.614478 global_best=0.614478 es=0/10
+[2026-06-16 15:12:12] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=38 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:12:12] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=38 batch=1/2 done gpu_used_mib=15 host_available_mib=1888
+[2026-06-16 15:12:12] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=38 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.602102 running_loss=0.602102
+[2026-06-16 15:12:20] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=38 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:12:20] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=38 batch=2/2 done gpu_used_mib=15 host_available_mib=1884
+[2026-06-16 15:12:20] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=38 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.557784 running_loss=0.582777
+[2026-06-16 15:12:20] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=38 starting validation
+[2026-06-16 15:12:22] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=38 finished validation val_loss=0.544413
+[2026-06-16 15:12:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=38 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1876
+[2026-06-16 15:12:23] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=38 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.582777 val_loss=0.544413 candidate_best=0.544413 global_best=0.544413 es=0/10
+[2026-06-16 15:12:31] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=39 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:12:31] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=39 batch=1/2 done gpu_used_mib=15 host_available_mib=1932
+[2026-06-16 15:12:31] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=39 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.557583 running_loss=0.557583
+[2026-06-16 15:12:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=39 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:12:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=39 batch=2/2 done gpu_used_mib=15 host_available_mib=1960
+[2026-06-16 15:12:40] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=39 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.460735 running_loss=0.515353
+[2026-06-16 15:12:40] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=39 starting validation
+[2026-06-16 15:12:43] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=39 finished validation val_loss=0.490844
+[2026-06-16 15:12:43] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=39 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1875
+[2026-06-16 15:12:43] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=39 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.515353 val_loss=0.490844 candidate_best=0.490844 global_best=0.490844 es=0/10
+[2026-06-16 15:12:51] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=40 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:12:51] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=40 batch=1/2 done gpu_used_mib=15 host_available_mib=1882
+[2026-06-16 15:12:51] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=40 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.447526 running_loss=0.447526
+[2026-06-16 15:12:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=40 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:12:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=40 batch=2/2 done gpu_used_mib=15 host_available_mib=1871
+[2026-06-16 15:12:59] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=40 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.481216 running_loss=0.462217
+[2026-06-16 15:12:59] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=40 starting validation
+[2026-06-16 15:13:01] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=40 finished validation val_loss=0.460437
+[2026-06-16 15:13:02] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=40 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1880
+[2026-06-16 15:13:02] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=40 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.462217 val_loss=0.460437 candidate_best=0.460437 global_best=0.460437 es=0/10
+[2026-06-16 15:13:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=41 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:13:10] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=41 batch=1/2 done gpu_used_mib=15 host_available_mib=1866
+[2026-06-16 15:13:10] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=41 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.438615 running_loss=0.438615
+[2026-06-16 15:13:17] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=41 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:13:17] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=41 batch=2/2 done gpu_used_mib=15 host_available_mib=1862
+[2026-06-16 15:13:17] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=41 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.408229 running_loss=0.425365
+[2026-06-16 15:13:17] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=41 starting validation
+[2026-06-16 15:13:19] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=41 finished validation val_loss=0.415809
+[2026-06-16 15:13:20] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=41 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1846
+[2026-06-16 15:13:20] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=41 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.425365 val_loss=0.415809 candidate_best=0.415809 global_best=0.415809 es=0/10
+[2026-06-16 15:13:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=42 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:13:30] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=42 batch=1/2 done gpu_used_mib=15 host_available_mib=1862
+[2026-06-16 15:13:30] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=42 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.415227 running_loss=0.415227
+[2026-06-16 15:13:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=42 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:13:38] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=42 batch=2/2 done gpu_used_mib=15 host_available_mib=1827
+[2026-06-16 15:13:38] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=42 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.317706 running_loss=0.372703
+[2026-06-16 15:13:38] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=42 starting validation
+[2026-06-16 15:13:40] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=42 finished validation val_loss=0.340409
+[2026-06-16 15:13:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=42 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2010
+[2026-06-16 15:13:40] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=42 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.372703 val_loss=0.340409 candidate_best=0.340409 global_best=0.340409 es=0/10
+[2026-06-16 15:13:48] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=43 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:13:48] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=43 batch=1/2 done gpu_used_mib=15 host_available_mib=1862
+[2026-06-16 15:13:48] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=43 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.330406 running_loss=0.330406
+[2026-06-16 15:13:56] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=43 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:13:56] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=43 batch=2/2 done gpu_used_mib=15 host_available_mib=1861
+[2026-06-16 15:13:56] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=43 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.267901 running_loss=0.303151
+[2026-06-16 15:13:56] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=43 starting validation
+[2026-06-16 15:13:59] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=43 finished validation val_loss=0.293147
+[2026-06-16 15:13:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=43 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1891
+[2026-06-16 15:13:59] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=43 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.303151 val_loss=0.293147 candidate_best=0.293147 global_best=0.293147 es=0/10
+[2026-06-16 15:14:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=44 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:14:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=44 batch=1/2 done gpu_used_mib=15 host_available_mib=1877
+[2026-06-16 15:14:09] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=44 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.285661 running_loss=0.285661
+[2026-06-16 15:14:17] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=44 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:14:18] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=44 batch=2/2 done gpu_used_mib=15 host_available_mib=1866
+[2026-06-16 15:14:18] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=44 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.238201 running_loss=0.264966
+[2026-06-16 15:14:18] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=44 starting validation
+[2026-06-16 15:14:20] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=44 finished validation val_loss=0.281702
+[2026-06-16 15:14:20] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=44 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1890
+[2026-06-16 15:14:20] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=44 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.264966 val_loss=0.281702 candidate_best=0.281702 global_best=0.281702 es=0/10
+[2026-06-16 15:14:28] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=45 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:14:28] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=45 batch=1/2 done gpu_used_mib=15 host_available_mib=1869
+[2026-06-16 15:14:28] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=45 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.277302 running_loss=0.277302
+[2026-06-16 15:14:36] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=45 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:14:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=45 batch=2/2 done gpu_used_mib=15 host_available_mib=1853
+[2026-06-16 15:14:37] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=45 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.237673 running_loss=0.260022
+[2026-06-16 15:14:37] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=45 starting validation
+[2026-06-16 15:14:39] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=45 finished validation val_loss=0.238326
+[2026-06-16 15:14:39] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=45 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1878
+[2026-06-16 15:14:39] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=45 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.260022 val_loss=0.238326 candidate_best=0.238326 global_best=0.238326 es=0/10
+[2026-06-16 15:14:47] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=46 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:14:47] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=46 batch=1/2 done gpu_used_mib=15 host_available_mib=1858
+[2026-06-16 15:14:47] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=46 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.227593 running_loss=0.227593
+[2026-06-16 15:14:56] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=46 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:14:56] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=46 batch=2/2 done gpu_used_mib=15 host_available_mib=1958
+[2026-06-16 15:14:56] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=46 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.211637 running_loss=0.220635
+[2026-06-16 15:14:56] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=46 starting validation
+[2026-06-16 15:14:59] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=46 finished validation val_loss=0.198974
+[2026-06-16 15:14:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=46 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1904
+[2026-06-16 15:14:59] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=46 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.220635 val_loss=0.198974 candidate_best=0.198974 global_best=0.198974 es=0/10
+[2026-06-16 15:15:07] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=47 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:15:07] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=47 batch=1/2 done gpu_used_mib=15 host_available_mib=1935
+[2026-06-16 15:15:07] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=47 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.210443 running_loss=0.210443
+[2026-06-16 15:15:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=47 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:15:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=47 batch=2/2 done gpu_used_mib=15 host_available_mib=1883
+[2026-06-16 15:15:15] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=47 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.151495 running_loss=0.184739
+[2026-06-16 15:15:15] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=47 starting validation
+[2026-06-16 15:15:17] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=47 finished validation val_loss=0.154042
+[2026-06-16 15:15:18] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=47 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1896
+[2026-06-16 15:15:18] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=47 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.184739 val_loss=0.154042 candidate_best=0.154042 global_best=0.154042 es=0/10
+[2026-06-16 15:15:25] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=48 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:15:26] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=48 batch=1/2 done gpu_used_mib=15 host_available_mib=1949
+[2026-06-16 15:15:26] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=48 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.150120 running_loss=0.150120
+[2026-06-16 15:15:33] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=48 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:15:34] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=48 batch=2/2 done gpu_used_mib=15 host_available_mib=1862
+[2026-06-16 15:15:34] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=48 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.140437 running_loss=0.145898
+[2026-06-16 15:15:34] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=48 starting validation
+[2026-06-16 15:15:36] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=48 finished validation val_loss=0.130013
+[2026-06-16 15:15:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=48 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1878
+[2026-06-16 15:15:37] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=48 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.145898 val_loss=0.130013 candidate_best=0.130013 global_best=0.130013 es=0/10
+[2026-06-16 15:15:45] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=49 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:15:46] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=49 batch=1/2 done gpu_used_mib=15 host_available_mib=1891
+[2026-06-16 15:15:46] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=49 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.123438 running_loss=0.123438
+[2026-06-16 15:15:53] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=49 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:15:54] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=49 batch=2/2 done gpu_used_mib=15 host_available_mib=1861
+[2026-06-16 15:15:54] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=49 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.136036 running_loss=0.128931
+[2026-06-16 15:15:54] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=49 starting validation
+[2026-06-16 15:15:56] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=49 finished validation val_loss=0.124491
+[2026-06-16 15:15:56] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=49 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1835
+[2026-06-16 15:15:56] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=49 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.128931 val_loss=0.124491 candidate_best=0.124491 global_best=0.124491 es=0/10
+[2026-06-16 15:16:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=50 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:16:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=50 batch=1/2 done gpu_used_mib=15 host_available_mib=1881
+[2026-06-16 15:16:04] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=50 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.115312 running_loss=0.115312
+[2026-06-16 15:16:12] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=50 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:16:12] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=50 batch=2/2 done gpu_used_mib=15 host_available_mib=1913
+[2026-06-16 15:16:12] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=50 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.136371 running_loss=0.124495
+[2026-06-16 15:16:12] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=50 starting validation
+[2026-06-16 15:16:14] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=50 finished validation val_loss=0.133801
+[2026-06-16 15:16:15] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=50 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1854
+[2026-06-16 15:16:15] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=50 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.124495 val_loss=0.133801 candidate_best=0.124491 global_best=0.124491 es=1/10
+[2026-06-16 15:16:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=51 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:16:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=51 batch=1/2 done gpu_used_mib=15 host_available_mib=1910
+[2026-06-16 15:16:23] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=51 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.118881 running_loss=0.118881
+[2026-06-16 15:16:32] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=51 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:16:32] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=51 batch=2/2 done gpu_used_mib=15 host_available_mib=1899
+[2026-06-16 15:16:32] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=51 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.108591 running_loss=0.114394
+[2026-06-16 15:16:32] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=51 starting validation
+[2026-06-16 15:16:34] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=51 finished validation val_loss=0.131152
+[2026-06-16 15:16:34] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=51 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1886
+[2026-06-16 15:16:34] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=51 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.114394 val_loss=0.131152 candidate_best=0.124491 global_best=0.124491 es=2/10
+[2026-06-16 15:16:42] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=52 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:16:43] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=52 batch=1/2 done gpu_used_mib=15 host_available_mib=1858
+[2026-06-16 15:16:43] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=52 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.122230 running_loss=0.122230
+[2026-06-16 15:16:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=52 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:16:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=52 batch=2/2 done gpu_used_mib=15 host_available_mib=1869
+[2026-06-16 15:16:50] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=52 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.133818 running_loss=0.127283
+[2026-06-16 15:16:50] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=52 starting validation
+[2026-06-16 15:16:53] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=52 finished validation val_loss=0.084214
+[2026-06-16 15:16:53] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=52 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1848
+[2026-06-16 15:16:53] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=52 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.127283 val_loss=0.084214 candidate_best=0.084214 global_best=0.084214 es=0/10
+[2026-06-16 15:17:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=53 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:17:02] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=53 batch=1/2 done gpu_used_mib=15 host_available_mib=1857
+[2026-06-16 15:17:02] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=53 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.081548 running_loss=0.081548
+[2026-06-16 15:17:10] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=53 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:17:10] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=53 batch=2/2 done gpu_used_mib=15 host_available_mib=1850
+[2026-06-16 15:17:10] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=53 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.105817 running_loss=0.092130
+[2026-06-16 15:17:10] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=53 starting validation
+[2026-06-16 15:17:13] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=53 finished validation val_loss=0.155748
+[2026-06-16 15:17:13] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=53 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1833
+[2026-06-16 15:17:13] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=53 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.092130 val_loss=0.155748 candidate_best=0.084214 global_best=0.084214 es=1/10
+[2026-06-16 15:17:22] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=54 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:17:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=54 batch=1/2 done gpu_used_mib=15 host_available_mib=1953
+[2026-06-16 15:17:23] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=54 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.146862 running_loss=0.146862
+[2026-06-16 15:17:31] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=54 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:17:31] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=54 batch=2/2 done gpu_used_mib=15 host_available_mib=1924
+[2026-06-16 15:17:31] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=54 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.111911 running_loss=0.131622
+[2026-06-16 15:17:31] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=54 starting validation
+[2026-06-16 15:17:33] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=54 finished validation val_loss=0.076881
+[2026-06-16 15:17:34] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=54 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1860
+[2026-06-16 15:17:34] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=54 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.131622 val_loss=0.076881 candidate_best=0.076881 global_best=0.076881 es=0/10
+[2026-06-16 15:17:42] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=55 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:17:42] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=55 batch=1/2 done gpu_used_mib=15 host_available_mib=1778
+[2026-06-16 15:17:42] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=55 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.076440 running_loss=0.076440
+[2026-06-16 15:17:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=55 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:17:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=55 batch=2/2 done gpu_used_mib=15 host_available_mib=1844
+[2026-06-16 15:17:50] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=55 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.084181 running_loss=0.079815
+[2026-06-16 15:17:50] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=55 starting validation
+[2026-06-16 15:17:53] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=55 finished validation val_loss=0.079548
+[2026-06-16 15:17:53] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=55 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1860
+[2026-06-16 15:17:53] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=55 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.079815 val_loss=0.079548 candidate_best=0.076881 global_best=0.076881 es=1/10
+[2026-06-16 15:18:02] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=56 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:18:02] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=56 batch=1/2 done gpu_used_mib=15 host_available_mib=1839
+[2026-06-16 15:18:02] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=56 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.082034 running_loss=0.082034
+[2026-06-16 15:18:10] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=56 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:18:10] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=56 batch=2/2 done gpu_used_mib=15 host_available_mib=1838
+[2026-06-16 15:18:10] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=56 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.058150 running_loss=0.071620
+[2026-06-16 15:18:10] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=56 starting validation
+[2026-06-16 15:18:12] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=56 finished validation val_loss=0.067918
+[2026-06-16 15:18:13] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=56 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1817
+[2026-06-16 15:18:13] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=56 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.071620 val_loss=0.067918 candidate_best=0.067918 global_best=0.067918 es=0/10
+[2026-06-16 15:18:21] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=57 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:18:21] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=57 batch=1/2 done gpu_used_mib=15 host_available_mib=1844
+[2026-06-16 15:18:21] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=57 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.063521 running_loss=0.063521
+[2026-06-16 15:18:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=57 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:18:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=57 batch=2/2 done gpu_used_mib=15 host_available_mib=1814
+[2026-06-16 15:18:29] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=57 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.060147 running_loss=0.062050
+[2026-06-16 15:18:29] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=57 starting validation
+[2026-06-16 15:18:31] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=57 finished validation val_loss=0.061637
+[2026-06-16 15:18:32] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=57 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1822
+[2026-06-16 15:18:32] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=57 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.062050 val_loss=0.061637 candidate_best=0.061637 global_best=0.061637 es=0/10
+[2026-06-16 15:18:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=58 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:18:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=58 batch=1/2 done gpu_used_mib=15 host_available_mib=1884
+[2026-06-16 15:18:40] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=58 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.052857 running_loss=0.052857
+[2026-06-16 15:18:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=58 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:18:51] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=58 batch=2/2 done gpu_used_mib=15 host_available_mib=1928
+[2026-06-16 15:18:51] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=58 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.071306 running_loss=0.060902
+[2026-06-16 15:18:51] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=58 starting validation
+[2026-06-16 15:18:53] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=58 finished validation val_loss=0.068693
+[2026-06-16 15:18:53] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=58 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1882
+[2026-06-16 15:18:53] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=58 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.060902 val_loss=0.068693 candidate_best=0.061637 global_best=0.061637 es=1/10
+[2026-06-16 15:19:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=59 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:19:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=59 batch=1/2 done gpu_used_mib=15 host_available_mib=1858
+[2026-06-16 15:19:01] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=59 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.065123 running_loss=0.065123
+[2026-06-16 15:19:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=59 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:19:10] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=59 batch=2/2 done gpu_used_mib=15 host_available_mib=1818
+[2026-06-16 15:19:10] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=59 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.053510 running_loss=0.060059
+[2026-06-16 15:19:10] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=59 starting validation
+[2026-06-16 15:19:12] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=59 finished validation val_loss=0.060793
+[2026-06-16 15:19:12] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=59 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1863
+[2026-06-16 15:19:12] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=59 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.060059 val_loss=0.060793 candidate_best=0.060793 global_best=0.060793 es=0/10
+[2026-06-16 15:19:20] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=60 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:19:21] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=60 batch=1/2 done gpu_used_mib=15 host_available_mib=1853
+[2026-06-16 15:19:21] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=60 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.050222 running_loss=0.050222
+[2026-06-16 15:19:28] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=60 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:19:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=60 batch=2/2 done gpu_used_mib=15 host_available_mib=1803
+[2026-06-16 15:19:29] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=60 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.060944 running_loss=0.054897
+[2026-06-16 15:19:29] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=60 starting validation
+[2026-06-16 15:19:31] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=60 finished validation val_loss=0.055555
+[2026-06-16 15:19:31] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=60 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1816
+[2026-06-16 15:19:31] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=60 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.054897 val_loss=0.055555 candidate_best=0.055555 global_best=0.055555 es=0/10
+[2026-06-16 15:19:42] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=61 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:19:42] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=61 batch=1/2 done gpu_used_mib=15 host_available_mib=1796
+[2026-06-16 15:19:42] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=61 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.052102 running_loss=0.052102
+[2026-06-16 15:19:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=61 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:19:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=61 batch=2/2 done gpu_used_mib=15 host_available_mib=1905
+[2026-06-16 15:19:50] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=61 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.052393 running_loss=0.052229
+[2026-06-16 15:19:50] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=61 starting validation
+[2026-06-16 15:19:52] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=61 finished validation val_loss=0.056772
+[2026-06-16 15:19:53] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=61 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1901
+[2026-06-16 15:19:53] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=61 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.052229 val_loss=0.056772 candidate_best=0.055555 global_best=0.055555 es=1/10
+[2026-06-16 15:20:00] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=62 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:20:00] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=62 batch=1/2 done gpu_used_mib=15 host_available_mib=1848
+[2026-06-16 15:20:00] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=62 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.055403 running_loss=0.055403
+[2026-06-16 15:20:08] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=62 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:20:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=62 batch=2/2 done gpu_used_mib=15 host_available_mib=1805
+[2026-06-16 15:20:09] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=62 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.041484 running_loss=0.049334
+[2026-06-16 15:20:09] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=62 starting validation
+[2026-06-16 15:20:11] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=62 finished validation val_loss=0.048654
+[2026-06-16 15:20:12] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=62 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1804
+[2026-06-16 15:20:12] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=62 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.049334 val_loss=0.048654 candidate_best=0.048654 global_best=0.048654 es=0/10
+[2026-06-16 15:20:20] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=63 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:20:20] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=63 batch=1/2 done gpu_used_mib=15 host_available_mib=1779
+[2026-06-16 15:20:20] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=63 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.047607 running_loss=0.047607
+[2026-06-16 15:20:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=63 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:20:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=63 batch=2/2 done gpu_used_mib=15 host_available_mib=1845
+[2026-06-16 15:20:29] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=63 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.050114 running_loss=0.048700
+[2026-06-16 15:20:29] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=63 starting validation
+[2026-06-16 15:20:32] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=63 finished validation val_loss=0.055546
+[2026-06-16 15:20:32] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=63 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1899
+[2026-06-16 15:20:32] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=63 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.048700 val_loss=0.055546 candidate_best=0.048654 global_best=0.048654 es=1/10
+[2026-06-16 15:20:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=64 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:20:41] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=64 batch=1/2 done gpu_used_mib=15 host_available_mib=1865
+[2026-06-16 15:20:41] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=64 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.049631 running_loss=0.049631
+[2026-06-16 15:20:48] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=64 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:20:48] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=64 batch=2/2 done gpu_used_mib=15 host_available_mib=1835
+[2026-06-16 15:20:48] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=64 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.042027 running_loss=0.046316
+[2026-06-16 15:20:48] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=64 starting validation
+[2026-06-16 15:20:51] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=64 finished validation val_loss=0.043020
+[2026-06-16 15:20:51] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=64 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1832
+[2026-06-16 15:20:51] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=64 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.046316 val_loss=0.043020 candidate_best=0.043020 global_best=0.043020 es=0/10
+[2026-06-16 15:20:58] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=65 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:20:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=65 batch=1/2 done gpu_used_mib=15 host_available_mib=1882
+[2026-06-16 15:20:59] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=65 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.038727 running_loss=0.038727
+[2026-06-16 15:21:07] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=65 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:21:07] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=65 batch=2/2 done gpu_used_mib=15 host_available_mib=1976
+[2026-06-16 15:21:07] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=65 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.048577 running_loss=0.043022
+[2026-06-16 15:21:07] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=65 starting validation
+[2026-06-16 15:21:09] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=65 finished validation val_loss=0.050091
+[2026-06-16 15:21:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=65 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1948
+[2026-06-16 15:21:09] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=65 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.043022 val_loss=0.050091 candidate_best=0.043020 global_best=0.043020 es=1/10
+[2026-06-16 15:21:18] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=66 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:21:19] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=66 batch=1/2 done gpu_used_mib=15 host_available_mib=1830
+[2026-06-16 15:21:19] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=66 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.044018 running_loss=0.044018
+[2026-06-16 15:21:27] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=66 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:21:27] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=66 batch=2/2 done gpu_used_mib=15 host_available_mib=1913
+[2026-06-16 15:21:27] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=66 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.042010 running_loss=0.043143
+[2026-06-16 15:21:27] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=66 starting validation
+[2026-06-16 15:21:29] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=66 finished validation val_loss=0.041219
+[2026-06-16 15:21:30] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=66 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1937
+[2026-06-16 15:21:30] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=66 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.043143 val_loss=0.041219 candidate_best=0.041219 global_best=0.041219 es=0/10
+[2026-06-16 15:21:38] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=67 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:21:38] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=67 batch=1/2 done gpu_used_mib=15 host_available_mib=1915
+[2026-06-16 15:21:38] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=67 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.039306 running_loss=0.039306
+[2026-06-16 15:21:46] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=67 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:21:46] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=67 batch=2/2 done gpu_used_mib=15 host_available_mib=1937
+[2026-06-16 15:21:46] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=67 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.042275 running_loss=0.040601
+[2026-06-16 15:21:46] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=67 starting validation
+[2026-06-16 15:21:49] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=67 finished validation val_loss=0.045538
+[2026-06-16 15:21:49] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=67 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1951
+[2026-06-16 15:21:49] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=67 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.040601 val_loss=0.045538 candidate_best=0.041219 global_best=0.041219 es=1/10
+[2026-06-16 15:21:58] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=68 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:21:58] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=68 batch=1/2 done gpu_used_mib=15 host_available_mib=1956
+[2026-06-16 15:21:58] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=68 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.038937 running_loss=0.038937
+[2026-06-16 15:22:06] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=68 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:22:06] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=68 batch=2/2 done gpu_used_mib=15 host_available_mib=1919
+[2026-06-16 15:22:06] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=68 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.038335 running_loss=0.038675
+[2026-06-16 15:22:06] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=68 starting validation
+[2026-06-16 15:22:08] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=68 finished validation val_loss=0.038013
+[2026-06-16 15:22:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=68 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1901
+[2026-06-16 15:22:09] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=68 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.038675 val_loss=0.038013 candidate_best=0.038013 global_best=0.038013 es=0/10
+[2026-06-16 15:22:17] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=69 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:22:17] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=69 batch=1/2 done gpu_used_mib=15 host_available_mib=1971
+[2026-06-16 15:22:17] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=69 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.036467 running_loss=0.036467
+[2026-06-16 15:22:25] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=69 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:22:25] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=69 batch=2/2 done gpu_used_mib=15 host_available_mib=2081
+[2026-06-16 15:22:25] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=69 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.038321 running_loss=0.037275
+[2026-06-16 15:22:25] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=69 starting validation
+[2026-06-16 15:22:27] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=69 finished validation val_loss=0.043068
+[2026-06-16 15:22:27] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=69 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1973
+[2026-06-16 15:22:27] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=69 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.037275 val_loss=0.043068 candidate_best=0.038013 global_best=0.038013 es=1/10
+[2026-06-16 15:22:36] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=70 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:22:36] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=70 batch=1/2 done gpu_used_mib=15 host_available_mib=1917
+[2026-06-16 15:22:36] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=70 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.038050 running_loss=0.038050
+[2026-06-16 15:22:44] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=70 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:22:45] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=70 batch=2/2 done gpu_used_mib=15 host_available_mib=1932
+[2026-06-16 15:22:45] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=70 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.034821 running_loss=0.036642
+[2026-06-16 15:22:45] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=70 starting validation
+[2026-06-16 15:22:47] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=70 finished validation val_loss=0.036632
+[2026-06-16 15:22:47] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=70 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1952
+[2026-06-16 15:22:47] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=70 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.036642 val_loss=0.036632 candidate_best=0.036632 global_best=0.036632 es=0/10
+[2026-06-16 15:22:54] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=71 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:22:55] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=71 batch=1/2 done gpu_used_mib=15 host_available_mib=1923
+[2026-06-16 15:22:55] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=71 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.033178 running_loss=0.033178
+[2026-06-16 15:23:02] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=71 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:23:03] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=71 batch=2/2 done gpu_used_mib=15 host_available_mib=1945
+[2026-06-16 15:23:03] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=71 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.038372 running_loss=0.035442
+[2026-06-16 15:23:03] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=71 starting validation
+[2026-06-16 15:23:05] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=71 finished validation val_loss=0.039659
+[2026-06-16 15:23:05] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=71 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1944
+[2026-06-16 15:23:05] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=71 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.035442 val_loss=0.039659 candidate_best=0.036632 global_best=0.036632 es=1/10
+[2026-06-16 15:23:13] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=72 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:23:13] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=72 batch=1/2 done gpu_used_mib=15 host_available_mib=2018
+[2026-06-16 15:23:13] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=72 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.037624 running_loss=0.037624
+[2026-06-16 15:23:21] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=72 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:23:21] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=72 batch=2/2 done gpu_used_mib=15 host_available_mib=1913
+[2026-06-16 15:23:21] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=72 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.030224 running_loss=0.034397
+[2026-06-16 15:23:21] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=72 starting validation
+[2026-06-16 15:23:23] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=72 finished validation val_loss=0.034981
+[2026-06-16 15:23:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=72 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1926
+[2026-06-16 15:23:23] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=72 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.034397 val_loss=0.034981 candidate_best=0.034981 global_best=0.034981 es=0/10
+[2026-06-16 15:23:32] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=73 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:23:32] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=73 batch=1/2 done gpu_used_mib=15 host_available_mib=1980
+[2026-06-16 15:23:32] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=73 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.034908 running_loss=0.034908
+[2026-06-16 15:23:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=73 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:23:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=73 batch=2/2 done gpu_used_mib=15 host_available_mib=2025
+[2026-06-16 15:23:40] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=73 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.031474 running_loss=0.033411
+[2026-06-16 15:23:40] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=73 starting validation
+[2026-06-16 15:23:43] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=73 finished validation val_loss=0.037534
+[2026-06-16 15:23:43] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=73 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1931
+[2026-06-16 15:23:43] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=73 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.033411 val_loss=0.037534 candidate_best=0.034981 global_best=0.034981 es=1/10
+[2026-06-16 15:23:51] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=74 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:23:51] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=74 batch=1/2 done gpu_used_mib=15 host_available_mib=1937
+[2026-06-16 15:23:51] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=74 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.032860 running_loss=0.032860
+[2026-06-16 15:23:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=74 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:23:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=74 batch=2/2 done gpu_used_mib=15 host_available_mib=1896
+[2026-06-16 15:23:59] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=74 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.032735 running_loss=0.032806
+[2026-06-16 15:23:59] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=74 starting validation
+[2026-06-16 15:24:01] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=74 finished validation val_loss=0.032976
+[2026-06-16 15:24:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=74 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1910
+[2026-06-16 15:24:01] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=74 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.032806 val_loss=0.032976 candidate_best=0.032976 global_best=0.032976 es=0/10
+[2026-06-16 15:24:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=75 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:24:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=75 batch=1/2 done gpu_used_mib=15 host_available_mib=1907
+[2026-06-16 15:24:09] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=75 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.032862 running_loss=0.032862
+[2026-06-16 15:24:18] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=75 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:24:18] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=75 batch=2/2 done gpu_used_mib=15 host_available_mib=1899
+[2026-06-16 15:24:18] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=75 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.030409 running_loss=0.031792
+[2026-06-16 15:24:18] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=75 starting validation
+[2026-06-16 15:24:21] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=75 finished validation val_loss=0.036969
+[2026-06-16 15:24:21] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=75 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1836
+[2026-06-16 15:24:21] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=75 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.031792 val_loss=0.036969 candidate_best=0.032976 global_best=0.032976 es=1/10
+[2026-06-16 15:24:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=76 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:24:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=76 batch=1/2 done gpu_used_mib=15 host_available_mib=1969
+[2026-06-16 15:24:29] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=76 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.031703 running_loss=0.031703
+[2026-06-16 15:24:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=76 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:24:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=76 batch=2/2 done gpu_used_mib=15 host_available_mib=1916
+[2026-06-16 15:24:37] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=76 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.030377 running_loss=0.031125
+[2026-06-16 15:24:37] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=76 starting validation
+[2026-06-16 15:24:40] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=76 finished validation val_loss=0.031231
+[2026-06-16 15:24:40] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=76 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1918
+[2026-06-16 15:24:40] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=76 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.031125 val_loss=0.031231 candidate_best=0.031231 global_best=0.031231 es=0/10
+[2026-06-16 15:24:48] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=77 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:24:48] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=77 batch=1/2 done gpu_used_mib=15 host_available_mib=1822
+[2026-06-16 15:24:48] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=77 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.029047 running_loss=0.029047
+[2026-06-16 15:24:56] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=77 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:24:56] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=77 batch=2/2 done gpu_used_mib=15 host_available_mib=1926
+[2026-06-16 15:24:56] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=77 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.031358 running_loss=0.030055
+[2026-06-16 15:24:56] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=77 starting validation
+[2026-06-16 15:24:58] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=77 finished validation val_loss=0.034770
+[2026-06-16 15:24:58] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=77 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1926
+[2026-06-16 15:24:58] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=77 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.030055 val_loss=0.034770 candidate_best=0.031231 global_best=0.031231 es=1/10
+[2026-06-16 15:25:08] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=78 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:25:08] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=78 batch=1/2 done gpu_used_mib=15 host_available_mib=1864
+[2026-06-16 15:25:08] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=78 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.030270 running_loss=0.030270
+[2026-06-16 15:25:16] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=78 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:25:16] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=78 batch=2/2 done gpu_used_mib=15 host_available_mib=1847
+[2026-06-16 15:25:16] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=78 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.029005 running_loss=0.029718
+[2026-06-16 15:25:16] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=78 starting validation
+[2026-06-16 15:25:18] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=78 finished validation val_loss=0.030039
+[2026-06-16 15:25:19] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=78 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1920
+[2026-06-16 15:25:19] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=78 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.029718 val_loss=0.030039 candidate_best=0.030039 global_best=0.030039 es=0/10
+[2026-06-16 15:25:26] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=79 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:25:26] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=79 batch=1/2 done gpu_used_mib=15 host_available_mib=1925
+[2026-06-16 15:25:26] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=79 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.028420 running_loss=0.028420
+[2026-06-16 15:25:34] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=79 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:25:34] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=79 batch=2/2 done gpu_used_mib=15 host_available_mib=1985
+[2026-06-16 15:25:34] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=79 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.029746 running_loss=0.028998
+[2026-06-16 15:25:35] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=79 starting validation
+[2026-06-16 15:25:37] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=79 finished validation val_loss=0.031975
+[2026-06-16 15:25:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=79 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1977
+[2026-06-16 15:25:37] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=79 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.028998 val_loss=0.031975 candidate_best=0.030039 global_best=0.030039 es=1/10
+[2026-06-16 15:25:46] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=80 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:25:46] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=80 batch=1/2 done gpu_used_mib=15 host_available_mib=1962
+[2026-06-16 15:25:46] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=80 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.028994 running_loss=0.028994
+[2026-06-16 15:25:54] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=80 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:25:54] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=80 batch=2/2 done gpu_used_mib=15 host_available_mib=1911
+[2026-06-16 15:25:54] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=80 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.027398 running_loss=0.028298
+[2026-06-16 15:25:54] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=80 starting validation
+[2026-06-16 15:25:57] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=80 finished validation val_loss=0.028789
+[2026-06-16 15:25:57] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=80 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2057
+[2026-06-16 15:25:57] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=80 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.028298 val_loss=0.028789 candidate_best=0.028789 global_best=0.028789 es=0/10
+[2026-06-16 15:26:05] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=81 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:26:06] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=81 batch=1/2 done gpu_used_mib=15 host_available_mib=1948
+[2026-06-16 15:26:06] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=81 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.027277 running_loss=0.027277
+[2026-06-16 15:26:13] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=81 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:26:13] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=81 batch=2/2 done gpu_used_mib=15 host_available_mib=1918
+[2026-06-16 15:26:13] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=81 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.027163 running_loss=0.027227
+[2026-06-16 15:26:13] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=81 starting validation
+[2026-06-16 15:26:16] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=81 finished validation val_loss=0.031759
+[2026-06-16 15:26:16] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=81 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1928
+[2026-06-16 15:26:16] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=81 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.027227 val_loss=0.031759 candidate_best=0.028789 global_best=0.028789 es=1/10
+[2026-06-16 15:26:27] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=82 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:26:28] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=82 batch=1/2 done gpu_used_mib=15 host_available_mib=1735
+[2026-06-16 15:26:28] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=82 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.024846 running_loss=0.024846
+[2026-06-16 15:26:39] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=82 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:26:39] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=82 batch=2/2 done gpu_used_mib=15 host_available_mib=1655
+[2026-06-16 15:26:39] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=82 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.029570 running_loss=0.026905
+[2026-06-16 15:26:39] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=82 starting validation
+[2026-06-16 15:26:43] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=82 finished validation val_loss=0.027179
+[2026-06-16 15:26:43] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=82 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1166
+[2026-06-16 15:26:43] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=82 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.026905 val_loss=0.027179 candidate_best=0.027179 global_best=0.027179 es=0/10
+[2026-06-16 15:26:54] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=83 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:26:54] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=83 batch=1/2 done gpu_used_mib=15 host_available_mib=960
+[2026-06-16 15:26:54] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=83 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.024813 running_loss=0.024813
+[2026-06-16 15:27:06] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=83 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:27:06] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=83 batch=2/2 done gpu_used_mib=15 host_available_mib=210
+[2026-06-16 15:27:06] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=83 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.028279 running_loss=0.026325
+[2026-06-16 15:27:06] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=83 starting validation
+[2026-06-16 15:27:10] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=83 finished validation val_loss=0.032806
+[2026-06-16 15:27:13] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=83 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=132
+[2026-06-16 15:27:13] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=83 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.026325 val_loss=0.032806 candidate_best=0.027179 global_best=0.027179 es=1/10
+[2026-06-16 15:28:00] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=84 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:28:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=84 batch=1/2 done gpu_used_mib=15 host_available_mib=412
+[2026-06-16 15:28:01] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=84 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.024929 running_loss=0.024929
+[2026-06-16 15:28:14] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=84 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 15:28:14] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=84 batch=2/2 done gpu_used_mib=15 host_available_mib=161
+[2026-06-16 15:28:14] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=84 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.029228 running_loss=0.026804
+[2026-06-16 15:28:14] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=84 starting validation
+[2026-06-16 15:28:29] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=84 finished validation val_loss=0.026447
+[2026-06-16 15:28:29] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=84 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2243
+[2026-06-16 15:28:29] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=84 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.026804 val_loss=0.026447 candidate_best=0.026447 global_best=0.026447 es=0/10
+[2026-06-16 15:28:44] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=85 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 15:28:44] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=85 batch=1/2 done gpu_used_mib=15 host_available_mib=2935
+[2026-06-16 15:28:44] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=85 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.026327 running_loss=0.026327
+[2026-06-16 16:24:44] Initialized ContinuousLogger for simulation_stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 (Mode: stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38)
+[2026-06-16 16:24:44] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/simulation/_children/stl_ablation_r01_d07_w0038_38_38_38_38_38_38_38/simulation/stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38/cand_000_d7_w38/training_log.txt
+[2026-06-16 16:24:44] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/simulation/_children/stl_ablation_r01_d07_w0038_38_38_38_38_38_38_38/simulation/stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38/cand_000_d7_w38/training_stats.csv
+[2026-06-16 16:24:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=85 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 16:24:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=85 batch=2/2 done gpu_used_mib=15 host_available_mib=5387
+[2026-06-16 16:24:50] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=85 batch=2/2 batch_size=7200 running_batches=2 batch_loss=3.080976 running_loss=1.358296
+[2026-06-16 16:24:50] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=85 starting validation
+[2026-06-16 16:24:51] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=85 finished validation val_loss=0.047309
+[2026-06-16 16:24:51] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=85 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=5385
+[2026-06-16 16:24:51] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=85 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=1.358296 val_loss=0.047309 candidate_best=0.026447 global_best=0.026447 es=1/10
+[2026-06-16 16:24:55] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=86 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 16:24:55] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=86 batch=1/2 done gpu_used_mib=15 host_available_mib=5366
+[2026-06-16 16:24:55] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=86 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.036086 running_loss=0.036086
+[2026-06-16 16:24:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=86 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:00] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=86 batch=2/2 done gpu_used_mib=15 host_available_mib=5391
+[2026-06-16 16:25:00] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=86 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.046695 running_loss=0.040712
+[2026-06-16 16:25:00] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=86 starting validation
+[2026-06-16 16:25:01] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=86 finished validation val_loss=0.087202
+[2026-06-16 16:25:01] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=86 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=5367
+[2026-06-16 16:25:01] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=86 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.040712 val_loss=0.087202 candidate_best=0.026447 global_best=0.026447 es=2/10
+[2026-06-16 16:25:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=87 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:05] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=87 batch=1/2 done gpu_used_mib=15 host_available_mib=5357
+[2026-06-16 16:25:05] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=87 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.055391 running_loss=0.055391
+[2026-06-16 16:25:08] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=87 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:08] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=87 batch=2/2 done gpu_used_mib=15 host_available_mib=5364
+[2026-06-16 16:25:08] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=87 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.039745 running_loss=0.048569
+[2026-06-16 16:25:08] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=87 starting validation
+[2026-06-16 16:25:09] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=87 finished validation val_loss=0.040170
+[2026-06-16 16:25:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=87 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=5376
+[2026-06-16 16:25:09] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=87 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.048569 val_loss=0.040170 candidate_best=0.026447 global_best=0.026447 es=3/10
+[2026-06-16 16:25:13] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=88 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:13] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=88 batch=1/2 done gpu_used_mib=15 host_available_mib=5342
+[2026-06-16 16:25:13] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=88 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.030823 running_loss=0.030823
+[2026-06-16 16:25:18] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=88 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:18] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=88 batch=2/2 done gpu_used_mib=15 host_available_mib=5392
+[2026-06-16 16:25:18] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=88 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.049567 running_loss=0.038996
+[2026-06-16 16:25:18] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=88 starting validation
+[2026-06-16 16:25:19] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=88 finished validation val_loss=0.036624
+[2026-06-16 16:25:19] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=88 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=5386
+[2026-06-16 16:25:19] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=88 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.038996 val_loss=0.036624 candidate_best=0.026447 global_best=0.026447 es=4/10
+[2026-06-16 16:25:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=89 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:23] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=89 batch=1/2 done gpu_used_mib=15 host_available_mib=5415
+[2026-06-16 16:25:23] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=89 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.033141 running_loss=0.033141
+[2026-06-16 16:25:27] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=89 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:27] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=89 batch=2/2 done gpu_used_mib=15 host_available_mib=5361
+[2026-06-16 16:25:27] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=89 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.038507 running_loss=0.035481
+[2026-06-16 16:25:27] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=89 starting validation
+[2026-06-16 16:25:28] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=89 finished validation val_loss=0.044568
+[2026-06-16 16:25:28] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=89 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=5357
+[2026-06-16 16:25:28] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=89 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.035481 val_loss=0.044568 candidate_best=0.026447 global_best=0.026447 es=5/10
+[2026-06-16 16:25:32] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=90 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:32] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=90 batch=1/2 done gpu_used_mib=15 host_available_mib=5345
+[2026-06-16 16:25:32] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=90 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.042720 running_loss=0.042720
+[2026-06-16 16:25:36] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=90 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:36] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=90 batch=2/2 done gpu_used_mib=15 host_available_mib=5378
+[2026-06-16 16:25:36] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=90 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.026745 running_loss=0.035754
+[2026-06-16 16:25:36] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=90 starting validation
+[2026-06-16 16:25:37] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=90 finished validation val_loss=0.040347
+[2026-06-16 16:25:37] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=90 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=5359
+[2026-06-16 16:25:37] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=90 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.035754 val_loss=0.040347 candidate_best=0.026447 global_best=0.026447 es=6/10
+[2026-06-16 16:25:42] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=91 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:42] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=91 batch=1/2 done gpu_used_mib=15 host_available_mib=5358
+[2026-06-16 16:25:42] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=91 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.036611 running_loss=0.036611
+[2026-06-16 16:25:45] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=91 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:45] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=91 batch=2/2 done gpu_used_mib=15 host_available_mib=5395
+[2026-06-16 16:25:45] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=91 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.047521 running_loss=0.041368
+[2026-06-16 16:25:45] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=91 starting validation
+[2026-06-16 16:25:46] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=91 finished validation val_loss=0.034242
+[2026-06-16 16:25:47] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=91 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=5343
+[2026-06-16 16:25:47] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=91 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.041368 val_loss=0.034242 candidate_best=0.026447 global_best=0.026447 es=7/10
+[2026-06-16 16:25:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=92 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:50] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=92 batch=1/2 done gpu_used_mib=15 host_available_mib=5324
+[2026-06-16 16:25:50] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=92 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.030829 running_loss=0.030829
+[2026-06-16 16:25:54] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=92 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:54] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=92 batch=2/2 done gpu_used_mib=15 host_available_mib=5360
+[2026-06-16 16:25:54] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=92 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.039460 running_loss=0.034593
+[2026-06-16 16:25:54] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=92 starting validation
+[2026-06-16 16:25:55] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=92 finished validation val_loss=0.053101
+[2026-06-16 16:25:56] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=92 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=5391
+[2026-06-16 16:25:56] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=92 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.034593 val_loss=0.053101 candidate_best=0.026447 global_best=0.026447 es=8/10
+[2026-06-16 16:25:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=93 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 16:25:59] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=93 batch=1/2 done gpu_used_mib=15 host_available_mib=5389
+[2026-06-16 16:25:59] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=93 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.043291 running_loss=0.043291
+[2026-06-16 16:26:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=93 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 16:26:04] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=93 batch=2/2 done gpu_used_mib=15 host_available_mib=5383
+[2026-06-16 16:26:04] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=93 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.026943 running_loss=0.036163
+[2026-06-16 16:26:04] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=93 starting validation
+[2026-06-16 16:26:05] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=93 finished validation val_loss=0.034977
+[2026-06-16 16:26:05] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=93 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=5413
+[2026-06-16 16:26:05] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=93 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.036163 val_loss=0.034977 candidate_best=0.026447 global_best=0.026447 es=9/10
+[2026-06-16 16:26:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=94 batch=1/2 start path=checkpoint_last.pt
+[2026-06-16 16:26:09] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=94 batch=1/2 done gpu_used_mib=15 host_available_mib=5355
+[2026-06-16 16:26:09] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=94 batch=1/2 batch_size=9312 running_batches=1 batch_loss=0.032858 running_loss=0.032858
+[2026-06-16 16:26:12] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=94 batch=2/2 start path=checkpoint_last.pt
+[2026-06-16 16:26:12] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=94 batch=2/2 done gpu_used_mib=15 host_available_mib=5382
+[2026-06-16 16:26:12] [BATCH] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=94 batch=2/2 batch_size=7200 running_batches=2 batch_loss=0.041480 running_loss=0.036617
+[2026-06-16 16:26:12] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=94 starting validation
+[2026-06-16 16:26:14] [VAL] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=94 finished validation val_loss=0.033915
+[2026-06-16 16:26:14] [CKPT] task=simulation phase=stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38 candidate=cand_000_d7_w38 epoch=94 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=5355
+[2026-06-16 16:26:14] [simulation][stl_ablation_r03_d07_w0038_38_38_38_38_38_38_38][cand_000_d7_w38] epoch=94 architecture=[38, 38, 38, 38, 38, 38, 38] train_loss=0.036617 val_loss=0.033915 candidate_best=0.026447 global_best=0.026447 es=10/10
