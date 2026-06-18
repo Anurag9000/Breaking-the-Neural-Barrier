@@ -87,19 +87,18 @@ smallest-to-largest by parameter count, but it gives priority to any child
 root that already has partial resume state before untouched jobs. It launches
 as many children as fit, fills GPU slots first up to the configured GPU
 memory threshold, and then spills additional children onto CPU while host RAM
-is still below the configured resume threshold. After the initial fill, the
-admission rule is completion-gated: any pressure pause or retryable child
-failure closes the admission window immediately. The scheduler only reopens
-the window after a genuine child completion, at which point it resumes paused
-or partial children before it considers untouched jobs. If host RAM pressure
-crosses the configured threshold, it pauses the largest active child. If a
-child dies with a CUDA OOM signature, the scheduler pauses the largest active
-GPU child, requeues the failed child at the front of the pending queue, and
-retries it again as soon as a device slot becomes available. Children always
-resume from the same child root and reuse the normal STL checkpoints and
-`ablation_state.json`. For the slower laptop split, set
-`--pressure-settle-sec 120` so each launch gets a two-minute pressure settle
-window.
+is still below the configured resume threshold. The admission policy is now
+split by pressure source: GPU pauses only block GPU admissions until a GPU
+child finishes cleanly, while host RAM or swap pauses block the whole
+launcher until pressure recovers and a child completion clears the gate. The
+scheduler resumes paused or partial children before it considers untouched
+jobs. If host RAM pressure crosses the configured threshold, it pauses the
+largest active child. If a child dies with a CUDA OOM signature, the
+scheduler pauses the largest active GPU child, requeues the failed child at
+the front of the pending queue, and retries it again as soon as a device slot
+becomes available. Children always resume from the same child root and reuse
+the normal STL checkpoints and `ablation_state.json`. The current recovery
+wrapper uses a 30 second pressure settle window.
 
 Runtime tuning for the tabular launchers is centralized as well:
 
