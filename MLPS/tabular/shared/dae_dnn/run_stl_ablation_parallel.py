@@ -13,7 +13,7 @@ from typing import IO, Any, Callable, Deque, Dict, List, Optional, Sequence, Tup
 
 import torch
 
-from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, detect_cpu_cores, launcher_child_env
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
 from utils.adp_logging import ContinuousLogger
 
@@ -41,6 +41,7 @@ class ActiveChildJob:
     cmd: List[str]
     device_mode: str
     log_path: Path
+    slot_index: int
     log_handle: Optional[IO[str]] = None
     pause_requested: bool = False
     launch_count: int = 0
@@ -763,11 +764,13 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
         child_root = resolve_child_root(child_base, phase_name)
         jobs.append((tuple(int(v) for v in architecture), child_root))
 
-    active: Dict[subprocess.Popen[Any], Tuple[Tuple[int, ...], Path, List[str]]] = {}
+    active: Dict[subprocess.Popen[Any], Tuple[Tuple[int, ...], Path, List[str], int]] = {}
+    slot_count = max(1, min(int(args.concurrency), int(detect_cpu_cores())))
+    free_slots = set(range(slot_count))
     completed_children: List[Path] = []
     launch_count = 0
     while jobs or active:
-        while jobs and len(active) < int(args.concurrency):
+        while jobs and len(active) < int(args.concurrency) and free_slots:
             architecture, child_root = jobs.popleft()
             if child_completed(child_root, task_name):
                 completed_children.append(child_root)
@@ -780,14 +783,17 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
                 device_mode="auto",
             )
             child_root.mkdir(parents=True, exist_ok=True)
+            slot_index = min(free_slots)
+            free_slots.remove(slot_index)
             proc, _ = launch_child_process(
                 cmd,
                 env=launcher_child_env(
                     concurrency_hint=len(active) + 1,
                     job_key=f"{task_name}:{child_root}",
+                    affinity_slot=slot_index,
                 ),
             )
-            active[proc] = (architecture, child_root, cmd)
+            active[proc] = (architecture, child_root, cmd, slot_index)
             launch_count += 1
 
         if not active:
@@ -798,7 +804,7 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
             code = proc.poll()
             if code is None:
                 continue
-            architecture, child_root, cmd = active[proc]
+            architecture, child_root, cmd, slot_index = active[proc]
             if code != 0 and not child_completed(child_root, task_name):
                 log = f"Child job failed (arch={architecture}, root={child_root}, code={code}): {' '.join(cmd)}"
                 print(log, flush=True)
@@ -817,7 +823,8 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
             finished.append(proc)
 
         for proc in finished:
-            architecture, child_root, _ = active.pop(proc)
+            architecture, child_root, _, slot_index = active.pop(proc)
+            free_slots.add(slot_index)
             del architecture
             completed_children.append(child_root)
 
@@ -832,6 +839,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
     pending: Deque[ChildJob] = deque(sorted((job for jobs in jobs_by_task.values() for job in jobs), key=pending_job_sort_key))
     task_child_roots: Dict[str, List[Path]] = {task_name: [job.child_root for job in jobs] for task_name, jobs in jobs_by_task.items()}
     active: Dict[subprocess.Popen[Any], ActiveChildJob] = {}
+    slot_count = max(1, min(int(active_job_limit(args, len(pending))), int(detect_cpu_cores())))
+    free_slots = set(range(slot_count))
     failure_counts: Dict[Path, int] = defaultdict(int)
     launches_total = 0
     active_limit = active_job_limit(args, len(pending))
@@ -911,7 +920,9 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             continue
 
         for proc in finished:
-            active.pop(proc, None)
+            entry = active.pop(proc, None)
+            if entry is not None:
+                free_slots.add(entry.slot_index)
 
         pressure = sample_host_memory_pressure()
         gpu_pressure = sample_gpu_memory_pressure(int(args.gpu_device_index))
@@ -948,7 +959,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
         under_active_limit = len(active) < int(active_limit)
         chosen_device_mode = choose_device_mode(pressure, gpu_pressure)
         can_launch_now = launches_enabled
-        if pending and under_active_limit and can_launch_now and (chosen_device_mode is not None or not active):
+        if pending and under_active_limit and free_slots and can_launch_now and (chosen_device_mode is not None or not active):
             job = pending.popleft()
             if child_completed(job.child_root, job.task_name):
                 mark_child_completed(job.child_root, job)
@@ -967,12 +978,24 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             launches_total += 1
             mark_child_running(job.child_root, job, cmd, launches_total)
             log_path = child_process_log_path(job.child_root)
-            proc, log_handle = launch_child_process(cmd, env=build_child_env(device_mode), log_path=log_path)
+            slot_index = min(free_slots)
+            free_slots.remove(slot_index)
+            proc, log_handle = launch_child_process(
+                cmd,
+                env=launcher_child_env(
+                    build_child_env(device_mode),
+                    concurrency_hint=int(active_limit),
+                    job_key=f"{job.task_name}:{job.phase_name}:{job.child_root}",
+                    affinity_slot=slot_index,
+                ),
+                log_path=log_path,
+            )
             active[proc] = ActiveChildJob(
                 job=job,
                 cmd=cmd,
                 device_mode=device_mode,
                 log_path=log_path,
+                slot_index=slot_index,
                 log_handle=log_handle,
                 pause_requested=False,
                 launch_count=launches_total,

@@ -27,7 +27,7 @@ from MLPS.tabular.shared.dae_dnn.run_goliath import (
     refresh_task_loaders,
     write_json,
 )
-from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
 
 
 EPOCH_PATTERN = re.compile(r"\bepoch=(\d+)\b")
@@ -435,7 +435,11 @@ def run_supervised(
 
     while True:
         log_line(f"Starting supervised command: {' '.join(prepared_command)}")
-        proc = subprocess.Popen(prepared_command, start_new_session=True)
+        proc = subprocess.Popen(
+            prepared_command,
+            start_new_session=True,
+            env=launcher_child_env(concurrency_hint=1, job_key=str(run_root)),
+        )
         last_progress_at = time.monotonic()
         last_resource_poll_at = 0.0
 

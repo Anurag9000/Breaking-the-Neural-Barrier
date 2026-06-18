@@ -245,6 +245,7 @@ def launcher_child_env(
     *,
     concurrency_hint: Optional[int] = None,
     job_key: Optional[str] = None,
+    affinity_slot: Optional[int] = None,
 ) -> Dict[str, str]:
     env = dict(os.environ if base_env is None else base_env)
     thread_budget, worker_budget, cores = derive_cpu_budget(concurrency_hint)
@@ -258,7 +259,11 @@ def launcher_child_env(
                 affinity_cpus = parsed
         except Exception:
             pass
-    if job_key and hint and len(affinity_cpus) > 1:
+    if affinity_slot is not None and hint and len(affinity_cpus) > 1:
+        slot_count = min(max(1, int(hint)), len(affinity_cpus))
+        slot = max(0, min(int(affinity_slot), slot_count - 1))
+        affinity_cpus = _partition_cpus(affinity_cpus, slot_count, slot)
+    elif job_key and hint and len(affinity_cpus) > 1:
         slot_count = min(max(1, int(hint)), len(affinity_cpus))
         slot = _deterministic_slot(job_key, slot_count)
         affinity_cpus = _partition_cpus(affinity_cpus, slot_count, slot)
