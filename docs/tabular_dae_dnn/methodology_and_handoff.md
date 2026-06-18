@@ -254,6 +254,10 @@ Runtime policy for the tabular runners is centralized:
   path end to end: scoped execution, `SCHED_BATCH`, disjoint affinity slices,
   and high aggregate CPU utilization under synthetic load
 
+Smoke, dry-run, and recovery-probe outputs are transient validation artifacts.
+They are not part of the canonical experiment record and should be deleted
+before a results tree is treated as final.
+
 This is an aggressive runtime policy. It is intended to keep the CPU side of
 the tabular runs busy when the workload can use the extra parallelism.
 

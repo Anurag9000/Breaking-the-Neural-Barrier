@@ -107,6 +107,12 @@ Runtime tuning for this tabular family is centralized:
   runtime path under load and checks scope placement, scheduler class,
   affinity partitioning, and aggregate CPU utilization
 
+Scratch outputs from smoke tests, dry runs, recovery probes, and other
+validation launches are intentionally excluded from the canonical results tree.
+Use them to verify behavior, then delete the generated `results/recovery/*`,
+`*_plan.json`, and similar scratch artifacts before publishing a results
+snapshot.
+
 This is intentionally aggressive. It is meant to keep the CPU side of the
 tabular runs busy when the workload can use the extra parallelism.
 
