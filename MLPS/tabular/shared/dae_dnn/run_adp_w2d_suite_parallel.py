@@ -14,7 +14,7 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from MLPS.tabular.shared.dae_dnn.tasks import task_names
-from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - import shim for direct script execution
@@ -234,9 +234,9 @@ def run_task(args: argparse.Namespace, task_name: str, task_root: Path, repeat_i
 
 
 def main() -> None:
-    bootstrap_runtime("run_adp_w2d_suite_parallel")
-
     args = parse_args()
+    os.environ["TABULAR_CPU_JOB_CONCURRENCY"] = str(int(args.concurrency))
+    bootstrap_runtime("run_adp_w2d_suite_parallel")
     tasks = [str(t).lower() for t in args.tasks]
     if "all" in tasks:
         tasks = list(DEFAULT_TASKS)
@@ -295,7 +295,7 @@ def main() -> None:
                         continue
                     cmd = build_worker_command(args, task_name, task_root)
                     task_root.mkdir(parents=True, exist_ok=True)
-                    proc = subprocess.Popen(cmd)
+                    proc = subprocess.Popen(cmd, env=launcher_child_env(concurrency_hint=len(active) + 1))
                     active[proc] = (current_repeat, task_name, task_root, cmd)
 
                 if not active:
