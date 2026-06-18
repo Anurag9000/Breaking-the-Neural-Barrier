@@ -75,6 +75,7 @@ class ActiveRecoveryJob:
     log_handle: Optional[Any]
     slot_index: int
     pause_requested: bool = False
+    pause_reason: str = ""
 
 
 def parse_args() -> argparse.Namespace:
@@ -170,6 +171,16 @@ def job_completed(job: RecoveryJob) -> bool:
     if job.kind == "small_stl":
         return stl_job_completed(job)
     return False
+
+
+def job_pause_counts(job: RecoveryJob) -> Tuple[int, int]:
+    state = load_json(job_state_path(job.root))
+    return int(state.get("gpu_pause_count", 0) or 0), int(state.get("host_pause_count", 0) or 0)
+
+
+def job_should_force_cpu(job: RecoveryJob) -> bool:
+    gpu_pause_count, host_pause_count = job_pause_counts(job)
+    return gpu_pause_count > 0 or host_pause_count > 0
 
 
 def task_dims(task_name: str, args: argparse.Namespace, cache: Dict[str, Tuple[int, int]]) -> Tuple[int, int]:
@@ -362,6 +373,12 @@ def choose_device(args: argparse.Namespace) -> Optional[str]:
     return "cpu"
 
 
+def choose_device_for_job(args: argparse.Namespace, job: RecoveryJob) -> Optional[str]:
+    if job_should_force_cpu(job):
+        return "cpu"
+    return choose_device(args)
+
+
 def command_for_device(job: RecoveryJob, device_mode: str) -> List[str]:
     cmd = list(job.command)
     if job.kind != "small_stl":
@@ -479,7 +496,21 @@ def run(args: argparse.Namespace) -> None:
                 logger.log_console(f"[TASK] completed {job.name} params={job.parameter_count}")
                 launches_enabled = True
                 continue
+            gpu_pause_count, host_pause_count = job_pause_counts(job)
+            if active_job.pause_requested and active_job.pause_reason == "gpu_memory_pressure":
+                gpu_pause_count += 1
+            if active_job.pause_requested and active_job.pause_reason == "host_ram_pressure":
+                host_pause_count += 1
             update_job_state(job.root, {"status": "paused" if active_job.pause_requested else "retrying", "completed": False, "exit_code": int(code or 0), "updated_at": time.time()})
+            if gpu_pause_count or host_pause_count:
+                update_job_state(
+                    job.root,
+                    {
+                        "gpu_pause_count": int(gpu_pause_count),
+                        "host_pause_count": int(host_pause_count),
+                        "last_pause_reason": active_job.pause_reason,
+                    },
+                )
             pending.appendleft(job)
             logger.log_console(f"[TASK] requeued {job.name} exit={code} pause={active_job.pause_requested}")
 
@@ -495,6 +526,7 @@ def run(args: argparse.Namespace) -> None:
             if gpu_active:
                 victim = max(gpu_active, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.name))
                 victim.pause_requested = True
+                victim.pause_reason = "gpu_memory_pressure"
                 update_job_state(victim.job.root, {"status": "pausing", "reason": "gpu_memory_pressure", "completed": False})
                 logger.log_console(f"[PRESSURE] pause_gpu {victim.job.name} gpu_used_pct={gpu.used_pct:.2f}")
                 terminate(next(proc for proc, entry in active.items() if entry is victim))
@@ -505,13 +537,14 @@ def run(args: argparse.Namespace) -> None:
             if len(active) > 1 and pausable:
                 victim = max(pausable, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.name))
                 victim.pause_requested = True
+                victim.pause_reason = "host_ram_pressure"
                 update_job_state(victim.job.root, {"status": "pausing", "reason": "host_ram_pressure", "completed": False})
                 logger.log_console(f"[PRESSURE] pause_host {victim.job.name} host_used_pct={host.used_pct:.2f}")
                 terminate(next(proc for proc, entry in active.items() if entry is victim))
                 time.sleep(max(0.0, float(args.pressure_settle_sec)))
                 continue
 
-        device_mode = choose_device(args)
+        device_mode = choose_device_for_job(args, pending[0]) if pending else choose_device(args)
         if pending and len(active) < limit and free_slots and (device_mode is not None or not active):
             job = pending.popleft()
             if job_completed(job):
@@ -519,6 +552,8 @@ def run(args: argparse.Namespace) -> None:
                 logger.log_console(f"[TASK] already_complete {job.name}")
                 continue
             chosen = device_mode or "cpu"
+            if job_should_force_cpu(job):
+                chosen = "cpu"
             slot_index = min(free_slots)
             free_slots.remove(slot_index)
             proc, handle = launch(job, chosen, int(args.gpu_device_index), concurrency_hint=len(active) + 1, slot_index=slot_index)
