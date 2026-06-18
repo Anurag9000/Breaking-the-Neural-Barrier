@@ -468,6 +468,7 @@ def launch(job: RecoveryJob, device_mode: str, gpu_index: int, concurrency_hint:
         concurrency_hint=concurrency_hint,
         job_key=f"{job.kind}:{job.task}:{job.root}",
         affinity_slot=slot_index,
+        shared_cpu=True,
     )
     proc = subprocess.Popen(cmd, start_new_session=True, env=env, stdout=log_handle, stderr=log_handle, text=True)
     return proc, log_handle

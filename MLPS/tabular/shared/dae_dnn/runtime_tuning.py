@@ -249,6 +249,7 @@ def launcher_child_env(
     concurrency_hint: Optional[int] = None,
     job_key: Optional[str] = None,
     affinity_slot: Optional[int] = None,
+    shared_cpu: bool = False,
 ) -> Dict[str, str]:
     env = dict(os.environ if base_env is None else base_env)
     thread_budget, worker_budget, cores = derive_cpu_budget(concurrency_hint)
@@ -262,7 +263,11 @@ def launcher_child_env(
                 affinity_cpus = parsed
         except Exception:
             pass
-    if affinity_slot is not None and hint and len(affinity_cpus) > 1:
+    shared_cpu = bool(shared_cpu) or env.get("TABULAR_CHILD_SHARED_CPU") == "1"
+    if shared_cpu:
+        thread_budget = max(1, int(cores))
+        worker_budget = max(1, min(4, int(cores) // 4))
+    elif affinity_slot is not None and hint and len(affinity_cpus) > 1:
         slot_count = min(max(1, int(hint)), len(affinity_cpus))
         slot = max(0, min(int(affinity_slot), slot_count - 1))
         affinity_cpus = _partition_cpus(affinity_cpus, slot_count, slot)
@@ -289,7 +294,7 @@ def launcher_child_env(
     env["TABULAR_CPU_THREADS"] = str(thread_budget)
     env["TABULAR_CPU_WORKERS"] = str(worker_budget)
     env["TABULAR_CPU_CORES"] = str(cores)
-    env["TABULAR_CPU_JOB_CONCURRENCY"] = str(max(1, int(current_concurrency_hint(concurrency_hint) or 1)))
+    env["TABULAR_CPU_JOB_CONCURRENCY"] = "1" if shared_cpu else str(max(1, int(current_concurrency_hint(concurrency_hint) or 1)))
     return env
 
 
