@@ -53,6 +53,20 @@ The exact runner and export methodology lives in:
 
 - [docs/tabular_dae_dnn/methodology_and_handoff.md](methodology_and_handoff.md)
 
+The missing-width / small-STL recovery family uses a shared result root and
+two wrappers:
+
+- `MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.sh`
+  is the CPU-only default launcher.
+- `MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure_gpu_cpu.sh`
+  is the mixed GPU+CPU launcher.
+
+Both wrappers point at
+`MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1`, write
+the same checkpoint files, and can resume each other across device changes.
+The CPU-only wrapper is the recommended default when you just want the suite
+to run without GPU admission.
+
 Regenerate it with:
 
 ```bash
@@ -87,17 +101,17 @@ smallest-to-largest by parameter count, but it gives priority to any child
 root that already has partial resume state before untouched jobs. It launches
 as many children as fit, fills GPU slots first up to the configured GPU
 memory threshold, and then spills additional children onto CPU while host RAM
-is still below the configured resume threshold. The admission policy is now
-split by pressure source: GPU pauses only block GPU admissions until a GPU
-child finishes cleanly, while host RAM or swap pauses block the whole
-launcher until pressure recovers and a child completion clears the gate. The
-scheduler resumes paused or partial children before it considers untouched
-jobs. If host RAM pressure crosses the configured threshold, it pauses the
-largest active child. If a child dies with a CUDA OOM signature, the
-scheduler pauses the largest active GPU child, requeues the failed child at
-the front of the pending queue, and retries it again as soon as a device slot
-becomes available. Children always resume from the same child root and reuse
-the normal STL checkpoints and `ablation_state.json`. The current recovery
+is still below the configured resume threshold. The admission policy is split
+by pressure source: GPU pauses only block GPU admissions until a GPU child
+finishes cleanly, while host RAM or swap pauses block the whole launcher until
+pressure recovers and a child completion clears the gate. The scheduler
+resumes paused or partial children before it considers untouched jobs. If
+host RAM pressure crosses the configured threshold, it pauses the largest
+active child. If a child dies with a CUDA OOM signature, the scheduler pauses
+the largest active GPU child, requeues the failed child at the front of the
+pending queue, and retries it again as soon as a device slot becomes
+available. Children always resume from the same child root and reuse the
+normal STL checkpoints and `ablation_state.json`. The current recovery
 wrapper uses a 30 second pressure settle window.
 
 Runtime tuning for the tabular launchers is centralized as well:

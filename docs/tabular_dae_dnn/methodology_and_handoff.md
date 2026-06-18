@@ -220,8 +220,11 @@ child, requeues the failed child at the front of the pending queue, and tries
 it again as soon as a slot is available. When enough RAM or GPU memory is free
 again, the scheduler relaunches the paused child from the same run directory,
 so resumability is handled by the normal STL checkpoints and
-`ablation_state.json`. On the slower laptop split, set
-`--pressure-settle-sec 120` to give each launch a two-minute settle window.
+`ablation_state.json`. The checkpoint boundary is the last completed batch or
+epoch that reached `checkpoint_last.pt`; an OOM that kills the process before
+the next save resumes from that last durable state, not from the exact Python
+instruction that faulted. On the slower laptop split, set
+`--pressure-settle-sec 30` to give each launch a shorter settle window.
 
 Runtime policy for the tabular runners is centralized:
 
@@ -258,36 +261,64 @@ Smoke, dry-run, and recovery-probe outputs are transient validation artifacts.
 They are not part of the canonical experiment record and should be deleted
 before a results tree is treated as final.
 
-The pressure-aware recovery queue stays live after a pause/requeue event:
-one paused child does not block unrelated pending work from launching while
-resources remain available.
-If a child has already been GPU-paused once, the retry is forced onto CPU so
-the recovery runner does not keep relaunching the same child into the same
-GPU pressure condition.
-For the recovery runner and massive STL pressure scheduler,
-`--max-active-jobs 0` resolves to all visible logical CPUs as job lanes. On
-the 20-core laptop that means up to 20 active children, with each child
-receiving a separate CPU affinity lane. GPU admission is memory-pressure
-driven by default: launch on GPU while VRAM is below the resume threshold,
-then spill additional eligible work to CPU when GPU admission is blocked.
-Set `--max-active-gpu-jobs <n>` only when an explicit GPU child-count cap is
-needed.
+## Missing-width recovery wrapper
 
-This is an aggressive runtime policy. It is intended to keep the CPU side of
-the tabular runs busy when the workload can use the extra parallelism.
+The missing-width / small-STL recovery family is split into two launchers that
+share one result tree and one checkpoint contract:
 
-Relevant flags:
+- `MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.sh`
+  is the CPU-only default.
+- `MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure_gpu_cpu.sh`
+  is the mixed GPU+CPU runner.
 
-- `--scheduler pressure_aware`
+Both wrappers write into
+`MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/` and both
+resume from the same child roots. A run can move from CPU to GPU or GPU to CPU
+without changing the directory layout or the checkpoint files.
+
+The recovery algorithm is:
+
+1. build the width-only and small-STL job list
+2. sort by existing resume state first, then by parameter count, depth, and name
+3. launch children under the shared recovery root
+4. write `checkpoint_last.pt`, `checkpoint_best.pt`, `candidate_state.json`,
+   and `_recovery_child_process.log` under each child root
+5. load the same model weights, optimizer state, and RNG state when resuming
+6. keep the architecture fixed to the candidate root being resumed
+7. no LR scheduler is used in this recovery runner, so there is no scheduler
+   state to restore today
+8. treat host-RAM pressure as a global admission gate
+9. treat GPU memory pressure as a GPU-only admission gate in the mixed runner
+10. ignore swap by default in the wrapper path by setting swap thresholds to
+   `100 / 100`
+
+The default CPU-only wrapper hides CUDA before bootstrap and therefore never
+sees a GPU. The mixed runner leaves CUDA visible and uses the same root so a
+GPU run can be resumed on CPU later, and vice versa.
+
+The key knobs are:
+
+- `--max-active-jobs 0` for all visible logical CPUs as job lanes
+- `--max-active-gpu-jobs 0` for memory-driven GPU concurrency in the mixed runner
 - `--host-ram-pressure-limit-pct 90`
 - `--host-ram-resume-pct 85`
 - `--gpu-memory-pressure-limit-pct 90`
 - `--gpu-memory-resume-pct 85`
-- `--gpu-device-index 0`
-- `--max-active-jobs 0`
-- `--max-retries-per-job 0` as a legacy compatibility flag; pressure-aware mode requeues failed children indefinitely
+- `--swap-pressure-limit-pct 100`
+- `--swap-resume-pct 100`
 - `--pressure-poll-interval-sec 0.5`
-- `--pressure-settle-sec 1.0`
+- `--pressure-settle-sec 30`
+- `--batch-size 186240`
+- `--num-workers 0`
+- `--repeat-count 5`
+- `--width-depths 1,2,3,4,5,6`
+- `--missing-present-task-repeats 2,3,4,5`
+- `--prediction-repeats 1,2,3,4,5`
+- `--gpu-device-index 0`
+
+The CPU-only launcher is the default because it is the safer fallback on this
+laptop. The mixed launcher is the one to use when you want the GPU admission
+path active again.
 
 Every pressure-aware child also writes `_child_process.log` in its child root.
 That file is used by the scheduler to recognize CUDA OOM and
@@ -378,7 +409,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --gpu-memory-resume-pct 85 \
   --gpu-device-index 0 \
   --max-active-jobs 0 \
-  --pressure-settle-sec 120 \
+  --pressure-settle-sec 30 \
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
@@ -421,7 +452,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --param-band 4 6 \
   --repeat-count 5 \
   --concurrency 7 \
-  --pressure-settle-sec 120 \
+  --pressure-settle-sec 30 \
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \

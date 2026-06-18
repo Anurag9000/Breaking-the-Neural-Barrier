@@ -28,16 +28,39 @@ Primary entry points:
 - `run_all.py` - full tabular suite
 - `run_stl_ablation.py` - STL ablation family generator
 - `run_stl_ablation_parallel.py` - resumable STL launcher
-- `run_missing_width_stl_recovery_pressure.py` - pressure-aware recovery
+- `run_missing_width_stl_recovery_pressure.sh` - CPU-only default recovery
   launcher for the cataloged width-only and anomaly small-grid gaps
+- `run_missing_width_stl_recovery_pressure_gpu_cpu.sh` - mixed GPU+CPU
+  recovery launcher for the same gaps and the same result tree
 - `run_adp_w2d_suite_parallel.py` - resumable ADP width-to-depth suite
 - `probe_capacity.py` - capacity probing helper
 - `summarize_repeat_metrics.py` - repeat-level summary generation
 
-The recovery launcher is GPU-first when VRAM is available, spills to CPU when
-GPU admission is blocked, and keeps the host-wide gate closed only for
-host-RAM or swap pressure pauses. GPU pauses only block GPU retries until a
-GPU child completes cleanly.
+The CPU-only wrapper is now the default launcher for this recovery family.
+It hides CUDA before bootstrap, uses the same
+`MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1` root,
+and preserves the same child checkpoint files as the mixed runner. The mixed
+runner is a separate script that keeps CUDA visible and uses the same root,
+same child directories, and same checkpoint files, so CPU and GPU runs can
+resume each other without any layout fork.
+
+Recovery wrapper contract:
+
+1. build the recovery job list from the width-only and anomaly small-grid gaps
+2. sort by existing resume state first, then by parameter count, depth, and name
+3. launch children under the shared recovery root
+4. write `checkpoint_last.pt`, `checkpoint_best.pt`, `candidate_state.json`,
+   and `_recovery_child_process.log` under each child root
+5. resume from the same model weights, optimizer state, RNG state, and child
+   architecture when a checkpoint already exists
+6. no LR scheduler is used in this recovery runner, so there is no scheduler
+   state to restore today
+7. treat GPU pressure as GPU-only admission blocking and host RAM pressure as
+   a global admission block
+8. ignore swap in the default wrapper path by setting swap thresholds to
+   `100 / 100`
+9. use `--max-active-jobs 0` as the all-visible-CPU default and keep
+   `--pressure-settle-sec 30` as the standard settle window
 
 Canonical result layout:
 - `MLPS/tabular/shared/dae_dnn/results/stl/ablation/<suite_name>/`

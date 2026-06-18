@@ -113,27 +113,41 @@ Use them to verify behavior, then delete the generated `results/recovery/*`,
 `*_plan.json`, and similar scratch artifacts before publishing a results
 snapshot.
 
-The pressure-aware recovery runner uses split admission gates:
+The recovery family now has two wrappers that share the same result root and
+checkpoint layout:
+
+- `MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.sh`
+  is the CPU-only default.
+- `MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure_gpu_cpu.sh`
+  is the mixed GPU+CPU runner.
+
+Both wrappers write into
+`MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1`
+and both resume from the same child roots, checkpoint files, and
+`candidate_state.json` files. You can stop on CPU and resume on GPU, or stop
+on GPU and resume on CPU, without changing the directory layout.
+
+The recovery runner uses split admission gates:
 
 - GPU pauses only block GPU admissions until a GPU child finishes cleanly.
 - host RAM or swap pauses block all new admissions until pressure recovers
   and a child completion clears the gate.
-- CPU spillover remains available whenever host RAM is healthy and GPU
-  admission is blocked.
+- CPU spillover remains available in the mixed runner whenever host RAM is
+  healthy and GPU admission is blocked.
 
 Requeued children return to the pending queue and the launcher keeps
 considering other eligible work as the active gates allow it. If a child has
 already been GPU-paused once, its retry is preferred on CPU so it does not
 keep thrashing the same GPU slot.
 
-For this recovery runner and the massive STL pressure scheduler,
-`--max-active-jobs 0` means all visible logical CPUs are available as job
-lanes. On the 20-core laptop that means up to 20 active children, each with a
-separate CPU affinity lane. GPU admission is memory-pressure driven by
-default: the scheduler keeps launching GPU children while VRAM is below the
-resume threshold, then spills additional work to CPU when GPU admission is
-blocked. Set `--max-active-gpu-jobs <n>` only when you want an explicit GPU
-child-count cap.
+For the default CPU-only recovery wrapper, `--max-active-jobs 0` means all
+visible logical CPUs are available as job lanes. The mixed runner uses the
+same child lane accounting, but adds GPU admission on top of it. GPU admission
+is memory-pressure driven by default in the mixed runner: the scheduler keeps
+launching GPU children while VRAM is below the resume threshold, then spills
+additional work to CPU when GPU admission is blocked. Set
+`--max-active-gpu-jobs <n>` only when you want an explicit GPU child-count
+cap.
 
 This is intentionally aggressive. It is meant to keep the CPU side of the
 tabular runs busy when the workload can use the extra parallelism.
@@ -141,11 +155,10 @@ tabular runs busy when the workload can use the extra parallelism.
 If host RAM pressure exceeds the limit, it requests a pause on the largest
 active child, terminates only that child process group, and later relaunches
 the same child root so the run resumes from its normal STL checkpoints. If a
-child exits with CUDA OOM or `CUBLAS_STATUS_ALLOC_FAILED`, the scheduler
+child exits with CUDA OOM or `CUBLAS_STATUS_ALLOC_FAILED`, the mixed runner
 requests a pause on the largest active GPU child, requeues the failed child
 at the front of the queue, and retries it again when resources free up. The
-slower laptop split still works with a longer settle window, but the current
-recovery wrapper uses a 30 second settle period.
+default settle window is 30 seconds.
 
 Relevant flags:
 
@@ -158,7 +171,7 @@ Relevant flags:
 - `--max-active-jobs`
 - `--max-retries-per-job` as a legacy compatibility flag; pressure-aware mode requeues failed children indefinitely
 - `--pressure-poll-interval-sec`
-- `--pressure-settle-sec`
+- `--pressure-settle-sec` default `30`
 
 For a fresh full strict-band rerun, the repo now includes:
 
