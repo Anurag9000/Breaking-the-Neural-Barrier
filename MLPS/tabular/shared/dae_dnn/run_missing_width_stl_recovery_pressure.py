@@ -396,6 +396,9 @@ def choose_device_for_job(
     active_gpu_jobs: int = 0,
 ) -> Optional[str]:
     if job_should_force_cpu(job, forced_cpu_jobs):
+        host = pressure.sample_host_memory_pressure()
+        if host.used_pct > float(args.host_ram_resume_pct):
+            return None
         return "cpu"
     gpu_limit = gpu_active_limit(args)
     if gpu_limit > 0 and int(active_gpu_jobs) >= gpu_limit:
@@ -570,12 +573,18 @@ def run(args: argparse.Namespace) -> None:
         if active and host.used_pct > float(args.host_ram_pressure_limit_pct):
             pausable = [entry for entry in active.values() if not entry.pause_requested]
             if len(active) > 1 and pausable:
-                victim = max(pausable, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.name))
-                victim.pause_requested = True
-                victim.pause_reason = "host_ram_pressure"
-                update_job_state(victim.job.root, {"status": "pausing", "reason": "host_ram_pressure", "completed": False})
-                logger.log_console(f"[PRESSURE] pause_host {victim.job.name} host_used_pct={host.used_pct:.2f}")
-                terminate(next(proc for proc, entry in active.items() if entry is victim))
+                pause_count = 1
+                if host.used_pct >= float(args.host_ram_pressure_limit_pct) + 5.0:
+                    pause_count = max(1, min(len(pausable) - 1, len(pausable) // 3))
+                victims = sorted(pausable, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.name), reverse=True)[
+                    :pause_count
+                ]
+                for victim in victims:
+                    victim.pause_requested = True
+                    victim.pause_reason = "host_ram_pressure"
+                    update_job_state(victim.job.root, {"status": "pausing", "reason": "host_ram_pressure", "completed": False})
+                    logger.log_console(f"[PRESSURE] pause_host {victim.job.name} host_used_pct={host.used_pct:.2f}")
+                    terminate(next(proc for proc, entry in active.items() if entry is victim))
                 time.sleep(max(0.0, float(args.pressure_settle_sec)))
                 continue
 
