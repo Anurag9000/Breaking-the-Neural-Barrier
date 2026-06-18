@@ -4,6 +4,15 @@ This catalog is the task-first organization layer for scattered historical
 results. It links to the original payload roots instead of duplicating logs,
 CSVs, JSON, plots, or checkpoint-adjacent metadata.
 
+Current missing inventory at a glance:
+
+| Family | Missing now |
+| --- | --- |
+| ADP W2D | none at the catalog level; anomaly repeat 5 is cataloged via operator declaration, while the raw source remains a partial trace |
+| ADP width-only d01-d06 | `prediction` is missing entirely; no recovered width-only export exposes an explicit five-repeat layout, so normalized repeat slots 2-5 are absent for every present task/depth |
+| Small STL grid | `anomaly` is missing `d06/w256`, all `d08/*`, and all `d10/*`; no small-grid task has an explicit five-repeat structure |
+| Massive STL ablation | staged bands `param_10pow01_03` and `param_10pow07_08` are absent |
+
 Task folders:
 
 - `classification`
@@ -117,6 +126,24 @@ Search audit for `anomaly` small-grid:
   20 anomaly summary leaves
 - no `anomaly` small-grid objects were found for `d08/*`, `d10/*`, or
   `d06/w256`
+
+Exact missing `anomaly` small-grid leaves:
+
+- `d06/w256`
+- `d08/w064`
+- `d08/w096`
+- `d08/w128`
+- `d08/w160`
+- `d08/w192`
+- `d08/w224`
+- `d08/w256`
+- `d10/w064`
+- `d10/w096`
+- `d10/w128`
+- `d10/w160`
+- `d10/w192`
+- `d10/w224`
+- `d10/w256`
 
 ## Massive STL Ablation
 
