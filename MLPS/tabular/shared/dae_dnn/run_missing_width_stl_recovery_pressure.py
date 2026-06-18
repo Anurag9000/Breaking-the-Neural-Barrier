@@ -113,7 +113,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--no-include-width-only", dest="include_width_only", action="store_false")
     p.add_argument("--include-small-stl", action="store_true", default=True)
     p.add_argument("--no-include-small-stl", dest="include_small_stl", action="store_false")
-    p.add_argument("--dry-run", action="store_true", help="Write and print the sorted plan without launching children.")
+    p.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Write and print the sorted plan without launching children; dry-run outputs are scratch, not canonical results.",
+    )
     return p.parse_args()
 
 
