@@ -37,6 +37,6 @@ CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" \
   --gpu-memory-resume-pct 85 \
   --gpu-device-index 0 \
   --pressure-poll-interval-sec 0.5 \
-  --pressure-settle-sec 120 \
+  --pressure-settle-sec 30 \
   --max-active-jobs 0 \
   "$@"
