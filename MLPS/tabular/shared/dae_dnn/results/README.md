@@ -73,6 +73,11 @@ fills GPU first up to the GPU memory threshold and then spills extra children
 onto CPU while host RAM is still below its resume threshold. After the initial
 fill, new launches are completion-gated: a memory-pressure pause or retryable
 child failure closes the admission window immediately. The scheduler then
+resumes only after a true child completion.
+
+The tabular loaders now also cap any oversize batch to the dataset length, so
+when a launcher asks for a batch larger than the split itself, that epoch is a
+single batch by construction rather than an implied multi-batch pass.
 waits for a true child completion before it considers another launch attempt,
 and that next attempt resumes paused or partial work before it admits
 untouched jobs. If host RAM pressure exceeds the limit, it requests a pause
@@ -96,6 +101,30 @@ Relevant flags:
 - `--max-retries-per-job` as a legacy compatibility flag; pressure-aware mode requeues failed children indefinitely
 - `--pressure-poll-interval-sec`
 - `--pressure-settle-sec`
+
+For a fresh full strict-band rerun, the repo now includes:
+
+```bash
+./MLPS/tabular/shared/dae_dnn/run_stl_massive_band_04_06_fresh.sh
+```
+
+That wrapper targets:
+
+```text
+MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_fresh_v1
+```
+
+and launches the whole strict `10^4..10^6` band with:
+
+- all 7 tabular tasks
+- `5` repeats per child architecture
+- the pressure-aware GPU-first / CPU-spill scheduler
+- `--max-active-jobs 0`
+- `--batch-size 186240`
+
+Under the current parameter-matched generator, that strict `4-6` band expands
+to `1928` child architecture jobs, which means `9640` repeat phases after the
+five-repeat expansion inside each child run.
 
 Each pressure-aware child also writes `_child_process.log` in its child root.
 That file is used to detect CUDA OOM and cuBLAS allocation failures during
