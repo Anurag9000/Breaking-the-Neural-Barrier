@@ -24,7 +24,7 @@ CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" \
   --gpu-device-index 0 \
   --max-active-jobs 0 \
   --pressure-poll-interval-sec 0.5 \
-  --pressure-settle-sec 1 \
+  --pressure-settle-sec 120 \
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
