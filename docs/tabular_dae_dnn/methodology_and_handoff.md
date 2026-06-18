@@ -234,6 +234,9 @@ Runtime policy for the tabular runners is centralized:
   assign a deterministic `TABULAR_CPU_AFFINITY_CPUS` slice so concurrent
   children divide the CPU thread budget and CPU placement instead of all
   claiming the machine
+- concurrent launchers allocate explicit slot indices for active children so
+  simultaneously active jobs get disjoint CPU partitions rather than hashed
+  best-effort placement
 - `--num-workers 0` resolves to the full logical CPU count unless an explicit
   positive worker count is passed
 - the loaders use persistent workers and prefetching when worker processes are
@@ -247,6 +250,9 @@ Runtime policy for the tabular runners is centralized:
   persistent host settings used here: `kernel.sched_autogroup_enabled=0`,
   `user-UID.slice` high CPU/IO weights plus `TasksMax=infinity`, and
   `user@.service` delegation of `cpu cpuset io memory pids`
+- `MLPS/tabular/shared/dae_dnn/smoke_runtime_priority.py` verifies the runtime
+  path end to end: scoped execution, `SCHED_BATCH`, disjoint affinity slices,
+  and high aggregate CPU utilization under synthetic load
 
 This is an aggressive runtime policy. It is intended to keep the CPU side of
 the tabular runs busy when the workload can use the extra parallelism.

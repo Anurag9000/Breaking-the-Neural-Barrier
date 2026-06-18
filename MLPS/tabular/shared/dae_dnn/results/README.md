@@ -88,6 +88,9 @@ Runtime tuning for this tabular family is centralized:
 - fan-out launchers set `TABULAR_CPU_JOB_CONCURRENCY` for each child and
   assign a deterministic `TABULAR_CPU_AFFINITY_CPUS` slice so the child
   process only claims a bounded share of CPU threads and CPUs
+- concurrent launchers allocate explicit slot indices for active children so
+  simultaneously active jobs get disjoint CPU partitions rather than hashed
+  best-effort placement
 - `--num-workers 0` means auto-max for these runners, not disabled workers
 - loader workers default to the full logical CPU count, and the loaders use
   persistent workers plus prefetching when workers are enabled
@@ -100,6 +103,9 @@ Runtime tuning for this tabular family is centralized:
 - `MLPS/tabular/shared/dae_dnn/install_linux_runtime_priority.sh` installs the
   persistent host-side settings for `sched_autogroup`, `user-UID.slice`
   weights, and `user@.service` controller delegation
+- `MLPS/tabular/shared/dae_dnn/smoke_runtime_priority.py` validates the full
+  runtime path under load and checks scope placement, scheduler class,
+  affinity partitioning, and aggregate CPU utilization
 
 This is intentionally aggressive. It is meant to keep the CPU side of the
 tabular runs busy when the workload can use the extra parallelism.
