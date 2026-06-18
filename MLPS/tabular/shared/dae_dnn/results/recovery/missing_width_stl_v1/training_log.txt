@@ -1,0 +1,114 @@
+[2026-06-18 13:37:40] Initialized ContinuousLogger for missing_width_stl_recovery (Mode: pressure_aware_recovery)
+[2026-06-18 13:37:40] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_log.txt
+[2026-06-18 13:37:40] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_stats.csv
+[2026-06-18 13:39:06] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1
+[2026-06-18 13:39:06] Jobs: 189
+[2026-06-18 13:39:06] Max active jobs: 189
+[2026-06-18 13:39:06] [PLAN] 001 small_stl:anomaly:d08:w064 params=37174 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0064_64_64_64_64_64_64_64_64
+[2026-06-18 13:39:06] [PLAN] 002 small_stl:anomaly:d10:w064 params=45750 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0064_64_64_64_64_64_64_64_64_64_64
+[2026-06-18 13:39:06] [PLAN] 003 width_only:prediction:r01:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_01/d01
+[2026-06-18 13:39:06] [PLAN] 004 width_only:prediction:r02:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_02/d01
+[2026-06-18 13:39:06] [PLAN] 005 width_only:prediction:r03:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_03/d01
+[2026-06-18 13:39:06] [PLAN] 006 width_only:prediction:r04:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_04/d01
+[2026-06-18 13:39:06] [PLAN] 007 width_only:prediction:r05:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_05/d01
+[2026-06-18 13:39:06] [PLAN] 008 width_only:simulation:r02:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_02/d01
+[2026-06-18 13:39:06] [PLAN] 009 width_only:simulation:r03:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_03/d01
+[2026-06-18 13:39:06] [PLAN] 010 width_only:simulation:r04:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_04/d01
+[2026-06-18 13:39:06] [PLAN] 011 width_only:simulation:r05:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_05/d01
+[2026-06-18 13:39:06] [PLAN] 012 small_stl:anomaly:d08:w096 params=77238 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0096_96_96_96_96_96_96_96_96
+[2026-06-18 13:39:06] [PLAN] 013 small_stl:anomaly:d10:w096 params=96246 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0096_96_96_96_96_96_96_96_96_96_96
+[2026-06-18 13:39:06] [PLAN] 014 small_stl:anomaly:d08:w128 params=131638 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0128_128_128_128_128_128_128_128_128
+[2026-06-18 13:39:06] [PLAN] 015 small_stl:anomaly:d10:w128 params=165174 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0128_128_128_128_128_128_128_128_128_128_128
+[2026-06-18 13:39:06] [PLAN] 016 small_stl:anomaly:d08:w160 params=200374 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160
+[2026-06-18 13:39:06] [PLAN] 017 small_stl:anomaly:d10:w160 params=252534 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0160_160_160_160_160_160_160_160_160_160_160
+[2026-06-18 13:39:06] [PLAN] 018 width_only:classification:r02:d01 params=262151 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/classification/repeat_02/d01
+[2026-06-18 13:39:06] [PLAN] 019 width_only:classification:r03:d01 params=262151 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/classification/repeat_03/d01
+[2026-06-18 13:39:06] [PLAN] 020 width_only:classification:r04:d01 params=262151 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/classification/repeat_04/d01
+[2026-06-18 13:39:06] [PLAN] 021 width_only:classification:r05:d01 params=262151 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/classification/repeat_05/d01
+[2026-06-18 13:39:06] [PLAN] 022 small_stl:anomaly:d08:w192 params=283446 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0192_192_192_192_192_192_192_192_192
+[2026-06-18 13:39:06] [PLAN] 023 small_stl:anomaly:d10:w192 params=358326 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0192_192_192_192_192_192_192_192_192_192_192
+[2026-06-18 13:39:06] [PLAN] 024 small_stl:anomaly:d06:w256 params=359990 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d06_w0256_256_256_256_256_256_256
+[2026-06-18 13:39:06] [PLAN] 025 small_stl:anomaly:d08:w224 params=380854 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0224_224_224_224_224_224_224_224_224
+[2026-06-18 13:39:06] [PLAN] 026 width_only:anomaly:r02:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_02/d01
+[2026-06-18 13:39:06] [PLAN] 027 width_only:anomaly:r03:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_03/d01
+[2026-06-18 13:39:06] [PLAN] 028 width_only:anomaly:r04:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_04/d01
+[2026-06-18 13:39:06] [PLAN] 029 width_only:anomaly:r05:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_05/d01
+[2026-06-18 13:39:06] [PLAN] 030 width_only:autoencoding:r02:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_02/d01
+[2026-06-18 13:39:06] [PLAN] 031 width_only:autoencoding:r03:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_03/d01
+[2026-06-18 13:39:06] [PLAN] 032 width_only:autoencoding:r04:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_04/d01
+[2026-06-18 13:39:06] [PLAN] 033 width_only:autoencoding:r05:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_05/d01
+[2026-06-18 13:39:06] [PLAN] 034 width_only:denoising:r02:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/denoising/repeat_02/d01
+[2026-06-18 13:39:06] [PLAN] 035 width_only:denoising:r03:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/denoising/repeat_03/d01
+[2026-06-18 13:39:06] [PLAN] 036 width_only:denoising:r04:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/denoising/repeat_04/d01
+[2026-06-18 13:39:06] [PLAN] 037 width_only:denoising:r05:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/denoising/repeat_05/d01
+[2026-06-18 13:39:06] [PLAN] 038 width_only:generation:r02:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/generation/repeat_02/d01
+[2026-06-18 13:39:06] [PLAN] 039 width_only:generation:r03:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/generation/repeat_03/d01
+[2026-06-18 13:39:06] [PLAN] 040 width_only:generation:r04:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/generation/repeat_04/d01
+[2026-06-18 13:39:06] [PLAN] 041 width_only:generation:r05:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/generation/repeat_05/d01
+[2026-06-18 13:39:06] [PLAN] 042 small_stl:anomaly:d10:w224 params=482550 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0224_224_224_224_224_224_224_224_224_224_224
+[2026-06-18 13:39:06] [PLAN] 043 small_stl:anomaly:d08:w256 params=492598 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0256_256_256_256_256_256_256_256_256
+[2026-06-18 13:39:06] [PLAN] 044 small_stl:anomaly:d10:w256 params=625206 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0256_256_256_256_256_256_256_256_256_256_256
+[2026-06-18 13:39:06] [PLAN] 045 width_only:prediction:r01:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_01/d02
+[2026-06-18 13:39:06] [PLAN] 046 width_only:prediction:r02:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_02/d02
+[2026-06-18 13:39:06] [PLAN] 047 width_only:prediction:r03:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_03/d02
+[2026-06-18 13:39:06] [PLAN] 048 width_only:prediction:r04:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_04/d02
+[2026-06-18 13:39:06] [PLAN] 049 width_only:prediction:r05:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_05/d02
+[2026-06-18 13:39:06] [PLAN] 050 width_only:simulation:r02:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_02/d02
+[2026-06-18 13:39:06] [DRY_RUN] plan written; no children launched
+[2026-06-18 13:39:52] Initialized ContinuousLogger for missing_width_stl_recovery (Mode: pressure_aware_recovery)
+[2026-06-18 13:39:52] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_log.txt
+[2026-06-18 13:39:52] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_stats.csv
+[2026-06-18 13:39:56] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1
+[2026-06-18 13:39:56] Jobs: 189
+[2026-06-18 13:39:56] Max active jobs: 189
+[2026-06-18 13:39:56] [PLAN] 001 small_stl:anomaly:d08:w064 params=37174 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0064_64_64_64_64_64_64_64_64
+[2026-06-18 13:39:56] [PLAN] 002 small_stl:anomaly:d10:w064 params=45750 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0064_64_64_64_64_64_64_64_64_64_64
+[2026-06-18 13:39:56] [PLAN] 003 width_only:prediction:r01:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_01/d01
+[2026-06-18 13:39:56] [PLAN] 004 width_only:prediction:r02:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_02/d01
+[2026-06-18 13:39:56] [PLAN] 005 width_only:prediction:r03:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_03/d01
+[2026-06-18 13:39:56] [PLAN] 006 width_only:prediction:r04:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_04/d01
+[2026-06-18 13:39:56] [PLAN] 007 width_only:prediction:r05:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_05/d01
+[2026-06-18 13:39:56] [PLAN] 008 width_only:simulation:r02:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_02/d01
+[2026-06-18 13:39:56] [PLAN] 009 width_only:simulation:r03:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_03/d01
+[2026-06-18 13:39:56] [PLAN] 010 width_only:simulation:r04:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_04/d01
+[2026-06-18 13:39:56] [PLAN] 011 width_only:simulation:r05:d01 params=49153 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_05/d01
+[2026-06-18 13:39:56] [PLAN] 012 small_stl:anomaly:d08:w096 params=77238 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0096_96_96_96_96_96_96_96_96
+[2026-06-18 13:39:56] [PLAN] 013 small_stl:anomaly:d10:w096 params=96246 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0096_96_96_96_96_96_96_96_96_96_96
+[2026-06-18 13:39:56] [PLAN] 014 small_stl:anomaly:d08:w128 params=131638 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0128_128_128_128_128_128_128_128_128
+[2026-06-18 13:39:56] [PLAN] 015 small_stl:anomaly:d10:w128 params=165174 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0128_128_128_128_128_128_128_128_128_128_128
+[2026-06-18 13:39:56] [PLAN] 016 small_stl:anomaly:d08:w160 params=200374 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160
+[2026-06-18 13:39:56] [PLAN] 017 small_stl:anomaly:d10:w160 params=252534 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0160_160_160_160_160_160_160_160_160_160_160
+[2026-06-18 13:39:56] [PLAN] 018 width_only:classification:r02:d01 params=262151 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/classification/repeat_02/d01
+[2026-06-18 13:39:56] [PLAN] 019 width_only:classification:r03:d01 params=262151 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/classification/repeat_03/d01
+[2026-06-18 13:39:56] [PLAN] 020 width_only:classification:r04:d01 params=262151 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/classification/repeat_04/d01
+[2026-06-18 13:39:56] [PLAN] 021 width_only:classification:r05:d01 params=262151 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/classification/repeat_05/d01
+[2026-06-18 13:39:56] [PLAN] 022 small_stl:anomaly:d08:w192 params=283446 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0192_192_192_192_192_192_192_192_192
+[2026-06-18 13:39:56] [PLAN] 023 small_stl:anomaly:d10:w192 params=358326 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0192_192_192_192_192_192_192_192_192_192_192
+[2026-06-18 13:39:56] [PLAN] 024 small_stl:anomaly:d06:w256 params=359990 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d06_w0256_256_256_256_256_256_256
+[2026-06-18 13:39:56] [PLAN] 025 small_stl:anomaly:d08:w224 params=380854 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0224_224_224_224_224_224_224_224_224
+[2026-06-18 13:39:56] [PLAN] 026 width_only:anomaly:r02:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_02/d01
+[2026-06-18 13:39:56] [PLAN] 027 width_only:anomaly:r03:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_03/d01
+[2026-06-18 13:39:56] [PLAN] 028 width_only:anomaly:r04:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_04/d01
+[2026-06-18 13:39:56] [PLAN] 029 width_only:anomaly:r05:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_05/d01
+[2026-06-18 13:39:56] [PLAN] 030 width_only:autoencoding:r02:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_02/d01
+[2026-06-18 13:39:56] [PLAN] 031 width_only:autoencoding:r03:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_03/d01
+[2026-06-18 13:39:56] [PLAN] 032 width_only:autoencoding:r04:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_04/d01
+[2026-06-18 13:39:56] [PLAN] 033 width_only:autoencoding:r05:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_05/d01
+[2026-06-18 13:39:56] [PLAN] 034 width_only:denoising:r02:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/denoising/repeat_02/d01
+[2026-06-18 13:39:56] [PLAN] 035 width_only:denoising:r03:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/denoising/repeat_03/d01
+[2026-06-18 13:39:56] [PLAN] 036 width_only:denoising:r04:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/denoising/repeat_04/d01
+[2026-06-18 13:39:56] [PLAN] 037 width_only:denoising:r05:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/denoising/repeat_05/d01
+[2026-06-18 13:39:56] [PLAN] 038 width_only:generation:r02:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/generation/repeat_02/d01
+[2026-06-18 13:39:56] [PLAN] 039 width_only:generation:r03:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/generation/repeat_03/d01
+[2026-06-18 13:39:56] [PLAN] 040 width_only:generation:r04:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/generation/repeat_04/d01
+[2026-06-18 13:39:56] [PLAN] 041 width_only:generation:r05:d01 params=454710 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/generation/repeat_05/d01
+[2026-06-18 13:39:56] [PLAN] 042 small_stl:anomaly:d10:w224 params=482550 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0224_224_224_224_224_224_224_224_224_224_224
+[2026-06-18 13:39:56] [PLAN] 043 small_stl:anomaly:d08:w256 params=492598 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0256_256_256_256_256_256_256_256_256
+[2026-06-18 13:39:56] [PLAN] 044 small_stl:anomaly:d10:w256 params=625206 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0256_256_256_256_256_256_256_256_256_256_256
+[2026-06-18 13:39:56] [PLAN] 045 width_only:prediction:r01:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_01/d02
+[2026-06-18 13:39:56] [PLAN] 046 width_only:prediction:r02:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_02/d02
+[2026-06-18 13:39:56] [PLAN] 047 width_only:prediction:r03:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_03/d02
+[2026-06-18 13:39:56] [PLAN] 048 width_only:prediction:r04:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_04/d02
+[2026-06-18 13:39:56] [PLAN] 049 width_only:prediction:r05:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_05/d02
+[2026-06-18 13:39:56] [PLAN] 050 width_only:simulation:r02:d02 params=16838657 root=MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_02/d02
+[2026-06-18 13:39:56] [DRY_RUN] plan written; no children launched
