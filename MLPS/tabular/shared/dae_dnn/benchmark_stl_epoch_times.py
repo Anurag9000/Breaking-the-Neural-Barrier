@@ -13,6 +13,7 @@ import torch
 import run_goliath as rg
 import run_stl_ablation as stl
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from utils.adp_logging import ContinuousLogger
 
 
@@ -229,6 +230,8 @@ def write_markdown_summary(path: Path, rows: Sequence[Dict[str, Any]]) -> None:
 
 
 def main() -> None:
+    bootstrap_runtime("benchmark_stl_epoch_times")
+
     args = parse_args()
     rg.seed_everything(int(args.seed))
     depths = [int(v) for v in parse_csv_ints(args.depths)]

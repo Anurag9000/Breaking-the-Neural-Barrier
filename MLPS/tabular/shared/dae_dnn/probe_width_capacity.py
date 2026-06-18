@@ -18,6 +18,7 @@ import torch
 
 from MLPS.tabular.shared.dae_dnn.mlp import MLP
 from MLPS.tabular.shared.dae_dnn.tasks import build_task, refresh_task_loaders
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.train_utils import unpack_batch
 
 
@@ -33,12 +34,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--results-dir", default="MLPS/tabular/shared/dae_dnn/results")
     p.add_argument("--run-root", default=None)
     p.add_argument("--tasks", nargs="+", default=list(DEFAULT_TASKS))
-    p.add_argument("--batch-size", type=int, default=163840)
+    p.add_argument("--batch-size", type=int, default=819200)
     p.add_argument(
         "--task-batch-size",
         action="append",
         default=[],
-        help="Override batch size for a specific task, e.g. classification=37248. May be passed multiple times.",
+        help="Override batch size for a specific task, e.g. classification=186240. May be passed multiple times.",
     )
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
@@ -423,6 +424,8 @@ def run_candidate(
 
 
 def main() -> None:
+    bootstrap_runtime("probe_width_capacity")
+
     args = parse_args()
     tasks = [str(t).lower() for t in args.tasks]
     task_batch_sizes = parse_task_batch_sizes(args.task_batch_size)

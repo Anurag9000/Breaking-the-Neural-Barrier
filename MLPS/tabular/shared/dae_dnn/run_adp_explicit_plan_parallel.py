@@ -11,6 +11,7 @@ from typing import Any, Deque, Dict, List, Tuple
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - import shim for direct script execution
@@ -31,7 +32,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--results-dir", default="MLPS/tabular/shared/dae_dnn/results")
     p.add_argument("--run-root", required=True)
     p.add_argument("--plan-file", required=True, help="JSON file listing phases and jobs to run.")
-    p.add_argument("--batch-size", type=int, default=37248)
+    p.add_argument("--batch-size", type=int, default=186240)
     p.add_argument("--hidden", type=int, nargs="+", default=[1])
     p.add_argument("--adp-mode", default="width_to_depth", choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"])
     p.add_argument("--mode", default="adp", choices=["adp"])
@@ -63,6 +64,8 @@ def load_plan(plan_path: Path) -> List[Dict[str, Any]]:
 
 
 def main() -> None:
+    bootstrap_runtime("run_adp_explicit_plan_parallel")
+
     args = parse_args()
     run_root = Path(args.run_root)
     run_root.mkdir(parents=True, exist_ok=True)

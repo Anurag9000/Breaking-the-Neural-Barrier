@@ -7,13 +7,16 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from MLPS.tabular.shared.dae_dnn.tasks import task_names
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 
 
 def main() -> None:
+    bootstrap_runtime("run_all")
+
     p = argparse.ArgumentParser(description="Run STL + supported ADP modes for all DNN tasks")
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="MLPS/tabular/shared/dae_dnn/results")
-    p.add_argument("--batch-size", type=int, default=327680)
+    p.add_argument("--batch-size", type=int, default=1638400)
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
     p.add_argument("--ex-k", type=int, default=1)

@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 from typing import List
 
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.run_goliath_staged_width import main as staged_main
 
 SUPPORTED_STAGED_PHASES = {
@@ -34,6 +35,7 @@ def _force_single_phase(argv: List[str], phase_name: str) -> List[str]:
 
 
 def run_single_phase(phase_name: str) -> None:
+    bootstrap_runtime(f"staged_phase_{phase_name}")
     if phase_name not in SUPPORTED_STAGED_PHASES:
         raise SystemExit(
             f"Unsupported staged ADP phase '{phase_name}'. Supported phases are: "

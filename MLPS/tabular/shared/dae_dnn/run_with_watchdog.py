@@ -27,6 +27,7 @@ from MLPS.tabular.shared.dae_dnn.run_goliath import (
     refresh_task_loaders,
     write_json,
 )
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 
 
 EPOCH_PATTERN = re.compile(r"\bepoch=(\d+)\b")
@@ -258,7 +259,7 @@ def candidate_summary_payload(candidate_dir: Path, device: torch.device) -> Opti
         return None
 
     data_dir = str(cfg.get("data_dir", "./data"))
-    batch_size = max(1, int(cfg.get("batch_size", 131072) or 1))
+    batch_size = max(1, int(cfg.get("batch_size", 655360) or 1))
     num_workers = int(cfg.get("num_workers", 0))
     seed = int(cfg.get("seed", 0))
 
@@ -558,6 +559,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    bootstrap_runtime("run_with_watchdog")
+
     args = parse_args()
     command = list(args.command)
     if command and command[0] == "--":

@@ -3,6 +3,9 @@ set -euo pipefail
 
 cd "$(dirname "$0")/../../../.."
 
+source MLPS/tabular/shared/dae_dnn/runtime_tuning.sh
+tabular_runtime_bootstrap
+
 PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True,max_split_size_mb:128}" \
 CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" \
 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.py \
@@ -10,7 +13,7 @@ CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
   --run-root MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1 \
   --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current \
-  --batch-size 37248 \
+  --batch-size 186240 \
   --num-workers 0 \
   --seed 0 \
   --patience 10 \

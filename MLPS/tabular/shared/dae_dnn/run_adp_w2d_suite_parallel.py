@@ -14,6 +14,7 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from MLPS.tabular.shared.dae_dnn.tasks import task_names
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - import shim for direct script execution
@@ -49,7 +50,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--results-dir", default="MLPS/tabular/shared/dae_dnn/results")
     p.add_argument("--run-root", default=None)
     p.add_argument("--tasks", nargs="+", default=DEFAULT_TASKS)
-    p.add_argument("--batch-size", type=int, default=37248)
+    p.add_argument("--batch-size", type=int, default=186240)
     p.add_argument("--hidden", type=int, nargs="+", default=[1], help="Seed hidden widths for ADP width-to-depth.")
     p.add_argument("--adp-mode", default="width_to_depth", choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"])
     p.add_argument("--mode", default="adp", choices=["adp"])
@@ -233,6 +234,8 @@ def run_task(args: argparse.Namespace, task_name: str, task_root: Path, repeat_i
 
 
 def main() -> None:
+    bootstrap_runtime("run_adp_w2d_suite_parallel")
+
     args = parse_args()
     tasks = [str(t).lower() for t in args.tasks]
     if "all" in tasks:

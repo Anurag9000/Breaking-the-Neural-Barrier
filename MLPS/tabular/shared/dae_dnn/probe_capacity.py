@@ -38,6 +38,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tupl
 import torch
 
 from MLPS.tabular.shared.dae_dnn.run_goliath import save_checkpoint
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.train_utils import unpack_batch
 
 
@@ -930,6 +931,8 @@ def load_existing_rows(run_root: Path) -> List[Dict[str, Any]]:
 
 
 def main() -> None:
+    bootstrap_runtime("probe_capacity")
+
     args = parse_args()
     task_factory = load_callable(str(args.task_factory))
     model_factory = load_callable(str(args.model_factory))

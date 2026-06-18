@@ -28,6 +28,7 @@ sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from MLPS.tabular.shared.dae_dnn.adp_search import expand_depth, expand_width, model_depth, model_width
 from MLPS.tabular.shared.dae_dnn.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.tasks import Task, build_task, clone_loader, refresh_task_loaders, task_names
 from MLPS.tabular.shared.dae_dnn.train_utils import AdaptiveBatchController
 from MLPS.tabular.shared.dae_dnn.train_utils import eval_epoch, forward_train_safe, train_epoch, unpack_batch
@@ -98,13 +99,13 @@ def cleanup_runtime() -> None:
         gc.collect()
 
 PER_TASK_BATCH_SIZES = {
-    "prediction": 131072,
-    "classification": 131072,
-    "autoencoding": 131072,
-    "generation": 131072,
-    "denoising": 131072,
-    "anomaly": 131072,
-    "simulation": 131072,
+    "prediction": 655360,
+    "classification": 655360,
+    "autoencoding": 655360,
+    "generation": 655360,
+    "denoising": 655360,
+    "anomaly": 655360,
+    "simulation": 655360,
 }
 
 GOLIATH_ADP_PHASES = [
@@ -471,7 +472,7 @@ def adp_seed_hidden_for_mode(mode: Optional[str]) -> List[int]:
 
 
 def default_batch_size_for_task(task_name: str) -> int:
-    return int(PER_TASK_BATCH_SIZES.get(task_name.lower(), 131072))
+    return int(PER_TASK_BATCH_SIZES.get(task_name.lower(), 655360))
 
 
 def batch_size_for_task(task_name: str, override: int) -> int:
@@ -2653,6 +2654,7 @@ def training_loop(
         start_epoch = int(ckpt["epoch"])
         start_batch = int(ckpt.get("batch_index", 0) or 0)
         checkpoint_batch_size = int(ckpt.get("batch_size", current_batch_size) or current_batch_size)
+        checkpoint_batch_size = max(int(current_batch_size), int(checkpoint_batch_size))
         if checkpoint_batch_size > 0 and checkpoint_batch_size != current_batch_size:
             refresh_task_loaders(task, checkpoint_batch_size)
             current_batch_size = checkpoint_batch_size
@@ -3089,6 +3091,8 @@ def training_loop(
 
 
 def main() -> None:
+    bootstrap_runtime("run_goliath")
+
     p = argparse.ArgumentParser(description="Sequential ADP-first goliath runner for DAE/DNN tasks with paired STL refits")
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="MLPS/tabular/shared/dae_dnn/results")
@@ -3100,7 +3104,7 @@ def main() -> None:
         nargs="+",
         default=["ae_alt_width", "ae_alt_depth", "ae_width_to_depth", "ae_depth_to_width"],
     )
-    p.add_argument("--batch-size", type=int, default=327680, help="Global batch-size default/override.")
+    p.add_argument("--batch-size", type=int, default=1638400, help="Global batch-size default/override.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--stl-width", type=int, default=128)

@@ -78,6 +78,21 @@ resumes only after a true child completion.
 The tabular loaders now also cap any oversize batch to the dataset length, so
 when a launcher asks for a batch larger than the split itself, that epoch is a
 single batch by construction rather than an implied multi-batch pass.
+
+Runtime tuning for this tabular family is centralized:
+
+- shell launchers source `MLPS/tabular/shared/dae_dnn/runtime_tuning.sh`
+- Python entrypoints call `bootstrap_runtime()` before they build tasks or
+  enter the main loop
+- `--num-workers 0` means auto-max for these runners, not disabled workers
+- loader workers default to the full logical CPU count, and the loaders use
+  persistent workers plus prefetching when workers are enabled
+- the process attempts best-effort `renice -20` and `ionice -c2 -n0`; if the
+  OS refuses, the thread and worker settings still apply
+
+This is intentionally aggressive. It is meant to keep the CPU side of the
+tabular runs busy when the workload can use the extra parallelism.
+
 waits for a true child completion before it considers another launch attempt,
 and that next attempt resumes paused or partial work before it admits
 untouched jobs. If host RAM pressure exceeds the limit, it requests a pause

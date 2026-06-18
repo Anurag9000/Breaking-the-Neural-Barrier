@@ -4,6 +4,9 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 cd "$ROOT_DIR"
 
+source MLPS/tabular/shared/dae_dnn/runtime_tuning.sh
+tabular_runtime_bootstrap
+
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
 CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_adp_explicit_plan_parallel.py \
   --data-dir ./data \
@@ -13,5 +16,5 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_adp_ex
   --concurrency 6 \
   --num-workers 0 \
   --pin-memory \
-  --batch-size 37248 \
+  --batch-size 186240 \
   --adp-mode width_to_depth

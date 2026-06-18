@@ -15,6 +15,8 @@ from sklearn.metrics import normalized_mutual_info_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import resolve_num_workers
+
 
 @dataclass
 class Task:
@@ -45,6 +47,13 @@ def _resolve_pin_memory(pin_memory: Optional[bool]) -> bool:
     return bool(pin_memory)
 
 
+def capped_batch_size(batch_size: int, dataset: Dataset) -> int:
+    dataset_size = int(len(dataset))
+    if dataset_size <= 0:
+        return 1
+    return max(1, min(int(batch_size), dataset_size))
+
+
 def _make_loaders(
     ds: Dataset,
     batch_size: int,
@@ -52,12 +61,19 @@ def _make_loaders(
     shuffle: bool = True,
     pin_memory: Optional[bool] = None,
 ):
+    num_workers = resolve_num_workers(num_workers)
+    loader_kwargs = {
+        "batch_size": capped_batch_size(batch_size, ds),
+        "shuffle": shuffle,
+        "num_workers": num_workers,
+        "pin_memory": _resolve_pin_memory(pin_memory),
+    }
+    if num_workers > 0:
+        loader_kwargs["persistent_workers"] = True
+        loader_kwargs["prefetch_factor"] = 4
     return DataLoader(
         ds,
-        batch_size=batch_size,
-        shuffle=shuffle,
-        num_workers=num_workers,
-        pin_memory=_resolve_pin_memory(pin_memory),
+        **loader_kwargs,
     )
 
 
@@ -67,15 +83,23 @@ def clone_loader(
     shuffle: bool,
     generator: Optional[torch.Generator] = None,
 ) -> DataLoader:
+    effective_batch_size = capped_batch_size(batch_size, loader.dataset)
+    num_workers = resolve_num_workers(int(loader.num_workers))
+    loader_kwargs = {
+        "batch_size": effective_batch_size,
+        "shuffle": shuffle,
+        "num_workers": num_workers,
+        "pin_memory": bool(getattr(loader, "pin_memory", False)),
+        "drop_last": bool(getattr(loader, "drop_last", False)),
+        "collate_fn": getattr(loader, "collate_fn", None),
+        "generator": generator,
+    }
+    if num_workers > 0:
+        loader_kwargs["persistent_workers"] = True
+        loader_kwargs["prefetch_factor"] = 4
     return DataLoader(
         loader.dataset,
-        batch_size=int(batch_size),
-        shuffle=shuffle,
-        num_workers=int(loader.num_workers),
-        pin_memory=bool(getattr(loader, "pin_memory", False)),
-        drop_last=bool(getattr(loader, "drop_last", False)),
-        collate_fn=getattr(loader, "collate_fn", None),
-        generator=generator,
+        **loader_kwargs,
     )
 
 

@@ -223,6 +223,21 @@ so resumability is handled by the normal STL checkpoints and
 `ablation_state.json`. On the slower laptop split, set
 `--pressure-settle-sec 120` to give each launch a two-minute settle window.
 
+Runtime policy for the tabular runners is centralized:
+
+- shell launchers source `MLPS/tabular/shared/dae_dnn/runtime_tuning.sh`
+- Python runners call `bootstrap_runtime()` before they build tasks or start
+  the main loop
+- `--num-workers 0` resolves to the full logical CPU count unless an explicit
+  positive worker count is passed
+- the loaders use persistent workers and prefetching when worker processes are
+  enabled
+- the process attempts best-effort `renice -20` and `ionice -c2 -n0`, but the
+  run still proceeds if the OS denies those calls
+
+This is an aggressive runtime policy. It is intended to keep the CPU side of
+the tabular runs busy when the workload can use the extra parallelism.
+
 Relevant flags:
 
 - `--scheduler pressure_aware`

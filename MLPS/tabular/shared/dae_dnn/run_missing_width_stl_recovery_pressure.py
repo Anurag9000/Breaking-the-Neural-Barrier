@@ -14,6 +14,7 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 import torch
 
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - direct script execution
@@ -81,7 +82,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--results-dir", default="MLPS/tabular/shared/dae_dnn/results")
     p.add_argument("--run-root", default="MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1")
     p.add_argument("--source-run-root", default="MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current")
-    p.add_argument("--batch-size", type=int, default=37248)
+    p.add_argument("--batch-size", type=int, default=186240)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
@@ -519,6 +520,8 @@ def run(args: argparse.Namespace) -> None:
 
 
 def main() -> None:
+    bootstrap_runtime("run_missing_width_stl_recovery_pressure")
+
     args = parse_args()
     if float(args.host_ram_resume_pct) > float(args.host_ram_pressure_limit_pct):
         raise SystemExit("--host-ram-resume-pct must be <= --host-ram-pressure-limit-pct")
