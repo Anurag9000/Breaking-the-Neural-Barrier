@@ -206,26 +206,22 @@ resume state are always considered before untouched jobs. It opportunistically
 fills the machine with as many children as fit, using GPU first until the GPU
 memory resume threshold is reached and then spilling additional children onto
 CPU while host RAM is still below its resume threshold. It monitors host RAM
-usage from `/proc/meminfo` and GPU memory via `nvidia-smi`. If used RAM
-crosses the configured host threshold, it requests a pause on the largest
-active child, terminates only that child process group, and requeues that
-same child root. If a child exits with a CUDA OOM or cuBLAS allocation
-failure, the scheduler requests a pause on the largest active GPU child,
-requeues the failed child at the front of the pending queue, and tries it
-again as soon as a slot is available. When enough RAM or GPU memory is free
+usage from `/proc/meminfo` and GPU memory via `nvidia-smi`. After the initial
+saturation phase, admission is completion-gated: any memory-pressure pause or
+retryable child failure closes the admission window immediately. The launcher
+does not treat the pause itself as a reason to launch something else. It waits
+for a genuine child completion to reopen the admission window, and that next
+launch attempt resumes a paused or partial child before it considers untouched
+work. If used RAM crosses the configured host threshold, it requests a pause on
+the largest active child, terminates only that child process group, and
+requeues that same child root. If a child exits with a CUDA OOM or cuBLAS
+allocation failure, the scheduler requests a pause on the largest active GPU
+child, requeues the failed child at the front of the pending queue, and tries
+it again as soon as a slot is available. When enough RAM or GPU memory is free
 again, the scheduler relaunches the paused child from the same run directory,
 so resumability is handled by the normal STL checkpoints and
-`ablation_state.json`.
-
-Admission is completion-gated after the initial saturation phase. The launcher
-starts with launches enabled so it can fill the machine. Once any child is
-paused for memory pressure, or exits with a retryable failure, the launcher
-closes the admission window. It does not treat the pause itself as a reason to
-launch something else. Instead it waits for one of the surviving children to
-finish cleanly. That successful completion reopens the admission window, and
-the next launch attempt resumes a paused or partial child before considering
-untouched work. If that resumed child still does not fit and is paused again,
-the admission window closes again until another genuine completion happens.
+`ablation_state.json`. On the slower laptop split, set
+`--pressure-settle-sec 120` to give each launch a two-minute settle window.
 
 Relevant flags:
 
@@ -317,10 +313,10 @@ PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
 CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
   --data-dir ./data \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
-  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03 \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06 \
   --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current \
   --tasks classification autoencoding generation denoising anomaly simulation prediction \
-  --param-band 1 3 \
+  --param-band 4 6 \
   --repeat-count 5 \
   --scheduler pressure_aware \
   --host-ram-pressure-limit-pct 90 \
@@ -329,6 +325,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --gpu-memory-resume-pct 85 \
   --gpu-device-index 0 \
   --max-active-jobs 0 \
+  --pressure-settle-sec 120 \
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
@@ -344,10 +341,10 @@ PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
 CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
   --data-dir ./data \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
-  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03 \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06 \
   --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current \
   --tasks classification autoencoding generation denoising anomaly simulation prediction \
-  --param-band 1 3 \
+  --param-band 4 6 \
   --concurrency-file MLPS/tabular/shared/dae_dnn/results/stl/parallelism_probe/param_10pow01_03/recommended_parallelism.txt \
   --repeat-count 5 \
   --max-epochs 100000000 \
@@ -365,12 +362,13 @@ PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:128 \
 CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
   --data-dir ./data \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
-  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03 \
+  --run-root MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06 \
   --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current \
   --tasks classification autoencoding generation denoising anomaly simulation prediction \
-  --param-band 1 3 \
+  --param-band 4 6 \
   --repeat-count 5 \
   --concurrency 7 \
+  --pressure-settle-sec 120 \
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
@@ -381,8 +379,9 @@ Repeat the same command on the other laptops, changing only the parameter band
 and the `--run-root` suffix.
 
 The pressure-aware scheduler runs concrete children globally from
-smallest-to-largest and may temporarily pause the largest one if host memory
-pressure spikes. The probe uses the opposite order and is intentionally
+smallest-to-largest and prefers GPU children first while GPU memory is still
+below the resume threshold. It may temporarily pause the largest one if host
+memory pressure spikes. The probe uses the opposite order and is intentionally
 adversarial: it stress tests the heaviest models first.
 
 After all bands finish, merge them into the canonical STL root:

@@ -70,19 +70,19 @@ mode it expands all concrete STL child runs for the chosen tasks/band, sorts
 them globally smallest-to-largest by parameter count, but partial child roots
 with existing resume state are always considered before untouched jobs. It
 fills GPU first up to the GPU memory threshold and then spills extra children
-onto CPU while host RAM is still below its resume threshold. If host RAM
-pressure exceeds the limit, it requests a pause on the largest active child,
-terminates only that child process group, and later relaunches the same child
-root so the run resumes from its normal STL checkpoints. If a child exits
-with CUDA OOM or `CUBLAS_STATUS_ALLOC_FAILED`, the scheduler requests a pause
-on the largest active GPU child, requeues the failed child at the front of
-the queue, and retries it again when resources free up.
-
-After the initial fill, new launches are completion-gated. A memory-pressure
-pause or retryable child failure closes the admission window immediately. The
-scheduler then waits for a true child completion before it considers another
-launch attempt, and that next attempt resumes paused or partial work before it
-admits untouched jobs.
+onto CPU while host RAM is still below its resume threshold. After the initial
+fill, new launches are completion-gated: a memory-pressure pause or retryable
+child failure closes the admission window immediately. The scheduler then
+waits for a true child completion before it considers another launch attempt,
+and that next attempt resumes paused or partial work before it admits
+untouched jobs. If host RAM pressure exceeds the limit, it requests a pause
+on the largest active child, terminates only that child process group, and
+later relaunches the same child root so the run resumes from its normal STL
+checkpoints. If a child exits with CUDA OOM or `CUBLAS_STATUS_ALLOC_FAILED`,
+the scheduler requests a pause on the largest active GPU child, requeues the
+failed child at the front of the queue, and retries it again when resources
+free up. For the slower laptop split, set `--pressure-settle-sec 120` so
+each launch gets a two-minute settle window.
 
 Relevant flags:
 
