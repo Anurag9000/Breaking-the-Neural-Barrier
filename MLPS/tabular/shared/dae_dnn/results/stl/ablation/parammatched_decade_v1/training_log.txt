@@ -1,0 +1,25 @@
+[2026-06-16 13:40:23] Initialized ContinuousLogger for stl_ablation_parallel (Mode: stl_ablation_parallel)
+[2026-06-16 13:40:23] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/training_log.txt
+[2026-06-16 13:40:23] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/training_stats.csv
+[2026-06-16 13:40:23] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06
+[2026-06-16 13:40:23] Tasks: ['classification', 'autoencoding', 'generation', 'denoising', 'anomaly', 'simulation', 'prediction']
+[2026-06-16 13:40:23] Architectures: ['[1]', '[2]', '[3]', '[4]', '[5]', '[6]', '[7]', '[8]', '[9]', '[10]']
+[2026-06-16 13:40:23] Parameter decade band: [4, 6]
+[2026-06-16 13:40:23] Repeat count: 5
+[2026-06-16 13:40:23] Scheduler: pressure_aware
+[2026-06-16 13:40:23] Concurrency: 10
+[2026-06-16 13:40:23] Host RAM pressure limit pct: 95.00
+[2026-06-16 13:40:23] Host RAM resume pct: 85.00
+[2026-06-16 13:40:23] GPU memory pressure limit pct: 95.00
+[2026-06-16 13:40:23] GPU memory resume pct: 85.00
+[2026-06-16 13:40:23] GPU device index: 0
+[2026-06-16 13:40:23] Max active jobs: 0
+[2026-06-16 13:40:23] Max retries per job: 0
+[2026-06-16 13:40:23] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-16 13:40:25] Device: cuda
+[2026-06-16 13:40:25] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-16 13:40:39] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cuda host_used_pct=41.19 avail_mib=9218/15673 gpu_used_pct=0.29 gpu_used_mib=18/6144 active=1/1928
+[2026-06-16 13:42:39] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=1
+[2026-06-16 13:42:39] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cuda host_used_pct=40.36 avail_mib=9347/15673 gpu_used_pct=0.29 gpu_used_mib=18/6144 active=1/1928
+[2026-06-16 13:44:39] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=2
+[2026-06-16 13:44:39] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cuda host_used_pct=40.34 avail_mib=9351/15673 gpu_used_pct=0.29 gpu_used_mib=18/6144 active=1/1928
