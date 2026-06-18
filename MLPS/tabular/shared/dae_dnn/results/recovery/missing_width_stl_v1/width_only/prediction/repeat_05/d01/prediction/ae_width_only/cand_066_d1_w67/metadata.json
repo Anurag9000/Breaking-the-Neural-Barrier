@@ -1,0 +1,66 @@
+{
+  "candidate_index": 66,
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 9312,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "depth_expansion_patience": 2,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 100000000,
+    "max_neurons": 10000000,
+    "max_width": 4096,
+    "metrics_every": 0,
+    "min_width": 16,
+    "num_workers": 0,
+    "parameter_band": null,
+    "parameter_matched": false,
+    "patience": 10,
+    "phases": [
+      "ae_width_only"
+    ],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_05/d01",
+    "seed": 0,
+    "stl_depth": 1,
+    "stl_width": 128,
+    "tasks": [
+      "prediction"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_count_per_depth": 10,
+    "width_expansion_patience": 10,
+    "width_stage_margin_patience": 10,
+    "width_stage_min_improve_pct": 1.0,
+    "width_step": 16
+  },
+  "dataset_sizes": {
+    "test": 2064,
+    "train": 16512,
+    "val": 2064
+  },
+  "git_commit": "7a7eec4fba7b5cbec9304163585cc61beea979e4",
+  "hidden_widths": [
+    67
+  ],
+  "model": {
+    "hidden_widths": [
+      67
+    ],
+    "in_dim": 8,
+    "out_dim": 1,
+    "use_bn": true
+  },
+  "phase_kind": "width_only",
+  "phase_name": "ae_width_only",
+  "reconstruct": false,
+  "search_phase": "width",
+  "task": "prediction",
+  "task_extra": {},
+  "task_type": "regression"
+}
