@@ -31,12 +31,12 @@ CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" \
   --width-depths 1,2,3,4,5,6 \
   --missing-present-task-repeats 2,3,4,5 \
   --prediction-repeats 1,2,3,4,5 \
-  --host-ram-pressure-limit-pct 90 \
-  --host-ram-resume-pct 85 \
+  --host-ram-pressure-limit-pct 88 \
+  --host-ram-resume-pct 75 \
   --gpu-memory-pressure-limit-pct 90 \
   --gpu-memory-resume-pct 85 \
   --gpu-device-index 0 \
   --pressure-poll-interval-sec 0.5 \
-  --pressure-settle-sec 1 \
+  --pressure-settle-sec 5 \
   --max-active-jobs 0 \
   "$@"
