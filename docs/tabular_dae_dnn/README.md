@@ -104,7 +104,9 @@ window.
 Runtime tuning for the tabular launchers is centralized as well:
 
 - shell wrappers source `MLPS/tabular/shared/dae_dnn/runtime_tuning.sh`
-- Python runners call `bootstrap_runtime()` before training starts
+- Python runners call `bootstrap_runtime()` before training starts; the
+  top-level entrypoint re-execs itself under `systemd-run --user --scope`
+  inside `app-mlps-training.slice` when the user manager supports it
 - fan-out launchers set `TABULAR_CPU_JOB_CONCURRENCY` per child and assign a
   deterministic `TABULAR_CPU_AFFINITY_CPUS` slice so concurrent children
   divide the CPU thread budget and CPU placement instead of all claiming the
@@ -116,6 +118,13 @@ Runtime tuning for the tabular launchers is centralized as well:
   and `ionice`, and it also enables `OMP_WAIT_POLICY=ACTIVE`,
   `OMP_PROC_BIND=spread`, and `OMP_PLACES=cores`; if the OS denies the
   change, the thread, affinity, and worker settings still apply
+- the shell-side bootstrap also requests `SCHED_BATCH`, and the Python
+  bootstrap attempts the same policy with `sched_setscheduler(2)`
+- the repository includes
+  `MLPS/tabular/shared/dae_dnn/install_linux_runtime_priority.sh` to install
+  the persistent Linux-side settings used on this machine:
+  `kernel.sched_autogroup_enabled=0`, `user-UID.slice` high CPU/IO weights,
+  and `user@.service` delegation for `cpu cpuset io memory pids`
 
 That policy is aggressive by design. It keeps the CPU side busy when the
 current workload can exploit the extra parallelism.
