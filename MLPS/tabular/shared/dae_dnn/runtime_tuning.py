@@ -115,10 +115,13 @@ def _apply_affinity_from_env() -> None:
 
 
 def current_concurrency_hint(default: Optional[int] = None) -> Optional[int]:
+    explicit = _safe_int(str(default)) if default is not None else None
+    if explicit is not None:
+        return explicit
     hint = _safe_int(os.environ.get("TABULAR_CPU_JOB_CONCURRENCY"))
     if hint is not None:
         return hint
-    return default
+    return None
 
 
 def derive_cpu_budget(concurrency_hint: Optional[int] = None) -> Tuple[int, int, int]:
