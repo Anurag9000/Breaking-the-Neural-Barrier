@@ -198,7 +198,14 @@ def build_worker_command(args: argparse.Namespace, task_name: str, task_root: Pa
     return command
 
 
-def run_task(args: argparse.Namespace, task_name: str, task_root: Path, repeat_index: int) -> Dict[str, Any]:
+def run_task(
+    args: argparse.Namespace,
+    task_name: str,
+    task_root: Path,
+    repeat_index: int,
+    *,
+    concurrency_hint: int = 1,
+) -> Dict[str, Any]:
     task_root.mkdir(parents=True, exist_ok=True)
     if task_completed(task_root):
         return {
@@ -210,7 +217,7 @@ def run_task(args: argparse.Namespace, task_name: str, task_root: Path, repeat_i
         }
 
     cmd = build_worker_command(args, task_name, task_root)
-    proc = subprocess.Popen(cmd)
+    proc = subprocess.Popen(cmd, env=launcher_child_env(concurrency_hint=concurrency_hint, job_key=f"{task_name}:{task_root}"))
     try:
         code = proc.wait()
     finally:
@@ -295,7 +302,13 @@ def main() -> None:
                         continue
                     cmd = build_worker_command(args, task_name, task_root)
                     task_root.mkdir(parents=True, exist_ok=True)
-                    proc = subprocess.Popen(cmd, env=launcher_child_env(concurrency_hint=len(active) + 1))
+                    proc = subprocess.Popen(
+                        cmd,
+                        env=launcher_child_env(
+                            concurrency_hint=len(active) + 1,
+                            job_key=f"repeat_{current_repeat:02d}:{task_name}:{task_root}",
+                        ),
+                    )
                     active[proc] = (current_repeat, task_name, task_root, cmd)
 
                 if not active:

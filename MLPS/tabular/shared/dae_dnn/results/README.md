@@ -84,13 +84,16 @@ Runtime tuning for this tabular family is centralized:
 - shell launchers source `MLPS/tabular/shared/dae_dnn/runtime_tuning.sh`
 - Python entrypoints call `bootstrap_runtime()` before they build tasks or
   enter the main loop
-- fan-out launchers set `TABULAR_CPU_JOB_CONCURRENCY` for each child so the
-  child process only claims a bounded share of CPU threads
+- fan-out launchers set `TABULAR_CPU_JOB_CONCURRENCY` for each child and
+  assign a deterministic `TABULAR_CPU_AFFINITY_CPUS` slice so the child
+  process only claims a bounded share of CPU threads and CPUs
 - `--num-workers 0` means auto-max for these runners, not disabled workers
 - loader workers default to the full logical CPU count, and the loaders use
   persistent workers plus prefetching when workers are enabled
-- the process attempts best-effort `renice -20` and `ionice -c2 -n0`; if the
-  OS refuses, the thread and worker settings still apply
+- the process attempts best-effort `renice -20` and `ionice -c2 -n0`, and it
+  also enables `OMP_WAIT_POLICY=ACTIVE`, `OMP_PROC_BIND=spread`, and
+  `OMP_PLACES=cores`; if the OS refuses, the thread, affinity, and worker
+  settings still apply
 
 This is intentionally aggressive. It is meant to keep the CPU side of the
 tabular runs busy when the workload can use the extra parallelism.

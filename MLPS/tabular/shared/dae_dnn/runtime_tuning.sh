@@ -32,6 +32,11 @@ tabular_runtime_bootstrap() {
   export TORCH_NUM_THREADS="${TORCH_NUM_THREADS:-${cpu_cores}}"
   export TORCH_INTEROP_THREADS="${TORCH_INTEROP_THREADS:-1}"
   export OMP_DYNAMIC="${OMP_DYNAMIC:-FALSE}"
+  export MKL_DYNAMIC="${MKL_DYNAMIC:-FALSE}"
+  export OMP_WAIT_POLICY="${OMP_WAIT_POLICY:-ACTIVE}"
+  export OMP_PROC_BIND="${OMP_PROC_BIND:-spread}"
+  export OMP_PLACES="${OMP_PLACES:-cores}"
+  export KMP_AFFINITY="${KMP_AFFINITY:-granularity=fine,scatter}"
 
   if command -v renice >/dev/null 2>&1; then
     renice -n -20 -p "$$" >/dev/null 2>&1 || true

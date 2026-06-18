@@ -14,7 +14,7 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 import torch
 
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
-from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, detect_cpu_cores, launcher_child_env
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - direct script execution
@@ -377,7 +377,11 @@ def launch(job: RecoveryJob, device_mode: str, gpu_index: int, concurrency_hint:
     log_path = job_log_path(job.root)
     log_handle = log_path.open("a", encoding="utf-8")
     cmd = command_for_device(job, device_mode)
-    env = launcher_child_env(env_for(device_mode, int(gpu_index)), concurrency_hint=concurrency_hint)
+    env = launcher_child_env(
+        env_for(device_mode, int(gpu_index)),
+        concurrency_hint=concurrency_hint,
+        job_key=f"{job.kind}:{job.task}:{job.root}",
+    )
     proc = subprocess.Popen(cmd, start_new_session=True, env=env, stdout=log_handle, stderr=log_handle, text=True)
     return proc, log_handle
 
@@ -430,6 +434,7 @@ def write_plan(run_root: Path, jobs: Sequence[RecoveryJob]) -> None:
 
 
 def run(args: argparse.Namespace) -> None:
+    os.environ["TABULAR_CPU_JOB_CONCURRENCY"] = str(int(detect_cpu_cores()))
     run_root = Path(args.run_root)
     run_root.mkdir(parents=True, exist_ok=True)
     logger = ContinuousLogger(run_root, "missing_width_stl_recovery", "pressure_aware_recovery", resume=(run_root / "training_log.txt").exists())

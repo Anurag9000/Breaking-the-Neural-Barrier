@@ -780,7 +780,13 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
                 device_mode="auto",
             )
             child_root.mkdir(parents=True, exist_ok=True)
-            proc, _ = launch_child_process(cmd, env=launcher_child_env(concurrency_hint=len(active) + 1))
+            proc, _ = launch_child_process(
+                cmd,
+                env=launcher_child_env(
+                    concurrency_hint=len(active) + 1,
+                    job_key=f"{task_name}:{child_root}",
+                ),
+            )
             active[proc] = (architecture, child_root, cmd)
             launch_count += 1
 
