@@ -307,6 +307,12 @@ def update_child_state(child_run_root: Path, updates: Dict[str, Any]) -> Dict[st
 
 
 def child_completed(child_run_root: Path, task_name: str) -> bool:
+    task_state = rg.load_json_if_exists(child_run_root / task_name / "ablation_state.json") or {}
+    if bool(task_state.get("failed", False)):
+        return False
+    if bool(task_state.get("completed", False)):
+        return True
+
     state = load_child_state(child_run_root)
     if bool(state.get("failed", False)):
         return False
@@ -934,7 +940,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
 
         under_active_limit = len(active) < int(active_limit)
         chosen_device_mode = choose_device_mode(pressure, gpu_pressure)
-        can_launch_now = launches_enabled or not active
+        can_launch_now = launches_enabled
         if pending and under_active_limit and can_launch_now and (chosen_device_mode is not None or not active):
             job = pending.popleft()
             if child_completed(job.child_root, job.task_name):

@@ -1,0 +1,1052 @@
+[2026-06-17 17:38:32] Initialized ContinuousLogger for stl_ablation_parallel (Mode: stl_ablation_parallel)
+[2026-06-17 17:38:32] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/training_log.txt
+[2026-06-17 17:38:32] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/training_stats.csv
+[2026-06-17 17:38:32] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu
+[2026-06-17 17:38:32] Tasks: ['classification', 'autoencoding', 'generation', 'denoising', 'anomaly', 'simulation', 'prediction']
+[2026-06-17 17:38:32] Architectures: ['[1]', '[2]', '[3]', '[4]', '[5]', '[6]', '[7]', '[8]', '[9]', '[10]']
+[2026-06-17 17:38:32] Parameter decade band: [4, 6]
+[2026-06-17 17:38:32] Repeat count: 5
+[2026-06-17 17:38:32] Scheduler: pressure_aware
+[2026-06-17 17:38:32] Concurrency: 10
+[2026-06-17 17:38:32] Host RAM pressure limit pct: 95.00
+[2026-06-17 17:38:32] Host RAM resume pct: 85.00
+[2026-06-17 17:38:32] GPU memory pressure limit pct: 90.00
+[2026-06-17 17:38:32] GPU memory resume pct: 85.00
+[2026-06-17 17:38:32] GPU device index: 0
+[2026-06-17 17:38:32] Max active jobs: 0
+[2026-06-17 17:38:32] Max retries per job: 0
+[2026-06-17 17:38:32] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-17 17:38:34] Device: cpu
+[2026-06-17 17:38:34] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-17 17:38:47] [TASK] launch task=autoencoding phase=stl_ablation_r01_d10_w0026_26_26_26_26_26_26_26_26_26_26 params=9726 device=cpu host_used_pct=40.71 avail_mib=9293/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=1/1928
+[2026-06-17 17:40:47] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w0026_26_26_26_26_26_26_26_26_26_26 params=9726 device=cpu host_used_pct=43.39 avail_mib=8872/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=2/1928
+[2026-06-17 17:42:47] [TASK] launch task=autoencoding phase=stl_ablation_r01_d08_w0029_29_29_29_29_29_29_29_29 params=9769 device=cpu host_used_pct=49.63 avail_mib=7895/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=3/1928
+[2026-06-17 17:44:47] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w0029_29_29_29_29_29_29_29_29 params=9769 device=cpu host_used_pct=52.28 avail_mib=7479/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=4/1928
+[2026-06-17 17:46:47] [TASK] launch task=classification phase=stl_ablation_r01_d06_w0037_37_37_37_37_37_37 params=9775 device=cpu host_used_pct=56.43 avail_mib=6829/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=5/1928
+[2026-06-17 17:48:47] [TASK] launch task=autoencoding phase=stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31 params=9819 device=cpu host_used_pct=60.14 avail_mib=6247/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=6/1928
+[2026-06-17 17:50:47] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31 params=9819 device=cpu host_used_pct=64.67 avail_mib=5538/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=7/1928
+[2026-06-17 17:52:47] [TASK] launch task=classification phase=stl_ablation_r01_d05_w0041_41_41_41_41_41 params=9847 device=cpu host_used_pct=69.94 avail_mib=4711/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=8/1928
+[2026-06-17 17:54:47] [TASK] launch task=classification phase=stl_ablation_r01_d09_w0030_30_30_30_30_30_30_30_30_30 params=9847 device=cpu host_used_pct=73.74 avail_mib=4115/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=9/1928
+[2026-06-17 17:56:48] [TASK] launch task=classification phase=stl_ablation_r01_d08_w0032_32_32_32_32_32_32_32_32 params=9895 device=cpu host_used_pct=78.34 avail_mib=3394/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=10/1928
+[2026-06-17 18:03:41] [TASK] launch task=classification phase=stl_ablation_r01_d03_w0055_55_55_55 params=9907 device=cpu host_used_pct=83.83 avail_mib=2535/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-17 18:06:08] [TASK] launch task=autoencoding phase=stl_ablation_r01_d03_w0047_47_47_47 params=9971 device=cpu host_used_pct=84.94 avail_mib=2360/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-17 18:08:08] [TASK] launch task=denoising phase=stl_ablation_r01_d03_w0047_47_47_47 params=9971 device=cpu host_used_pct=83.03 avail_mib=2659/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 18:14:42] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=84.98 avail_mib=2354/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:16:42] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=1
+[2026-06-17 18:16:42] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=83.54 avail_mib=2580/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:18:42] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=2
+[2026-06-17 18:18:42] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=82.51 avail_mib=2741/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:20:42] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=3
+[2026-06-17 18:20:42] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=82.14 avail_mib=2799/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:22:42] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=4
+[2026-06-17 18:22:42] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=82.04 avail_mib=2815/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:24:42] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=5
+[2026-06-17 18:24:42] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=81.53 avail_mib=2895/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:26:42] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=6
+[2026-06-17 18:26:43] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=81.09 avail_mib=2963/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:28:43] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=7
+[2026-06-17 18:28:43] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.85 avail_mib=3002/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:30:43] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=8
+[2026-06-17 18:30:43] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=81.31 avail_mib=2930/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:32:43] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=9
+[2026-06-17 18:32:43] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=81.33 avail_mib=2926/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:34:43] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=10
+[2026-06-17 18:34:43] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=83.00 avail_mib=2665/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:36:43] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=11
+[2026-06-17 18:36:43] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.58 avail_mib=3043/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:38:43] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=12
+[2026-06-17 18:38:43] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=81.07 avail_mib=2967/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:40:43] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=13
+[2026-06-17 18:40:43] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=84.54 avail_mib=2423/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:42:43] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=14
+[2026-06-17 18:42:43] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=83.33 avail_mib=2613/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:44:43] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=15
+[2026-06-17 18:44:44] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=81.39 avail_mib=2916/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:46:44] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=16
+[2026-06-17 18:46:44] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.13 avail_mib=3114/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:48:44] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=17
+[2026-06-17 18:48:44] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=82.06 avail_mib=2812/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:50:44] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=18
+[2026-06-17 18:50:44] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.61 avail_mib=3039/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:52:44] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=19
+[2026-06-17 18:52:44] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.35 avail_mib=3079/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:54:44] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=20
+[2026-06-17 18:54:44] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.19 avail_mib=3105/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:56:44] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=21
+[2026-06-17 18:56:44] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.21 avail_mib=3102/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 18:58:44] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=22
+[2026-06-17 18:58:44] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.97 avail_mib=3139/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:00:44] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=23
+[2026-06-17 19:00:44] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.22 avail_mib=3100/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:02:44] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=24
+[2026-06-17 19:02:44] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.71 avail_mib=3023/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:04:44] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=25
+[2026-06-17 19:04:45] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.88 avail_mib=3310/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:06:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=26
+[2026-06-17 19:06:45] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.16 avail_mib=3267/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:08:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=27
+[2026-06-17 19:08:45] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.86 avail_mib=3314/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:10:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=28
+[2026-06-17 19:10:45] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.72 avail_mib=3178/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:12:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=29
+[2026-06-17 19:12:45] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.83 avail_mib=3161/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:14:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=30
+[2026-06-17 19:14:45] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.82 avail_mib=3163/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:16:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=31
+[2026-06-17 19:16:45] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.41 avail_mib=3070/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:18:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=32
+[2026-06-17 19:18:45] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.10 avail_mib=3276/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:20:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=33
+[2026-06-17 19:20:45] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.23 avail_mib=3256/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:22:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=34
+[2026-06-17 19:22:45] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.16 avail_mib=3267/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:24:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=35
+[2026-06-17 19:24:46] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.22 avail_mib=3100/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:26:46] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=36
+[2026-06-17 19:26:46] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.31 avail_mib=3086/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:28:46] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=37
+[2026-06-17 19:28:46] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.60 avail_mib=3198/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:30:46] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=38
+[2026-06-17 19:30:46] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.04 avail_mib=3285/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:32:46] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=39
+[2026-06-17 19:32:46] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.27 avail_mib=3406/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:34:46] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=40
+[2026-06-17 19:34:46] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.47 avail_mib=3217/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:36:46] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=41
+[2026-06-17 19:36:46] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.93 avail_mib=3303/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:38:46] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=42
+[2026-06-17 19:38:46] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.37 avail_mib=3233/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:40:46] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=43
+[2026-06-17 19:40:46] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.03 avail_mib=3287/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:42:46] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=44
+[2026-06-17 19:42:47] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.25 avail_mib=3566/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:44:47] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=45
+[2026-06-17 19:44:47] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.67 avail_mib=3343/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:46:47] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=46
+[2026-06-17 19:46:47] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.62 avail_mib=3351/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:48:47] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=47
+[2026-06-17 19:48:47] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.17 avail_mib=3421/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:50:47] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=48
+[2026-06-17 19:50:47] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.03 avail_mib=3443/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:52:47] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=49
+[2026-06-17 19:52:47] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.36 avail_mib=3392/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:54:47] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=50
+[2026-06-17 19:54:47] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.29 avail_mib=3403/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:56:47] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=51
+[2026-06-17 19:56:47] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.47 avail_mib=3375/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 19:58:47] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=52
+[2026-06-17 19:58:48] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.94 avail_mib=3458/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:00:48] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=53
+[2026-06-17 20:00:48] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.86 avail_mib=3314/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:02:48] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=54
+[2026-06-17 20:02:48] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.53 avail_mib=3365/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:04:48] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=55
+[2026-06-17 20:04:48] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.60 avail_mib=3354/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:06:48] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=56
+[2026-06-17 20:06:48] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.97 avail_mib=3452/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:08:48] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=57
+[2026-06-17 20:08:48] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.31 avail_mib=3400/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:10:48] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=58
+[2026-06-17 20:10:48] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.58 avail_mib=3357/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:12:48] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=59
+[2026-06-17 20:12:48] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.94 avail_mib=3300/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:14:48] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=60
+[2026-06-17 20:14:48] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.99 avail_mib=3450/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:16:48] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=61
+[2026-06-17 20:16:48] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.49 avail_mib=3372/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:18:48] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=62
+[2026-06-17 20:18:48] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.89 avail_mib=3309/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:20:48] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=63
+[2026-06-17 20:20:49] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.18 avail_mib=3420/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:22:49] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=64
+[2026-06-17 20:22:49] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.51 avail_mib=3054/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:24:49] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=65
+[2026-06-17 20:24:49] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.52 avail_mib=3367/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:26:49] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=66
+[2026-06-17 20:26:49] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.86 avail_mib=3470/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:28:49] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=67
+[2026-06-17 20:28:49] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.43 avail_mib=3538/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:30:49] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=68
+[2026-06-17 20:30:49] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.73 avail_mib=3491/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:32:49] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=69
+[2026-06-17 20:32:49] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.88 avail_mib=2996/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:34:49] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=70
+[2026-06-17 20:34:49] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.73 avail_mib=3490/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:36:49] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=71
+[2026-06-17 20:36:49] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.38 avail_mib=3545/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:38:49] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=72
+[2026-06-17 20:38:49] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.52 avail_mib=3523/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:40:49] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=73
+[2026-06-17 20:40:50] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.60 avail_mib=3511/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:42:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=74
+[2026-06-17 20:42:50] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.47 avail_mib=3531/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:44:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=75
+[2026-06-17 20:44:50] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.30 avail_mib=3558/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:46:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=76
+[2026-06-17 20:46:50] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.35 avail_mib=3550/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:48:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=77
+[2026-06-17 20:48:50] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.32 avail_mib=3555/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:50:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=78
+[2026-06-17 20:50:50] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.21 avail_mib=3572/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:52:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=79
+[2026-06-17 20:52:50] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.66 avail_mib=3502/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:54:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=80
+[2026-06-17 20:54:50] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.34 avail_mib=3552/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:56:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=81
+[2026-06-17 20:56:50] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.31 avail_mib=3556/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 20:58:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=82
+[2026-06-17 20:58:50] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.27 avail_mib=3562/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:00:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=83
+[2026-06-17 21:00:51] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.36 avail_mib=3548/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:02:51] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=84
+[2026-06-17 21:02:51] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.50 avail_mib=3527/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:04:51] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=85
+[2026-06-17 21:04:51] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.23 avail_mib=3568/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:06:51] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=86
+[2026-06-17 21:06:51] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.63 avail_mib=3506/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:08:51] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=87
+[2026-06-17 21:08:51] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.55 avail_mib=3518/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:10:51] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=88
+[2026-06-17 21:10:51] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.66 avail_mib=3344/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:12:51] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=89
+[2026-06-17 21:12:51] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.33 avail_mib=3396/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:14:51] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=90
+[2026-06-17 21:14:51] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.77 avail_mib=3328/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:16:51] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=91
+[2026-06-17 21:16:51] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.42 avail_mib=3226/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:18:51] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=92
+[2026-06-17 21:18:51] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.26 avail_mib=3251/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:20:51] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=93
+[2026-06-17 21:20:52] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.57 avail_mib=3359/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=14/1928
+[2026-06-17 21:22:52] [TASK] completed task=autoencoding phase=stl_ablation_r01_d10_w0026_26_26_26_26_26_26_26_26_26_26 params=9726
+[2026-06-17 21:22:52] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=94
+[2026-06-17 21:22:52] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=75.90 avail_mib=3777/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:24:52] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=95
+[2026-06-17 21:24:52] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=76.46 avail_mib=3690/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:26:52] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=96
+[2026-06-17 21:26:52] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.53 avail_mib=3521/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:28:52] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=97
+[2026-06-17 21:28:52] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.91 avail_mib=3306/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:30:52] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=98
+[2026-06-17 21:30:52] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=76.73 avail_mib=3647/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:32:52] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=99
+[2026-06-17 21:32:52] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=76.78 avail_mib=3639/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:34:52] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=100
+[2026-06-17 21:34:52] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=81.64 avail_mib=2877/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:36:52] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=101
+[2026-06-17 21:36:52] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=81.76 avail_mib=2859/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:38:52] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=102
+[2026-06-17 21:38:52] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=82.39 avail_mib=2760/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:40:52] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=103
+[2026-06-17 21:40:52] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=82.42 avail_mib=2755/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:42:52] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=104
+[2026-06-17 21:42:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=81.85 avail_mib=2845/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:44:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=105
+[2026-06-17 21:44:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=82.84 avail_mib=2690/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:46:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=106
+[2026-06-17 21:46:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=84.06 avail_mib=2498/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:48:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=107
+[2026-06-17 21:48:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.55 avail_mib=3048/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:50:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=108
+[2026-06-17 21:50:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.09 avail_mib=3121/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:52:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=109
+[2026-06-17 21:52:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=75.67 avail_mib=3813/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:54:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=110
+[2026-06-17 21:54:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=75.58 avail_mib=3827/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:56:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=111
+[2026-06-17 21:56:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.01 avail_mib=3289/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 21:58:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=112
+[2026-06-17 21:58:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.10 avail_mib=3276/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:00:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=113
+[2026-06-17 22:00:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.38 avail_mib=3546/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:02:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=114
+[2026-06-17 22:02:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=75.73 avail_mib=3804/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:04:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=115
+[2026-06-17 22:04:53] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.51 avail_mib=3525/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:06:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=116
+[2026-06-17 22:06:54] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=76.29 avail_mib=3716/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:08:54] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=117
+[2026-06-17 22:08:54] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.20 avail_mib=3260/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:10:54] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=118
+[2026-06-17 22:10:54] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.63 avail_mib=3350/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:12:54] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=119
+[2026-06-17 22:12:54] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.74 avail_mib=3176/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:14:54] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=120
+[2026-06-17 22:14:54] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.91 avail_mib=2992/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:16:54] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=121
+[2026-06-17 22:16:54] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.83 avail_mib=3161/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:18:54] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=122
+[2026-06-17 22:18:54] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=80.55 avail_mib=3049/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:20:54] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=123
+[2026-06-17 22:20:54] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=79.20 avail_mib=3260/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:22:54] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=124
+[2026-06-17 22:22:54] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=78.61 avail_mib=3353/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:24:54] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=125
+[2026-06-17 22:24:54] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=74.75 avail_mib=3957/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:26:54] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=126
+[2026-06-17 22:26:54] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.35 avail_mib=3550/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:28:54] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=127
+[2026-06-17 22:28:55] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=75.80 avail_mib=3793/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:30:55] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=128
+[2026-06-17 22:30:55] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=75.31 avail_mib=3869/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:32:55] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=129
+[2026-06-17 22:32:55] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.71 avail_mib=4121/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:34:55] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=130
+[2026-06-17 22:34:55] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.36 avail_mib=4176/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:36:55] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=131
+[2026-06-17 22:36:55] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.80 avail_mib=4263/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:38:55] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=132
+[2026-06-17 22:38:55] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.73 avail_mib=4274/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:40:55] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=133
+[2026-06-17 22:40:55] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.02 avail_mib=4385/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:42:55] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=134
+[2026-06-17 22:42:55] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.37 avail_mib=4331/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:44:55] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=135
+[2026-06-17 22:44:55] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.88 avail_mib=4251/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:46:55] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=136
+[2026-06-17 22:46:55] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.95 avail_mib=4239/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:48:55] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=137
+[2026-06-17 22:48:56] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=71.60 avail_mib=4451/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:50:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=138
+[2026-06-17 22:50:56] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=71.31 avail_mib=4496/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:52:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=139
+[2026-06-17 22:52:56] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=71.67 avail_mib=4440/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:54:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=140
+[2026-06-17 22:54:56] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.79 avail_mib=4265/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:56:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=141
+[2026-06-17 22:56:56] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.67 avail_mib=4283/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 22:58:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=142
+[2026-06-17 22:58:56] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.07 avail_mib=4220/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:00:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=143
+[2026-06-17 23:00:56] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=69.73 avail_mib=4745/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:02:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=144
+[2026-06-17 23:02:56] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.62 avail_mib=4291/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:04:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=145
+[2026-06-17 23:04:56] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.69 avail_mib=4280/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:06:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=146
+[2026-06-17 23:06:56] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.64 avail_mib=4288/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:08:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=147
+[2026-06-17 23:08:57] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.91 avail_mib=4246/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:10:57] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=148
+[2026-06-17 23:10:57] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.58 avail_mib=4298/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:12:57] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=149
+[2026-06-17 23:12:57] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=71.98 avail_mib=4391/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:14:57] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=150
+[2026-06-17 23:14:57] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=71.87 avail_mib=4409/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:16:57] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=151
+[2026-06-17 23:16:57] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.35 avail_mib=4333/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:18:57] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=152
+[2026-06-17 23:18:57] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.38 avail_mib=4329/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:20:57] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=153
+[2026-06-17 23:20:57] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.18 avail_mib=4360/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:22:57] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=154
+[2026-06-17 23:22:57] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.74 avail_mib=4272/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:24:57] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=155
+[2026-06-17 23:24:57] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.21 avail_mib=4199/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:26:57] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=156
+[2026-06-17 23:26:57] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.22 avail_mib=4198/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:28:57] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=157
+[2026-06-17 23:28:57] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.03 avail_mib=4227/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:30:57] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=158
+[2026-06-17 23:30:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.26 avail_mib=4191/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:32:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=159
+[2026-06-17 23:32:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.90 avail_mib=4247/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:34:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=160
+[2026-06-17 23:34:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.21 avail_mib=4199/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:36:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=161
+[2026-06-17 23:36:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.20 avail_mib=4200/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:38:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=162
+[2026-06-17 23:38:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.90 avail_mib=4248/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:40:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=163
+[2026-06-17 23:40:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.93 avail_mib=4242/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:42:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=164
+[2026-06-17 23:42:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.01 avail_mib=4387/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:44:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=165
+[2026-06-17 23:44:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=74.05 avail_mib=4067/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:46:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=166
+[2026-06-17 23:46:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.47 avail_mib=4314/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:48:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=167
+[2026-06-17 23:48:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.99 avail_mib=4233/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:50:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=168
+[2026-06-17 23:50:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.40 avail_mib=4169/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:52:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=169
+[2026-06-17 23:52:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.78 avail_mib=4110/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:54:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=170
+[2026-06-17 23:54:58] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=76.64 avail_mib=3661/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:56:58] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=171
+[2026-06-17 23:56:59] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.29 avail_mib=4187/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-17 23:58:59] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=172
+[2026-06-17 23:58:59] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.28 avail_mib=4344/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:00:59] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=173
+[2026-06-18 00:00:59] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.48 avail_mib=4313/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:02:59] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=174
+[2026-06-18 00:02:59] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.12 avail_mib=4370/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:04:59] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=175
+[2026-06-18 00:04:59] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.52 avail_mib=6814/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:06:59] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=176
+[2026-06-18 00:06:59] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.84 avail_mib=6764/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:08:59] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=177
+[2026-06-18 00:08:59] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.00 avail_mib=6740/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:10:59] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=178
+[2026-06-18 00:10:59] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.21 avail_mib=6707/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:12:59] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=179
+[2026-06-18 00:12:59] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.20 avail_mib=6708/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:14:59] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=180
+[2026-06-18 00:14:59] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.01 avail_mib=6738/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:16:59] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=181
+[2026-06-18 00:17:00] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.63 avail_mib=6797/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:19:00] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=182
+[2026-06-18 00:19:00] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.05 avail_mib=6732/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:21:00] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=183
+[2026-06-18 00:21:00] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.91 avail_mib=6754/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:23:00] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=184
+[2026-06-18 00:23:00] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.95 avail_mib=6748/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:25:00] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=185
+[2026-06-18 00:25:00] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.69 avail_mib=6788/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:27:00] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=186
+[2026-06-18 00:27:00] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.83 avail_mib=6766/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:29:00] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=187
+[2026-06-18 00:29:00] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.03 avail_mib=6734/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:31:00] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=188
+[2026-06-18 00:31:00] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.12 avail_mib=6720/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:33:00] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=189
+[2026-06-18 00:33:00] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.71 avail_mib=6785/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:35:00] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=190
+[2026-06-18 00:35:00] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.14 avail_mib=6717/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:37:00] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=191
+[2026-06-18 00:37:01] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.74 avail_mib=6780/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:39:01] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=192
+[2026-06-18 00:39:01] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.69 avail_mib=6788/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:41:01] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=193
+[2026-06-18 00:41:01] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.89 avail_mib=6756/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:43:01] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=194
+[2026-06-18 00:43:01] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.02 avail_mib=6737/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:45:01] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=195
+[2026-06-18 00:45:01] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.00 avail_mib=6740/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:47:01] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=196
+[2026-06-18 00:47:01] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.04 avail_mib=6733/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:49:01] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=197
+[2026-06-18 00:49:01] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.66 avail_mib=6793/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:51:01] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=198
+[2026-06-18 00:51:01] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.01 avail_mib=6738/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:53:01] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=199
+[2026-06-18 00:53:01] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.19 avail_mib=6709/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:55:01] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=200
+[2026-06-18 00:55:02] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.07 avail_mib=6728/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:57:02] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=201
+[2026-06-18 00:57:02] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.95 avail_mib=6747/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 00:59:02] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=202
+[2026-06-18 00:59:02] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.70 avail_mib=6786/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:01:02] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=203
+[2026-06-18 01:01:02] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.98 avail_mib=6742/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:03:02] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=204
+[2026-06-18 01:03:02] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.77 avail_mib=6775/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:05:02] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=205
+[2026-06-18 01:05:02] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.08 avail_mib=6727/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:07:02] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=206
+[2026-06-18 01:07:02] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.20 avail_mib=6708/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:09:02] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=207
+[2026-06-18 01:09:02] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.09 avail_mib=6725/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:11:02] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=208
+[2026-06-18 01:11:02] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.93 avail_mib=6751/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:13:02] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=209
+[2026-06-18 01:13:03] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.02 avail_mib=6736/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:15:03] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=210
+[2026-06-18 01:15:03] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.02 avail_mib=6737/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:17:03] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=211
+[2026-06-18 01:17:03] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.09 avail_mib=6726/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:19:03] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=212
+[2026-06-18 01:19:03] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.90 avail_mib=6755/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:21:03] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=213
+[2026-06-18 01:21:03] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.93 avail_mib=6751/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:23:03] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=214
+[2026-06-18 01:23:03] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.46 avail_mib=6668/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:25:03] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=215
+[2026-06-18 01:25:03] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.91 avail_mib=6754/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:27:03] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=216
+[2026-06-18 01:27:03] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.17 avail_mib=6712/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:29:03] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=217
+[2026-06-18 01:29:03] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.04 avail_mib=6733/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:31:03] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=218
+[2026-06-18 01:31:04] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.97 avail_mib=6744/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:33:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=219
+[2026-06-18 01:33:04] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.02 avail_mib=6736/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:35:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=220
+[2026-06-18 01:35:04] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.98 avail_mib=6742/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:37:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=221
+[2026-06-18 01:37:04] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.00 avail_mib=6739/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:39:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=222
+[2026-06-18 01:39:04] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.18 avail_mib=6711/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:41:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=223
+[2026-06-18 01:41:04] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.10 avail_mib=6724/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:43:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=224
+[2026-06-18 01:43:04] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.93 avail_mib=6750/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:45:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=225
+[2026-06-18 01:45:04] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.21 avail_mib=6706/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:47:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=226
+[2026-06-18 01:47:04] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.19 avail_mib=6710/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:49:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=227
+[2026-06-18 01:49:04] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.82 avail_mib=6767/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:51:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=228
+[2026-06-18 01:51:04] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.12 avail_mib=6720/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:53:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=229
+[2026-06-18 01:53:05] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.28 avail_mib=6696/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:55:05] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=230
+[2026-06-18 01:55:05] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.01 avail_mib=6738/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:57:05] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=231
+[2026-06-18 01:57:05] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.77 avail_mib=6775/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 01:59:05] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=232
+[2026-06-18 01:59:05] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.87 avail_mib=6760/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:01:05] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=233
+[2026-06-18 02:01:05] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.91 avail_mib=6753/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:03:05] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=234
+[2026-06-18 02:03:05] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.08 avail_mib=6727/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:05:05] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=235
+[2026-06-18 02:05:05] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.86 avail_mib=6762/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:07:05] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=236
+[2026-06-18 02:07:05] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.99 avail_mib=6741/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:09:05] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=237
+[2026-06-18 02:09:05] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.08 avail_mib=6727/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:11:05] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=238
+[2026-06-18 02:11:05] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.20 avail_mib=6708/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:13:05] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=239
+[2026-06-18 02:13:05] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.34 avail_mib=6686/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:15:05] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=240
+[2026-06-18 02:15:06] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.93 avail_mib=6751/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:17:06] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=241
+[2026-06-18 02:17:06] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.99 avail_mib=6741/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:19:06] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=242
+[2026-06-18 02:19:06] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.14 avail_mib=6717/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:21:06] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=243
+[2026-06-18 02:21:06] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.01 avail_mib=6738/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:23:06] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=244
+[2026-06-18 02:23:06] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.02 avail_mib=6737/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:25:06] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=245
+[2026-06-18 02:25:06] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.28 avail_mib=6696/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:27:06] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=246
+[2026-06-18 02:27:06] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.19 avail_mib=6709/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:29:06] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=247
+[2026-06-18 02:29:06] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.03 avail_mib=6735/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:31:06] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=248
+[2026-06-18 02:31:06] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.95 avail_mib=6748/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:33:06] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=249
+[2026-06-18 02:33:06] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.19 avail_mib=6709/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:35:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=250
+[2026-06-18 02:35:07] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.98 avail_mib=6742/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:37:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=251
+[2026-06-18 02:37:07] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.26 avail_mib=6698/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:39:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=252
+[2026-06-18 02:39:07] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.80 avail_mib=6771/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:41:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=253
+[2026-06-18 02:41:07] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.78 avail_mib=6774/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:43:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=254
+[2026-06-18 02:43:07] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.18 avail_mib=6711/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:45:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=255
+[2026-06-18 02:45:07] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.07 avail_mib=6728/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:47:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=256
+[2026-06-18 02:47:07] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.20 avail_mib=6708/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:49:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=257
+[2026-06-18 02:49:07] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.16 avail_mib=6715/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:51:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=258
+[2026-06-18 02:51:07] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.89 avail_mib=6756/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:53:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=259
+[2026-06-18 02:53:07] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.17 avail_mib=6712/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:55:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=260
+[2026-06-18 02:55:08] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.09 avail_mib=6725/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:57:08] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=261
+[2026-06-18 02:57:08] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.95 avail_mib=6748/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 02:59:08] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=262
+[2026-06-18 02:59:08] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.84 avail_mib=6765/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:01:08] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=263
+[2026-06-18 03:01:08] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.15 avail_mib=6716/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:03:08] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=264
+[2026-06-18 03:03:08] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=56.94 avail_mib=6749/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:05:08] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=265
+[2026-06-18 03:05:08] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.07 avail_mib=6728/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:07:08] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=266
+[2026-06-18 03:07:08] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.06 avail_mib=6730/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:09:08] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=267
+[2026-06-18 03:09:08] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.32 avail_mib=6689/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:11:08] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=268
+[2026-06-18 03:11:08] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.25 avail_mib=6700/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:13:08] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=269
+[2026-06-18 03:13:09] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.56 avail_mib=6651/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:15:09] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=270
+[2026-06-18 03:15:09] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.30 avail_mib=6692/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:17:09] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=271
+[2026-06-18 03:17:09] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.41 avail_mib=6675/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:19:09] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=272
+[2026-06-18 03:19:09] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.49 avail_mib=6663/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:21:09] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=273
+[2026-06-18 03:21:09] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.33 avail_mib=6688/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:23:09] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=274
+[2026-06-18 03:23:09] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.54 avail_mib=6654/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:25:09] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=275
+[2026-06-18 03:25:09] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.29 avail_mib=6694/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:27:09] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=276
+[2026-06-18 03:27:09] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.46 avail_mib=6668/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:29:09] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=277
+[2026-06-18 03:29:09] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.26 avail_mib=6699/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:31:09] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=278
+[2026-06-18 03:31:10] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.22 avail_mib=6705/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:33:10] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=279
+[2026-06-18 03:33:10] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.78 avail_mib=6617/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:35:10] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=280
+[2026-06-18 03:35:10] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.53 avail_mib=6657/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:37:10] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=281
+[2026-06-18 03:37:10] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.49 avail_mib=6662/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:39:10] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=282
+[2026-06-18 03:39:10] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.73 avail_mib=6625/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:41:10] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=283
+[2026-06-18 03:41:10] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.32 avail_mib=6689/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:43:10] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=284
+[2026-06-18 03:43:10] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.40 avail_mib=6676/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:45:10] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=285
+[2026-06-18 03:45:10] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.39 avail_mib=6679/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:47:10] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=286
+[2026-06-18 03:47:10] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.53 avail_mib=6657/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:49:10] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=287
+[2026-06-18 03:49:11] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.62 avail_mib=6642/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:51:11] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=288
+[2026-06-18 03:51:11] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.17 avail_mib=6713/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:53:11] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=289
+[2026-06-18 03:53:11] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.59 avail_mib=6647/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:55:11] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=290
+[2026-06-18 03:55:11] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.39 avail_mib=6679/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:57:11] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=291
+[2026-06-18 03:57:11] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.40 avail_mib=6677/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 03:59:11] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=292
+[2026-06-18 03:59:11] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.60 avail_mib=6646/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:01:11] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=293
+[2026-06-18 04:01:11] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.44 avail_mib=6671/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:03:11] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=294
+[2026-06-18 04:03:11] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.46 avail_mib=6667/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:05:11] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=295
+[2026-06-18 04:05:11] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.53 avail_mib=6657/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:07:11] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=296
+[2026-06-18 04:07:12] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.30 avail_mib=6692/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:09:12] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=297
+[2026-06-18 04:09:12] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.61 avail_mib=6644/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:11:12] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=298
+[2026-06-18 04:11:12] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.37 avail_mib=6681/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:13:12] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=299
+[2026-06-18 04:13:12] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.74 avail_mib=6623/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:15:12] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=300
+[2026-06-18 04:15:12] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.72 avail_mib=6627/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:17:12] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=301
+[2026-06-18 04:17:12] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.35 avail_mib=6685/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:19:12] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=302
+[2026-06-18 04:19:12] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.38 avail_mib=6680/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:21:12] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=303
+[2026-06-18 04:21:12] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.65 avail_mib=6638/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:23:12] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=304
+[2026-06-18 04:23:12] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.38 avail_mib=6680/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:25:12] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=305
+[2026-06-18 04:25:13] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.36 avail_mib=6683/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:27:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=306
+[2026-06-18 04:27:13] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.35 avail_mib=6685/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:29:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=307
+[2026-06-18 04:29:13] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.31 avail_mib=6691/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:31:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=308
+[2026-06-18 04:31:13] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.64 avail_mib=6639/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:33:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=309
+[2026-06-18 04:33:13] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.61 avail_mib=6644/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:35:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=310
+[2026-06-18 04:35:13] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.54 avail_mib=6655/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:37:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=311
+[2026-06-18 04:37:13] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.65 avail_mib=6638/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:39:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=312
+[2026-06-18 04:39:13] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.63 avail_mib=6640/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:41:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=313
+[2026-06-18 04:41:13] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.37 avail_mib=6681/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:43:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=314
+[2026-06-18 04:43:14] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.51 avail_mib=6659/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:45:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=315
+[2026-06-18 04:45:14] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.64 avail_mib=6639/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:47:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=316
+[2026-06-18 04:47:14] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.45 avail_mib=6669/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:49:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=317
+[2026-06-18 04:49:14] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.53 avail_mib=6657/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:51:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=318
+[2026-06-18 04:51:14] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.65 avail_mib=6638/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:53:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=319
+[2026-06-18 04:53:14] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.32 avail_mib=6690/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:55:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=320
+[2026-06-18 04:55:14] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.74 avail_mib=6623/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:57:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=321
+[2026-06-18 04:57:14] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.63 avail_mib=6640/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 04:59:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=322
+[2026-06-18 04:59:14] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.26 avail_mib=6698/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 05:01:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=323
+[2026-06-18 05:01:15] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.63 avail_mib=6640/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 05:03:15] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=324
+[2026-06-18 05:03:15] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=57.56 avail_mib=6652/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=13/1928
+[2026-06-18 05:05:15] [TASK] completed task=autoencoding phase=stl_ablation_r01_d03_w0047_47_47_47 params=9971
+[2026-06-18 05:05:15] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=325
+[2026-06-18 05:05:15] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.25 avail_mib=7327/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:07:15] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=326
+[2026-06-18 05:07:15] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.35 avail_mib=7312/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:09:15] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=327
+[2026-06-18 05:09:15] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.26 avail_mib=7325/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:11:15] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=328
+[2026-06-18 05:11:15] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.21 avail_mib=7334/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:13:15] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=329
+[2026-06-18 05:13:15] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.05 avail_mib=7358/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:15:15] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=330
+[2026-06-18 05:15:15] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.27 avail_mib=7324/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:17:15] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=331
+[2026-06-18 05:17:15] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.45 avail_mib=7295/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:19:15] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=332
+[2026-06-18 05:19:15] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.19 avail_mib=7337/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:21:15] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=333
+[2026-06-18 05:21:16] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.40 avail_mib=7303/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:23:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=334
+[2026-06-18 05:23:16] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.42 avail_mib=7301/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:25:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=335
+[2026-06-18 05:25:16] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.14 avail_mib=7344/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:27:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=336
+[2026-06-18 05:27:16] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.47 avail_mib=7293/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:29:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=337
+[2026-06-18 05:29:16] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.12 avail_mib=7347/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:31:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=338
+[2026-06-18 05:31:16] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.38 avail_mib=7307/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:33:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=339
+[2026-06-18 05:33:16] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.40 avail_mib=7303/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:35:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=340
+[2026-06-18 05:35:16] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.40 avail_mib=7303/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:37:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=341
+[2026-06-18 05:37:16] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.52 avail_mib=7285/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:39:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=342
+[2026-06-18 05:39:16] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.33 avail_mib=7314/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:41:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=343
+[2026-06-18 05:41:16] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.45 avail_mib=7295/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:43:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=344
+[2026-06-18 05:43:17] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.15 avail_mib=7343/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:45:17] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=345
+[2026-06-18 05:45:17] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.56 avail_mib=7278/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:47:17] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=346
+[2026-06-18 05:47:17] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.48 avail_mib=7291/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:49:17] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=347
+[2026-06-18 05:49:17] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.36 avail_mib=7310/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:51:17] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=348
+[2026-06-18 05:51:17] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.08 avail_mib=7353/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:53:17] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=349
+[2026-06-18 05:53:17] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.35 avail_mib=7312/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:55:17] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=350
+[2026-06-18 05:55:17] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.45 avail_mib=7296/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:57:17] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=351
+[2026-06-18 05:57:17] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.88 avail_mib=7229/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 05:59:17] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=352
+[2026-06-18 05:59:17] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.52 avail_mib=7285/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:01:17] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=353
+[2026-06-18 06:01:17] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.51 avail_mib=7286/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:03:17] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=354
+[2026-06-18 06:03:17] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.29 avail_mib=7321/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:05:17] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=355
+[2026-06-18 06:05:18] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.47 avail_mib=7293/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:07:18] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=356
+[2026-06-18 06:07:18] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.40 avail_mib=7303/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:09:18] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=357
+[2026-06-18 06:09:18] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.46 avail_mib=7294/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:11:18] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=358
+[2026-06-18 06:11:18] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.58 avail_mib=7276/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:13:18] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=359
+[2026-06-18 06:13:18] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.57 avail_mib=7277/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:15:18] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=360
+[2026-06-18 06:15:18] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.52 avail_mib=7285/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:17:18] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=361
+[2026-06-18 06:17:18] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.22 avail_mib=7332/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:19:18] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=362
+[2026-06-18 06:19:18] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.31 avail_mib=7317/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:21:18] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=363
+[2026-06-18 06:21:18] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.56 avail_mib=7278/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:23:18] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=364
+[2026-06-18 06:23:18] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.84 avail_mib=7234/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:25:18] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=365
+[2026-06-18 06:25:19] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.12 avail_mib=7347/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:27:19] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=366
+[2026-06-18 06:27:19] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.51 avail_mib=7286/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:29:19] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=367
+[2026-06-18 06:29:19] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.61 avail_mib=7271/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:31:19] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=368
+[2026-06-18 06:31:19] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.77 avail_mib=7246/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:33:19] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=369
+[2026-06-18 06:33:19] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.68 avail_mib=7259/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:35:19] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=370
+[2026-06-18 06:35:19] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.40 avail_mib=7304/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:37:19] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=371
+[2026-06-18 06:37:19] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.72 avail_mib=7253/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:39:19] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=372
+[2026-06-18 06:39:19] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.81 avail_mib=7240/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:41:19] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=373
+[2026-06-18 06:41:19] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.90 avail_mib=7226/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:43:19] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=374
+[2026-06-18 06:43:19] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.87 avail_mib=7230/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:45:19] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=375
+[2026-06-18 06:45:20] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.80 avail_mib=7241/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:47:20] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=376
+[2026-06-18 06:47:20] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.75 avail_mib=7249/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:49:20] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=377
+[2026-06-18 06:49:20] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.47 avail_mib=7292/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:51:20] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=378
+[2026-06-18 06:51:20] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.90 avail_mib=7225/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:53:20] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=379
+[2026-06-18 06:53:20] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.79 avail_mib=7243/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:55:20] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=380
+[2026-06-18 06:55:20] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.90 avail_mib=7225/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:57:20] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=381
+[2026-06-18 06:57:20] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.81 avail_mib=7239/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 06:59:20] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=382
+[2026-06-18 06:59:20] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.53 avail_mib=7283/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:01:20] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=383
+[2026-06-18 07:01:20] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.78 avail_mib=7244/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:03:20] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=384
+[2026-06-18 07:03:20] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.68 avail_mib=7259/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:05:20] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=385
+[2026-06-18 07:05:21] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.81 avail_mib=7240/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:07:21] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=386
+[2026-06-18 07:07:21] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.49 avail_mib=7289/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:09:21] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=387
+[2026-06-18 07:09:21] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.48 avail_mib=7291/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:11:21] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=388
+[2026-06-18 07:11:21] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.63 avail_mib=7267/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:13:21] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=389
+[2026-06-18 07:13:21] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.93 avail_mib=7221/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:15:21] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=390
+[2026-06-18 07:15:21] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.65 avail_mib=7264/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:17:21] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=391
+[2026-06-18 07:17:21] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.61 avail_mib=7271/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:19:21] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=392
+[2026-06-18 07:19:21] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.65 avail_mib=7265/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:21:21] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=393
+[2026-06-18 07:21:21] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.65 avail_mib=7265/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:23:21] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=394
+[2026-06-18 07:23:21] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.56 avail_mib=7279/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:25:21] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=395
+[2026-06-18 07:25:21] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.74 avail_mib=7250/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:27:21] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=396
+[2026-06-18 07:27:22] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.43 avail_mib=7299/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:29:22] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=397
+[2026-06-18 07:29:22] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.94 avail_mib=7219/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:31:22] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=398
+[2026-06-18 07:31:22] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.59 avail_mib=7274/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:33:22] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=399
+[2026-06-18 07:33:22] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.62 avail_mib=7269/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:35:22] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=400
+[2026-06-18 07:35:22] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.53 avail_mib=7283/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:37:22] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=401
+[2026-06-18 07:37:22] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.82 avail_mib=7238/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:39:22] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=402
+[2026-06-18 07:39:22] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.63 avail_mib=7267/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:41:22] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=403
+[2026-06-18 07:41:22] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.63 avail_mib=7268/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:43:22] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=404
+[2026-06-18 07:43:22] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.65 avail_mib=7265/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:45:22] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=405
+[2026-06-18 07:45:22] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.83 avail_mib=7237/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:47:22] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=406
+[2026-06-18 07:47:23] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.73 avail_mib=7252/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:49:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=407
+[2026-06-18 07:49:23] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.67 avail_mib=7261/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:51:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=408
+[2026-06-18 07:51:23] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.67 avail_mib=7261/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:53:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=409
+[2026-06-18 07:53:23] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.56 avail_mib=7278/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:55:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=410
+[2026-06-18 07:55:23] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.67 avail_mib=7262/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:57:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=411
+[2026-06-18 07:57:23] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.77 avail_mib=7246/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 07:59:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=412
+[2026-06-18 07:59:23] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.76 avail_mib=7247/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:01:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=413
+[2026-06-18 08:01:23] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.42 avail_mib=7300/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:03:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=414
+[2026-06-18 08:03:23] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.79 avail_mib=7243/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:05:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=415
+[2026-06-18 08:05:23] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.81 avail_mib=7240/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:07:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=416
+[2026-06-18 08:07:23] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.97 avail_mib=7214/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:09:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=417
+[2026-06-18 08:09:24] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.84 avail_mib=7235/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:11:24] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=418
+[2026-06-18 08:11:24] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.73 avail_mib=7252/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:13:24] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=419
+[2026-06-18 08:13:24] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.70 avail_mib=7256/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:15:24] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=420
+[2026-06-18 08:15:24] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.83 avail_mib=7237/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:17:24] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=421
+[2026-06-18 08:17:24] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.59 avail_mib=7274/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:19:24] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=422
+[2026-06-18 08:19:24] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.65 avail_mib=7265/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:21:24] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=423
+[2026-06-18 08:21:24] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.87 avail_mib=7230/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:23:24] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=424
+[2026-06-18 08:23:24] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.79 avail_mib=7243/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:25:24] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=425
+[2026-06-18 08:25:24] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.74 avail_mib=7251/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:27:24] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=426
+[2026-06-18 08:27:25] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.86 avail_mib=7231/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:29:25] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=427
+[2026-06-18 08:29:25] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.74 avail_mib=7250/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:31:25] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=428
+[2026-06-18 08:31:25] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.75 avail_mib=7248/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:33:25] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=429
+[2026-06-18 08:33:25] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.81 avail_mib=7239/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:35:25] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=430
+[2026-06-18 08:35:25] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.71 avail_mib=7255/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:37:25] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=431
+[2026-06-18 08:37:25] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.68 avail_mib=7259/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:39:25] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=432
+[2026-06-18 08:39:25] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.67 avail_mib=7262/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:41:25] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=433
+[2026-06-18 08:41:25] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.72 avail_mib=7253/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:43:25] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=434
+[2026-06-18 08:43:25] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.75 avail_mib=7249/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:45:25] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=435
+[2026-06-18 08:45:25] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=68.96 avail_mib=4865/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:47:25] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=436
+[2026-06-18 08:47:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=70.63 avail_mib=4603/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:49:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=437
+[2026-06-18 08:49:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=69.90 avail_mib=4717/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:51:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=438
+[2026-06-18 08:51:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=69.65 avail_mib=4756/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:53:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=439
+[2026-06-18 08:53:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=69.78 avail_mib=4736/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:55:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=440
+[2026-06-18 08:55:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=69.59 avail_mib=4766/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:57:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=441
+[2026-06-18 08:57:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=69.41 avail_mib=4794/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 08:59:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=442
+[2026-06-18 08:59:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.56 avail_mib=4301/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:01:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=443
+[2026-06-18 09:01:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=70.57 avail_mib=4613/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:03:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=444
+[2026-06-18 09:03:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.83 avail_mib=7237/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:05:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=445
+[2026-06-18 09:05:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.82 avail_mib=7238/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:07:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=446
+[2026-06-18 09:07:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.97 avail_mib=7214/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:09:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=447
+[2026-06-18 09:09:26] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.91 avail_mib=7224/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:11:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=448
+[2026-06-18 09:11:27] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.62 avail_mib=7269/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:13:27] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=449
+[2026-06-18 09:13:27] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.74 avail_mib=7251/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:15:27] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=450
+[2026-06-18 09:15:27] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.67 avail_mib=7262/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:17:27] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=451
+[2026-06-18 09:17:27] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.75 avail_mib=7249/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:19:27] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=452
+[2026-06-18 09:19:27] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.80 avail_mib=7241/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:21:27] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=453
+[2026-06-18 09:21:27] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.55 avail_mib=7280/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:23:27] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=454
+[2026-06-18 09:23:27] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.81 avail_mib=7240/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:25:27] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=455
+[2026-06-18 09:25:27] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.41 avail_mib=7302/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:27:27] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=456
+[2026-06-18 09:27:27] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.86 avail_mib=7231/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:29:27] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=457
+[2026-06-18 09:29:28] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.67 avail_mib=7262/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:31:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=458
+[2026-06-18 09:31:28] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=54.02 avail_mib=7207/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:33:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=459
+[2026-06-18 09:33:28] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.64 avail_mib=7266/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:35:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=460
+[2026-06-18 09:35:28] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.74 avail_mib=7251/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:37:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=461
+[2026-06-18 09:37:28] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=53.61 avail_mib=7270/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=12/1928
+[2026-06-18 09:39:28] [TASK] completed task=classification phase=stl_ablation_r01_d06_w0037_37_37_37_37_37_37 params=9775
+[2026-06-18 09:39:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=462
+[2026-06-18 09:39:28] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=50.74 avail_mib=7720/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 09:41:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=463
+[2026-06-18 09:41:28] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=50.87 avail_mib=7700/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 09:43:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=464
+[2026-06-18 09:43:28] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=50.85 avail_mib=7703/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 09:45:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=465
+[2026-06-18 09:45:28] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=50.99 avail_mib=7682/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 09:47:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=466
+[2026-06-18 09:47:28] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=51.08 avail_mib=7668/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 09:49:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=467
+[2026-06-18 09:49:28] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=50.92 avail_mib=7692/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 09:51:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=468
+[2026-06-18 09:51:29] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=65.16 avail_mib=5460/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 09:53:29] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=469
+[2026-06-18 09:53:29] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=67.35 avail_mib=5118/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 09:55:29] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=470
+[2026-06-18 09:55:29] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=65.65 avail_mib=5384/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 09:57:29] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=471
+[2026-06-18 09:57:29] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=72.98 avail_mib=4235/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 09:59:29] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=472
+[2026-06-18 09:59:29] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=70.63 avail_mib=4603/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:01:29] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=473
+[2026-06-18 10:01:29] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.35 avail_mib=4177/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:03:29] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=474
+[2026-06-18 10:03:29] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=71.26 avail_mib=4505/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:05:29] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=475
+[2026-06-18 10:05:29] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.59 avail_mib=4139/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:07:29] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=476
+[2026-06-18 10:07:29] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=74.48 avail_mib=3999/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:09:29] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=477
+[2026-06-18 10:09:29] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=74.58 avail_mib=3984/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:11:29] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=478
+[2026-06-18 10:11:29] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=74.34 avail_mib=4021/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:13:29] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=479
+[2026-06-18 10:13:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=77.38 avail_mib=3546/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:15:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=480
+[2026-06-18 10:15:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=70.67 avail_mib=4597/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:17:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=481
+[2026-06-18 10:17:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=70.15 avail_mib=4678/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:19:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=482
+[2026-06-18 10:19:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=70.17 avail_mib=4675/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:21:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=483
+[2026-06-18 10:21:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=70.33 avail_mib=4650/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:23:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=484
+[2026-06-18 10:23:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=70.75 avail_mib=4584/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:25:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=485
+[2026-06-18 10:25:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=70.30 avail_mib=4655/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:27:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=486
+[2026-06-18 10:27:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=70.49 avail_mib=4625/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:29:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=487
+[2026-06-18 10:29:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=73.38 avail_mib=4172/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:31:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=488
+[2026-06-18 10:31:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=75.58 avail_mib=3827/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=11/1928
+[2026-06-18 10:33:30] [TASK] completed task=classification phase=stl_ablation_r01_d03_w0055_55_55_55 params=9907
+[2026-06-18 10:33:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=489
+[2026-06-18 10:33:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=70.14 avail_mib=4680/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=10/1928
+[2026-06-18 10:35:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=490
+[2026-06-18 10:35:30] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=69.77 avail_mib=4738/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=10/1928
+[2026-06-18 10:37:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=491
+[2026-06-18 10:37:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=68.99 avail_mib=4860/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=10/1928
+[2026-06-18 10:39:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=492
+[2026-06-18 10:39:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=74.03 avail_mib=4070/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=10/1928
+[2026-06-18 10:41:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=493
+[2026-06-18 10:41:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=69.73 avail_mib=4745/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=10/1928
+[2026-06-18 10:43:31] [TASK] completed task=classification phase=stl_ablation_r01_d05_w0041_41_41_41_41_41 params=9847
+[2026-06-18 10:43:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=494
+[2026-06-18 10:43:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=66.80 avail_mib=5204/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=9/1928
+[2026-06-18 10:45:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=495
+[2026-06-18 10:45:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=66.88 avail_mib=5191/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=9/1928
+[2026-06-18 10:47:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=496
+[2026-06-18 10:47:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=68.78 avail_mib=4893/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=9/1928
+[2026-06-18 10:49:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=497
+[2026-06-18 10:49:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=69.73 avail_mib=4744/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=9/1928
+[2026-06-18 10:51:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=498
+[2026-06-18 10:51:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=65.01 avail_mib=5484/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=9/1928
+[2026-06-18 10:53:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=499
+[2026-06-18 10:53:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=67.87 avail_mib=5035/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=9/1928
+[2026-06-18 10:55:31] [TASK] completed task=autoencoding phase=stl_ablation_r01_d08_w0029_29_29_29_29_29_29_29_29 params=9769
+[2026-06-18 10:55:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=500
+[2026-06-18 10:55:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=64.45 avail_mib=5571/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=8/1928
+[2026-06-18 10:57:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=501
+[2026-06-18 10:57:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=63.80 avail_mib=5674/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=8/1928
+[2026-06-18 10:59:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=502
+[2026-06-18 10:59:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=63.51 avail_mib=5719/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=8/1928
+[2026-06-18 11:01:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=503
+[2026-06-18 11:01:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=65.22 avail_mib=5451/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=8/1928
+[2026-06-18 11:03:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=504
+[2026-06-18 11:03:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=67.53 avail_mib=5089/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=8/1928
+[2026-06-18 11:05:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=505
+[2026-06-18 11:05:31] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=65.00 avail_mib=5486/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=8/1928
+[2026-06-18 11:07:31] [TASK] retry_forever task=classification phase=stl_ablation_r01_d156_parammatched params=9991 exit=0 retry_count=506
+[2026-06-18 11:07:32] [TASK] launch task=classification phase=stl_ablation_r01_d156_parammatched params=9991 device=cpu host_used_pct=63.56 avail_mib=5711/15673 gpu_used_pct=0.24 gpu_used_mib=15/6144 active=8/1928
