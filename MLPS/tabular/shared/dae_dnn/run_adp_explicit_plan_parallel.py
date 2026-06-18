@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -123,7 +124,13 @@ def main() -> None:
                         continue
                     cmd = build_worker_command(args, task_name, task_root)
                     task_root.mkdir(parents=True, exist_ok=True)
-                    proc = subprocess.Popen(cmd, env=launcher_child_env(concurrency_hint=len(active) + 1))
+                    proc = subprocess.Popen(
+                        cmd,
+                        env=launcher_child_env(
+                            concurrency_hint=len(active) + 1,
+                            job_key=f"{phase_name}:repeat_{current_repeat:02d}:{task_name}:{task_root}",
+                        ),
+                    )
                     active[proc] = (phase_name, current_repeat, task_name, task_root, cmd)
 
                 if not active:
