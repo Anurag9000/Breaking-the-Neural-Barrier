@@ -11,6 +11,7 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 import matplotlib.pyplot as plt
 import torch
 
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
 from utils.adp_logging import ContinuousLogger
 
@@ -957,6 +958,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    bootstrap_runtime("run_stl_ablation")
+
     args = parse_args()
     tasks = [str(t).lower() for t in args.tasks]
     architectures = build_architectures(args)

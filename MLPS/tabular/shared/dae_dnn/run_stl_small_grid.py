@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional, Sequence
 import torch
 
 import run_goliath as rg
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 
 
 DEFAULT_DEPTHS = [3, 4, 6, 8, 10]
@@ -228,7 +229,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--tasks", type=str, nargs="+", default=DEFAULT_TASKS)
     p.add_argument("--depths", type=int, nargs="+", default=DEFAULT_DEPTHS)
     p.add_argument("--widths", type=int, nargs="+", default=DEFAULT_WIDTHS)
-    p.add_argument("--batch-size", type=int, default=37248)
+    p.add_argument("--batch-size", type=int, default=186240)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
@@ -243,6 +244,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    bootstrap_runtime("run_stl_small_grid")
+
     args = parse_args()
     tasks = [t.lower() for t in args.tasks]
     if args.demo:

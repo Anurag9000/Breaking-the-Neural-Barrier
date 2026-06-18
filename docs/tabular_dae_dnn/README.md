@@ -101,6 +101,20 @@ resume from the same child root and reuse the normal STL checkpoints and
 `--pressure-settle-sec 120` so each launch gets a two-minute pressure settle
 window.
 
+Runtime tuning for the tabular launchers is centralized as well:
+
+- shell wrappers source `MLPS/tabular/shared/dae_dnn/runtime_tuning.sh`
+- Python runners call `bootstrap_runtime()` before training starts
+- `--num-workers 0` is treated as auto-max for the tabular loaders
+- the loaders use all detected logical CPU cores by default, plus persistent
+  workers and prefetching when workers are enabled
+- the process makes a best-effort attempt to raise its priority with `renice`
+  and `ionice`; if the OS denies the change, the thread and worker settings
+  still apply
+
+That policy is aggressive by design. It keeps the CPU side busy when the
+current workload can exploit the extra parallelism.
+
 Key pressure-aware flags:
 
 - `--scheduler pressure_aware`

@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 import torch
 
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - import shim for direct script execution
@@ -338,6 +339,8 @@ def run_trial(args: argparse.Namespace, trial_root: Path, selected: Sequence[Pro
 
 
 def main() -> None:
+    bootstrap_runtime("run_stl_parallelism_probe")
+
     args = parse_args()
     tasks = normalize_tasks(args.tasks)
     param_band = stl.normalize_param_band(getattr(args, "param_band", None))

@@ -8,6 +8,7 @@ import torch
 from MLPS.tabular.shared.dae_dnn import adp_search as adp_search_module
 from MLPS.tabular.shared.dae_dnn import run_goliath as rg
 from MLPS.tabular.shared.dae_dnn.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.train_utils import AdaptiveBatchController
 from utils.adp_logging import ContinuousLogger
 
@@ -666,6 +667,7 @@ def install_staged_width_hooks() -> None:
 
 
 def main() -> None:
+    bootstrap_runtime("run_goliath_staged_width")
     install_staged_width_hooks()
     rg.main()
 

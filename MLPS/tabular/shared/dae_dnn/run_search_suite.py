@@ -21,6 +21,7 @@ sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from MLPS.tabular.shared.dae_dnn.adp_search import ADPConfig, adp_search, expand_depth, expand_width
 from MLPS.tabular.shared.dae_dnn.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.run_goliath import (
     RunConfig,
     build_run_root,
@@ -1279,6 +1280,8 @@ def build_summary_rows(task_name: str, task_summary: Dict[str, Any]) -> List[Dic
 
 
 def main() -> None:
+    bootstrap_runtime("run_search_suite")
+
     p = argparse.ArgumentParser(description="DAE/DNN exhaustive benchmark search suite")
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="MLPS/tabular/shared/dae_dnn/results")
@@ -1292,7 +1295,7 @@ def main() -> None:
         default=DEFAULT_BASELINE_METHODS,
         help="Search methods to run. Defaults to the stronger baselines only.",
     )
-    p.add_argument("--batch-size", type=int, default=327680)
+    p.add_argument("--batch-size", type=int, default=1638400)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)

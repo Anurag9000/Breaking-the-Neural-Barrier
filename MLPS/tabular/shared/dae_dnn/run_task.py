@@ -12,6 +12,7 @@ from utils.adp_logging import ContinuousLogger
 from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_from_csv
 
 from MLPS.tabular.shared.dae_dnn.mlp import MLP
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.tasks import build_task, refresh_task_loaders
 from MLPS.tabular.shared.dae_dnn.adp_search import ADPConfig, adp_search, train_with_early_stopping
 from MLPS.tabular.shared.dae_dnn.train_utils import AdaptiveBatchController
@@ -19,6 +20,8 @@ from MLPS.tabular.shared.dae_dnn.train_utils import eval_epoch
 
 
 def main() -> None:
+    bootstrap_runtime("run_task")
+
     def format_hidden(hidden):
         return str([int(w) for w in hidden])
 
@@ -32,7 +35,7 @@ def main() -> None:
         choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"],
     )
     p.add_argument("--hidden", type=int, nargs="+", default=[50, 50])
-    p.add_argument("--batch-size", type=int, default=327680)
+    p.add_argument("--batch-size", type=int, default=1638400)
     p.add_argument("--run-root", type=str, default=None, help="Optional fixed output root for resumable runs.")
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
