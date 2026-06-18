@@ -118,12 +118,14 @@ paused child. Requeued children return to the pending queue and the launcher
 keeps admitting other eligible work as long as pressure thresholds allow it.
 If a child has already been GPU-paused once, its retry is forced onto CPU so
 it does not keep thrashing the same GPU slot.
-For this recovery runner, `--max-active-jobs 0` means an automatic bounded
-CPU-lane cap, not an unbounded job count. On the 20-core laptop it selects
-two active lanes by default, so fallback children get disjoint 10-core
-affinity slices instead of one-core slices or overlapping CPU claims. Override
-with `TABULAR_RECOVERY_AUTO_ACTIVE_JOBS=<n>` or an explicit
-`--max-active-jobs <n>` only when the machine can sustain it.
+For this recovery runner and the massive STL pressure scheduler,
+`--max-active-jobs 0` means all visible logical CPUs are available as job
+lanes. On the 20-core laptop that means up to 20 active children, each with a
+separate CPU affinity lane. GPU admission is controlled independently by
+`--max-active-gpu-jobs`, which defaults to 1 so the CPU queue can fill while a
+single GPU child uses VRAM without repeated multi-GPU-child thrash. Override
+`TABULAR_RECOVERY_AUTO_ACTIVE_JOBS`, `--max-active-jobs`, or
+`--max-active-gpu-jobs` only after checking memory pressure.
 
 This is intentionally aggressive. It is meant to keep the CPU side of the
 tabular runs busy when the workload can use the extra parallelism.

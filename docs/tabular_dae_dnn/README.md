@@ -136,11 +136,13 @@ Smoke, dry-run, and recovery-probe outputs are not canonical experiment
 results. Keep them only long enough to validate launcher behavior, then
 remove the generated scratch tree before publishing a results snapshot.
 
-For the missing-width/small-STL recovery wrapper, `--max-active-jobs 0`
-auto-selects a bounded CPU-lane cap. On the 20-core laptop this is two active
-lanes, and each fallback child gets a disjoint 10-core affinity slice. Use
-`TABULAR_RECOVERY_AUTO_ACTIVE_JOBS=<n>` or an explicit `--max-active-jobs <n>`
-only when you have confirmed the machine can sustain the memory pressure.
+For the missing-width/small-STL recovery wrapper and the massive STL pressure
+scheduler, `--max-active-jobs 0` exposes all visible logical CPUs as job lanes.
+On the 20-core laptop this allows up to 20 active children, with GPU admission
+limited separately by `--max-active-gpu-jobs` defaulting to 1. Use
+`TABULAR_RECOVERY_AUTO_ACTIVE_JOBS=<n>`, `--max-active-jobs <n>`, or
+`--max-active-gpu-jobs <n>` only when you have confirmed the machine can
+sustain the memory pressure.
 
 That policy is aggressive by design. It keeps the CPU side busy when the
 current workload can exploit the extra parallelism.
