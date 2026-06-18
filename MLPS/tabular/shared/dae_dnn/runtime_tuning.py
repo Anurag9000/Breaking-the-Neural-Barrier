@@ -12,6 +12,7 @@ import hashlib
 import os
 import shutil
 import subprocess
+import sys
 from typing import Dict, Optional, Sequence, Tuple
 
 try:
@@ -179,6 +180,65 @@ def _apply_process_priority() -> None:
         except Exception:
             pass
 
+    sched_batch = getattr(os, "SCHED_BATCH", None)
+    if sched_batch is not None:
+        try:
+            os.sched_setscheduler(0, sched_batch, os.sched_param(0))
+        except Exception:
+            pass
+
+
+def _scope_properties() -> Tuple[str, ...]:
+    props = [
+        "CPUWeight=10000",
+        "StartupCPUWeight=10000",
+        "IOWeight=10000",
+        "StartupIOWeight=10000",
+        "TasksMax=infinity",
+        "CPUAccounting=yes",
+        "IOAccounting=yes",
+        "MemoryAccounting=yes",
+        "TasksAccounting=yes",
+    ]
+    affinity_cpus = _current_affinity_cpus()
+    if affinity_cpus:
+        props.append(f"AllowedCPUs={_format_cpu_list(affinity_cpus)}")
+    return tuple(props)
+
+
+def _maybe_reexec_under_systemd_scope(label: str) -> None:
+    if os.name != "posix":
+        return
+    if os.environ.get("TABULAR_SKIP_SYSTEMD_SCOPE") == "1":
+        return
+    if os.environ.get("TABULAR_SYSTEMD_SCOPED") == "1":
+        return
+    if sys.argv[:1] and sys.argv[0] in {"-c", "-"}:
+        return
+    if shutil.which("systemd-run") is None:
+        return
+
+    scope_cmd = [
+        "systemd-run",
+        "--user",
+        "--scope",
+        "--quiet",
+        "--same-dir",
+        "--collect",
+        "--slice=app-mlps-training.slice",
+        f"--description=tabular:{label}",
+    ]
+    for prop in _scope_properties():
+        scope_cmd.extend(["-p", prop])
+    scope_cmd.extend([sys.executable, *sys.argv])
+
+    env = dict(os.environ)
+    env["TABULAR_SYSTEMD_SCOPED"] = "1"
+    try:
+        os.execvpe(scope_cmd[0], scope_cmd, env)
+    except Exception:
+        return
+
 
 def launcher_child_env(
     base_env: Optional[Dict[str, str]] = None,
@@ -214,6 +274,7 @@ def launcher_child_env(
 def bootstrap_runtime(label: str = "tabular") -> Dict[str, int]:
     """Apply best-effort runtime tuning and return the selected settings."""
 
+    _maybe_reexec_under_systemd_scope(label)
     thread_budget, worker_budget, cpu_cores = derive_cpu_budget()
     env_updates = {
         "OMP_NUM_THREADS": str(thread_budget),

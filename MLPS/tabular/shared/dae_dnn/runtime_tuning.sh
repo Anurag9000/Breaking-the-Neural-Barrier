@@ -44,4 +44,7 @@ tabular_runtime_bootstrap() {
   if command -v ionice >/dev/null 2>&1; then
     ionice -c2 -n0 -p "$$" >/dev/null 2>&1 || true
   fi
+  if command -v chrt >/dev/null 2>&1; then
+    chrt -b -p 0 "$$" >/dev/null 2>&1 || true
+  fi
 }

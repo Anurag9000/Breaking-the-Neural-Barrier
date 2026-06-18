@@ -83,7 +83,8 @@ Runtime tuning for this tabular family is centralized:
 
 - shell launchers source `MLPS/tabular/shared/dae_dnn/runtime_tuning.sh`
 - Python entrypoints call `bootstrap_runtime()` before they build tasks or
-  enter the main loop
+  enter the main loop; the top-level process re-execs itself under
+  `systemd-run --user --scope` in `app-mlps-training.slice` when supported
 - fan-out launchers set `TABULAR_CPU_JOB_CONCURRENCY` for each child and
   assign a deterministic `TABULAR_CPU_AFFINITY_CPUS` slice so the child
   process only claims a bounded share of CPU threads and CPUs
@@ -94,6 +95,11 @@ Runtime tuning for this tabular family is centralized:
   also enables `OMP_WAIT_POLICY=ACTIVE`, `OMP_PROC_BIND=spread`, and
   `OMP_PLACES=cores`; if the OS refuses, the thread, affinity, and worker
   settings still apply
+- both bootstraps also request `SCHED_BATCH` so long-running CPU-bound jobs
+  are treated as throughput work rather than interactive foreground work
+- `MLPS/tabular/shared/dae_dnn/install_linux_runtime_priority.sh` installs the
+  persistent host-side settings for `sched_autogroup`, `user-UID.slice`
+  weights, and `user@.service` controller delegation
 
 This is intentionally aggressive. It is meant to keep the CPU side of the
 tabular runs busy when the workload can use the extra parallelism.
