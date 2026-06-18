@@ -107,9 +107,9 @@ def _apply_affinity_from_env() -> None:
         except Exception:
             pass
     try:
-        current = os.sched_getaffinity(0)
-        if current:
-            os.sched_setaffinity(0, current)
+        all_online = set(range(max(1, int(os.cpu_count() or 1))))
+        if all_online:
+            os.sched_setaffinity(0, all_online)
     except Exception:
         pass
 
@@ -283,6 +283,7 @@ def bootstrap_runtime(label: str = "tabular") -> Dict[str, int]:
     """Apply best-effort runtime tuning and return the selected settings."""
 
     _maybe_reexec_under_systemd_scope(label)
+    _apply_affinity_from_env()
     thread_budget, worker_budget, cpu_cores = derive_cpu_budget()
     env_updates = {
         "OMP_NUM_THREADS": str(thread_budget),
@@ -306,7 +307,6 @@ def bootstrap_runtime(label: str = "tabular") -> Dict[str, int]:
     for key, value in env_updates.items():
         os.environ[key] = value
 
-    _apply_affinity_from_env()
     _apply_process_priority()
 
     if torch is not None:

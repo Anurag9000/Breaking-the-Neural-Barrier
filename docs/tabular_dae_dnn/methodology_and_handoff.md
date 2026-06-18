@@ -267,11 +267,11 @@ GPU pressure condition.
 For the recovery runner and massive STL pressure scheduler,
 `--max-active-jobs 0` resolves to all visible logical CPUs as job lanes. On
 the 20-core laptop that means up to 20 active children, with each child
-receiving a separate CPU affinity lane. GPU admission is controlled separately
-by `--max-active-gpu-jobs`, which defaults to 1 so CPU work can fill the
-machine while only one child claims VRAM at a time. Override
-`TABULAR_RECOVERY_AUTO_ACTIVE_JOBS`, `--max-active-jobs`, or
-`--max-active-gpu-jobs` only after confirming memory headroom.
+receiving a separate CPU affinity lane. GPU admission is memory-pressure
+driven by default: launch on GPU while VRAM is below the resume threshold,
+then spill additional eligible work to CPU when GPU admission is blocked.
+Set `--max-active-gpu-jobs <n>` only when an explicit GPU child-count cap is
+needed.
 
 This is an aggressive runtime policy. It is intended to keep the CPU side of
 the tabular runs busy when the workload can use the extra parallelism.

@@ -166,8 +166,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--max-active-gpu-jobs",
         type=int,
-        default=1,
-        help="Maximum concurrent GPU children; additional eligible children spill to CPU.",
+        default=0,
+        help="Maximum concurrent GPU children. 0 means memory-pressure driven.",
     )
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
@@ -741,7 +741,7 @@ def active_job_limit(args: argparse.Namespace, job_count: int) -> int:
 
 
 def active_gpu_job_limit(args: argparse.Namespace) -> int:
-    return max(0, int(getattr(args, "max_active_gpu_jobs", 1) or 0))
+    return max(0, int(getattr(args, "max_active_gpu_jobs", 0) or 0))
 
 
 def launch_child_process(
@@ -872,7 +872,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
     ) -> Optional[str]:
         if host_pressure.used_pct > float(args.host_ram_resume_pct):
             return None
-        if int(active_gpu_jobs) >= active_gpu_job_limit(args):
+        gpu_limit = active_gpu_job_limit(args)
+        if gpu_limit > 0 and int(active_gpu_jobs) >= gpu_limit:
             return "cpu"
         if gpu_available and gpu_pressure.total_mib > 0 and gpu_pressure.used_pct <= float(args.gpu_memory_resume_pct):
             return "cuda"
