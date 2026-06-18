@@ -272,6 +272,20 @@ def launcher_child_env(
         affinity_cpus = _partition_cpus(affinity_cpus, slot_count, slot)
     if affinity_cpus:
         env["TABULAR_CPU_AFFINITY_CPUS"] = _format_cpu_list(affinity_cpus)
+    for key in (
+        "OMP_NUM_THREADS",
+        "MKL_NUM_THREADS",
+        "OPENBLAS_NUM_THREADS",
+        "GOTO_NUM_THREADS",
+        "NUMEXPR_NUM_THREADS",
+        "VECLIB_MAXIMUM_THREADS",
+        "TORCH_NUM_THREADS",
+    ):
+        env[key] = str(thread_budget)
+    env["TORCH_INTEROP_THREADS"] = "1"
+    env["OMP_DYNAMIC"] = "FALSE"
+    env["MKL_DYNAMIC"] = "FALSE"
+    env["OMP_WAIT_POLICY"] = "ACTIVE"
     env["TABULAR_CPU_THREADS"] = str(thread_budget)
     env["TABULAR_CPU_WORKERS"] = str(worker_budget)
     env["TABULAR_CPU_CORES"] = str(cores)
