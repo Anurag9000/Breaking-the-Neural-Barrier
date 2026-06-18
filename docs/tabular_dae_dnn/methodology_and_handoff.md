@@ -165,7 +165,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_sm
   --widths 64 96 128 160 192 224 256 \
   --num-workers 0 \
   --patience 10 \
-  --batch-size 37248 \
+  --batch-size 186240 \
   --max-epochs 100000000
 ```
 
@@ -277,7 +277,7 @@ cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
   --tasks classification autoencoding generation denoising anomaly simulation prediction \
   --param-band 1 3 \
   --num-workers 0 \
-  --batch-size 37248
+  --batch-size 186240
 ```
 
 The planner reports every sampled target per depth and the deduped candidate
@@ -301,7 +301,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_pa
   --start-n 2 \
   --num-workers 0 \
   --pin-memory \
-  --batch-size 37248
+  --batch-size 186240
 ```
 
 Example real run command using the pressure-aware scheduler:
@@ -329,7 +329,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
-  --batch-size 37248
+  --batch-size 186240
 ```
 
 Example legacy fixed-slot run using the probe output:
@@ -350,7 +350,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
-  --batch-size 37248
+  --batch-size 186240
 ```
 
 Example for one band:
@@ -372,7 +372,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
-  --batch-size 37248
+  --batch-size 186240
 ```
 
 Repeat the same command on the other laptops, changing only the parameter band
@@ -436,6 +436,18 @@ The repo uses the same broad method pattern across the tabular sweeps:
 4. restore from the saved checkpoint/state files when resuming
 5. keep the repeat-level results separate from the derived analysis outputs
 6. probe parameter-band parallelism before launching the real massive STL band
+
+Fresh full strict `4-6` rerun command:
+
+```bash
+./MLPS/tabular/shared/dae_dnn/run_stl_massive_band_04_06_fresh.sh
+```
+
+This wrapper writes into
+`MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_fresh_v1`
+and is intended for a full clean rerun of the strict `10^4..10^6` band. Under
+the current generator logic, that band expands to `1928` child architecture
+jobs and `9640` repeat phases total because each child runs `--repeat-count 5`.
 
 The current result roots are:
 
