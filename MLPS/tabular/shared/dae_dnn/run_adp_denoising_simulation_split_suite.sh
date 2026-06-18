@@ -13,5 +13,5 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_adp_ex
   --concurrency 6 \
   --num-workers 0 \
   --pin-memory \
-  --batch-size 9312 \
+  --batch-size 37248 \
   --adp-mode width_to_depth

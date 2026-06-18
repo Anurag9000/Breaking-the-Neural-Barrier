@@ -32,7 +32,7 @@ def main() -> None:
         choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"],
     )
     p.add_argument("--hidden", type=int, nargs="+", default=[50, 50])
-    p.add_argument("--batch-size", type=int, default=81920)
+    p.add_argument("--batch-size", type=int, default=327680)
     p.add_argument("--run-root", type=str, default=None, help="Optional fixed output root for resumable runs.")
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)

@@ -13,7 +13,7 @@ def main() -> None:
     p = argparse.ArgumentParser(description="Run STL + supported ADP modes for all DNN tasks")
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="MLPS/tabular/shared/dae_dnn/results")
-    p.add_argument("--batch-size", type=int, default=81920)
+    p.add_argument("--batch-size", type=int, default=327680)
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
     p.add_argument("--ex-k", type=int, default=1)
