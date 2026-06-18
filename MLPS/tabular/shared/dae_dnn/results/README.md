@@ -84,6 +84,8 @@ Runtime tuning for this tabular family is centralized:
 - shell launchers source `MLPS/tabular/shared/dae_dnn/runtime_tuning.sh`
 - Python entrypoints call `bootstrap_runtime()` before they build tasks or
   enter the main loop
+- fan-out launchers set `TABULAR_CPU_JOB_CONCURRENCY` for each child so the
+  child process only claims a bounded share of CPU threads
 - `--num-workers 0` means auto-max for these runners, not disabled workers
 - loader workers default to the full logical CPU count, and the loaders use
   persistent workers plus prefetching when workers are enabled

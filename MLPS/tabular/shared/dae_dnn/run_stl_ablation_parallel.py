@@ -13,7 +13,7 @@ from typing import IO, Any, Callable, Deque, Dict, List, Optional, Sequence, Tup
 
 import torch
 
-from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
 from utils.adp_logging import ContinuousLogger
 
@@ -780,7 +780,7 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
                 device_mode="auto",
             )
             child_root.mkdir(parents=True, exist_ok=True)
-            proc, _ = launch_child_process(cmd)
+            proc, _ = launch_child_process(cmd, env=launcher_child_env(concurrency_hint=len(active) + 1))
             active[proc] = (architecture, child_root, cmd)
             launch_count += 1
 
@@ -1029,10 +1029,10 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
 
 
 def main() -> None:
-    bootstrap_runtime("run_stl_ablation_parallel")
-
     args = parse_args()
     args.concurrency = resolve_concurrency(args)
+    os.environ["TABULAR_CPU_JOB_CONCURRENCY"] = str(int(args.concurrency))
+    bootstrap_runtime("run_stl_ablation_parallel")
     if float(args.host_ram_resume_pct) > float(args.host_ram_pressure_limit_pct):
         raise SystemExit("--host-ram-resume-pct must be <= --host-ram-pressure-limit-pct")
     if float(args.gpu_memory_resume_pct) > float(args.gpu_memory_pressure_limit_pct):

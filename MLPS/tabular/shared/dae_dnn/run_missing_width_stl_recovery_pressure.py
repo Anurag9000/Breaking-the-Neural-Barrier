@@ -14,7 +14,7 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 import torch
 
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
-from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - direct script execution
@@ -372,12 +372,13 @@ def command_for_device(job: RecoveryJob, device_mode: str) -> List[str]:
     return out
 
 
-def launch(job: RecoveryJob, device_mode: str, gpu_index: int) -> Tuple[subprocess.Popen[Any], Any]:
+def launch(job: RecoveryJob, device_mode: str, gpu_index: int, concurrency_hint: int) -> Tuple[subprocess.Popen[Any], Any]:
     job.root.mkdir(parents=True, exist_ok=True)
     log_path = job_log_path(job.root)
     log_handle = log_path.open("a", encoding="utf-8")
     cmd = command_for_device(job, device_mode)
-    proc = subprocess.Popen(cmd, start_new_session=True, env=env_for(device_mode, int(gpu_index)), stdout=log_handle, stderr=log_handle, text=True)
+    env = launcher_child_env(env_for(device_mode, int(gpu_index)), concurrency_hint=concurrency_hint)
+    proc = subprocess.Popen(cmd, start_new_session=True, env=env, stdout=log_handle, stderr=log_handle, text=True)
     return proc, log_handle
 
 
@@ -505,7 +506,7 @@ def run(args: argparse.Namespace) -> None:
                 logger.log_console(f"[TASK] already_complete {job.name}")
                 continue
             chosen = device_mode or "cpu"
-            proc, handle = launch(job, chosen, int(args.gpu_device_index))
+            proc, handle = launch(job, chosen, int(args.gpu_device_index), concurrency_hint=len(active) + 1)
             active[proc] = ActiveRecoveryJob(job=job, device_mode=chosen, log_path=job_log_path(job.root), log_handle=handle)
             update_job_state(job.root, {"status": "running", "completed": False, "device": chosen, "started_at": time.time(), "command": command_for_device(job, chosen)})
             logger.log_console(

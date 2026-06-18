@@ -228,6 +228,9 @@ Runtime policy for the tabular runners is centralized:
 - shell launchers source `MLPS/tabular/shared/dae_dnn/runtime_tuning.sh`
 - Python runners call `bootstrap_runtime()` before they build tasks or start
   the main loop
+- fan-out launchers set `TABULAR_CPU_JOB_CONCURRENCY` for each child so
+  concurrent children divide the CPU thread budget instead of all claiming the
+  machine
 - `--num-workers 0` resolves to the full logical CPU count unless an explicit
   positive worker count is passed
 - the loaders use persistent workers and prefetching when worker processes are
