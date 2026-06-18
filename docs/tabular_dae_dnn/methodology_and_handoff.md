@@ -258,6 +258,10 @@ Smoke, dry-run, and recovery-probe outputs are transient validation artifacts.
 They are not part of the canonical experiment record and should be deleted
 before a results tree is treated as final.
 
+The pressure-aware recovery queue stays live after a pause/requeue event:
+one paused child does not block unrelated pending work from launching while
+resources remain available.
+
 This is an aggressive runtime policy. It is intended to keep the CPU side of
 the tabular runs busy when the workload can use the extra parallelism.
 

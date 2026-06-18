@@ -113,6 +113,10 @@ Use them to verify behavior, then delete the generated `results/recovery/*`,
 `*_plan.json`, and similar scratch artifacts before publishing a results
 snapshot.
 
+The pressure-aware recovery runner does not globally freeze after a single
+paused child. Requeued children return to the pending queue and the launcher
+keeps admitting other eligible work as long as pressure thresholds allow it.
+
 This is intentionally aggressive. It is meant to keep the CPU side of the
 tabular runs busy when the workload can use the extra parallelism.
 
