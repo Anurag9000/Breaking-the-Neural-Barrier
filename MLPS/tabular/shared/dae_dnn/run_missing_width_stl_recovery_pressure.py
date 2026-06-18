@@ -109,7 +109,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--gpu-device-index", type=int, default=0)
     p.add_argument("--pressure-poll-interval-sec", type=float, default=0.5)
     p.add_argument("--pressure-settle-sec", type=float, default=1.0)
-    p.add_argument("--max-active-jobs", type=int, default=0, help="0 means auto-select a bounded CPU-lane cap.")
+    p.add_argument("--max-active-jobs", type=int, default=0, help="0 means use all visible logical CPUs as job lanes.")
+    p.add_argument("--max-active-gpu-jobs", type=int, default=1, help="Maximum concurrent GPU children; remaining eligible work spills to CPU.")
     p.add_argument("--include-width-only", action="store_true", default=True)
     p.add_argument("--no-include-width-only", dest="include_width_only", action="store_false")
     p.add_argument("--include-small-stl", action="store_true", default=True)
@@ -369,8 +370,11 @@ def active_limit(args: argparse.Namespace, total_jobs: int) -> int:
         except Exception:
             pass
     cores = int(detect_cpu_cores())
-    auto_limit = max(2, min(4, max(1, cores // 8)))
-    return max(1, min(int(total_jobs), auto_limit))
+    return max(1, min(int(total_jobs), cores))
+
+
+def gpu_active_limit(args: argparse.Namespace) -> int:
+    return max(0, int(args.max_active_gpu_jobs or 0))
 
 
 def env_for(device_mode: str, gpu_index: int) -> Dict[str, str]:
@@ -392,9 +396,17 @@ def choose_device(args: argparse.Namespace) -> Optional[str]:
     return "cpu"
 
 
-def choose_device_for_job(args: argparse.Namespace, job: RecoveryJob, forced_cpu_jobs: Optional[set[str]] = None) -> Optional[str]:
+def choose_device_for_job(
+    args: argparse.Namespace,
+    job: RecoveryJob,
+    forced_cpu_jobs: Optional[set[str]] = None,
+    active_gpu_jobs: int = 0,
+) -> Optional[str]:
     if job_should_force_cpu(job, forced_cpu_jobs):
         return "cpu"
+    if int(active_gpu_jobs) >= gpu_active_limit(args):
+        host = pressure.sample_host_memory_pressure()
+        return None if host.used_pct > float(args.host_ram_resume_pct) else "cpu"
     return choose_device(args)
 
 
@@ -491,6 +503,7 @@ def run(args: argparse.Namespace) -> None:
     logger.log_console(f"Run root: {run_root}")
     logger.log_console(f"Jobs: {len(jobs)}")
     logger.log_console(f"Max active jobs: {limit}")
+    logger.log_console(f"Max active GPU jobs: {gpu_active_limit(args)}")
     if forced_cpu_jobs:
         logger.log_console(f"[STATE] CPU-forced jobs restored: {len(forced_cpu_jobs)}")
     if bool(args.dry_run):
@@ -572,7 +585,8 @@ def run(args: argparse.Namespace) -> None:
                 time.sleep(max(0.0, float(args.pressure_settle_sec)))
                 continue
 
-        device_mode = choose_device_for_job(args, pending[0], forced_cpu_jobs) if pending else choose_device(args)
+        active_gpu_jobs = sum(1 for entry in active.values() if entry.device_mode == "cuda")
+        device_mode = choose_device_for_job(args, pending[0], forced_cpu_jobs, active_gpu_jobs) if pending else choose_device(args)
         if pending and len(active) < limit and free_slots and (device_mode is not None or not active):
             job = pending.popleft()
             if job_completed(job):
