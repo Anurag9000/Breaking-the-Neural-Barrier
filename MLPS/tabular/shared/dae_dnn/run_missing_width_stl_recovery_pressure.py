@@ -110,7 +110,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--pressure-poll-interval-sec", type=float, default=0.5)
     p.add_argument("--pressure-settle-sec", type=float, default=1.0)
     p.add_argument("--max-active-jobs", type=int, default=0, help="0 means use all visible logical CPUs as job lanes.")
-    p.add_argument("--max-active-gpu-jobs", type=int, default=1, help="Maximum concurrent GPU children; remaining eligible work spills to CPU.")
+    p.add_argument("--max-active-gpu-jobs", type=int, default=0, help="Maximum concurrent GPU children. 0 means memory-pressure driven.")
     p.add_argument("--include-width-only", action="store_true", default=True)
     p.add_argument("--no-include-width-only", dest="include_width_only", action="store_false")
     p.add_argument("--include-small-stl", action="store_true", default=True)
@@ -361,20 +361,13 @@ def active_limit(args: argparse.Namespace, total_jobs: int) -> int:
     limit = int(args.max_active_jobs or 0)
     if limit > 0:
         return max(1, min(int(total_jobs), int(limit)))
-    env_limit = os.environ.get("TABULAR_RECOVERY_AUTO_ACTIVE_JOBS")
-    if env_limit:
-        try:
-            parsed = int(env_limit)
-            if parsed > 0:
-                return max(1, min(int(total_jobs), parsed))
-        except Exception:
-            pass
     cores = int(detect_cpu_cores())
     return max(1, min(int(total_jobs), cores))
 
 
 def gpu_active_limit(args: argparse.Namespace) -> int:
-    return max(0, int(args.max_active_gpu_jobs or 0))
+    limit = int(args.max_active_gpu_jobs or 0)
+    return max(0, limit)
 
 
 def env_for(device_mode: str, gpu_index: int) -> Dict[str, str]:
@@ -404,7 +397,8 @@ def choose_device_for_job(
 ) -> Optional[str]:
     if job_should_force_cpu(job, forced_cpu_jobs):
         return "cpu"
-    if int(active_gpu_jobs) >= gpu_active_limit(args):
+    gpu_limit = gpu_active_limit(args)
+    if gpu_limit > 0 and int(active_gpu_jobs) >= gpu_limit:
         host = pressure.sample_host_memory_pressure()
         return None if host.used_pct > float(args.host_ram_resume_pct) else "cpu"
     return choose_device(args)
