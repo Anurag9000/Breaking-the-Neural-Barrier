@@ -116,6 +116,8 @@ snapshot.
 The pressure-aware recovery runner does not globally freeze after a single
 paused child. Requeued children return to the pending queue and the launcher
 keeps admitting other eligible work as long as pressure thresholds allow it.
+If a child has already been GPU-paused once, its retry is forced onto CPU so
+it does not keep thrashing the same GPU slot.
 
 This is intentionally aggressive. It is meant to keep the CPU side of the
 tabular runs busy when the workload can use the extra parallelism.
