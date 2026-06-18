@@ -1,0 +1,913 @@
+usage: run_stl_ablation.py [-h] [--data-dir DATA_DIR]
+                           [--results-dir RESULTS_DIR] [--run-root RUN_ROOT]
+                           [--source-run-root SOURCE_RUN_ROOT]
+                           [--tasks TASKS [TASKS ...]]
+                           [--batch-size BATCH_SIZE]
+                           [--num-workers NUM_WORKERS] [--seed SEED]
+                           [--patience PATIENCE] [--delta DELTA]
+                           [--max-epochs MAX_EPOCHS] [--lr LR]
+                           [--weight-decay WEIGHT_DECAY]
+                           [--grad-clip GRAD_CLIP] [--max-width MAX_WIDTH]
+                           [--max-depth MAX_DEPTH] [--max-neurons MAX_NEURONS]
+                           [--width-stage-margin-patience WIDTH_STAGE_MARGIN_PATIENCE]
+                           [--width-stage-min-improve-pct WIDTH_STAGE_MIN_IMPROVE_PCT]
+                           [--min-width MIN_WIDTH] [--width-step WIDTH_STEP]
+                           [--width-count-per-depth WIDTH_COUNT_PER_DEPTH]
+                           [--min-depth MIN_DEPTH]
+                           [--param-band PARAM_EXP_START PARAM_EXP_END]
+                           [--repeat-count REPEAT_COUNT]
+                           [--repeat-index REPEAT_INDEX]
+                           [--stl-width STL_WIDTH] [--stl-depth STL_DEPTH]
+                           [--metrics-every METRICS_EVERY] [--pin-memory]
+                           [--no-pin-memory] [--use-bn] [--no-bn]
+                           [--widths WIDTHS] [--depths DEPTHS]
+                           [--architecture ARCHITECTURE]
+                           [--legacy-architecture-grid]
+run_stl_ablation.py: error: unrecognized arguments: --device cuda
+usage: run_stl_ablation.py [-h] [--data-dir DATA_DIR]
+                           [--results-dir RESULTS_DIR] [--run-root RUN_ROOT]
+                           [--source-run-root SOURCE_RUN_ROOT]
+                           [--tasks TASKS [TASKS ...]]
+                           [--batch-size BATCH_SIZE]
+                           [--num-workers NUM_WORKERS] [--seed SEED]
+                           [--patience PATIENCE] [--delta DELTA]
+                           [--max-epochs MAX_EPOCHS] [--lr LR]
+                           [--weight-decay WEIGHT_DECAY]
+                           [--grad-clip GRAD_CLIP] [--max-width MAX_WIDTH]
+                           [--max-depth MAX_DEPTH] [--max-neurons MAX_NEURONS]
+                           [--width-stage-margin-patience WIDTH_STAGE_MARGIN_PATIENCE]
+                           [--width-stage-min-improve-pct WIDTH_STAGE_MIN_IMPROVE_PCT]
+                           [--min-width MIN_WIDTH] [--width-step WIDTH_STEP]
+                           [--width-count-per-depth WIDTH_COUNT_PER_DEPTH]
+                           [--min-depth MIN_DEPTH]
+                           [--param-band PARAM_EXP_START PARAM_EXP_END]
+                           [--repeat-count REPEAT_COUNT]
+                           [--repeat-index REPEAT_INDEX]
+                           [--stl-width STL_WIDTH] [--stl-depth STL_DEPTH]
+                           [--metrics-every METRICS_EVERY] [--pin-memory]
+                           [--no-pin-memory] [--use-bn] [--no-bn]
+                           [--widths WIDTHS] [--depths DEPTHS]
+                           [--architecture ARCHITECTURE]
+                           [--legacy-architecture-grid]
+run_stl_ablation.py: error: unrecognized arguments: --device cuda
+usage: run_stl_ablation.py [-h] [--data-dir DATA_DIR]
+                           [--results-dir RESULTS_DIR] [--run-root RUN_ROOT]
+                           [--source-run-root SOURCE_RUN_ROOT]
+                           [--tasks TASKS [TASKS ...]]
+                           [--batch-size BATCH_SIZE]
+                           [--num-workers NUM_WORKERS] [--seed SEED]
+                           [--patience PATIENCE] [--delta DELTA]
+                           [--max-epochs MAX_EPOCHS] [--lr LR]
+                           [--weight-decay WEIGHT_DECAY]
+                           [--grad-clip GRAD_CLIP] [--max-width MAX_WIDTH]
+                           [--max-depth MAX_DEPTH] [--max-neurons MAX_NEURONS]
+                           [--width-stage-margin-patience WIDTH_STAGE_MARGIN_PATIENCE]
+                           [--width-stage-min-improve-pct WIDTH_STAGE_MIN_IMPROVE_PCT]
+                           [--min-width MIN_WIDTH] [--width-step WIDTH_STEP]
+                           [--width-count-per-depth WIDTH_COUNT_PER_DEPTH]
+                           [--min-depth MIN_DEPTH]
+                           [--param-band PARAM_EXP_START PARAM_EXP_END]
+                           [--repeat-count REPEAT_COUNT]
+                           [--repeat-index REPEAT_INDEX]
+                           [--stl-width STL_WIDTH] [--stl-depth STL_DEPTH]
+                           [--metrics-every METRICS_EVERY] [--pin-memory]
+                           [--no-pin-memory] [--use-bn] [--no-bn]
+                           [--widths WIDTHS] [--depths DEPTHS]
+                           [--architecture ARCHITECTURE]
+                           [--legacy-architecture-grid]
+run_stl_ablation.py: error: unrecognized arguments: --device cuda
+usage: run_stl_ablation.py [-h] [--data-dir DATA_DIR]
+                           [--results-dir RESULTS_DIR] [--run-root RUN_ROOT]
+                           [--source-run-root SOURCE_RUN_ROOT]
+                           [--tasks TASKS [TASKS ...]]
+                           [--batch-size BATCH_SIZE]
+                           [--num-workers NUM_WORKERS] [--seed SEED]
+                           [--patience PATIENCE] [--delta DELTA]
+                           [--max-epochs MAX_EPOCHS] [--lr LR]
+                           [--weight-decay WEIGHT_DECAY]
+                           [--grad-clip GRAD_CLIP] [--max-width MAX_WIDTH]
+                           [--max-depth MAX_DEPTH] [--max-neurons MAX_NEURONS]
+                           [--width-stage-margin-patience WIDTH_STAGE_MARGIN_PATIENCE]
+                           [--width-stage-min-improve-pct WIDTH_STAGE_MIN_IMPROVE_PCT]
+                           [--min-width MIN_WIDTH] [--width-step WIDTH_STEP]
+                           [--width-count-per-depth WIDTH_COUNT_PER_DEPTH]
+                           [--min-depth MIN_DEPTH]
+                           [--param-band PARAM_EXP_START PARAM_EXP_END]
+                           [--repeat-count REPEAT_COUNT]
+                           [--repeat-index REPEAT_INDEX]
+                           [--stl-width STL_WIDTH] [--stl-depth STL_DEPTH]
+                           [--metrics-every METRICS_EVERY] [--pin-memory]
+                           [--no-pin-memory] [--use-bn] [--no-bn]
+                           [--widths WIDTHS] [--depths DEPTHS]
+                           [--architecture ARCHITECTURE]
+                           [--legacy-architecture-grid]
+run_stl_ablation.py: error: unrecognized arguments: --device cuda
+usage: run_stl_ablation.py [-h] [--data-dir DATA_DIR]
+                           [--results-dir RESULTS_DIR] [--run-root RUN_ROOT]
+                           [--source-run-root SOURCE_RUN_ROOT]
+                           [--tasks TASKS [TASKS ...]]
+                           [--batch-size BATCH_SIZE]
+                           [--num-workers NUM_WORKERS] [--seed SEED]
+                           [--patience PATIENCE] [--delta DELTA]
+                           [--max-epochs MAX_EPOCHS] [--lr LR]
+                           [--weight-decay WEIGHT_DECAY]
+                           [--grad-clip GRAD_CLIP] [--max-width MAX_WIDTH]
+                           [--max-depth MAX_DEPTH] [--max-neurons MAX_NEURONS]
+                           [--width-stage-margin-patience WIDTH_STAGE_MARGIN_PATIENCE]
+                           [--width-stage-min-improve-pct WIDTH_STAGE_MIN_IMPROVE_PCT]
+                           [--min-width MIN_WIDTH] [--width-step WIDTH_STEP]
+                           [--width-count-per-depth WIDTH_COUNT_PER_DEPTH]
+                           [--min-depth MIN_DEPTH]
+                           [--param-band PARAM_EXP_START PARAM_EXP_END]
+                           [--repeat-count REPEAT_COUNT]
+                           [--repeat-index REPEAT_INDEX]
+                           [--stl-width STL_WIDTH] [--stl-depth STL_DEPTH]
+                           [--metrics-every METRICS_EVERY] [--pin-memory]
+                           [--no-pin-memory] [--use-bn] [--no-bn]
+                           [--widths WIDTHS] [--depths DEPTHS]
+                           [--architecture ARCHITECTURE]
+                           [--legacy-architecture-grid]
+run_stl_ablation.py: error: unrecognized arguments: --device cuda
+usage: run_stl_ablation.py [-h] [--data-dir DATA_DIR]
+                           [--results-dir RESULTS_DIR] [--run-root RUN_ROOT]
+                           [--source-run-root SOURCE_RUN_ROOT]
+                           [--tasks TASKS [TASKS ...]]
+                           [--batch-size BATCH_SIZE]
+                           [--num-workers NUM_WORKERS] [--seed SEED]
+                           [--patience PATIENCE] [--delta DELTA]
+                           [--max-epochs MAX_EPOCHS] [--lr LR]
+                           [--weight-decay WEIGHT_DECAY]
+                           [--grad-clip GRAD_CLIP] [--max-width MAX_WIDTH]
+                           [--max-depth MAX_DEPTH] [--max-neurons MAX_NEURONS]
+                           [--width-stage-margin-patience WIDTH_STAGE_MARGIN_PATIENCE]
+                           [--width-stage-min-improve-pct WIDTH_STAGE_MIN_IMPROVE_PCT]
+                           [--min-width MIN_WIDTH] [--width-step WIDTH_STEP]
+                           [--width-count-per-depth WIDTH_COUNT_PER_DEPTH]
+                           [--min-depth MIN_DEPTH]
+                           [--param-band PARAM_EXP_START PARAM_EXP_END]
+                           [--repeat-count REPEAT_COUNT]
+                           [--repeat-index REPEAT_INDEX]
+                           [--stl-width STL_WIDTH] [--stl-depth STL_DEPTH]
+                           [--metrics-every METRICS_EVERY] [--pin-memory]
+                           [--no-pin-memory] [--use-bn] [--no-bn]
+                           [--widths WIDTHS] [--depths DEPTHS]
+                           [--architecture ARCHITECTURE]
+                           [--legacy-architecture-grid]
+run_stl_ablation.py: error: unrecognized arguments: --device cuda
+usage: run_stl_ablation.py [-h] [--data-dir DATA_DIR]
+                           [--results-dir RESULTS_DIR] [--run-root RUN_ROOT]
+                           [--source-run-root SOURCE_RUN_ROOT]
+                           [--tasks TASKS [TASKS ...]]
+                           [--batch-size BATCH_SIZE]
+                           [--num-workers NUM_WORKERS] [--seed SEED]
+                           [--patience PATIENCE] [--delta DELTA]
+                           [--max-epochs MAX_EPOCHS] [--lr LR]
+                           [--weight-decay WEIGHT_DECAY]
+                           [--grad-clip GRAD_CLIP] [--max-width MAX_WIDTH]
+                           [--max-depth MAX_DEPTH] [--max-neurons MAX_NEURONS]
+                           [--width-stage-margin-patience WIDTH_STAGE_MARGIN_PATIENCE]
+                           [--width-stage-min-improve-pct WIDTH_STAGE_MIN_IMPROVE_PCT]
+                           [--min-width MIN_WIDTH] [--width-step WIDTH_STEP]
+                           [--width-count-per-depth WIDTH_COUNT_PER_DEPTH]
+                           [--min-depth MIN_DEPTH]
+                           [--param-band PARAM_EXP_START PARAM_EXP_END]
+                           [--repeat-count REPEAT_COUNT]
+                           [--repeat-index REPEAT_INDEX]
+                           [--stl-width STL_WIDTH] [--stl-depth STL_DEPTH]
+                           [--metrics-every METRICS_EVERY] [--pin-memory]
+                           [--no-pin-memory] [--use-bn] [--no-bn]
+                           [--widths WIDTHS] [--depths DEPTHS]
+                           [--architecture ARCHITECTURE]
+                           [--legacy-architecture-grid]
+run_stl_ablation.py: error: unrecognized arguments: --device cuda
+usage: run_stl_ablation.py [-h] [--data-dir DATA_DIR]
+                           [--results-dir RESULTS_DIR] [--run-root RUN_ROOT]
+                           [--source-run-root SOURCE_RUN_ROOT]
+                           [--tasks TASKS [TASKS ...]]
+                           [--batch-size BATCH_SIZE]
+                           [--num-workers NUM_WORKERS] [--seed SEED]
+                           [--patience PATIENCE] [--delta DELTA]
+                           [--max-epochs MAX_EPOCHS] [--lr LR]
+                           [--weight-decay WEIGHT_DECAY]
+                           [--grad-clip GRAD_CLIP] [--max-width MAX_WIDTH]
+                           [--max-depth MAX_DEPTH] [--max-neurons MAX_NEURONS]
+                           [--width-stage-margin-patience WIDTH_STAGE_MARGIN_PATIENCE]
+                           [--width-stage-min-improve-pct WIDTH_STAGE_MIN_IMPROVE_PCT]
+                           [--min-width MIN_WIDTH] [--width-step WIDTH_STEP]
+                           [--width-count-per-depth WIDTH_COUNT_PER_DEPTH]
+                           [--min-depth MIN_DEPTH]
+                           [--param-band PARAM_EXP_START PARAM_EXP_END]
+                           [--repeat-count REPEAT_COUNT]
+                           [--repeat-index REPEAT_INDEX]
+                           [--stl-width STL_WIDTH] [--stl-depth STL_DEPTH]
+                           [--metrics-every METRICS_EVERY] [--pin-memory]
+                           [--no-pin-memory] [--use-bn] [--no-bn]
+                           [--widths WIDTHS] [--depths DEPTHS]
+                           [--architecture ARCHITECTURE]
+                           [--legacy-architecture-grid]
+run_stl_ablation.py: error: unrecognized arguments: --device cuda
+[2026-06-15 19:27:33] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:27:33] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:27:33] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:27:33] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:27:33] Tasks: ['classification']
+[2026-06-15 19:27:33] Architectures: ['[312]']
+[2026-06-15 19:27:33] Parameter decade band: [4, 7]
+[2026-06-15 19:27:33] Repeat count: 5
+[2026-06-15 19:27:33] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:27:33] Device: cuda
+[2026-06-15 19:27:33] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:27:35] [ABLATION:classification] GPU VRAM samples=[] avg_mib=None
+[2026-06-15 19:27:44] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:27:44] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:27:44] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:27:44] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:27:44] Tasks: ['classification']
+[2026-06-15 19:27:44] Architectures: ['[312]']
+[2026-06-15 19:27:44] Parameter decade band: [4, 7]
+[2026-06-15 19:27:44] Repeat count: 5
+[2026-06-15 19:27:44] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:27:44] Device: cuda
+[2026-06-15 19:27:44] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:28:12] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:28:12] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:28:12] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:28:12] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:28:12] Tasks: ['classification']
+[2026-06-15 19:28:12] Architectures: ['[312]']
+[2026-06-15 19:28:12] Parameter decade band: [4, 7]
+[2026-06-15 19:28:12] Repeat count: 5
+[2026-06-15 19:28:12] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:28:12] Device: cuda
+[2026-06-15 19:28:12] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:28:45] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:28:45] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:28:45] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:28:45] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:28:45] Tasks: ['classification']
+[2026-06-15 19:28:45] Architectures: ['[312]']
+[2026-06-15 19:28:45] Parameter decade band: [4, 7]
+[2026-06-15 19:28:45] Repeat count: 5
+[2026-06-15 19:28:45] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:28:45] Device: cuda
+[2026-06-15 19:28:45] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:28:57] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:28:57] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:28:57] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:28:57] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:28:57] Tasks: ['classification']
+[2026-06-15 19:28:57] Architectures: ['[312]']
+[2026-06-15 19:28:57] Parameter decade band: [4, 7]
+[2026-06-15 19:28:57] Repeat count: 5
+[2026-06-15 19:28:57] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:28:57] Device: cuda
+[2026-06-15 19:28:57] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:29:08] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:29:08] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:29:08] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:29:08] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:29:08] Tasks: ['classification']
+[2026-06-15 19:29:08] Architectures: ['[312]']
+[2026-06-15 19:29:08] Parameter decade band: [4, 7]
+[2026-06-15 19:29:08] Repeat count: 5
+[2026-06-15 19:29:08] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:29:08] Device: cuda
+[2026-06-15 19:29:08] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:29:25] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:29:25] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:29:25] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:29:25] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:29:25] Tasks: ['classification']
+[2026-06-15 19:29:25] Architectures: ['[312]']
+[2026-06-15 19:29:25] Parameter decade band: [4, 7]
+[2026-06-15 19:29:25] Repeat count: 5
+[2026-06-15 19:29:25] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:29:25] Device: cuda
+[2026-06-15 19:29:25] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:29:33] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:29:33] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:29:33] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:29:33] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:29:33] Tasks: ['classification']
+[2026-06-15 19:29:33] Architectures: ['[312]']
+[2026-06-15 19:29:33] Parameter decade band: [4, 7]
+[2026-06-15 19:29:33] Repeat count: 5
+[2026-06-15 19:29:33] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:29:33] Device: cuda
+[2026-06-15 19:29:33] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:29:59] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:29:59] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:29:59] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:29:59] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:29:59] Tasks: ['classification']
+[2026-06-15 19:29:59] Architectures: ['[312]']
+[2026-06-15 19:29:59] Parameter decade band: [4, 7]
+[2026-06-15 19:29:59] Repeat count: 5
+[2026-06-15 19:29:59] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:29:59] Device: cuda
+[2026-06-15 19:29:59] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:30:10] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:30:10] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:30:10] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:30:10] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:30:10] Tasks: ['classification']
+[2026-06-15 19:30:10] Architectures: ['[312]']
+[2026-06-15 19:30:10] Parameter decade band: [4, 7]
+[2026-06-15 19:30:10] Repeat count: 5
+[2026-06-15 19:30:10] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:30:10] Device: cuda
+[2026-06-15 19:30:10] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:30:20] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:30:20] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:30:20] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:30:20] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:30:20] Tasks: ['classification']
+[2026-06-15 19:30:20] Architectures: ['[312]']
+[2026-06-15 19:30:20] Parameter decade band: [4, 7]
+[2026-06-15 19:30:20] Repeat count: 5
+[2026-06-15 19:30:20] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:30:20] Device: cuda
+[2026-06-15 19:30:20] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:30:55] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:30:55] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:30:55] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:30:55] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:30:55] Tasks: ['classification']
+[2026-06-15 19:30:55] Architectures: ['[312]']
+[2026-06-15 19:30:55] Parameter decade band: [4, 7]
+[2026-06-15 19:30:55] Repeat count: 5
+[2026-06-15 19:30:55] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:30:55] Device: cuda
+[2026-06-15 19:30:55] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:31:04] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:31:04] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:31:04] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:31:04] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:31:04] Tasks: ['classification']
+[2026-06-15 19:31:04] Architectures: ['[312]']
+[2026-06-15 19:31:04] Parameter decade band: [4, 7]
+[2026-06-15 19:31:04] Repeat count: 5
+[2026-06-15 19:31:04] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:31:04] Device: cuda
+[2026-06-15 19:31:04] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:31:17] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:31:17] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:31:17] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:31:17] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:31:17] Tasks: ['classification']
+[2026-06-15 19:31:17] Architectures: ['[312]']
+[2026-06-15 19:31:17] Parameter decade band: [4, 7]
+[2026-06-15 19:31:17] Repeat count: 5
+[2026-06-15 19:31:17] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:31:17] Device: cuda
+[2026-06-15 19:31:17] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:31:29] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:31:29] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:31:29] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:31:29] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:31:29] Tasks: ['classification']
+[2026-06-15 19:31:29] Architectures: ['[312]']
+[2026-06-15 19:31:29] Parameter decade band: [4, 7]
+[2026-06-15 19:31:29] Repeat count: 5
+[2026-06-15 19:31:29] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:31:29] Device: cuda
+[2026-06-15 19:31:29] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:31:38] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:31:38] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:31:38] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:31:38] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:31:38] Tasks: ['classification']
+[2026-06-15 19:31:38] Architectures: ['[312]']
+[2026-06-15 19:31:38] Parameter decade band: [4, 7]
+[2026-06-15 19:31:38] Repeat count: 5
+[2026-06-15 19:31:38] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:31:38] Device: cuda
+[2026-06-15 19:31:38] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:33:01] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:33:01] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:33:01] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:33:01] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:33:01] Tasks: ['classification']
+[2026-06-15 19:33:01] Architectures: ['[312]']
+[2026-06-15 19:33:01] Parameter decade band: [4, 7]
+[2026-06-15 19:33:01] Repeat count: 5
+[2026-06-15 19:33:01] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:33:01] Device: cuda
+[2026-06-15 19:33:01] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:33:10] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:33:10] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:33:10] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:33:10] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:33:10] Tasks: ['classification']
+[2026-06-15 19:33:10] Architectures: ['[312]']
+[2026-06-15 19:33:10] Parameter decade band: [4, 7]
+[2026-06-15 19:33:10] Repeat count: 5
+[2026-06-15 19:33:10] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:33:10] Device: cuda
+[2026-06-15 19:33:10] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:33:19] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:33:19] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:33:19] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:33:19] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:33:19] Tasks: ['classification']
+[2026-06-15 19:33:19] Architectures: ['[312]']
+[2026-06-15 19:33:19] Parameter decade band: [4, 7]
+[2026-06-15 19:33:19] Repeat count: 5
+[2026-06-15 19:33:19] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:33:19] Device: cuda
+[2026-06-15 19:33:19] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:33:28] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:33:28] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:33:28] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:33:28] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:33:28] Tasks: ['classification']
+[2026-06-15 19:33:28] Architectures: ['[312]']
+[2026-06-15 19:33:28] Parameter decade band: [4, 7]
+[2026-06-15 19:33:28] Repeat count: 5
+[2026-06-15 19:33:28] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:33:28] Device: cuda
+[2026-06-15 19:33:28] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:33:39] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:33:39] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:33:39] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:33:39] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:33:39] Tasks: ['classification']
+[2026-06-15 19:33:39] Architectures: ['[312]']
+[2026-06-15 19:33:39] Parameter decade band: [4, 7]
+[2026-06-15 19:33:39] Repeat count: 5
+[2026-06-15 19:33:39] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:33:39] Device: cuda
+[2026-06-15 19:33:39] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:33:49] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:33:49] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:33:49] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:33:49] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:33:49] Tasks: ['classification']
+[2026-06-15 19:33:49] Architectures: ['[312]']
+[2026-06-15 19:33:49] Parameter decade band: [4, 7]
+[2026-06-15 19:33:49] Repeat count: 5
+[2026-06-15 19:33:49] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:33:49] Device: cuda
+[2026-06-15 19:33:49] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:33:59] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:33:59] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:33:59] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:33:59] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:33:59] Tasks: ['classification']
+[2026-06-15 19:33:59] Architectures: ['[312]']
+[2026-06-15 19:33:59] Parameter decade band: [4, 7]
+[2026-06-15 19:33:59] Repeat count: 5
+[2026-06-15 19:33:59] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:33:59] Device: cuda
+[2026-06-15 19:33:59] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:34:08] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:34:08] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:34:08] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:34:08] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:34:08] Tasks: ['classification']
+[2026-06-15 19:34:08] Architectures: ['[312]']
+[2026-06-15 19:34:08] Parameter decade band: [4, 7]
+[2026-06-15 19:34:08] Repeat count: 5
+[2026-06-15 19:34:08] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:34:08] Device: cuda
+[2026-06-15 19:34:08] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:34:17] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:34:17] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:34:17] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:34:17] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:34:17] Tasks: ['classification']
+[2026-06-15 19:34:17] Architectures: ['[312]']
+[2026-06-15 19:34:17] Parameter decade band: [4, 7]
+[2026-06-15 19:34:17] Repeat count: 5
+[2026-06-15 19:34:17] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:34:17] Device: cuda
+[2026-06-15 19:34:17] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:34:50] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:34:50] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:34:50] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:34:50] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:34:50] Tasks: ['classification']
+[2026-06-15 19:34:50] Architectures: ['[312]']
+[2026-06-15 19:34:50] Parameter decade band: [4, 7]
+[2026-06-15 19:34:50] Repeat count: 5
+[2026-06-15 19:34:50] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:34:50] Device: cuda
+[2026-06-15 19:34:50] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:34:59] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:34:59] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:34:59] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:34:59] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:34:59] Tasks: ['classification']
+[2026-06-15 19:34:59] Architectures: ['[312]']
+[2026-06-15 19:34:59] Parameter decade band: [4, 7]
+[2026-06-15 19:34:59] Repeat count: 5
+[2026-06-15 19:34:59] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:34:59] Device: cuda
+[2026-06-15 19:34:59] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:35:12] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:35:12] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:35:12] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:35:12] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:35:12] Tasks: ['classification']
+[2026-06-15 19:35:12] Architectures: ['[312]']
+[2026-06-15 19:35:12] Parameter decade band: [4, 7]
+[2026-06-15 19:35:12] Repeat count: 5
+[2026-06-15 19:35:12] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:35:12] Device: cuda
+[2026-06-15 19:35:12] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:35:20] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:35:20] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:35:20] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:35:20] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:35:20] Tasks: ['classification']
+[2026-06-15 19:35:20] Architectures: ['[312]']
+[2026-06-15 19:35:20] Parameter decade band: [4, 7]
+[2026-06-15 19:35:20] Repeat count: 5
+[2026-06-15 19:35:20] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:35:20] Device: cuda
+[2026-06-15 19:35:20] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:35:30] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:35:30] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:35:30] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:35:30] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:35:30] Tasks: ['classification']
+[2026-06-15 19:35:30] Architectures: ['[312]']
+[2026-06-15 19:35:30] Parameter decade band: [4, 7]
+[2026-06-15 19:35:30] Repeat count: 5
+[2026-06-15 19:35:30] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:35:30] Device: cuda
+[2026-06-15 19:35:30] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:35:49] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:35:49] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:35:49] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:35:49] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:35:49] Tasks: ['classification']
+[2026-06-15 19:35:49] Architectures: ['[312]']
+[2026-06-15 19:35:49] Parameter decade band: [4, 7]
+[2026-06-15 19:35:49] Repeat count: 5
+[2026-06-15 19:35:49] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:35:49] Device: cuda
+[2026-06-15 19:35:49] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:35:58] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:35:58] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:35:58] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:35:58] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:35:58] Tasks: ['classification']
+[2026-06-15 19:35:58] Architectures: ['[312]']
+[2026-06-15 19:35:58] Parameter decade band: [4, 7]
+[2026-06-15 19:35:58] Repeat count: 5
+[2026-06-15 19:35:58] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:35:58] Device: cuda
+[2026-06-15 19:35:58] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:36:14] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:36:14] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:36:14] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:36:14] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:36:14] Tasks: ['classification']
+[2026-06-15 19:36:14] Architectures: ['[312]']
+[2026-06-15 19:36:14] Parameter decade band: [4, 7]
+[2026-06-15 19:36:14] Repeat count: 5
+[2026-06-15 19:36:14] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:36:14] Device: cuda
+[2026-06-15 19:36:14] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:36:23] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:36:23] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:36:23] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:36:23] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:36:23] Tasks: ['classification']
+[2026-06-15 19:36:23] Architectures: ['[312]']
+[2026-06-15 19:36:23] Parameter decade band: [4, 7]
+[2026-06-15 19:36:23] Repeat count: 5
+[2026-06-15 19:36:23] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:36:23] Device: cuda
+[2026-06-15 19:36:23] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:36:55] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:36:55] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:36:55] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:36:55] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:36:55] Tasks: ['classification']
+[2026-06-15 19:36:55] Architectures: ['[312]']
+[2026-06-15 19:36:55] Parameter decade band: [4, 7]
+[2026-06-15 19:36:55] Repeat count: 5
+[2026-06-15 19:36:55] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:36:55] Device: cuda
+[2026-06-15 19:36:55] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:37:04] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:37:04] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:37:04] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:37:04] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:37:04] Tasks: ['classification']
+[2026-06-15 19:37:04] Architectures: ['[312]']
+[2026-06-15 19:37:04] Parameter decade band: [4, 7]
+[2026-06-15 19:37:04] Repeat count: 5
+[2026-06-15 19:37:04] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:37:04] Device: cuda
+[2026-06-15 19:37:04] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:37:14] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:37:14] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:37:14] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:37:14] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:37:14] Tasks: ['classification']
+[2026-06-15 19:37:14] Architectures: ['[312]']
+[2026-06-15 19:37:14] Parameter decade band: [4, 7]
+[2026-06-15 19:37:14] Repeat count: 5
+[2026-06-15 19:37:14] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:37:14] Device: cuda
+[2026-06-15 19:37:14] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:37:23] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:37:23] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:37:23] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:37:23] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:37:23] Tasks: ['classification']
+[2026-06-15 19:37:23] Architectures: ['[312]']
+[2026-06-15 19:37:23] Parameter decade band: [4, 7]
+[2026-06-15 19:37:23] Repeat count: 5
+[2026-06-15 19:37:23] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:37:23] Device: cuda
+[2026-06-15 19:37:23] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:37:34] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:37:34] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:37:34] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:37:34] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:37:34] Tasks: ['classification']
+[2026-06-15 19:37:34] Architectures: ['[312]']
+[2026-06-15 19:37:34] Parameter decade band: [4, 7]
+[2026-06-15 19:37:34] Repeat count: 5
+[2026-06-15 19:37:34] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:37:34] Device: cuda
+[2026-06-15 19:37:34] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:37:43] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:37:43] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:37:43] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:37:43] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:37:43] Tasks: ['classification']
+[2026-06-15 19:37:43] Architectures: ['[312]']
+[2026-06-15 19:37:43] Parameter decade band: [4, 7]
+[2026-06-15 19:37:43] Repeat count: 5
+[2026-06-15 19:37:43] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:37:43] Device: cuda
+[2026-06-15 19:37:43] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:37:51] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:37:51] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:37:51] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:37:51] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:37:51] Tasks: ['classification']
+[2026-06-15 19:37:51] Architectures: ['[312]']
+[2026-06-15 19:37:51] Parameter decade band: [4, 7]
+[2026-06-15 19:37:51] Repeat count: 5
+[2026-06-15 19:37:51] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:37:51] Device: cuda
+[2026-06-15 19:37:51] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:38:01] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:38:01] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:38:01] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:38:01] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:38:01] Tasks: ['classification']
+[2026-06-15 19:38:01] Architectures: ['[312]']
+[2026-06-15 19:38:01] Parameter decade band: [4, 7]
+[2026-06-15 19:38:01] Repeat count: 5
+[2026-06-15 19:38:01] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:38:01] Device: cuda
+[2026-06-15 19:38:01] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:38:11] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:38:11] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:38:11] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:38:11] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:38:11] Tasks: ['classification']
+[2026-06-15 19:38:11] Architectures: ['[312]']
+[2026-06-15 19:38:11] Parameter decade band: [4, 7]
+[2026-06-15 19:38:11] Repeat count: 5
+[2026-06-15 19:38:11] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:38:11] Device: cuda
+[2026-06-15 19:38:11] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:38:20] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:38:20] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:38:20] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:38:20] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:38:20] Tasks: ['classification']
+[2026-06-15 19:38:20] Architectures: ['[312]']
+[2026-06-15 19:38:20] Parameter decade band: [4, 7]
+[2026-06-15 19:38:20] Repeat count: 5
+[2026-06-15 19:38:20] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:38:20] Device: cuda
+[2026-06-15 19:38:20] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:38:31] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:38:31] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:38:31] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:38:31] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:38:31] Tasks: ['classification']
+[2026-06-15 19:38:31] Architectures: ['[312]']
+[2026-06-15 19:38:31] Parameter decade band: [4, 7]
+[2026-06-15 19:38:31] Repeat count: 5
+[2026-06-15 19:38:31] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:38:31] Device: cuda
+[2026-06-15 19:38:31] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:38:42] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:38:42] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:38:42] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:38:42] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:38:42] Tasks: ['classification']
+[2026-06-15 19:38:42] Architectures: ['[312]']
+[2026-06-15 19:38:42] Parameter decade band: [4, 7]
+[2026-06-15 19:38:42] Repeat count: 5
+[2026-06-15 19:38:42] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:38:42] Device: cuda
+[2026-06-15 19:38:42] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:38:58] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:38:58] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:38:58] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:38:58] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:38:58] Tasks: ['classification']
+[2026-06-15 19:38:58] Architectures: ['[312]']
+[2026-06-15 19:38:58] Parameter decade band: [4, 7]
+[2026-06-15 19:38:58] Repeat count: 5
+[2026-06-15 19:38:58] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:38:58] Device: cuda
+[2026-06-15 19:38:58] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:39:47] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:39:47] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:39:47] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:39:47] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:39:47] Tasks: ['classification']
+[2026-06-15 19:39:47] Architectures: ['[312]']
+[2026-06-15 19:39:47] Parameter decade band: [4, 7]
+[2026-06-15 19:39:47] Repeat count: 5
+[2026-06-15 19:39:47] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:39:47] Device: cuda
+[2026-06-15 19:39:47] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:39:55] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:39:55] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:39:55] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:39:55] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:39:55] Tasks: ['classification']
+[2026-06-15 19:39:55] Architectures: ['[312]']
+[2026-06-15 19:39:55] Parameter decade band: [4, 7]
+[2026-06-15 19:39:55] Repeat count: 5
+[2026-06-15 19:39:55] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:39:55] Device: cuda
+[2026-06-15 19:39:55] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:40:05] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:40:05] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:40:05] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:40:05] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:40:05] Tasks: ['classification']
+[2026-06-15 19:40:05] Architectures: ['[312]']
+[2026-06-15 19:40:05] Parameter decade band: [4, 7]
+[2026-06-15 19:40:05] Repeat count: 5
+[2026-06-15 19:40:05] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:40:05] Device: cuda
+[2026-06-15 19:40:05] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:40:47] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:40:47] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:40:47] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:40:47] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:40:47] Tasks: ['classification']
+[2026-06-15 19:40:47] Architectures: ['[312]']
+[2026-06-15 19:40:47] Parameter decade band: [4, 7]
+[2026-06-15 19:40:47] Repeat count: 5
+[2026-06-15 19:40:47] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:40:47] Device: cuda
+[2026-06-15 19:40:47] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:41:31] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:41:31] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:41:31] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:41:31] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:41:31] Tasks: ['classification']
+[2026-06-15 19:41:31] Architectures: ['[312]']
+[2026-06-15 19:41:31] Parameter decade band: [4, 7]
+[2026-06-15 19:41:31] Repeat count: 5
+[2026-06-15 19:41:31] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:41:31] Device: cuda
+[2026-06-15 19:41:31] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:41:40] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:41:40] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:41:40] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:41:40] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:41:40] Tasks: ['classification']
+[2026-06-15 19:41:40] Architectures: ['[312]']
+[2026-06-15 19:41:40] Parameter decade band: [4, 7]
+[2026-06-15 19:41:40] Repeat count: 5
+[2026-06-15 19:41:40] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:41:40] Device: cuda
+[2026-06-15 19:41:40] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:41:50] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:41:50] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:41:50] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:41:50] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:41:50] Tasks: ['classification']
+[2026-06-15 19:41:50] Architectures: ['[312]']
+[2026-06-15 19:41:50] Parameter decade band: [4, 7]
+[2026-06-15 19:41:50] Repeat count: 5
+[2026-06-15 19:41:50] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:41:50] Device: cuda
+[2026-06-15 19:41:50] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:42:00] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:42:00] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:42:00] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:42:00] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:42:00] Tasks: ['classification']
+[2026-06-15 19:42:00] Architectures: ['[312]']
+[2026-06-15 19:42:00] Parameter decade band: [4, 7]
+[2026-06-15 19:42:00] Repeat count: 5
+[2026-06-15 19:42:00] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:42:00] Device: cuda
+[2026-06-15 19:42:00] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:42:27] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:42:27] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:42:27] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:42:27] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:42:27] Tasks: ['classification']
+[2026-06-15 19:42:27] Architectures: ['[312]']
+[2026-06-15 19:42:27] Parameter decade band: [4, 7]
+[2026-06-15 19:42:27] Repeat count: 5
+[2026-06-15 19:42:27] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:42:27] Device: cuda
+[2026-06-15 19:42:27] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:42:34] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:42:34] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:42:34] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:42:34] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:42:34] Tasks: ['classification']
+[2026-06-15 19:42:34] Architectures: ['[312]']
+[2026-06-15 19:42:34] Parameter decade band: [4, 7]
+[2026-06-15 19:42:34] Repeat count: 5
+[2026-06-15 19:42:34] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:42:34] Device: cuda
+[2026-06-15 19:42:34] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:42:44] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:42:44] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:42:44] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:42:44] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:42:44] Tasks: ['classification']
+[2026-06-15 19:42:44] Architectures: ['[312]']
+[2026-06-15 19:42:44] Parameter decade band: [4, 7]
+[2026-06-15 19:42:44] Repeat count: 5
+[2026-06-15 19:42:44] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:42:44] Device: cuda
+[2026-06-15 19:42:44] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:42:53] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:42:53] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:42:53] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:42:53] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:42:53] Tasks: ['classification']
+[2026-06-15 19:42:53] Architectures: ['[312]']
+[2026-06-15 19:42:53] Parameter decade band: [4, 7]
+[2026-06-15 19:42:53] Repeat count: 5
+[2026-06-15 19:42:53] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:42:53] Device: cuda
+[2026-06-15 19:42:53] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:43:03] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:43:03] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:43:03] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:43:03] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:43:03] Tasks: ['classification']
+[2026-06-15 19:43:03] Architectures: ['[312]']
+[2026-06-15 19:43:03] Parameter decade band: [4, 7]
+[2026-06-15 19:43:03] Repeat count: 5
+[2026-06-15 19:43:03] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:43:03] Device: cuda
+[2026-06-15 19:43:03] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:43:14] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:43:14] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:43:14] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:43:14] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:43:14] Tasks: ['classification']
+[2026-06-15 19:43:14] Architectures: ['[312]']
+[2026-06-15 19:43:14] Parameter decade band: [4, 7]
+[2026-06-15 19:43:14] Repeat count: 5
+[2026-06-15 19:43:14] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:43:14] Device: cuda
+[2026-06-15 19:43:14] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:43:22] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:43:22] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:43:22] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:43:22] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:43:22] Tasks: ['classification']
+[2026-06-15 19:43:22] Architectures: ['[312]']
+[2026-06-15 19:43:22] Parameter decade band: [4, 7]
+[2026-06-15 19:43:22] Repeat count: 5
+[2026-06-15 19:43:22] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:43:22] Device: cuda
+[2026-06-15 19:43:22] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:43:31] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:43:31] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:43:31] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:43:31] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:43:31] Tasks: ['classification']
+[2026-06-15 19:43:31] Architectures: ['[312]']
+[2026-06-15 19:43:31] Parameter decade band: [4, 7]
+[2026-06-15 19:43:31] Repeat count: 5
+[2026-06-15 19:43:31] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:43:31] Device: cuda
+[2026-06-15 19:43:31] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
+[2026-06-15 19:43:41] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-15 19:43:41] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_log.txt
+[2026-06-15 19:43:41] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched/training_stats.csv
+[2026-06-15 19:43:41] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_07/classification/_children/stl_ablation_r01_d01_parammatched/classification/stl_ablation_r01_d312_parammatched
+[2026-06-15 19:43:41] Tasks: ['classification']
+[2026-06-15 19:43:41] Architectures: ['[312]']
+[2026-06-15 19:43:41] Parameter decade band: [4, 7]
+[2026-06-15 19:43:41] Repeat count: 5
+[2026-06-15 19:43:41] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-15 19:43:41] Device: cuda
+[2026-06-15 19:43:41] Git commit: e2843ea06d1e745a02f5cfb6200c5d09cec9c9f8
