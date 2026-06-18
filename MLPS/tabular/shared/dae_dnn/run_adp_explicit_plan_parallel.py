@@ -12,7 +12,7 @@ from typing import Any, Deque, Dict, List, Tuple
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, detect_cpu_cores, launcher_child_env
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - import shim for direct script execution
@@ -83,7 +83,9 @@ def main() -> None:
     logger.log_console(f"Git commit: {rg.git_commit()}")
 
     reports: List[Dict[str, Any]] = []
-    active: Dict[subprocess.Popen[Any], Tuple[str, int, str, Path, List[str]]] = {}
+    active: Dict[subprocess.Popen[Any], Tuple[str, int, str, Path, List[str], int]] = {}
+    slot_count = max(1, min(int(args.concurrency), int(detect_cpu_cores())))
+    free_slots = set(range(slot_count))
 
     try:
         for phase_index, phase in enumerate(phases, start=1):
@@ -108,7 +110,7 @@ def main() -> None:
             logger.log_console(f"[PHASE] start name={phase_name} jobs={len(jobs)} {repeat_summary}")
 
             while pending or active:
-                while pending and len(active) < int(args.concurrency):
+                while pending and len(active) < int(args.concurrency) and free_slots:
                     current_repeat, task_name, task_root = pending.popleft()
                     if task_completed(task_root):
                         reports.append(
@@ -124,14 +126,17 @@ def main() -> None:
                         continue
                     cmd = build_worker_command(args, task_name, task_root)
                     task_root.mkdir(parents=True, exist_ok=True)
+                    slot_index = min(free_slots)
+                    free_slots.remove(slot_index)
                     proc = subprocess.Popen(
                         cmd,
                         env=launcher_child_env(
                             concurrency_hint=len(active) + 1,
                             job_key=f"{phase_name}:repeat_{current_repeat:02d}:{task_name}:{task_root}",
+                            affinity_slot=slot_index,
                         ),
                     )
-                    active[proc] = (phase_name, current_repeat, task_name, task_root, cmd)
+                    active[proc] = (phase_name, current_repeat, task_name, task_root, cmd, slot_index)
 
                 if not active:
                     continue
@@ -141,7 +146,7 @@ def main() -> None:
                     code = proc.poll()
                     if code is None:
                         continue
-                    current_phase, current_repeat, task_name, task_root, cmd = active[proc]
+                    current_phase, current_repeat, task_name, task_root, cmd, slot_index = active[proc]
                     terminate_child_process(proc)
                     finished.append(proc)
                     if code != 0:
@@ -176,7 +181,9 @@ def main() -> None:
                         )
 
                 for proc in finished:
-                    active.pop(proc, None)
+                    entry = active.pop(proc, None)
+                    if entry is not None:
+                        free_slots.add(entry[5])
 
                 if active:
                     time.sleep(2)

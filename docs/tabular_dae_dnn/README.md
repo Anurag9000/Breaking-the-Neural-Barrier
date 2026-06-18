@@ -111,6 +111,9 @@ Runtime tuning for the tabular launchers is centralized as well:
   deterministic `TABULAR_CPU_AFFINITY_CPUS` slice so concurrent children
   divide the CPU thread budget and CPU placement instead of all claiming the
   machine
+- concurrent launchers now allocate explicit slot indices for active children,
+  so simultaneously active jobs get disjoint CPU partitions instead of hashed
+  best-effort placement
 - `--num-workers 0` is treated as auto-max for the tabular loaders
 - the loaders use all detected logical CPU cores by default, plus persistent
   workers and prefetching when workers are enabled
@@ -125,6 +128,9 @@ Runtime tuning for the tabular launchers is centralized as well:
   the persistent Linux-side settings used on this machine:
   `kernel.sched_autogroup_enabled=0`, `user-UID.slice` high CPU/IO weights,
   and `user@.service` delegation for `cpu cpuset io memory pids`
+- `MLPS/tabular/shared/dae_dnn/smoke_runtime_priority.py` stress-tests the
+  same runtime path and verifies scope placement, `SCHED_BATCH`, disjoint
+  affinity slices, and high aggregate CPU utilization
 
 That policy is aggressive by design. It keeps the CPU side busy when the
 current workload can exploit the extra parallelism.

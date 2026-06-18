@@ -73,6 +73,7 @@ class ActiveRecoveryJob:
     device_mode: str
     log_path: Path
     log_handle: Optional[Any]
+    slot_index: int
     pause_requested: bool = False
 
 
@@ -372,7 +373,7 @@ def command_for_device(job: RecoveryJob, device_mode: str) -> List[str]:
     return out
 
 
-def launch(job: RecoveryJob, device_mode: str, gpu_index: int, concurrency_hint: int) -> Tuple[subprocess.Popen[Any], Any]:
+def launch(job: RecoveryJob, device_mode: str, gpu_index: int, concurrency_hint: int, slot_index: int) -> Tuple[subprocess.Popen[Any], Any]:
     job.root.mkdir(parents=True, exist_ok=True)
     log_path = job_log_path(job.root)
     log_handle = log_path.open("a", encoding="utf-8")
@@ -381,6 +382,7 @@ def launch(job: RecoveryJob, device_mode: str, gpu_index: int, concurrency_hint:
         env_for(device_mode, int(gpu_index)),
         concurrency_hint=concurrency_hint,
         job_key=f"{job.kind}:{job.task}:{job.root}",
+        affinity_slot=slot_index,
     )
     proc = subprocess.Popen(cmd, start_new_session=True, env=env, stdout=log_handle, stderr=log_handle, text=True)
     return proc, log_handle
@@ -452,6 +454,8 @@ def run(args: argparse.Namespace) -> None:
 
     pending: Deque[RecoveryJob] = deque(jobs)
     active: Dict[subprocess.Popen[Any], ActiveRecoveryJob] = {}
+    slot_count = max(1, min(int(detect_cpu_cores()), int(active_limit(args, len(jobs)))))
+    free_slots = set(range(slot_count))
     launches_enabled = True
     limit = active_limit(args, len(jobs))
     while pending or active:
@@ -478,7 +482,9 @@ def run(args: argparse.Namespace) -> None:
             logger.log_console(f"[TASK] requeued {job.name} exit={code} pause={active_job.pause_requested}")
 
         for proc in finished:
-            active.pop(proc, None)
+            entry = active.pop(proc, None)
+            if entry is not None:
+                free_slots.add(entry.slot_index)
 
         host = pressure.sample_host_memory_pressure()
         gpu = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index))
@@ -504,15 +510,17 @@ def run(args: argparse.Namespace) -> None:
                 continue
 
         device_mode = choose_device(args)
-        if pending and len(active) < limit and launches_enabled and (device_mode is not None or not active):
+        if pending and len(active) < limit and free_slots and launches_enabled and (device_mode is not None or not active):
             job = pending.popleft()
             if job_completed(job):
                 update_job_state(job.root, {"status": "completed", "completed": True, "completed_at": time.time()})
                 logger.log_console(f"[TASK] already_complete {job.name}")
                 continue
             chosen = device_mode or "cpu"
-            proc, handle = launch(job, chosen, int(args.gpu_device_index), concurrency_hint=len(active) + 1)
-            active[proc] = ActiveRecoveryJob(job=job, device_mode=chosen, log_path=job_log_path(job.root), log_handle=handle)
+            slot_index = min(free_slots)
+            free_slots.remove(slot_index)
+            proc, handle = launch(job, chosen, int(args.gpu_device_index), concurrency_hint=len(active) + 1, slot_index=slot_index)
+            active[proc] = ActiveRecoveryJob(job=job, device_mode=chosen, log_path=job_log_path(job.root), log_handle=handle, slot_index=slot_index)
             update_job_state(job.root, {"status": "running", "completed": False, "device": chosen, "started_at": time.time(), "command": command_for_device(job, chosen)})
             logger.log_console(
                 f"[TASK] launch {job.name} params={job.parameter_count} device={chosen} "

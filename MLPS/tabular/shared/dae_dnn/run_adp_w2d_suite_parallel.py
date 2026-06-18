@@ -14,7 +14,7 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from MLPS.tabular.shared.dae_dnn.tasks import task_names
-from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, detect_cpu_cores, launcher_child_env
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - import shim for direct script execution
@@ -217,7 +217,14 @@ def run_task(
         }
 
     cmd = build_worker_command(args, task_name, task_root)
-    proc = subprocess.Popen(cmd, env=launcher_child_env(concurrency_hint=concurrency_hint, job_key=f"{task_name}:{task_root}"))
+    proc = subprocess.Popen(
+        cmd,
+        env=launcher_child_env(
+            concurrency_hint=concurrency_hint,
+            job_key=f"{task_name}:{task_root}",
+            affinity_slot=0,
+        ),
+    )
     try:
         code = proc.wait()
     finally:
@@ -281,13 +288,15 @@ def main() -> None:
                 if repeat_index <= repeat_count_for_task(task_name, int(args.repeat_count)):
                     pending.append((repeat_index, task_name, repeat_root / task_name))
 
-            active: Dict[subprocess.Popen[Any], Tuple[int, str, Path, List[str]]] = {}
+            active: Dict[subprocess.Popen[Any], Tuple[int, str, Path, List[str], int]] = {}
+            slot_count = max(1, min(int(args.concurrency), int(detect_cpu_cores())))
+            free_slots = set(range(slot_count))
             logger.log_console(
                 f"[REPEAT] start repeat={repeat_index}/{max_repeat_count} root={repeat_root}"
             )
 
             while pending or active:
-                while pending and len(active) < int(args.concurrency):
+                while pending and len(active) < int(args.concurrency) and free_slots:
                     current_repeat, task_name, task_root = pending.popleft()
                     if task_completed(task_root):
                         reports.append(
@@ -302,14 +311,17 @@ def main() -> None:
                         continue
                     cmd = build_worker_command(args, task_name, task_root)
                     task_root.mkdir(parents=True, exist_ok=True)
+                    slot_index = min(free_slots)
+                    free_slots.remove(slot_index)
                     proc = subprocess.Popen(
                         cmd,
                         env=launcher_child_env(
                             concurrency_hint=len(active) + 1,
                             job_key=f"repeat_{current_repeat:02d}:{task_name}:{task_root}",
+                            affinity_slot=slot_index,
                         ),
                     )
-                    active[proc] = (current_repeat, task_name, task_root, cmd)
+                    active[proc] = (current_repeat, task_name, task_root, cmd, slot_index)
 
                 if not active:
                     continue
@@ -319,7 +331,7 @@ def main() -> None:
                     code = proc.poll()
                     if code is None:
                         continue
-                    current_repeat, task_name, task_root, cmd = active[proc]
+                    current_repeat, task_name, task_root, cmd, slot_index = active[proc]
                     terminate_child_process(proc)
                     finished.append(proc)
                     if code != 0:
@@ -348,7 +360,9 @@ def main() -> None:
                         )
 
                 for proc in finished:
-                    active.pop(proc, None)
+                    entry = active.pop(proc, None)
+                    if entry is not None:
+                        free_slots.add(entry[4])
 
                 if active:
                     time.sleep(2)
