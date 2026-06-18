@@ -3,24 +3,14 @@ set -euo pipefail
 
 cd "$(dirname "$0")/../../../.."
 
-# CPU-only default for this recovery family.
-# The mixed GPU+CPU launcher lives in
-# MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure_gpu_cpu.sh
-export CUDA_VISIBLE_DEVICES=""
-export NVIDIA_VISIBLE_DEVICES="none"
-unset PYTORCH_CUDA_ALLOC_CONF
-
-# CPU performance tuning for the default runner.
-export OMP_NUM_THREADS="${OMP_NUM_THREADS:-$(nproc)}"
-export MKL_NUM_THREADS="${MKL_NUM_THREADS:-$(nproc)}"
-export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-$(nproc)}"
-export NUMEXPR_NUM_THREADS="${NUMEXPR_NUM_THREADS:-$(nproc)}"
-
+# Mixed GPU+CPU recovery runner.
+# It shares the same run root as the CPU default runner so checkpoints and
+# candidate state can move between CPU and GPU launches without any layout fork.
 source MLPS/tabular/shared/dae_dnn/runtime_tuning.sh
 tabular_runtime_bootstrap
 
-CUDA_VISIBLE_DEVICES="" \
-NVIDIA_VISIBLE_DEVICES="none" \
+PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True,max_split_size_mb:128}" \
+CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" \
 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.py \
   --data-dir ./data \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
