@@ -1,0 +1,151 @@
+{
+  "architectures": [
+    [
+      47,
+      47,
+      47
+    ]
+  ],
+  "param_band": [
+    4,
+    6
+  ],
+  "repeat_count": 5,
+  "reports": [
+    {
+      "ablation_stl_runs": [
+        {
+          "architecture": [
+            47,
+            47,
+            47
+          ],
+          "best_epoch": 91,
+          "best_val": 0.020098971511214384,
+          "candidate_dir": "cand_000_d3_w47",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/autoencoding/_children/stl_ablation_r01_d03_w0047_47_47_47/autoencoding/stl_ablation_r03_d03_w0047_47_47_47/cand_000_d3_w47/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/autoencoding/_children/stl_ablation_r01_d03_w0047_47_47_47/autoencoding/stl_ablation_r03_d03_w0047_47_47_47/cand_000_d3_w47/checkpoint_last.pt",
+          "final_epoch": 101,
+          "phase": "stl_ablation_r03_d03_w0047_47_47_47",
+          "resumed": false,
+          "source_phase": null,
+          "task": "autoencoding",
+          "test_metrics": {
+            "test_loss": 0.019946480083429877
+          }
+        },
+        {
+          "architecture": [
+            47,
+            47,
+            47
+          ],
+          "best_epoch": 91,
+          "best_val": 0.019934476193238924,
+          "candidate_dir": "cand_000_d3_w47",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/autoencoding/_children/stl_ablation_r01_d03_w0047_47_47_47/autoencoding/stl_ablation_r04_d03_w0047_47_47_47/cand_000_d3_w47/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/autoencoding/_children/stl_ablation_r01_d03_w0047_47_47_47/autoencoding/stl_ablation_r04_d03_w0047_47_47_47/cand_000_d3_w47/checkpoint_last.pt",
+          "final_epoch": 101,
+          "phase": "stl_ablation_r04_d03_w0047_47_47_47",
+          "resumed": false,
+          "source_phase": null,
+          "task": "autoencoding",
+          "test_metrics": {
+            "test_loss": 0.01966702143308278
+          }
+        },
+        {
+          "architecture": [
+            47,
+            47,
+            47
+          ],
+          "best_epoch": 133,
+          "best_val": 0.019399374069820754,
+          "candidate_dir": "cand_000_d3_w47",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/autoencoding/_children/stl_ablation_r01_d03_w0047_47_47_47/autoencoding/stl_ablation_r05_d03_w0047_47_47_47/cand_000_d3_w47/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/autoencoding/_children/stl_ablation_r01_d03_w0047_47_47_47/autoencoding/stl_ablation_r05_d03_w0047_47_47_47/cand_000_d3_w47/checkpoint_last.pt",
+          "final_epoch": 143,
+          "phase": "stl_ablation_r05_d03_w0047_47_47_47",
+          "resumed": false,
+          "source_phase": null,
+          "task": "autoencoding",
+          "test_metrics": {
+            "test_loss": 0.019223036169590316
+          }
+        }
+      ],
+      "best_ablation": {
+        "architecture": [
+          47,
+          47,
+          47
+        ],
+        "best_epoch": 133,
+        "best_val": 0.019399374069820754,
+        "candidate_dir": "cand_000_d3_w47",
+        "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/autoencoding/_children/stl_ablation_r01_d03_w0047_47_47_47/autoencoding/stl_ablation_r05_d03_w0047_47_47_47/cand_000_d3_w47/checkpoint_best.pt",
+        "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06_cpu/autoencoding/_children/stl_ablation_r01_d03_w0047_47_47_47/autoencoding/stl_ablation_r05_d03_w0047_47_47_47/cand_000_d3_w47/checkpoint_last.pt",
+        "final_epoch": 143,
+        "parameter_count": 9971,
+        "phase": "stl_ablation_r05_d03_w0047_47_47_47",
+        "repeat": 5,
+        "resumed": false,
+        "source_phase": null,
+        "task": "autoencoding",
+        "test_metrics": {
+          "test_loss": 0.019223036169590316
+        }
+      },
+      "comparisons": [],
+      "curve_rows": [
+        {
+          "architecture": "[47, 47, 47]",
+          "best_epoch": 91,
+          "best_val": 0.020098971511214384,
+          "final_epoch": 101,
+          "parameter_count": 9971,
+          "phase": "stl_ablation_r03_d03_w0047_47_47_47",
+          "repeat": 3,
+          "task": "autoencoding",
+          "test_acc": null,
+          "test_loss": 0.019946480083429877
+        },
+        {
+          "architecture": "[47, 47, 47]",
+          "best_epoch": 91,
+          "best_val": 0.019934476193238924,
+          "final_epoch": 101,
+          "parameter_count": 9971,
+          "phase": "stl_ablation_r04_d03_w0047_47_47_47",
+          "repeat": 4,
+          "task": "autoencoding",
+          "test_acc": null,
+          "test_loss": 0.01966702143308278
+        },
+        {
+          "architecture": "[47, 47, 47]",
+          "best_epoch": 133,
+          "best_val": 0.019399374069820754,
+          "final_epoch": 143,
+          "parameter_count": 9971,
+          "phase": "stl_ablation_r05_d03_w0047_47_47_47",
+          "repeat": 5,
+          "task": "autoencoding",
+          "test_acc": null,
+          "test_loss": 0.019223036169590316
+        }
+      ],
+      "gpu_vram_avg_mib": null,
+      "gpu_vram_samples_mib": [],
+      "repeat_count": 5,
+      "source_adp_runs": [],
+      "source_paired_stl_runs": [],
+      "task": "autoencoding"
+    }
+  ],
+  "source_run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current",
+  "tasks": [
+    "autoencoding"
+  ]
+}
