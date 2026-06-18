@@ -13,6 +13,17 @@ Current missing inventory at a glance:
 | Small STL grid | `anomaly` is missing `d06/w256`, all `d08/*`, and all `d10/*`; no small-grid task has an explicit five-repeat structure |
 | Massive STL ablation | staged bands `param_10pow01_03` and `param_10pow07_08` are absent |
 
+Recovery runner:
+
+- `MLPS/tabular/shared/dae_dnn/run_missing_width_stl_recovery_pressure.sh`
+- writes to `MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1`
+- queues the width-only repeat/depth gaps and the missing anomaly small-grid
+  leaves together, sorted by estimated parameter count
+- uses GPU first while GPU memory is under the resume threshold, then CPU while
+  host RAM is under the resume threshold
+- pauses the largest active child on GPU or host RAM pressure, requeues the same
+  child root, and waits for a true child completion before admitting more work
+
 Task folders:
 
 - `classification`

@@ -28,6 +28,8 @@ Primary entry points:
 - `run_all.py` - full tabular suite
 - `run_stl_ablation.py` - STL ablation family generator
 - `run_stl_ablation_parallel.py` - resumable STL launcher
+- `run_missing_width_stl_recovery_pressure.py` - pressure-aware recovery
+  launcher for the cataloged width-only and anomaly small-grid gaps
 - `run_adp_w2d_suite_parallel.py` - resumable ADP width-to-depth suite
 - `probe_capacity.py` - capacity probing helper
 - `summarize_repeat_metrics.py` - repeat-level summary generation
