@@ -15,7 +15,7 @@ import torch
 
 from MLPS.tabular.shared.dae_dnn.platform_runtime import popen_process_group_kwargs, terminate_process_tree
 from MLPS.tabular.shared.dae_dnn.tasks import build_task
-from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, detect_cpu_cores, launcher_child_env
+from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - direct script execution
@@ -119,7 +119,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--gpu-device-index", type=int, default=0)
     p.add_argument("--pressure-poll-interval-sec", type=float, default=0.5)
     p.add_argument("--pressure-settle-sec", type=float, default=30.0)
-    p.add_argument("--max-active-jobs", type=int, default=0, help="0 means use all visible logical CPUs as job lanes.")
+    p.add_argument("--max-active-jobs", type=int, default=0, help="0 means use all queued jobs as lanes with no CPU-core ceiling.")
     p.add_argument("--max-active-gpu-jobs", type=int, default=0, help="Maximum concurrent GPU children. 0 means memory-pressure driven.")
     p.add_argument("--include-width-only", action="store_true", default=True)
     p.add_argument("--no-include-width-only", dest="include_width_only", action="store_false")
@@ -370,8 +370,7 @@ def active_limit(args: argparse.Namespace, total_jobs: int) -> int:
     limit = int(args.max_active_jobs or 0)
     if limit > 0:
         return max(1, min(int(total_jobs), int(limit)))
-    cores = int(detect_cpu_cores())
-    return max(1, min(int(total_jobs), cores))
+    return max(1, int(total_jobs))
 
 
 def gpu_active_limit(args: argparse.Namespace) -> int:
@@ -546,7 +545,7 @@ def run(args: argparse.Namespace) -> None:
 
     pending: Deque[RecoveryJob] = deque(jobs)
     active: Dict[subprocess.Popen[Any], ActiveRecoveryJob] = {}
-    slot_count = max(1, min(int(detect_cpu_cores()), int(limit)))
+    slot_count = max(1, int(limit))
     free_slots = set(range(slot_count))
     gpu_launch_blocked = False
     host_launch_blocked = False
