@@ -223,16 +223,19 @@ pending queue, and retries it as soon as resources allow. The launcher also
 persists its expanded job plan as
 `job_manifest.json` under the selected `--run-root`. On restart it reloads
 that manifest instead of recomputing the candidate lattice, so the same
-`--run-root` resumes the exact same concrete job set. Finished child roots
-stay skipped, resumable roots keep their existing checkpoints and
-`ablation_state.json`, and untouched jobs remain untouched until the launcher
-gets to them in the same resume-first, low-parameter-first order. If the
-launcher arguments or the run root change, the cached manifest is invalidated
-and the plan is rebuilt once for that new configuration. The checkpoint
-boundary is the last completed batch or epoch that reached `checkpoint_last.pt`;
-an OOM that kills the process before the next save resumes from that last
-durable state, not from the exact Python instruction that faulted. On the
-slower laptop split, set
+`--run-root` resumes the exact same concrete job set. This is the default
+planner path now; the launcher plans once, writes the manifest, and then
+reuses that manifest on later boots. Finished child roots stay skipped,
+resumable roots keep their existing checkpoints and `ablation_state.json`,
+and untouched jobs remain untouched until the launcher gets to them in the
+same resume-first, low-parameter-first order. Only plan-shaping inputs
+invalidate the manifest: root, tasks, band, architecture grid, repeat count,
+data/result roots, and child-training knobs that change the concrete job list.
+Scheduler-only knobs such as concurrency and pressure thresholds do not.
+The checkpoint boundary is the last completed batch or epoch that reached
+`checkpoint_last.pt`; an OOM that kills the process before the next save
+resumes from that last durable state, not from the exact Python instruction
+that faulted. On the slower laptop split, set
 `--pressure-settle-sec 30` to give each launch a shorter settle window.
 
 Runtime policy for the tabular runners is centralized:

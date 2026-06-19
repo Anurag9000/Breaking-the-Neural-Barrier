@@ -81,8 +81,11 @@ manifest instead of reconstructing the candidate lattice, so already-computed
 job planning does not repeat on every reboot. Completed child roots stay
 skipped, resumable roots keep their checkpoints and `ablation_state.json`,
 and untouched jobs remain untouched until the resume-first queue reaches
-them. Changing the task list, band, or run root invalidates the cached
-manifest and forces one fresh plan build for that new configuration.
+them. This is now the default behavior for the parallel STL runners. Only
+plan-shaping inputs invalidate the cached manifest: task list, band, run root,
+the architecture grid knobs, repeat count, data/result roots, and the child
+training knobs that change what each child would train. Scheduler-only knobs
+such as pressure thresholds or concurrency do not force a rebuild.
 
 The tabular loaders now also cap any oversize batch to the dataset length, so
 when a launcher asks for a batch larger than the split itself, that epoch is a
