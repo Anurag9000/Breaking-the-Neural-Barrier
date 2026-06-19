@@ -124,9 +124,12 @@ same run root reuses the cached plan instead of recomputing the candidate
 lattice. That cache is the default path now. Finished child roots remain
 skipped, partial child roots resume from their saved state, and untouched
 children only start when the queue reaches them in the same resume-first
-order. Only plan-shaping inputs invalidate the manifest: root, tasks, band,
-architecture grid, repeat count, and the child training knobs that change the
-concrete job list. Pressure thresholds and concurrency do not.
+order. The manifest signature is versioned with a launcher code-version token,
+so a real planner change can invalidate the cache without letting harmless
+runtime-only flag changes do it. Only plan-shaping inputs invalidate the
+manifest: root, tasks, band, architecture grid, repeat count, and the child
+training knobs that change the concrete job list. Pressure thresholds and
+concurrency do not.
 
 Runtime tuning for the tabular launchers is centralized as well:
 

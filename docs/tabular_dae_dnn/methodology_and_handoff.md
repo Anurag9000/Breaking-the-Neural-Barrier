@@ -231,7 +231,10 @@ and untouched jobs remain untouched until the launcher gets to them in the
 same resume-first, low-parameter-first order. Only plan-shaping inputs
 invalidate the manifest: root, tasks, band, architecture grid, repeat count,
 data/result roots, and child-training knobs that change the concrete job list.
-Scheduler-only knobs such as concurrency and pressure thresholds do not.
+The signature is also gated by a launcher code-version token, so a real plan
+change can force a rebuild while runtime-only flag changes still reuse the
+cached plan. Scheduler-only knobs such as concurrency and pressure thresholds
+do not.
 The checkpoint boundary is the last completed batch or epoch that reached
 `checkpoint_last.pt`; an OOM that kills the process before the next save
 resumes from that last durable state, not from the exact Python instruction
