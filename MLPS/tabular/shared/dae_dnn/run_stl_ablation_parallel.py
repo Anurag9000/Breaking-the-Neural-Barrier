@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import signal
 import subprocess
@@ -644,7 +645,91 @@ def pending_job_sort_key(job: ChildJob) -> Tuple[int, int, int, str, Tuple[int, 
     return (resume_rank, int(job.parameter_count), int(job.depth), str(job.task_name), tuple(job.architecture))
 
 
+def job_manifest_path(run_root: Path) -> Path:
+    return run_root / "job_manifest.json"
+
+
+def _jsonable(value: Any) -> Any:
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, dict):
+        return {str(key): _jsonable(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_jsonable(item) for item in value]
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return str(value)
+
+
+def job_manifest_signature(args: argparse.Namespace, tasks: Sequence[str], run_root: Path) -> Dict[str, Any]:
+    return {
+        "version": 1,
+        "run_root": str(run_root),
+        "tasks": list(tasks),
+        "args": _jsonable(vars(args)),
+    }
+
+
+def load_job_manifest(run_root: Path, signature: Dict[str, Any]) -> Optional[Dict[str, List[ChildJob]]]:
+    manifest = rg.load_json_if_exists(job_manifest_path(run_root))
+    if not isinstance(manifest, dict):
+        return None
+    if manifest.get("version") != 1 or manifest.get("signature") != signature:
+        return None
+    raw_jobs_by_task = manifest.get("jobs_by_task")
+    if not isinstance(raw_jobs_by_task, dict):
+        return None
+    jobs_by_task: Dict[str, List[ChildJob]] = {}
+    for task_name, raw_jobs in raw_jobs_by_task.items():
+        if not isinstance(raw_jobs, list):
+            return None
+        task_jobs: List[ChildJob] = []
+        for raw_job in raw_jobs:
+            if not isinstance(raw_job, dict):
+                return None
+            child_root_rel = raw_job.get("child_root")
+            architecture = raw_job.get("architecture")
+            if not child_root_rel or not architecture:
+                return None
+            architecture_tuple = tuple(int(v) for v in architecture)
+            task_jobs.append(
+                ChildJob(
+                    task_name=str(raw_job.get("task_name", task_name)),
+                    architecture=architecture_tuple,
+                    child_root=run_root / Path(str(child_root_rel)),
+                    parameter_count=int(raw_job.get("parameter_count", 0)),
+                    depth=int(raw_job.get("depth", len(architecture_tuple))),
+                    phase_name=str(raw_job.get("phase_name", "")),
+                )
+            )
+        task_jobs.sort(key=concrete_job_sort_key)
+        jobs_by_task[str(task_name)] = task_jobs
+    return jobs_by_task
+
+
+def write_job_manifest(run_root: Path, signature: Dict[str, Any], jobs_by_task: Dict[str, List[ChildJob]]) -> None:
+    serializable_jobs: Dict[str, List[Dict[str, Any]]] = {}
+    for task_name, jobs in jobs_by_task.items():
+        serializable_jobs[task_name] = [
+            {
+                "task_name": job.task_name,
+                "architecture": [int(v) for v in job.architecture],
+                "child_root": str(job.child_root.relative_to(run_root)),
+                "parameter_count": int(job.parameter_count),
+                "depth": int(job.depth),
+                "phase_name": job.phase_name,
+            }
+            for job in jobs
+        ]
+    rg.write_json(job_manifest_path(run_root), {"version": 1, "signature": signature, "jobs_by_task": serializable_jobs})
+
+
 def build_task_jobs(args: argparse.Namespace, tasks: Sequence[str], run_root: Path) -> Dict[str, List[ChildJob]]:
+    signature = job_manifest_signature(args, tasks, run_root)
+    cached = load_job_manifest(run_root, signature)
+    if cached is not None:
+        return cached
+
     cfg = stl.make_cfg(args, list(tasks), run_root)
     base_architectures = stl.build_architectures(args)
     jobs_by_task: Dict[str, List[ChildJob]] = {}
@@ -676,13 +761,14 @@ def build_task_jobs(args: argparse.Namespace, tasks: Sequence[str], run_root: Pa
                 )
         task_jobs.sort(key=concrete_job_sort_key)
         jobs_by_task[task_name] = task_jobs
+    write_job_manifest(run_root, signature, jobs_by_task)
     return jobs_by_task
 
 
 def active_job_limit(args: argparse.Namespace, job_count: int) -> int:
     limit = int(getattr(args, "max_active_jobs", 0) or 0)
     if limit <= 0:
-        return max(1, min(int(job_count), int(detect_cpu_cores())))
+        return max(1, int(job_count))
     return max(1, int(limit))
 
 
@@ -795,7 +881,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
     pending: Deque[ChildJob] = deque(sorted((job for jobs in jobs_by_task.values() for job in jobs), key=pending_job_sort_key))
     task_child_roots: Dict[str, List[Path]] = {task_name: [job.child_root for job in jobs] for task_name, jobs in jobs_by_task.items()}
     active: Dict[subprocess.Popen[Any], ActiveChildJob] = {}
-    slot_count = max(1, min(int(active_job_limit(args, len(pending))), int(detect_cpu_cores())))
+    slot_count = max(1, int(active_job_limit(args, len(pending))))
     free_slots = set(range(slot_count))
     failure_counts: Dict[Path, int] = defaultdict(int)
     launches_total = 0

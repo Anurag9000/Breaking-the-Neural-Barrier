@@ -75,6 +75,15 @@ fill, new launches are completion-gated: a memory-pressure pause or retryable
 child failure closes the admission window immediately. The scheduler then
 resumes only after a true child completion.
 
+The launcher persists the expanded job plan as `job_manifest.json` inside the
+selected `--run-root`. When you restart the same run root, it reloads that
+manifest instead of reconstructing the candidate lattice, so already-computed
+job planning does not repeat on every reboot. Completed child roots stay
+skipped, resumable roots keep their checkpoints and `ablation_state.json`,
+and untouched jobs remain untouched until the resume-first queue reaches
+them. Changing the task list, band, or run root invalidates the cached
+manifest and forces one fresh plan build for that new configuration.
+
 The tabular loaders now also cap any oversize batch to the dataset length, so
 when a launcher asks for a batch larger than the split itself, that epoch is a
 single batch by construction rather than an implied multi-batch pass.
