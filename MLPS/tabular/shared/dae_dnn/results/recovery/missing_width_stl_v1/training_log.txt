@@ -63,3 +63,31 @@
 [2026-06-19 12:58:13] [TASK] requeued width_only:prediction:r01:d01 exit=-15 pause=True
 [2026-06-19 12:58:35] [PRESSURE] pause_host small_stl:anomaly:d08:w160 host_used_pct=91.02 swap_used_pct=67.64
 [2026-06-19 12:59:05] [TASK] requeued small_stl:anomaly:d08:w160 exit=-15 pause=True
+[2026-06-19 16:06:45] [TASK] completed small_stl:anomaly:d10:w128 params=165174
+[2026-06-19 16:06:45] [STATE] host admission gate cleared by completion
+[2026-06-19 16:06:46] [TASK] launch small_stl:anomaly:d08:w160 params=200374 device=cpu host_used_pct=40.57 swap_used_pct=54.97 gpu_used_pct=0.24 active=3/20
+[2026-06-19 16:07:16] [TASK] launch width_only:prediction:r01:d01 params=450817 device=cpu host_used_pct=49.62 swap_used_pct=54.95 gpu_used_pct=0.24 active=4/20
+[2026-06-19 16:07:46] [TASK] launch width_only:prediction:r02:d01 params=450817 device=cpu host_used_pct=46.20 swap_used_pct=54.95 gpu_used_pct=0.24 active=5/20
+[2026-06-19 16:08:17] [TASK] launch width_only:prediction:r03:d01 params=450817 device=cpu host_used_pct=57.39 swap_used_pct=54.95 gpu_used_pct=0.24 active=6/20
+[2026-06-19 16:08:47] [TASK] launch width_only:prediction:r04:d01 params=450817 device=cpu host_used_pct=65.29 swap_used_pct=54.95 gpu_used_pct=0.24 active=7/20
+[2026-06-19 16:09:17] [TASK] launch width_only:prediction:r05:d01 params=450817 device=cpu host_used_pct=73.48 swap_used_pct=54.95 gpu_used_pct=0.24 active=8/20
+[2026-06-19 16:09:47] [TASK] launch width_only:simulation:r02:d01 params=450817 device=cpu host_used_pct=67.12 swap_used_pct=54.95 gpu_used_pct=0.24 active=9/20
+[2026-06-19 16:10:18] [TASK] launch width_only:simulation:r03:d01 params=450817 device=cpu host_used_pct=73.76 swap_used_pct=54.95 gpu_used_pct=0.24 active=10/20
+[2026-06-19 16:10:48] [TASK] launch width_only:simulation:r04:d01 params=450817 device=cpu host_used_pct=83.74 swap_used_pct=54.95 gpu_used_pct=0.24 active=11/20
+[2026-06-19 16:11:19] [TASK] launch width_only:simulation:r05:d01 params=450817 device=cpu host_used_pct=68.85 swap_used_pct=58.39 gpu_used_pct=0.24 active=12/20
+[2026-06-19 16:11:49] [PRESSURE] pause_host width_only:simulation:r05:d01 host_used_pct=91.21 swap_used_pct=59.10
+[2026-06-19 16:12:20] [STATE] host admission gate blocked until pressure recovers and a child completes
+[2026-06-19 16:12:20] [TASK] requeued width_only:simulation:r05:d01 exit=-15 pause=True
+[2026-06-19 16:13:58] [TASK] requeued small_stl:anomaly:d08:w096 exit=-15 pause=False
+[2026-06-19 16:13:58] [TASK] requeued small_stl:anomaly:d08:w128 exit=-15 pause=False
+[2026-06-19 16:13:58] [TASK] requeued small_stl:anomaly:d08:w160 exit=-15 pause=False
+[2026-06-19 16:13:58] [TASK] requeued width_only:prediction:r01:d01 exit=-15 pause=False
+[2026-06-19 16:13:58] [TASK] requeued width_only:prediction:r02:d01 exit=-15 pause=False
+[2026-06-19 16:13:58] [TASK] requeued width_only:prediction:r03:d01 exit=-15 pause=False
+[2026-06-19 16:13:58] [TASK] requeued width_only:prediction:r04:d01 exit=-15 pause=False
+[2026-06-19 16:13:58] [TASK] requeued width_only:prediction:r05:d01 exit=-15 pause=False
+[2026-06-19 16:13:58] [TASK] requeued width_only:simulation:r02:d01 exit=-15 pause=False
+[2026-06-19 16:13:58] [TASK] requeued width_only:simulation:r03:d01 exit=-15 pause=False
+[2026-06-19 16:13:58] [TASK] requeued width_only:simulation:r04:d01 exit=-15 pause=False
+[2026-06-19 16:13:58] [STATE] host admission gate auto-cleared after pressure recovery
+[2026-06-19 16:13:58] [TASK] launch width_only:simulation:r04:d01 params=450817 device=cpu host_used_pct=18.89 swap_used_pct=25.69 gpu_used_pct=0.24 active=1/20
