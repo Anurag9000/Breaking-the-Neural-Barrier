@@ -31,6 +31,10 @@ except ModuleNotFoundError:  # pragma: no cover - import shim for package-style 
     from MLPS.tabular.shared.dae_dnn import run_stl_ablation as stl
 
 
+LAUNCHER_MANIFEST_SIGNATURE_VERSION = 3
+LAUNCHER_CODE_VERSION = 3
+
+
 @dataclass(frozen=True)
 class ChildJob:
     task_name: str
@@ -653,40 +657,22 @@ def job_manifest_path(run_root: Path) -> Path:
 def job_manifest_signature(args: argparse.Namespace, tasks: Sequence[str], run_root: Path) -> Dict[str, Any]:
     return {
         # Only plan-shaping inputs belong here. Scheduler/runtime knobs such as
-        # concurrency and pressure thresholds intentionally do not invalidate
-        # the cached manifest, because they do not change the concrete job set.
-        "version": 2,
-        "run_root": str(run_root),
+        # concurrency, batch sizing, optimizer settings, and pressure thresholds
+        # intentionally do not invalidate the cached manifest because they do
+        # not change the concrete job set.
+        "version": LAUNCHER_MANIFEST_SIGNATURE_VERSION,
+        "launcher_code_version": LAUNCHER_CODE_VERSION,
         "tasks": sorted(str(task).lower() for task in tasks),
-        "data_dir": str(args.data_dir),
-        "results_dir": str(args.results_dir),
-        "source_run_root": str(args.source_run_root),
-        "batch_size": int(args.batch_size),
-        "pin_memory": bool(args.pin_memory),
-        "num_workers": int(args.num_workers),
-        "seed": int(args.seed),
-        "patience": int(args.patience),
-        "delta": float(args.delta),
-        "max_epochs": int(args.max_epochs),
-        "lr": float(args.lr),
-        "weight_decay": float(args.weight_decay),
-        "grad_clip": float(args.grad_clip),
-        "max_width": int(args.max_width),
-        "max_depth": int(args.max_depth),
-        "max_neurons": int(args.max_neurons),
-        "width_stage_margin_patience": int(args.width_stage_margin_patience),
-        "width_stage_min_improve_pct": float(args.width_stage_min_improve_pct),
-        "min_width": int(args.min_width),
-        "width_step": int(args.width_step),
-        "width_count_per_depth": int(args.width_count_per_depth),
-        "min_depth": int(args.min_depth),
-        "stl_width": int(args.stl_width),
-        "stl_depth": int(args.stl_depth),
-        "metrics_every": int(args.metrics_every),
-        "use_bn": bool(args.use_bn),
-        "legacy_architecture_grid": bool(args.legacy_architecture_grid),
         "param_band": list(stl.normalize_param_band(getattr(args, "param_band", None))) if getattr(args, "param_band", None) else None,
         "repeat_count": int(args.repeat_count),
+        "min_width": int(args.min_width),
+        "width_step": int(args.width_step),
+        "max_width": int(args.max_width),
+        "min_depth": int(args.min_depth),
+        "max_depth": int(args.max_depth),
+        "width_count_per_depth": int(args.width_count_per_depth),
+        "use_bn": bool(args.use_bn),
+        "legacy_architecture_grid": bool(args.legacy_architecture_grid),
     }
 
 
