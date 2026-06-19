@@ -145,10 +145,16 @@ def parse_args() -> argparse.Namespace:
         help="Polling interval for child completion and host RAM pressure checks.",
     )
     p.add_argument(
+        "--post-launch-sample-delay-sec",
+        type=float,
+        default=60.0,
+        help="Delay after each child launch before the next pressure sample and admission decision.",
+    )
+    p.add_argument(
         "--pressure-settle-sec",
         type=float,
-        default=1.0,
-        help="Wait this long after each launch or pause so RAM pressure can settle before the next decision.",
+        default=60.0,
+        help=argparse.SUPPRESS,
     )
     p.add_argument(
         "--max-retries-per-job",
@@ -894,6 +900,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
     active_limit = active_job_limit(args, len(pending))
     gpu_available = bool(torch.cuda.is_available())
     launches_enabled = True
+    launch_sample_delay_sec = max(0.0, float(getattr(args, "post_launch_sample_delay_sec", 60.0)))
+    launch_sample_hold_until = 0.0
 
     def build_child_env(device_mode: str) -> Dict[str, str]:
         env = os.environ.copy()
@@ -995,7 +1003,6 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     f"gpu_used_mib={gpu_pressure.used_mib}/{gpu_pressure.total_mib}"
                 )
                 terminate_child_process(next(proc for proc, entry in active.items() if entry is largest_gpu))
-                time.sleep(max(0.0, float(args.pressure_settle_sec)))
                 continue
 
         if active and pressure.used_pct > float(args.host_ram_pressure_limit_pct):
@@ -1012,8 +1019,11 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 )
                 terminate_child_process(next(proc for proc, entry in active.items() if entry is largest))
                 launches_enabled = False
-                time.sleep(max(0.0, float(args.pressure_settle_sec)))
                 continue
+
+        if time.time() < launch_sample_hold_until:
+            time.sleep(max(0.1, float(args.pressure_poll_interval_sec)))
+            continue
 
         if pending and not launches_enabled and pressure.used_pct <= float(args.host_ram_resume_pct):
             launches_enabled = True
@@ -1072,7 +1082,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 f"gpu_used_pct={gpu_pressure.used_pct:.2f} gpu_used_mib={gpu_pressure.used_mib}/{gpu_pressure.total_mib} "
                 f"active={len(active)}/{active_limit}"
             )
-            time.sleep(max(0.0, float(args.pressure_settle_sec)))
+            launch_sample_hold_until = time.time() + launch_sample_delay_sec
             continue
 
         if active or pending:

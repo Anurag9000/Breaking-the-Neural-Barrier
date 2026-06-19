@@ -118,7 +118,18 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--swap-resume-pct", type=float, default=100.0)
     p.add_argument("--gpu-device-index", type=int, default=0)
     p.add_argument("--pressure-poll-interval-sec", type=float, default=0.5)
-    p.add_argument("--pressure-settle-sec", type=float, default=30.0)
+    p.add_argument(
+        "--post-launch-sample-delay-sec",
+        type=float,
+        default=60.0,
+        help="Delay after each child launch before the next pressure sample and launch decision.",
+    )
+    p.add_argument(
+        "--pressure-settle-sec",
+        type=float,
+        default=60.0,
+        help=argparse.SUPPRESS,
+    )
     p.add_argument("--max-active-jobs", type=int, default=0, help="0 means use all queued jobs as lanes with no CPU-core ceiling.")
     p.add_argument("--max-active-gpu-jobs", type=int, default=0, help="Maximum concurrent GPU children. 0 means memory-pressure driven.")
     p.add_argument("--include-width-only", action="store_true", default=True)
@@ -534,6 +545,8 @@ def run(args: argparse.Namespace) -> None:
     logger.log_console(f"Jobs: {len(jobs)}")
     logger.log_console(f"Max active jobs: {limit}")
     logger.log_console(f"Max active GPU jobs: {gpu_active_limit(args)}")
+    launch_sample_delay_sec = max(0.0, float(getattr(args, "post_launch_sample_delay_sec", 60.0)))
+    launch_sample_hold_until = 0.0
     if forced_cpu_jobs:
         logger.log_console(f"[STATE] CPU-forced jobs restored: {len(forced_cpu_jobs)}")
     if bool(args.dry_run):
@@ -604,6 +617,10 @@ def run(args: argparse.Namespace) -> None:
             if entry is not None:
                 free_slots.add(entry.slot_index)
 
+        if time.time() < launch_sample_hold_until:
+            time.sleep(max(0.1, float(args.pressure_poll_interval_sec)))
+            continue
+
         host = pressure.sample_host_memory_pressure()
         swap = sample_swap_pressure()
         gpu = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index))
@@ -626,7 +643,6 @@ def run(args: argparse.Namespace) -> None:
                 update_job_state(victim.job.root, {"status": "pausing", "reason": "gpu_memory_pressure", "completed": False})
                 logger.log_console(f"[PRESSURE] pause_gpu {victim.job.name} gpu_used_pct={gpu.used_pct:.2f}")
                 terminate(next(proc for proc, entry in active.items() if entry is victim))
-                time.sleep(max(0.0, float(args.pressure_settle_sec)))
                 continue
         swap_pressure = swap.total_mib > 0 and swap.used_pct > float(args.swap_pressure_limit_pct)
         if active and (host.used_pct > float(args.host_ram_pressure_limit_pct) or swap_pressure):
@@ -647,7 +663,6 @@ def run(args: argparse.Namespace) -> None:
                         f"swap_used_pct={swap.used_pct:.2f}"
                     )
                     terminate(next(proc for proc, entry in active.items() if entry is victim))
-                time.sleep(max(0.0, float(args.pressure_settle_sec)))
                 continue
 
         active_gpu_jobs = sum(1 for entry in active.values() if entry.device_mode == "cuda")
@@ -683,7 +698,7 @@ def run(args: argparse.Namespace) -> None:
                 f"host_used_pct={host.used_pct:.2f} swap_used_pct={swap.used_pct:.2f} "
                 f"gpu_used_pct={gpu.used_pct:.2f} active={len(active)}/{limit}"
             )
-            time.sleep(max(0.0, float(args.pressure_settle_sec)))
+            launch_sample_hold_until = time.time() + launch_sample_delay_sec
             continue
         time.sleep(max(0.1, float(args.pressure_poll_interval_sec)))
     logger.log_console("[DONE] all recovery jobs completed")

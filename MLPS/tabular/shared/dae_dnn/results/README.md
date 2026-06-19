@@ -175,7 +175,7 @@ the same child root so the run resumes from its normal STL checkpoints. If a
 child exits with CUDA OOM or `CUBLAS_STATUS_ALLOC_FAILED`, the mixed runner
 requests a pause on the largest active GPU child, requeues the failed child
 at the front of the queue, and retries it again when resources free up. The
-default settle window is 30 seconds.
+default post-launch sample window is 60 seconds.
 
 The Python launchers use `platform_runtime.py` for host memory sampling and
 process-tree termination. Linux/WSL use `/proc` and POSIX process groups;
@@ -195,7 +195,7 @@ Relevant flags:
 - `--max-active-jobs`
 - `--max-retries-per-job` as a legacy compatibility flag; pressure-aware mode requeues failed children indefinitely
 - `--pressure-poll-interval-sec`
-- `--pressure-settle-sec` default `30`
+- `--post-launch-sample-delay-sec` default `60`
 
 For a fresh full strict-band rerun, the repo now includes:
 
