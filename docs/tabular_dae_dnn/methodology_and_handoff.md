@@ -218,6 +218,16 @@ work. If used RAM crosses the configured host threshold, it requests a pause on
 the largest active child, terminates only that child process group, and
 requeues that same child root. If a child exits with a CUDA OOM or cuBLAS
 allocation failure, the scheduler requests a pause on the largest active GPU
+
+The launcher also persists its expanded job plan as
+`job_manifest.json` under the selected `--run-root`. On restart it reloads
+that manifest instead of recomputing the candidate lattice, so the same
+`--run-root` resumes the exact same concrete job set. Finished child roots
+stay skipped, resumable roots keep their existing checkpoints and
+`ablation_state.json`, and untouched jobs remain untouched until the launcher
+gets to them in the same resume-first, low-parameter-first order. If the
+launcher arguments or the run root change, the cached manifest is invalidated
+and the plan is rebuilt once for that new configuration.
 child, requeues the failed child at the front of the pending queue, and tries
 it again as soon as a slot is available. When enough RAM or GPU memory is free
 again, the scheduler relaunches the paused child from the same run directory,
