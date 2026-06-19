@@ -1123,3 +1123,262 @@
 [2026-06-19 16:13:57] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=157 batch=1/1 done gpu_used_mib=15 host_available_mib=1990
 [2026-06-19 16:13:57] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=157 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.088485 running_loss=1.088485
 [2026-06-19 16:13:57] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=157 starting validation
+[2026-06-19 16:30:02] Initialized ContinuousLogger for goliath (Mode: sequential)
+[2026-06-19 16:30:02] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_03/d01/training_log.txt
+[2026-06-19 16:30:02] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_03/d01/training_stats.csv
+[2026-06-19 16:30:02] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_03/d01
+[2026-06-19 16:30:02] Tasks: ['simulation']
+[2026-06-19 16:30:02] Phases: ['ae_width_only']
+[2026-06-19 16:30:02] Device: cpu
+[2026-06-19 16:30:02] Git commit: f0992782757ecffe50334f566ca24eda88517ff5
+[2026-06-19 16:30:02] === Task start: simulation ===
+[2026-06-19 16:30:02] [TASK] start simulation
+[2026-06-19 16:30:02] [TASK:simulation] ADP phase start: ae_width_only
+[2026-06-19 16:30:02] Initialized ContinuousLogger for simulation_ae_width_only (Mode: ae_width_only)
+[2026-06-19 16:30:02] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_03/d01/simulation/ae_width_only/cand_000_d1_w1/training_log.txt
+[2026-06-19 16:30:02] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_03/d01/simulation/ae_width_only/cand_000_d1_w1/training_stats.csv
+[2026-06-19 16:30:05] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=158 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:05] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=158 batch=1/1 done gpu_used_mib=15 host_available_mib=4233
+[2026-06-19 16:30:05] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=158 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.086919 running_loss=1.086919
+[2026-06-19 16:30:05] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=158 starting validation
+[2026-06-19 16:30:06] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=158 finished validation val_loss=1.112566
+[2026-06-19 16:30:07] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=158 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3745
+[2026-06-19 16:30:07] [simulation][ae_width_only][cand_000_d1_w1] epoch=158 architecture=[1] train_loss=1.086919 val_loss=1.112566 candidate_best=1.112566 global_best=1.112566 es=0/10
+[2026-06-19 16:30:09] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=159 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:10] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=159 batch=1/1 done gpu_used_mib=15 host_available_mib=2079
+[2026-06-19 16:30:10] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=159 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.086647 running_loss=1.086647
+[2026-06-19 16:30:10] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=159 starting validation
+[2026-06-19 16:30:10] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=159 finished validation val_loss=1.111785
+[2026-06-19 16:30:10] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=159 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1748
+[2026-06-19 16:30:10] [simulation][ae_width_only][cand_000_d1_w1] epoch=159 architecture=[1] train_loss=1.086647 val_loss=1.111785 candidate_best=1.111785 global_best=1.111785 es=0/10
+[2026-06-19 16:30:13] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=160 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:13] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=160 batch=1/1 done gpu_used_mib=15 host_available_mib=1729
+[2026-06-19 16:30:13] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=160 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.085876 running_loss=1.085876
+[2026-06-19 16:30:13] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=160 starting validation
+[2026-06-19 16:30:14] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=160 finished validation val_loss=1.110980
+[2026-06-19 16:30:14] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=160 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2080
+[2026-06-19 16:30:14] [simulation][ae_width_only][cand_000_d1_w1] epoch=160 architecture=[1] train_loss=1.085876 val_loss=1.110980 candidate_best=1.110980 global_best=1.110980 es=0/10
+[2026-06-19 16:30:17] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=161 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:17] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=161 batch=1/1 done gpu_used_mib=15 host_available_mib=2833
+[2026-06-19 16:30:17] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=161 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.085086 running_loss=1.085086
+[2026-06-19 16:30:17] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=161 starting validation
+[2026-06-19 16:30:18] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=161 finished validation val_loss=1.110158
+[2026-06-19 16:30:18] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=161 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2791
+[2026-06-19 16:30:18] [simulation][ae_width_only][cand_000_d1_w1] epoch=161 architecture=[1] train_loss=1.085086 val_loss=1.110158 candidate_best=1.110158 global_best=1.110158 es=0/10
+[2026-06-19 16:30:21] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=162 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:21] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=162 batch=1/1 done gpu_used_mib=15 host_available_mib=3528
+[2026-06-19 16:30:21] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=162 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.084277 running_loss=1.084277
+[2026-06-19 16:30:21] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=162 starting validation
+[2026-06-19 16:30:21] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=162 finished validation val_loss=1.109315
+[2026-06-19 16:30:21] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=162 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3841
+[2026-06-19 16:30:21] [simulation][ae_width_only][cand_000_d1_w1] epoch=162 architecture=[1] train_loss=1.084277 val_loss=1.109315 candidate_best=1.109315 global_best=1.109315 es=0/10
+[2026-06-19 16:30:25] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=163 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:25] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=163 batch=1/1 done gpu_used_mib=15 host_available_mib=4363
+[2026-06-19 16:30:25] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=163 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.083446 running_loss=1.083446
+[2026-06-19 16:30:25] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=163 starting validation
+[2026-06-19 16:30:25] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=163 finished validation val_loss=1.108446
+[2026-06-19 16:30:25] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=163 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4275
+[2026-06-19 16:30:25] [simulation][ae_width_only][cand_000_d1_w1] epoch=163 architecture=[1] train_loss=1.083446 val_loss=1.108446 candidate_best=1.108446 global_best=1.108446 es=0/10
+[2026-06-19 16:30:28] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=164 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:28] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=164 batch=1/1 done gpu_used_mib=15 host_available_mib=4543
+[2026-06-19 16:30:28] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=164 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.082597 running_loss=1.082597
+[2026-06-19 16:30:28] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=164 starting validation
+[2026-06-19 16:30:29] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=164 finished validation val_loss=1.107569
+[2026-06-19 16:30:29] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=164 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4773
+[2026-06-19 16:30:29] [simulation][ae_width_only][cand_000_d1_w1] epoch=164 architecture=[1] train_loss=1.082597 val_loss=1.107569 candidate_best=1.107569 global_best=1.107569 es=0/10
+[2026-06-19 16:30:32] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=165 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:32] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=165 batch=1/1 done gpu_used_mib=15 host_available_mib=4619
+[2026-06-19 16:30:32] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=165 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.081733 running_loss=1.081733
+[2026-06-19 16:30:32] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=165 starting validation
+[2026-06-19 16:30:32] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=165 finished validation val_loss=1.106677
+[2026-06-19 16:30:33] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=165 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4977
+[2026-06-19 16:30:33] [simulation][ae_width_only][cand_000_d1_w1] epoch=165 architecture=[1] train_loss=1.081733 val_loss=1.106677 candidate_best=1.106677 global_best=1.106677 es=0/10
+[2026-06-19 16:30:36] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=166 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:36] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=166 batch=1/1 done gpu_used_mib=15 host_available_mib=4909
+[2026-06-19 16:30:36] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=166 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.080853 running_loss=1.080853
+[2026-06-19 16:30:36] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=166 starting validation
+[2026-06-19 16:30:36] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=166 finished validation val_loss=1.105770
+[2026-06-19 16:30:36] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=166 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4797
+[2026-06-19 16:30:36] [simulation][ae_width_only][cand_000_d1_w1] epoch=166 architecture=[1] train_loss=1.080853 val_loss=1.105770 candidate_best=1.105770 global_best=1.105770 es=0/10
+[2026-06-19 16:30:40] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=167 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:40] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=167 batch=1/1 done gpu_used_mib=15 host_available_mib=4517
+[2026-06-19 16:30:40] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=167 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.079954 running_loss=1.079954
+[2026-06-19 16:30:40] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=167 starting validation
+[2026-06-19 16:30:40] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=167 finished validation val_loss=1.104847
+[2026-06-19 16:30:40] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=167 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4422
+[2026-06-19 16:30:40] [simulation][ae_width_only][cand_000_d1_w1] epoch=167 architecture=[1] train_loss=1.079954 val_loss=1.104847 candidate_best=1.104847 global_best=1.104847 es=0/10
+[2026-06-19 16:30:43] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=168 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:44] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=168 batch=1/1 done gpu_used_mib=15 host_available_mib=3970
+[2026-06-19 16:30:44] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=168 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.079037 running_loss=1.079037
+[2026-06-19 16:30:44] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=168 starting validation
+[2026-06-19 16:30:44] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=168 finished validation val_loss=1.103906
+[2026-06-19 16:30:44] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=168 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3879
+[2026-06-19 16:30:44] [simulation][ae_width_only][cand_000_d1_w1] epoch=168 architecture=[1] train_loss=1.079037 val_loss=1.103906 candidate_best=1.103906 global_best=1.103906 es=0/10
+[2026-06-19 16:30:48] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=169 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:48] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=169 batch=1/1 done gpu_used_mib=15 host_available_mib=3667
+[2026-06-19 16:30:48] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=169 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.078098 running_loss=1.078098
+[2026-06-19 16:30:48] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=169 starting validation
+[2026-06-19 16:30:48] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=169 finished validation val_loss=1.102952
+[2026-06-19 16:30:49] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=169 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3629
+[2026-06-19 16:30:49] [simulation][ae_width_only][cand_000_d1_w1] epoch=169 architecture=[1] train_loss=1.078098 val_loss=1.102952 candidate_best=1.102952 global_best=1.102952 es=0/10
+[2026-06-19 16:30:52] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=170 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:52] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=170 batch=1/1 done gpu_used_mib=15 host_available_mib=3569
+[2026-06-19 16:30:52] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=170 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.077140 running_loss=1.077140
+[2026-06-19 16:30:52] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=170 starting validation
+[2026-06-19 16:30:53] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=170 finished validation val_loss=1.101983
+[2026-06-19 16:30:53] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=170 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3306
+[2026-06-19 16:30:53] [simulation][ae_width_only][cand_000_d1_w1] epoch=170 architecture=[1] train_loss=1.077140 val_loss=1.101983 candidate_best=1.101983 global_best=1.101983 es=0/10
+[2026-06-19 16:30:57] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=171 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:30:57] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=171 batch=1/1 done gpu_used_mib=15 host_available_mib=2807
+[2026-06-19 16:30:57] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=171 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.076163 running_loss=1.076163
+[2026-06-19 16:30:57] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=171 starting validation
+[2026-06-19 16:30:57] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=171 finished validation val_loss=1.100995
+[2026-06-19 16:30:58] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=171 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2654
+[2026-06-19 16:30:58] [simulation][ae_width_only][cand_000_d1_w1] epoch=171 architecture=[1] train_loss=1.076163 val_loss=1.100995 candidate_best=1.100995 global_best=1.100995 es=0/10
+[2026-06-19 16:31:02] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=172 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:02] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=172 batch=1/1 done gpu_used_mib=15 host_available_mib=1759
+[2026-06-19 16:31:02] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=172 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.075166 running_loss=1.075166
+[2026-06-19 16:31:02] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=172 starting validation
+[2026-06-19 16:31:02] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=172 finished validation val_loss=1.099980
+[2026-06-19 16:31:03] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=172 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1641
+[2026-06-19 16:31:03] [simulation][ae_width_only][cand_000_d1_w1] epoch=172 architecture=[1] train_loss=1.075166 val_loss=1.099980 candidate_best=1.099980 global_best=1.099980 es=0/10
+[2026-06-19 16:31:08] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=173 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:08] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=173 batch=1/1 done gpu_used_mib=15 host_available_mib=3587
+[2026-06-19 16:31:08] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=173 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.074152 running_loss=1.074152
+[2026-06-19 16:31:08] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=173 starting validation
+[2026-06-19 16:31:09] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=173 finished validation val_loss=1.098958
+[2026-06-19 16:31:09] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=173 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3901
+[2026-06-19 16:31:09] [simulation][ae_width_only][cand_000_d1_w1] epoch=173 architecture=[1] train_loss=1.074152 val_loss=1.098958 candidate_best=1.098958 global_best=1.098958 es=0/10
+[2026-06-19 16:31:12] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=174 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:12] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=174 batch=1/1 done gpu_used_mib=15 host_available_mib=3804
+[2026-06-19 16:31:12] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=174 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.073125 running_loss=1.073125
+[2026-06-19 16:31:12] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=174 starting validation
+[2026-06-19 16:31:13] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=174 finished validation val_loss=1.097933
+[2026-06-19 16:31:13] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=174 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3561
+[2026-06-19 16:31:13] [simulation][ae_width_only][cand_000_d1_w1] epoch=174 architecture=[1] train_loss=1.073125 val_loss=1.097933 candidate_best=1.097933 global_best=1.097933 es=0/10
+[2026-06-19 16:31:17] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=175 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:17] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=175 batch=1/1 done gpu_used_mib=15 host_available_mib=3579
+[2026-06-19 16:31:17] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=175 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.072079 running_loss=1.072079
+[2026-06-19 16:31:17] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=175 starting validation
+[2026-06-19 16:31:18] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=175 finished validation val_loss=1.096899
+[2026-06-19 16:31:18] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=175 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3810
+[2026-06-19 16:31:18] [simulation][ae_width_only][cand_000_d1_w1] epoch=175 architecture=[1] train_loss=1.072079 val_loss=1.096899 candidate_best=1.096899 global_best=1.096899 es=0/10
+[2026-06-19 16:31:21] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=176 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:22] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=176 batch=1/1 done gpu_used_mib=15 host_available_mib=4066
+[2026-06-19 16:31:22] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=176 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.071013 running_loss=1.071013
+[2026-06-19 16:31:22] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=176 starting validation
+[2026-06-19 16:31:22] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=176 finished validation val_loss=1.095850
+[2026-06-19 16:31:22] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=176 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4039
+[2026-06-19 16:31:22] [simulation][ae_width_only][cand_000_d1_w1] epoch=176 architecture=[1] train_loss=1.071013 val_loss=1.095850 candidate_best=1.095850 global_best=1.095850 es=0/10
+[2026-06-19 16:31:26] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=177 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:26] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=177 batch=1/1 done gpu_used_mib=15 host_available_mib=4165
+[2026-06-19 16:31:26] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=177 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.069929 running_loss=1.069929
+[2026-06-19 16:31:26] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=177 starting validation
+[2026-06-19 16:31:26] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=177 finished validation val_loss=1.094785
+[2026-06-19 16:31:26] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=177 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4274
+[2026-06-19 16:31:26] [simulation][ae_width_only][cand_000_d1_w1] epoch=177 architecture=[1] train_loss=1.069929 val_loss=1.094785 candidate_best=1.094785 global_best=1.094785 es=0/10
+[2026-06-19 16:31:30] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=178 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:31] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=178 batch=1/1 done gpu_used_mib=15 host_available_mib=4972
+[2026-06-19 16:31:31] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=178 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.068830 running_loss=1.068830
+[2026-06-19 16:31:31] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=178 starting validation
+[2026-06-19 16:31:31] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=178 finished validation val_loss=1.093705
+[2026-06-19 16:31:31] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=178 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4907
+[2026-06-19 16:31:31] [simulation][ae_width_only][cand_000_d1_w1] epoch=178 architecture=[1] train_loss=1.068830 val_loss=1.093705 candidate_best=1.093705 global_best=1.093705 es=0/10
+[2026-06-19 16:31:35] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=179 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:36] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=179 batch=1/1 done gpu_used_mib=15 host_available_mib=4794
+[2026-06-19 16:31:36] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=179 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.067713 running_loss=1.067713
+[2026-06-19 16:31:36] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=179 starting validation
+[2026-06-19 16:31:36] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=179 finished validation val_loss=1.092609
+[2026-06-19 16:31:36] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=179 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4733
+[2026-06-19 16:31:36] [simulation][ae_width_only][cand_000_d1_w1] epoch=179 architecture=[1] train_loss=1.067713 val_loss=1.092609 candidate_best=1.092609 global_best=1.092609 es=0/10
+[2026-06-19 16:31:40] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=180 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:40] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=180 batch=1/1 done gpu_used_mib=15 host_available_mib=4659
+[2026-06-19 16:31:40] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=180 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.066580 running_loss=1.066580
+[2026-06-19 16:31:40] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=180 starting validation
+[2026-06-19 16:31:41] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=180 finished validation val_loss=1.091490
+[2026-06-19 16:31:41] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=180 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4577
+[2026-06-19 16:31:41] [simulation][ae_width_only][cand_000_d1_w1] epoch=180 architecture=[1] train_loss=1.066580 val_loss=1.091490 candidate_best=1.091490 global_best=1.091490 es=0/10
+[2026-06-19 16:31:45] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=181 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:45] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=181 batch=1/1 done gpu_used_mib=15 host_available_mib=4500
+[2026-06-19 16:31:45] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=181 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.065437 running_loss=1.065437
+[2026-06-19 16:31:45] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=181 starting validation
+[2026-06-19 16:31:46] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=181 finished validation val_loss=1.090354
+[2026-06-19 16:31:46] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=181 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4444
+[2026-06-19 16:31:46] [simulation][ae_width_only][cand_000_d1_w1] epoch=181 architecture=[1] train_loss=1.065437 val_loss=1.090354 candidate_best=1.090354 global_best=1.090354 es=0/10
+[2026-06-19 16:31:50] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=182 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:50] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=182 batch=1/1 done gpu_used_mib=15 host_available_mib=4027
+[2026-06-19 16:31:50] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=182 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.064279 running_loss=1.064279
+[2026-06-19 16:31:50] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=182 starting validation
+[2026-06-19 16:31:50] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=182 finished validation val_loss=1.089196
+[2026-06-19 16:31:50] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=182 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3951
+[2026-06-19 16:31:50] [simulation][ae_width_only][cand_000_d1_w1] epoch=182 architecture=[1] train_loss=1.064279 val_loss=1.089196 candidate_best=1.089196 global_best=1.089196 es=0/10
+[2026-06-19 16:31:54] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=183 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:54] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=183 batch=1/1 done gpu_used_mib=15 host_available_mib=3192
+[2026-06-19 16:31:54] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=183 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.063103 running_loss=1.063103
+[2026-06-19 16:31:54] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=183 starting validation
+[2026-06-19 16:31:55] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=183 finished validation val_loss=1.088020
+[2026-06-19 16:31:55] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=183 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3267
+[2026-06-19 16:31:55] [simulation][ae_width_only][cand_000_d1_w1] epoch=183 architecture=[1] train_loss=1.063103 val_loss=1.088020 candidate_best=1.088020 global_best=1.088020 es=0/10
+[2026-06-19 16:31:58] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=184 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:31:59] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=184 batch=1/1 done gpu_used_mib=15 host_available_mib=3376
+[2026-06-19 16:31:59] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=184 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.061908 running_loss=1.061908
+[2026-06-19 16:31:59] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=184 starting validation
+[2026-06-19 16:31:59] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=184 finished validation val_loss=1.086831
+[2026-06-19 16:31:59] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=184 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3441
+[2026-06-19 16:31:59] [simulation][ae_width_only][cand_000_d1_w1] epoch=184 architecture=[1] train_loss=1.061908 val_loss=1.086831 candidate_best=1.086831 global_best=1.086831 es=0/10
+[2026-06-19 16:32:03] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=185 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:32:03] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=185 batch=1/1 done gpu_used_mib=15 host_available_mib=4215
+[2026-06-19 16:32:03] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=185 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.060701 running_loss=1.060701
+[2026-06-19 16:32:03] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=185 starting validation
+[2026-06-19 16:32:03] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=185 finished validation val_loss=1.085629
+[2026-06-19 16:32:04] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=185 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4224
+[2026-06-19 16:32:04] [simulation][ae_width_only][cand_000_d1_w1] epoch=185 architecture=[1] train_loss=1.060701 val_loss=1.085629 candidate_best=1.085629 global_best=1.085629 es=0/10
+[2026-06-19 16:32:08] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=186 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:32:09] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=186 batch=1/1 done gpu_used_mib=15 host_available_mib=4214
+[2026-06-19 16:32:09] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=186 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.059481 running_loss=1.059481
+[2026-06-19 16:32:09] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=186 starting validation
+[2026-06-19 16:32:09] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=186 finished validation val_loss=1.084409
+[2026-06-19 16:32:09] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=186 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4113
+[2026-06-19 16:32:09] [simulation][ae_width_only][cand_000_d1_w1] epoch=186 architecture=[1] train_loss=1.059481 val_loss=1.084409 candidate_best=1.084409 global_best=1.084409 es=0/10
+[2026-06-19 16:32:13] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=187 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:32:14] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=187 batch=1/1 done gpu_used_mib=15 host_available_mib=3615
+[2026-06-19 16:32:14] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=187 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.058247 running_loss=1.058247
+[2026-06-19 16:32:14] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=187 starting validation
+[2026-06-19 16:32:14] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=187 finished validation val_loss=1.083169
+[2026-06-19 16:32:14] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=187 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3823
+[2026-06-19 16:32:14] [simulation][ae_width_only][cand_000_d1_w1] epoch=187 architecture=[1] train_loss=1.058247 val_loss=1.083169 candidate_best=1.083169 global_best=1.083169 es=0/10
+[2026-06-19 16:32:18] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=188 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:32:18] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=188 batch=1/1 done gpu_used_mib=15 host_available_mib=3525
+[2026-06-19 16:32:18] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=188 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.057004 running_loss=1.057004
+[2026-06-19 16:32:18] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=188 starting validation
+[2026-06-19 16:32:19] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=188 finished validation val_loss=1.081904
+[2026-06-19 16:32:19] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=188 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3334
+[2026-06-19 16:32:19] [simulation][ae_width_only][cand_000_d1_w1] epoch=188 architecture=[1] train_loss=1.057004 val_loss=1.081904 candidate_best=1.081904 global_best=1.081904 es=0/10
+[2026-06-19 16:32:23] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=189 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:32:24] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=189 batch=1/1 done gpu_used_mib=15 host_available_mib=1871
+[2026-06-19 16:32:24] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=189 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.055756 running_loss=1.055756
+[2026-06-19 16:32:24] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=189 starting validation
+[2026-06-19 16:32:24] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=189 finished validation val_loss=1.080621
+[2026-06-19 16:32:24] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=189 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1818
+[2026-06-19 16:32:24] [simulation][ae_width_only][cand_000_d1_w1] epoch=189 architecture=[1] train_loss=1.055756 val_loss=1.080621 candidate_best=1.080621 global_best=1.080621 es=0/10
+[2026-06-19 16:32:28] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=190 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:32:29] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=190 batch=1/1 done gpu_used_mib=15 host_available_mib=2129
+[2026-06-19 16:32:29] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=190 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.054500 running_loss=1.054500
+[2026-06-19 16:32:29] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=190 starting validation
+[2026-06-19 16:32:29] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=190 finished validation val_loss=1.079329
+[2026-06-19 16:32:29] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=190 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2066
+[2026-06-19 16:32:29] [simulation][ae_width_only][cand_000_d1_w1] epoch=190 architecture=[1] train_loss=1.054500 val_loss=1.079329 candidate_best=1.079329 global_best=1.079329 es=0/10
+[2026-06-19 16:32:32] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=191 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:32:32] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=191 batch=1/1 done gpu_used_mib=15 host_available_mib=2254
+[2026-06-19 16:32:32] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=191 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.053232 running_loss=1.053232
+[2026-06-19 16:32:32] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=191 starting validation
+[2026-06-19 16:32:32] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=191 finished validation val_loss=1.078022
+[2026-06-19 16:32:32] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=191 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2362
+[2026-06-19 16:32:32] [simulation][ae_width_only][cand_000_d1_w1] epoch=191 architecture=[1] train_loss=1.053232 val_loss=1.078022 candidate_best=1.078022 global_best=1.078022 es=0/10
+[2026-06-19 16:32:37] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=192 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 16:32:37] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=192 batch=1/1 done gpu_used_mib=15 host_available_mib=2305
+[2026-06-19 16:32:37] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=192 batch=1/1 batch_size=16512 running_batches=1 batch_loss=1.051956 running_loss=1.051956
+[2026-06-19 16:32:37] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=192 starting validation
+[2026-06-19 16:32:37] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=192 finished validation val_loss=1.076701
+[2026-06-19 16:32:38] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=192 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2198
+[2026-06-19 16:32:38] [simulation][ae_width_only][cand_000_d1_w1] epoch=192 architecture=[1] train_loss=1.051956 val_loss=1.076701 candidate_best=1.076701 global_best=1.076701 es=0/10

@@ -116,7 +116,7 @@ the largest active GPU child, requeues the failed child at the front of the
 pending queue, and retries it again as soon as a device slot becomes
 available. Children always resume from the same child root and reuse the
 normal STL checkpoints and `ablation_state.json`. The current recovery
-wrapper uses a 30 second pressure settle window.
+wrapper uses a 60 second post-launch sample window.
 
 The launcher also writes `job_manifest.json` under each `--run-root`. That
 manifest captures the fully expanded concrete job plan, so restarting the
@@ -199,7 +199,7 @@ Key pressure-aware flags:
 - `--max-active-jobs 0` for no hard slot cap beyond RAM pressure
 - `--max-retries-per-job 0` as a legacy compatibility flag; pressure-aware mode now requeues failed children indefinitely
 - `--pressure-poll-interval-sec 0.5`
-- `--pressure-settle-sec 30`
+- `--post-launch-sample-delay-sec 60`
 
 For a fresh full rerun of the strict `10^4..10^6` massive STL band, use:
 

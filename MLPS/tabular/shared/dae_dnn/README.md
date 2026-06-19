@@ -80,7 +80,7 @@ Recovery wrapper contract:
 8. ignore swap in the default wrapper path by setting swap thresholds to
    `100 / 100`
 9. use `--max-active-jobs 0` as the all-visible-CPU default and keep
-   `--pressure-settle-sec 30` as the standard settle window
+   `--post-launch-sample-delay-sec 60` as the standard post-launch sample window
 10. use shared platform helpers for host memory sampling and child-process
     tree termination on Linux, WSL, Git Bash, and native Windows
 
