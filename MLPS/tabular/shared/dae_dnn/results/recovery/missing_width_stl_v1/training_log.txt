@@ -28,3 +28,38 @@
 [2026-06-19 11:21:28] [TASK] requeued small_stl:anomaly:d10:w096 exit=-15 pause=True
 [2026-06-19 11:43:29] [PRESSURE] pause_host small_stl:anomaly:d08:w096 host_used_pct=90.98 swap_used_pct=60.93
 [2026-06-19 11:44:00] [TASK] requeued small_stl:anomaly:d08:w096 exit=-15 pause=True
+[2026-06-19 12:40:53] [TASK] completed small_stl:anomaly:d08:w064 params=37174
+[2026-06-19 12:40:53] [STATE] host admission gate cleared by completion
+[2026-06-19 12:40:53] [TASK] launch small_stl:anomaly:d08:w096 params=77238 device=cpu host_used_pct=51.70 swap_used_pct=45.91 gpu_used_pct=0.24 active=6/20
+[2026-06-19 12:41:23] [TASK] launch small_stl:anomaly:d10:w096 params=96246 device=cpu host_used_pct=64.91 swap_used_pct=45.91 gpu_used_pct=0.24 active=7/20
+[2026-06-19 12:41:53] [TASK] launch small_stl:anomaly:d08:w128 params=131638 device=cpu host_used_pct=73.11 swap_used_pct=45.91 gpu_used_pct=0.24 active=8/20
+[2026-06-19 12:42:23] [TASK] completed small_stl:anomaly:d10:w096 params=96246
+[2026-06-19 12:42:23] [TASK] launch small_stl:anomaly:d10:w128 params=165174 device=cpu host_used_pct=74.46 swap_used_pct=56.63 gpu_used_pct=0.24 active=8/20
+[2026-06-19 12:42:53] [TASK] launch small_stl:anomaly:d08:w160 params=200374 device=cpu host_used_pct=76.40 swap_used_pct=69.62 gpu_used_pct=0.24 active=9/20
+[2026-06-19 12:43:23] [TASK] launch width_only:prediction:r05:d01 params=49153 device=cpu host_used_pct=78.77 swap_used_pct=100.00 gpu_used_pct=0.24 active=10/20
+[2026-06-19 12:43:54] [TASK] launch width_only:simulation:r02:d01 params=49153 device=cpu host_used_pct=85.23 swap_used_pct=84.81 gpu_used_pct=0.24 active=11/20
+[2026-06-19 12:44:25] [TASK] launch width_only:simulation:r03:d01 params=49153 device=cpu host_used_pct=76.26 swap_used_pct=86.81 gpu_used_pct=0.24 active=12/20
+[2026-06-19 12:44:55] [TASK] launch width_only:simulation:r04:d01 params=49153 device=cpu host_used_pct=79.11 swap_used_pct=97.83 gpu_used_pct=0.24 active=13/20
+[2026-06-19 12:45:25] [PRESSURE] pause_host small_stl:anomaly:d08:w160 host_used_pct=93.95 swap_used_pct=100.00
+[2026-06-19 12:45:55] [STATE] host admission gate blocked until pressure recovers and a child completes
+[2026-06-19 12:45:55] [TASK] requeued small_stl:anomaly:d08:w160 exit=-15 pause=True
+[2026-06-19 12:53:35] Initialized ContinuousLogger for missing_width_stl_recovery (Mode: pressure_aware_recovery)
+[2026-06-19 12:53:35] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_log.txt
+[2026-06-19 12:53:35] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_stats.csv
+[2026-06-19 12:53:38] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1
+[2026-06-19 12:53:38] Jobs: 189
+[2026-06-19 12:53:38] Max active jobs: 20
+[2026-06-19 12:53:38] Max active GPU jobs: 0
+[2026-06-19 12:53:38] [TASK] launch small_stl:anomaly:d08:w096 params=77238 device=cpu host_used_pct=22.34 swap_used_pct=1.29 gpu_used_pct=0.24 active=1/20
+[2026-06-19 12:54:09] [TASK] launch small_stl:anomaly:d08:w128 params=131638 device=cpu host_used_pct=58.55 swap_used_pct=1.29 gpu_used_pct=0.24 active=2/20
+[2026-06-19 12:54:39] [TASK] launch small_stl:anomaly:d10:w128 params=165174 device=cpu host_used_pct=61.04 swap_used_pct=1.29 gpu_used_pct=0.24 active=3/20
+[2026-06-19 12:55:09] [TASK] launch small_stl:anomaly:d08:w160 params=200374 device=cpu host_used_pct=71.82 swap_used_pct=1.29 gpu_used_pct=0.24 active=4/20
+[2026-06-19 12:55:39] [TASK] launch width_only:prediction:r01:d01 params=450817 device=cpu host_used_pct=77.10 swap_used_pct=13.97 gpu_used_pct=0.24 active=5/20
+[2026-06-19 12:56:09] [TASK] launch width_only:prediction:r02:d01 params=450817 device=cpu host_used_pct=69.03 swap_used_pct=55.48 gpu_used_pct=0.24 active=6/20
+[2026-06-19 12:56:39] [PRESSURE] pause_host width_only:prediction:r02:d01 host_used_pct=90.56 swap_used_pct=80.59
+[2026-06-19 12:57:10] [STATE] host admission gate blocked until pressure recovers and a child completes
+[2026-06-19 12:57:10] [TASK] requeued width_only:prediction:r02:d01 exit=-15 pause=True
+[2026-06-19 12:57:43] [PRESSURE] pause_host width_only:prediction:r01:d01 host_used_pct=91.13 swap_used_pct=64.20
+[2026-06-19 12:58:13] [TASK] requeued width_only:prediction:r01:d01 exit=-15 pause=True
+[2026-06-19 12:58:35] [PRESSURE] pause_host small_stl:anomaly:d08:w160 host_used_pct=91.02 swap_used_pct=67.64
+[2026-06-19 12:59:05] [TASK] requeued small_stl:anomaly:d08:w160 exit=-15 pause=True

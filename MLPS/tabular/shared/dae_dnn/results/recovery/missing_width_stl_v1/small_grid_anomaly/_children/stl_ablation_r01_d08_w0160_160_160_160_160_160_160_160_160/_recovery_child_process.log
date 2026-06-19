@@ -51,3 +51,147 @@
 [2026-06-19 09:18:46] [METRICS] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=5 finished auxiliary metrics keys=['auroc']
 [2026-06-19 09:18:46] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=5 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1814
 [2026-06-19 09:18:46] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=5 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.748695 val_loss=0.773708 candidate_best=0.773708 global_best=0.773708 es=0/10
+[2026-06-19 12:43:01] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-19 12:43:01] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/training_log.txt
+[2026-06-19 12:43:01] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/training_stats.csv
+[2026-06-19 12:43:01] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160
+[2026-06-19 12:43:01] Tasks: ['anomaly']
+[2026-06-19 12:43:01] Architectures: ['[160, 160, 160, 160, 160, 160, 160, 160]']
+[2026-06-19 12:43:01] Repeat count: 5
+[2026-06-19 12:43:01] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-19 12:43:01] Device: cpu
+[2026-06-19 12:43:01] Git commit: 9f22e4cdcfaf7c59177aa6b44a4ebe49638a4df0
+[2026-06-19 12:43:06] [ABLATION:anomaly] STL phase start: stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 architecture=[160, 160, 160, 160, 160, 160, 160, 160]
+[2026-06-19 12:43:06] Initialized ContinuousLogger for anomaly_stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 (Mode: stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160)
+[2026-06-19 12:43:06] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/anomaly/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/cand_000_d8_w160/training_log.txt
+[2026-06-19 12:43:06] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/anomaly/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/cand_000_d8_w160/training_stats.csv
+[2026-06-19 12:43:16] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=6 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:43:16] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=6 batch=1/1 done gpu_used_mib=15 host_available_mib=1374
+[2026-06-19 12:43:16] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=6 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.654153 running_loss=0.654153
+[2026-06-19 12:43:16] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=6 starting validation
+[2026-06-19 12:43:18] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=6 finished validation val_loss=0.773717
+[2026-06-19 12:43:19] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=6 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=1266
+[2026-06-19 12:43:19] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=6 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.654153 val_loss=0.773717 candidate_best=0.773708 global_best=0.773708 es=1/10
+[2026-06-19 12:43:28] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=7 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:43:28] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=7 batch=1/1 done gpu_used_mib=15 host_available_mib=3268
+[2026-06-19 12:43:28] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=7 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.747948 running_loss=0.747948
+[2026-06-19 12:43:28] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=7 starting validation
+[2026-06-19 12:43:30] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=7 finished validation val_loss=0.772996
+[2026-06-19 12:43:31] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=7 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2059
+[2026-06-19 12:43:31] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=7 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.747948 val_loss=0.772996 candidate_best=0.772996 global_best=0.772996 es=0/10
+[2026-06-19 12:43:56] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=8 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:43:57] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=8 batch=1/1 done gpu_used_mib=15 host_available_mib=4250
+[2026-06-19 12:43:57] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=8 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.747229 running_loss=0.747229
+[2026-06-19 12:43:57] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=8 starting validation
+[2026-06-19 12:43:59] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=8 finished validation val_loss=0.772248
+[2026-06-19 12:43:59] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=8 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4737
+[2026-06-19 12:43:59] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=8 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.747229 val_loss=0.772248 candidate_best=0.772248 global_best=0.772248 es=0/10
+[2026-06-19 12:44:13] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=9 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:44:14] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=9 batch=1/1 done gpu_used_mib=15 host_available_mib=4160
+[2026-06-19 12:44:14] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=9 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.746484 running_loss=0.746484
+[2026-06-19 12:44:14] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=9 starting validation
+[2026-06-19 12:44:15] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=9 finished validation val_loss=0.771489
+[2026-06-19 12:44:16] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=9 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4570
+[2026-06-19 12:44:16] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=9 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.746484 val_loss=0.771489 candidate_best=0.771489 global_best=0.771489 es=0/10
+[2026-06-19 12:44:37] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=10 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:44:37] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=10 batch=1/1 done gpu_used_mib=15 host_available_mib=4474
+[2026-06-19 12:44:37] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=10 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.745728 running_loss=0.745728
+[2026-06-19 12:44:37] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=10 starting validation
+[2026-06-19 12:44:41] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=10 finished validation val_loss=0.770723
+[2026-06-19 12:44:41] [METRICS] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=10 starting auxiliary metrics
+[2026-06-19 12:44:50] [METRICS] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=10 finished auxiliary metrics keys=['auroc']
+[2026-06-19 12:44:50] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=10 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2548
+[2026-06-19 12:44:50] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=10 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.745728 val_loss=0.770723 candidate_best=0.770723 global_best=0.770723 es=0/10
+[2026-06-19 12:45:20] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=11 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:45:21] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=11 batch=1/1 done gpu_used_mib=15 host_available_mib=2464
+[2026-06-19 12:45:21] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=11 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.744964 running_loss=0.744964
+[2026-06-19 12:45:21] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=11 starting validation
+[2026-06-19 12:45:23] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=11 finished validation val_loss=0.769957
+[2026-06-19 12:45:24] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=11 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=749
+[2026-06-19 12:45:24] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=11 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.744964 val_loss=0.769957 candidate_best=0.769957 global_best=0.769957 es=0/10
+[2026-06-19 12:55:28] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-19 12:55:28] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/training_log.txt
+[2026-06-19 12:55:28] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/training_stats.csv
+[2026-06-19 12:55:28] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160
+[2026-06-19 12:55:28] Tasks: ['anomaly']
+[2026-06-19 12:55:28] Architectures: ['[160, 160, 160, 160, 160, 160, 160, 160]']
+[2026-06-19 12:55:28] Repeat count: 5
+[2026-06-19 12:55:28] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-19 12:55:28] Device: cpu
+[2026-06-19 12:55:28] Git commit: 9f22e4cdcfaf7c59177aa6b44a4ebe49638a4df0
+[2026-06-19 12:55:34] [ABLATION:anomaly] STL phase start: stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 architecture=[160, 160, 160, 160, 160, 160, 160, 160]
+[2026-06-19 12:55:34] Initialized ContinuousLogger for anomaly_stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 (Mode: stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160)
+[2026-06-19 12:55:34] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/anomaly/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/cand_000_d8_w160/training_log.txt
+[2026-06-19 12:55:34] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/anomaly/stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160/cand_000_d8_w160/training_stats.csv
+[2026-06-19 12:55:48] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=12 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:55:48] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=12 batch=1/1 done gpu_used_mib=15 host_available_mib=4245
+[2026-06-19 12:55:48] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=12 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.529037 running_loss=0.529037
+[2026-06-19 12:55:48] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=12 starting validation
+[2026-06-19 12:55:51] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=12 finished validation val_loss=0.769583
+[2026-06-19 12:55:51] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=12 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4404
+[2026-06-19 12:55:51] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=12 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.529037 val_loss=0.769583 candidate_best=0.769583 global_best=0.769583 es=0/10
+[2026-06-19 12:56:04] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=13 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:56:04] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=13 batch=1/1 done gpu_used_mib=15 host_available_mib=4627
+[2026-06-19 12:56:04] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=13 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.743810 running_loss=0.743810
+[2026-06-19 12:56:04] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=13 starting validation
+[2026-06-19 12:56:05] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=13 finished validation val_loss=0.768766
+[2026-06-19 12:56:05] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=13 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4554
+[2026-06-19 12:56:05] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=13 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.743810 val_loss=0.768766 candidate_best=0.768766 global_best=0.768766 es=0/10
+[2026-06-19 12:56:21] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=14 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:56:21] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=14 batch=1/1 done gpu_used_mib=15 host_available_mib=2469
+[2026-06-19 12:56:21] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=14 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.742994 running_loss=0.742994
+[2026-06-19 12:56:21] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=14 starting validation
+[2026-06-19 12:56:23] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=14 finished validation val_loss=0.767921
+[2026-06-19 12:56:24] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=14 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2745
+[2026-06-19 12:56:24] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=14 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.742994 val_loss=0.767921 candidate_best=0.767921 global_best=0.767921 es=0/10
+[2026-06-19 12:56:45] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=15 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:56:45] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=15 batch=1/1 done gpu_used_mib=15 host_available_mib=3143
+[2026-06-19 12:56:45] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=15 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.742149 running_loss=0.742149
+[2026-06-19 12:56:45] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=15 starting validation
+[2026-06-19 12:56:47] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=15 finished validation val_loss=0.767065
+[2026-06-19 12:56:47] [METRICS] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=15 starting auxiliary metrics
+[2026-06-19 12:56:58] [METRICS] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=15 finished auxiliary metrics keys=['auroc']
+[2026-06-19 12:56:58] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=15 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4778
+[2026-06-19 12:56:58] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=15 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.742149 val_loss=0.767065 candidate_best=0.767065 global_best=0.767065 es=0/10
+[2026-06-19 12:57:14] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=16 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:57:14] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=16 batch=1/1 done gpu_used_mib=15 host_available_mib=3765
+[2026-06-19 12:57:14] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=16 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.741293 running_loss=0.741293
+[2026-06-19 12:57:14] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=16 starting validation
+[2026-06-19 12:57:16] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=16 finished validation val_loss=0.766198
+[2026-06-19 12:57:16] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=16 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3736
+[2026-06-19 12:57:16] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=16 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.741293 val_loss=0.766198 candidate_best=0.766198 global_best=0.766198 es=0/10
+[2026-06-19 12:57:31] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=17 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:57:31] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=17 batch=1/1 done gpu_used_mib=15 host_available_mib=3568
+[2026-06-19 12:57:31] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=17 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.740426 running_loss=0.740426
+[2026-06-19 12:57:31] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=17 starting validation
+[2026-06-19 12:57:34] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=17 finished validation val_loss=0.765319
+[2026-06-19 12:57:34] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=17 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3993
+[2026-06-19 12:57:34] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=17 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.740426 val_loss=0.765319 candidate_best=0.765319 global_best=0.765319 es=0/10
+[2026-06-19 12:57:51] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=18 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:57:51] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=18 batch=1/1 done gpu_used_mib=15 host_available_mib=3428
+[2026-06-19 12:57:51] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=18 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.739546 running_loss=0.739546
+[2026-06-19 12:57:51] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=18 starting validation
+[2026-06-19 12:57:53] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=18 finished validation val_loss=0.764434
+[2026-06-19 12:57:53] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=18 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3080
+[2026-06-19 12:57:53] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=18 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.739546 val_loss=0.764434 candidate_best=0.764434 global_best=0.764434 es=0/10
+[2026-06-19 12:58:03] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=19 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:58:03] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=19 batch=1/1 done gpu_used_mib=15 host_available_mib=3060
+[2026-06-19 12:58:03] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=19 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.738660 running_loss=0.738660
+[2026-06-19 12:58:03] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=19 starting validation
+[2026-06-19 12:58:04] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=19 finished validation val_loss=0.763568
+[2026-06-19 12:58:04] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=19 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3519
+[2026-06-19 12:58:04] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=19 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.738660 val_loss=0.763568 candidate_best=0.763568 global_best=0.763568 es=0/10
+[2026-06-19 12:58:13] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=20 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:58:13] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=20 batch=1/1 done gpu_used_mib=15 host_available_mib=3124
+[2026-06-19 12:58:13] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=20 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.737793 running_loss=0.737793
+[2026-06-19 12:58:13] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=20 starting validation
+[2026-06-19 12:58:15] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=20 finished validation val_loss=0.762737
+[2026-06-19 12:58:15] [METRICS] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=20 starting auxiliary metrics
+[2026-06-19 12:58:18] [METRICS] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=20 finished auxiliary metrics keys=['auroc']
+[2026-06-19 12:58:18] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=20 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=3600
+[2026-06-19 12:58:18] [anomaly][stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160][cand_000_d8_w160] epoch=20 architecture=[160, 160, 160, 160, 160, 160, 160, 160] train_loss=0.737793 val_loss=0.762737 candidate_best=0.762737 global_best=0.762737 es=0/10
+[2026-06-19 12:58:34] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=21 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:58:34] [CKPT] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=21 batch=1/1 done gpu_used_mib=15 host_available_mib=2319
+[2026-06-19 12:58:34] [BATCH] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=21 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.736961 running_loss=0.736961
+[2026-06-19 12:58:34] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=21 starting validation
+[2026-06-19 12:58:35] [VAL] task=anomaly phase=stl_ablation_r01_d08_w0160_160_160_160_160_160_160_160_160 candidate=cand_000_d8_w160 epoch=21 finished validation val_loss=0.761928

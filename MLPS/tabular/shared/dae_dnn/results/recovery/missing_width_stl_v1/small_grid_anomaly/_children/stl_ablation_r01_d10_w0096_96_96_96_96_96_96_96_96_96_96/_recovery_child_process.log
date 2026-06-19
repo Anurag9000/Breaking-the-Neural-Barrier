@@ -2599,3 +2599,87 @@ Saved loss vs neurons plot to MLPS/tabular/shared/dae_dnn/results/recovery/missi
 [2026-06-19 11:20:47] [VAL] task=anomaly phase=stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96 candidate=cand_000_d10_w96 epoch=86 finished validation val_loss=0.758185
 [2026-06-19 11:20:47] [CKPT] task=anomaly phase=stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96 candidate=cand_000_d10_w96 epoch=86 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=5392
 [2026-06-19 11:20:47] [anomaly][stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96][cand_000_d10_w96] epoch=86 architecture=[96, 96, 96, 96, 96, 96, 96, 96, 96, 96] train_loss=0.732364 val_loss=0.758185 candidate_best=0.758236 global_best=0.758236 es=9/10
+[2026-06-19 12:41:26] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-19 12:41:26] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0096_96_96_96_96_96_96_96_96_96_96/training_log.txt
+[2026-06-19 12:41:26] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0096_96_96_96_96_96_96_96_96_96_96/training_stats.csv
+[2026-06-19 12:41:26] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0096_96_96_96_96_96_96_96_96_96_96
+[2026-06-19 12:41:26] Tasks: ['anomaly']
+[2026-06-19 12:41:26] Architectures: ['[96, 96, 96, 96, 96, 96, 96, 96, 96, 96]']
+[2026-06-19 12:41:26] Repeat count: 5
+[2026-06-19 12:41:26] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-19 12:41:26] Device: cpu
+[2026-06-19 12:41:26] Git commit: 9f22e4cdcfaf7c59177aa6b44a4ebe49638a4df0
+[2026-06-19 12:41:27] [ABLATION:anomaly] STL phase start: stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96 architecture=[96, 96, 96, 96, 96, 96, 96, 96, 96, 96]
+[2026-06-19 12:41:27] Initialized ContinuousLogger for anomaly_stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96 (Mode: stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96)
+[2026-06-19 12:41:27] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0096_96_96_96_96_96_96_96_96_96_96/anomaly/stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96/cand_000_d10_w96/training_log.txt
+[2026-06-19 12:41:27] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0096_96_96_96_96_96_96_96_96_96_96/anomaly/stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96/cand_000_d10_w96/training_stats.csv
+[2026-06-19 12:41:35] [CKPT] task=anomaly phase=stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96 candidate=cand_000_d10_w96 epoch=87 batch=1/1 start path=checkpoint_last.pt
+[2026-06-19 12:41:35] [CKPT] task=anomaly phase=stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96 candidate=cand_000_d10_w96 epoch=87 batch=1/1 done gpu_used_mib=15 host_available_mib=4568
+[2026-06-19 12:41:35] [BATCH] task=anomaly phase=stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96 candidate=cand_000_d10_w96 epoch=87 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.778593 running_loss=0.778593
+[2026-06-19 12:41:35] [VAL] task=anomaly phase=stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96 candidate=cand_000_d10_w96 epoch=87 starting validation
+[2026-06-19 12:41:36] [VAL] task=anomaly phase=stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96 candidate=cand_000_d10_w96 epoch=87 finished validation val_loss=0.758789
+[2026-06-19 12:41:36] [CKPT] task=anomaly phase=stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96 candidate=cand_000_d10_w96 epoch=87 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=4338
+[2026-06-19 12:41:36] [anomaly][stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96][cand_000_d10_w96] epoch=87 architecture=[96, 96, 96, 96, 96, 96, 96, 96, 96, 96] train_loss=0.778593 val_loss=0.758789 candidate_best=0.758236 global_best=0.758236 es=10/10
+Saved loss vs epoch plot to MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0096_96_96_96_96_96_96_96_96_96_96/anomaly/stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96/cand_000_d10_w96/val_loss_vs_step.png
+Saved loss vs neurons plot to MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0096_96_96_96_96_96_96_96_96_96_96/anomaly/stl_ablation_r05_d10_w0096_96_96_96_96_96_96_96_96_96_96/cand_000_d10_w96/loss_vs_neurons_best.png
+[2026-06-19 12:41:43] [ABLATION:anomaly] GPU VRAM samples=[] avg_mib=None
+Exception in thread QueueFeederThread:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/multiprocessing/queues.py", line 259, in _feed
+    reader_close()
+  File "/usr/lib/python3.12/multiprocessing/connection.py", line 178, in close
+    self._close()
+  File "/usr/lib/python3.12/multiprocessing/connection.py", line 377, in _close
+    _close(self._handle)
+OSError: [Errno 9] Bad file descriptor
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+Exception in thread QueueFeederThread:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/multiprocessing/queues.py", line 259, in _feed
+    reader_close()
+  File "/usr/lib/python3.12/multiprocessing/connection.py", line 178, in close
+    self._close()
+  File "/usr/lib/python3.12/multiprocessing/connection.py", line 377, in _close
+    _close(self._handle)
+OSError: [Errno 9] Bad file descriptor
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib/python3.12/multiprocessing/queues.py", line 291, in _feed
+    queue_sem.release()
+ValueError: semaphore or lock released too many times
+Exception in thread QueueFeederThread:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/multiprocessing/queues.py", line 259, in _feed
+    reader_close()
+  File "/usr/lib/python3.12/multiprocessing/connection.py", line 178, in close
+    self._close()
+  File "/usr/lib/python3.12/multiprocessing/connection.py", line 377, in _close
+    _close(self._handle)
+OSError: [Errno 9] Bad file descriptor
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib/python3.12/multiprocessing/queues.py", line 291, in _feed
+    queue_sem.release()
+ValueError: semaphore or lock released too many times
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib/python3.12/multiprocessing/queues.py", line 291, in _feed
+    queue_sem.release()
+ValueError: semaphore or lock released too many times
