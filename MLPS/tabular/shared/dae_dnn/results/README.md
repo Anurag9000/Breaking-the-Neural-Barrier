@@ -175,7 +175,7 @@ the same child root so the run resumes from its normal STL checkpoints. If a
 child exits with CUDA OOM or `CUBLAS_STATUS_ALLOC_FAILED`, the mixed runner
 requests a pause on the largest active GPU child, requeues the failed child
 at the front of the queue, and retries it again when resources free up. The
-default post-launch sample window is 60 seconds.
+default post-launch sample window is 1 minute.
 
 The Python launchers use `platform_runtime.py` for host memory sampling and
 process-tree termination. Linux/WSL use `/proc` and POSIX process groups;

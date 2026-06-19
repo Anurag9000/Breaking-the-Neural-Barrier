@@ -116,7 +116,7 @@ the largest active GPU child, requeues the failed child at the front of the
 pending queue, and retries it again as soon as a device slot becomes
 available. Children always resume from the same child root and reuse the
 normal STL checkpoints and `ablation_state.json`. The current recovery
-wrapper uses a 60 second post-launch sample window.
+wrapper uses a 1 minute post-launch sample window.
 
 The launcher also writes `job_manifest.json` under each `--run-root`. That
 manifest captures the fully expanded concrete job plan, so restarting the

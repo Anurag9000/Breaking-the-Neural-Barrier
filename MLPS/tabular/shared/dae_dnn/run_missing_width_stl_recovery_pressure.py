@@ -124,12 +124,6 @@ def parse_args() -> argparse.Namespace:
         default=60.0,
         help="Delay after each child launch before the next pressure sample and launch decision.",
     )
-    p.add_argument(
-        "--pressure-settle-sec",
-        type=float,
-        default=60.0,
-        help=argparse.SUPPRESS,
-    )
     p.add_argument("--max-active-jobs", type=int, default=0, help="0 means use all queued jobs as lanes with no CPU-core ceiling.")
     p.add_argument("--max-active-gpu-jobs", type=int, default=0, help="Maximum concurrent GPU children. 0 means memory-pressure driven.")
     p.add_argument("--include-width-only", action="store_true", default=True)

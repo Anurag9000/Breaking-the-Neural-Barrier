@@ -239,7 +239,7 @@ The checkpoint boundary is the last completed batch or epoch that reached
 `checkpoint_last.pt`; an OOM that kills the process before the next save
 resumes from that last durable state, not from the exact Python instruction
 that faulted. On the slower laptop split, set
-`--post-launch-sample-delay-sec 60` to give each launch a longer post-launch
+`--post-launch-sample-delay-sec 60` to give each launch a 1 minute post-launch
 sample window before the next admission decision.
 
 Runtime policy for the tabular runners is centralized:
