@@ -6,10 +6,8 @@ in [docs/tabular_dae_dnn/README.md](../../../../docs/tabular_dae_dnn/README.md).
 Current active set:
 - classification
 - autoencoding
+- generation
 - denoising
 - anomaly
 - simulation
 - prediction
-
-`generation` remains archived in legacy result trees and is excluded from the
-current STL sweep.
