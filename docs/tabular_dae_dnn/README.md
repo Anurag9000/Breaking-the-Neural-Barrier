@@ -15,9 +15,6 @@ Current STL and ADP runs should use:
 - `simulation`
 - `prediction`
 
-`generation` is archived in older runs and remains available in the historical
-goliath trees, but it is not part of the current STL sweep.
-
 ## Canonical data mapping
 
 - `classification` -> `Covertype`

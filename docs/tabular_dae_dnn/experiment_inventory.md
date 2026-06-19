@@ -17,8 +17,13 @@ This catalog is generated from the tracked result roots and the active ADP run r
 | `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/generation_d2` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt;training_stats.csv` | 564 |
 | `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/generation_d3` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt;training_stats.csv` | 964 |
 | `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/generation_d4` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt;training_stats.csv` | 1276 |
-| `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/generation_d5` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt;training_stats.csv` | 3396 |
-| `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/generation_d6` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt;training_stats.csv` | 3676 |
+| `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/generation_d5` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt;training_stats.csv` | 2372 |
+| `MLPS/tabular/shared/dae_dnn/results/goliath_active_suite_width_only_gpu/generation_d6` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt;training_stats.csv` | 2596 |
+| `MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_01/d01` | `results` | `in_progress` | `run_metadata.json;training_log.txt;training_stats.csv` | 12 |
+| `MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_02/d01` | `results` | `in_progress` | `run_metadata.json;training_log.txt;training_stats.csv` | 12 |
+| `MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_03/d01` | `results` | `in_progress` | `run_metadata.json;training_log.txt;training_stats.csv` | 12 |
+| `MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_04/d01` | `results` | `in_progress` | `run_metadata.json;training_log.txt;training_stats.csv` | 12 |
+| `MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_05/d01` | `results` | `in_progress` | `run_metadata.json;training_log.txt;training_stats.csv` | 12 |
 | `MLPS/tabular/shared/dae_dnn/results/stl/small_grid/analysis/simulation_prediction_v1` | `results` | `complete` | `run_metadata.json;final_report.json;training_log.txt;training_stats.csv` | 5 |
 | `experiments/2026-06-10_laptop3_denoising` | `experiments` | `unknown` | `run_metadata.json` | 31953 |
 | `experiments/2026-06-10_laptop3_denoising/results/goliath_active_suite_width_only_gpu/denoising_d1` | `experiments` | `complete` | `run_metadata.json;final_report.json;training_log.txt;training_stats.csv` | 288 |
