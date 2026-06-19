@@ -208,18 +208,19 @@ memory resume threshold is reached and then spilling additional children onto
 CPU while host RAM is still below its resume threshold. It monitors host RAM
 through `platform_runtime.py`: `/proc/meminfo` on Linux/WSL,
 `GlobalMemoryStatusEx` on native Windows, and `psutil` as a fallback. GPU
-memory is sampled through `nvidia-smi`. After the initial
-saturation phase, admission is completion-gated: any memory-pressure pause or
-retryable child failure closes the admission window immediately. The launcher
-does not treat the pause itself as a reason to launch something else. It waits
-for a genuine child completion to reopen the admission window, and that next
-launch attempt resumes a paused or partial child before it considers untouched
-work. If used RAM crosses the configured host threshold, it requests a pause on
-the largest active child, terminates only that child process group, and
-requeues that same child root. If a child exits with a CUDA OOM or cuBLAS
-allocation failure, the scheduler requests a pause on the largest active GPU
-
-The launcher also persists its expanded job plan as
+memory is sampled through `nvidia-smi`. After the initial saturation phase,
+admission is pressure-gated: a host-RAM pause closes the admission window for
+new work until host pressure falls back under the resume threshold. GPU
+pressure only blocks GPU admissions; CPU spillover can continue whenever host
+pressure is healthy. The launcher does not use the pause itself as a launch
+signal. That next launch attempt resumes a paused or partial child before it
+considers untouched work. If used RAM crosses the configured host threshold,
+it requests a pause on the largest active child, terminates only that child
+process group, and requeues that same child root. If a child exits with a CUDA
+OOM or cuBLAS allocation failure, the scheduler requests a pause on the
+largest active GPU child, requeues the failed child at the front of the
+pending queue, and retries it as soon as resources allow. The launcher also
+persists its expanded job plan as
 `job_manifest.json` under the selected `--run-root`. On restart it reloads
 that manifest instead of recomputing the candidate lattice, so the same
 `--run-root` resumes the exact same concrete job set. Finished child roots
@@ -227,15 +228,11 @@ stay skipped, resumable roots keep their existing checkpoints and
 `ablation_state.json`, and untouched jobs remain untouched until the launcher
 gets to them in the same resume-first, low-parameter-first order. If the
 launcher arguments or the run root change, the cached manifest is invalidated
-and the plan is rebuilt once for that new configuration.
-child, requeues the failed child at the front of the pending queue, and tries
-it again as soon as a slot is available. When enough RAM or GPU memory is free
-again, the scheduler relaunches the paused child from the same run directory,
-so resumability is handled by the normal STL checkpoints and
-`ablation_state.json`. The checkpoint boundary is the last completed batch or
-epoch that reached `checkpoint_last.pt`; an OOM that kills the process before
-the next save resumes from that last durable state, not from the exact Python
-instruction that faulted. On the slower laptop split, set
+and the plan is rebuilt once for that new configuration. The checkpoint
+boundary is the last completed batch or epoch that reached `checkpoint_last.pt`;
+an OOM that kills the process before the next save resumes from that last
+durable state, not from the exact Python instruction that faulted. On the
+slower laptop split, set
 `--pressure-settle-sec 30` to give each launch a shorter settle window.
 
 Runtime policy for the tabular runners is centralized:
