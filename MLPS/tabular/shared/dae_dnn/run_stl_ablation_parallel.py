@@ -50,6 +50,7 @@ class ActiveChildJob:
     slot_index: int
     log_handle: Optional[IO[str]] = None
     pause_requested: bool = False
+    pause_reason: Optional[str] = None
     launch_count: int = 0
 
 
@@ -928,12 +929,14 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 launches_enabled = True
                 continue
             if active_job.pause_requested:
+                pause_reason = str(active_job.pause_reason or "host_ram_pressure")
                 logger.log_console(
                     f"[PRESSURE] paused task={job.task_name} phase={job.phase_name} params={job.parameter_count} exit={code}"
                 )
-                mark_child_paused(job.child_root, job, int(code or 0), "host_ram_pressure")
+                mark_child_paused(job.child_root, job, int(code or 0), pause_reason)
                 pending.appendleft(job)
-                launches_enabled = False
+                if pause_reason == "host_ram_pressure":
+                    launches_enabled = False
                 continue
             failure_counts[job.child_root] += 1
             if active_job.device_mode == "cuda" and child_log_indicates_cuda_oom(active_job.log_path):
@@ -950,6 +953,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 if gpu_peers:
                     largest_gpu = max(gpu_peers, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.task_name))
                     largest_gpu.pause_requested = True
+                    largest_gpu.pause_reason = "peer_cuda_oom"
                     mark_child_pause_requested(largest_gpu.job.child_root, largest_gpu.job, "peer_cuda_oom")
                     logger.log_console(
                         f"[GPU_OOM] request_pause_peer task={largest_gpu.job.task_name} phase={largest_gpu.job.phase_name} "
@@ -957,7 +961,6 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     )
                     terminate_child_process(next(peer_proc for peer_proc, entry in active.items() if entry is largest_gpu))
                 pending.appendleft(job)
-                launches_enabled = False
                 continue
             logger.log_console(
                 f"[TASK] retry_forever task={job.task_name} phase={job.phase_name} params={job.parameter_count} "
@@ -965,7 +968,6 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             )
             mark_child_retrying(job.child_root, job, int(code or 0), active_job.cmd, failure_counts[job.child_root])
             pending.appendleft(job)
-            launches_enabled = False
             continue
 
         for proc in finished:
@@ -980,6 +982,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             if pausable_gpu:
                 largest_gpu = max(pausable_gpu, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.task_name))
                 largest_gpu.pause_requested = True
+                largest_gpu.pause_reason = "gpu_memory_pressure"
                 mark_child_pause_requested(largest_gpu.job.child_root, largest_gpu.job, "gpu_memory_pressure")
                 logger.log_console(
                     f"[PRESSURE] request_pause_gpu task={largest_gpu.job.task_name} phase={largest_gpu.job.phase_name} "
@@ -995,6 +998,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             if len(active) > 1 and pausable:
                 largest = max(pausable, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.task_name))
                 largest.pause_requested = True
+                largest.pause_reason = "host_ram_pressure"
                 mark_child_pause_requested(largest.job.child_root, largest.job, "host_ram_pressure")
                 logger.log_console(
                     f"[PRESSURE] request_pause task={largest.job.task_name} phase={largest.job.phase_name} "
@@ -1002,14 +1006,21 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     f"avail_mib={pressure.available_mib}/{pressure.total_mib}"
                 )
                 terminate_child_process(next(proc for proc, entry in active.items() if entry is largest))
+                launches_enabled = False
                 time.sleep(max(0.0, float(args.pressure_settle_sec)))
                 continue
+
+        if pending and not launches_enabled and pressure.used_pct <= float(args.host_ram_resume_pct):
+            launches_enabled = True
+            logger.log_console(
+                f"[STATE] admission gate reopened host_used_pct={pressure.used_pct:.2f} gpu_used_pct={gpu_pressure.used_pct:.2f}"
+            )
 
         under_active_limit = len(active) < int(active_limit)
         active_gpu_jobs = sum(1 for entry in active.values() if entry.device_mode == "cuda")
         chosen_device_mode = choose_device_mode(pressure, gpu_pressure, active_gpu_jobs)
         can_launch_now = launches_enabled
-        if pending and under_active_limit and free_slots and can_launch_now and (chosen_device_mode is not None or not active):
+        if pending and under_active_limit and free_slots and can_launch_now and chosen_device_mode is not None:
             job = pending.popleft()
             if child_completed(job.child_root, job.task_name):
                 mark_child_completed(job.child_root, job)

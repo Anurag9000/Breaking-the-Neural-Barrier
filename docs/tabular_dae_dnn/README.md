@@ -176,7 +176,9 @@ scheduler, `--max-active-jobs 0` exposes all visible logical CPUs as job lanes.
 On the 20-core laptop this allows up to 20 active children. GPU admission is
 memory-pressure driven by default: the scheduler keeps launching GPU children
 while VRAM is below the resume threshold, then spills additional work to CPU
-when GPU admission is blocked. Use `--max-active-jobs <n>` or
+when GPU admission is blocked. If host RAM pressure pauses admissions, the gate
+reopens once host pressure drops back under the configured resume threshold.
+Use `--max-active-jobs <n>` or
 `--max-active-gpu-jobs <n>` only when you need an explicit child-count cap.
 
 That policy is aggressive by design. It keeps the CPU side busy when the
