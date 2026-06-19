@@ -326,10 +326,10 @@ The key knobs are:
 
 - `--max-active-jobs 0` for all visible logical CPUs as job lanes
 - `--max-active-gpu-jobs 0` for memory-driven GPU concurrency in the mixed runner
-- `--host-ram-pressure-limit-pct 90`
-- `--host-ram-resume-pct 85`
-- `--gpu-memory-pressure-limit-pct 90`
-- `--gpu-memory-resume-pct 85`
+- `--host-ram-pressure-limit-pct 85`
+- `--host-ram-resume-pct 80`
+- `--gpu-memory-pressure-limit-pct 85`
+- `--gpu-memory-resume-pct 80`
 - `--swap-pressure-limit-pct 100`
 - `--swap-resume-pct 100`
 - `--pressure-poll-interval-sec 0.5`
@@ -429,10 +429,10 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --param-band 4 6 \
   --repeat-count 5 \
   --scheduler pressure_aware \
-  --host-ram-pressure-limit-pct 90 \
-  --host-ram-resume-pct 85 \
-  --gpu-memory-pressure-limit-pct 90 \
-  --gpu-memory-resume-pct 85 \
+  --host-ram-pressure-limit-pct 85 \
+  --host-ram-resume-pct 80 \
+  --gpu-memory-pressure-limit-pct 85 \
+  --gpu-memory-resume-pct 80 \
   --gpu-device-index 0 \
   --max-active-jobs 0 \
   --post-launch-sample-delay-sec 60 \
