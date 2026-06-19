@@ -36,10 +36,10 @@ NVIDIA_VISIBLE_DEVICES="none" \
   --param-band 7 8 \
   --repeat-count 5 \
   --scheduler pressure_aware \
-  --host-ram-pressure-limit-pct 90 \
-  --host-ram-resume-pct 85 \
-  --gpu-memory-pressure-limit-pct 90 \
-  --gpu-memory-resume-pct 85 \
+  --host-ram-pressure-limit-pct 85 \
+  --host-ram-resume-pct 80 \
+  --gpu-memory-pressure-limit-pct 85 \
+  --gpu-memory-resume-pct 80 \
   --gpu-device-index 0 \
   --max-active-gpu-jobs 0 \
   --concurrency "${CONCURRENCY}" \

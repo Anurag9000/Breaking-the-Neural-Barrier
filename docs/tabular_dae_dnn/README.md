@@ -191,10 +191,10 @@ current workload can exploit the extra parallelism.
 Key pressure-aware flags:
 
 - `--scheduler pressure_aware`
-- `--host-ram-pressure-limit-pct 90`
-- `--host-ram-resume-pct 85`
-- `--gpu-memory-pressure-limit-pct 90`
-- `--gpu-memory-resume-pct 85`
+- `--host-ram-pressure-limit-pct 85`
+- `--host-ram-resume-pct 80`
+- `--gpu-memory-pressure-limit-pct 85`
+- `--gpu-memory-resume-pct 80`
 - `--gpu-device-index 0`
 - `--max-active-jobs 0` for no hard slot cap beyond RAM pressure
 - `--max-retries-per-job 0` as a legacy compatibility flag; pressure-aware mode now requeues failed children indefinitely
@@ -225,8 +225,8 @@ and keeps the current pressure-aware settings:
 - parameter band: `4 6`
 - repeat count: `5`
 - scheduler: `pressure_aware`
-- host RAM thresholds: `90 / 85`
-- GPU memory thresholds: `90 / 85`
+- host RAM thresholds: `85 / 80`
+- GPU memory thresholds: `85 / 80`
 - hard active-job cap: `0` (disabled)
 - batch size: `186240`
 

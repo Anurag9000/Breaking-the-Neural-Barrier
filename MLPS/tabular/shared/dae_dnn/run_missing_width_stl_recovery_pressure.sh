@@ -47,10 +47,10 @@ NVIDIA_VISIBLE_DEVICES="none" \
   --width-depths 1,2,3,4,5,6 \
   --missing-present-task-repeats 2,3,4,5 \
   --prediction-repeats 1,2,3,4,5 \
-  --host-ram-pressure-limit-pct 90 \
-  --host-ram-resume-pct 85 \
-  --gpu-memory-pressure-limit-pct 90 \
-  --gpu-memory-resume-pct 85 \
+  --host-ram-pressure-limit-pct 85 \
+  --host-ram-resume-pct 80 \
+  --gpu-memory-pressure-limit-pct 85 \
+  --gpu-memory-resume-pct 80 \
   --swap-pressure-limit-pct 100 \
   --swap-resume-pct 100 \
   --gpu-device-index 0 \
