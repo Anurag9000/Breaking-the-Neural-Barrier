@@ -121,11 +121,12 @@ wrapper uses a 30 second pressure settle window.
 The launcher also writes `job_manifest.json` under each `--run-root`. That
 manifest captures the fully expanded concrete job plan, so restarting the
 same run root reuses the cached plan instead of recomputing the candidate
-lattice. Finished child roots remain skipped, partial child roots resume from
-their saved state, and untouched children only start when the queue reaches
-them in the same resume-first order. If you change the root, tasks, or other
-plan-shaping launcher arguments, the manifest is invalidated and rebuilt once
-for the new configuration.
+lattice. That cache is the default path now. Finished child roots remain
+skipped, partial child roots resume from their saved state, and untouched
+children only start when the queue reaches them in the same resume-first
+order. Only plan-shaping inputs invalidate the manifest: root, tasks, band,
+architecture grid, repeat count, and the child training knobs that change the
+concrete job list. Pressure thresholds and concurrency do not.
 
 Runtime tuning for the tabular launchers is centralized as well:
 
