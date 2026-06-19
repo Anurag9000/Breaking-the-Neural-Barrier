@@ -151,12 +151,6 @@ def parse_args() -> argparse.Namespace:
         help="Delay after each child launch before the next pressure sample and admission decision.",
     )
     p.add_argument(
-        "--pressure-settle-sec",
-        type=float,
-        default=60.0,
-        help=argparse.SUPPRESS,
-    )
-    p.add_argument(
         "--max-retries-per-job",
         type=int,
         default=0,
