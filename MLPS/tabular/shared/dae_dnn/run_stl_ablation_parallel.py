@@ -1001,7 +1001,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
 
         if active and pressure.used_pct > float(args.host_ram_pressure_limit_pct):
             pausable = [entry for entry in active.values() if not entry.pause_requested]
-            if len(active) > 1 and pausable:
+            if pausable:
                 largest = max(pausable, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.task_name))
                 largest.pause_requested = True
                 largest.pause_reason = "host_ram_pressure"

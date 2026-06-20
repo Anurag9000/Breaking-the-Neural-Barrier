@@ -71,13 +71,13 @@ The runtime also sets the current process memory priority to `normal`
 through `SetProcessInformation(ProcessMemoryPriority)` so Windows keeps the
 process's pages resident as long as it can.
 
-On Linux, the runtime scope also requests `MemorySwapMax=0`, so these
-launchers are asked to run with swap disabled inside the systemd cgroup when
-`systemd-run --user --scope` is available. That is the repo's strict no-swap
-path. If systemd scope support is missing, no equivalent per-process swap
-guarantee exists and the launcher falls back to best-effort memory handling.
-On systemd versions new enough to expose it, the runtime also requests
-`MemoryZSwapMax=0` so compressed swap is disabled too.
+Strict no-swap is now fail-closed for this launcher stack. On Linux the
+runtime requests `MemorySwapMax=0` and `MemoryZSwapMax=0` inside the systemd
+scope, and it aborts immediately if active swap devices exist, host swap is
+already in use, or the cgroup does not expose the expected zero-swap limits.
+On Windows it aborts immediately when pagefile-backed swap is still enabled.
+That means the practical requirement is simple: disable swap/pagefile before
+starting these launchers. They do not continue in a best-effort mode anymore.
 
 The CPU-only wrapper is now the default launcher for this recovery family.
 It hides CUDA before bootstrap, uses the same
@@ -108,8 +108,9 @@ Recovery wrapper contract:
    state to restore today
 7. treat GPU pressure as GPU-only admission blocking and host RAM pressure as
    a global admission block
-8. ignore swap in the default wrapper path by setting swap thresholds to
-   `100 / 100`
+8. enforce strict no-swap in the default wrapper path by using swap
+   thresholds `0 / 0` and aborting immediately if any swap/pagefile usage is
+   detected
 9. use the shared-CPU default so every child sees the full visible core set,
    and keep `--post-launch-sample-delay-sec 60` as the standard 1 minute
    post-launch sample window

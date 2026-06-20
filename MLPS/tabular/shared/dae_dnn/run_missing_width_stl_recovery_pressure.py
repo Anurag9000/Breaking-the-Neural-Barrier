@@ -114,8 +114,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--host-ram-resume-pct", type=float, default=85.0)
     p.add_argument("--gpu-memory-pressure-limit-pct", type=float, default=90.0)
     p.add_argument("--gpu-memory-resume-pct", type=float, default=85.0)
-    p.add_argument("--swap-pressure-limit-pct", type=float, default=100.0)
-    p.add_argument("--swap-resume-pct", type=float, default=100.0)
+    p.add_argument("--swap-pressure-limit-pct", type=float, default=0.0)
+    p.add_argument("--swap-resume-pct", type=float, default=0.0)
     p.add_argument("--gpu-device-index", type=int, default=0)
     p.add_argument("--pressure-poll-interval-sec", type=float, default=0.5)
     p.add_argument(
@@ -618,6 +618,16 @@ def run(args: argparse.Namespace) -> None:
         host = pressure.sample_host_memory_pressure()
         swap = sample_swap_pressure()
         gpu = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index))
+        if swap.total_mib > 0 and swap.used_mib > 0:
+            for proc, active_job in list(active.items()):
+                active_job.pause_requested = True
+                active_job.pause_reason = "swap_pressure"
+                update_job_state(active_job.job.root, {"status": "pausing", "reason": "swap_pressure", "completed": False})
+                terminate(proc)
+            raise SystemExit(
+                f"strict no-swap violation: host swap is in use ({swap.used_mib} MiB / {swap.total_mib} MiB). "
+                "This launcher refuses to continue."
+            )
         if host_launch_blocked and not active and host.used_pct <= float(args.host_ram_resume_pct) and (
             swap.total_mib <= 0 or swap.used_pct <= float(args.swap_resume_pct)
         ):
@@ -641,9 +651,9 @@ def run(args: argparse.Namespace) -> None:
         swap_pressure = swap.total_mib > 0 and swap.used_pct > float(args.swap_pressure_limit_pct)
         if active and (host.used_pct > float(args.host_ram_pressure_limit_pct) or swap_pressure):
             pausable = [entry for entry in active.values() if not entry.pause_requested]
-            if len(active) > 1 and pausable:
+            if pausable:
                 pause_count = 1
-                if host.used_pct >= float(args.host_ram_pressure_limit_pct) + 5.0 or swap_pressure:
+                if len(pausable) > 1 and (host.used_pct >= float(args.host_ram_pressure_limit_pct) + 5.0 or swap_pressure):
                     pause_count = max(1, min(len(pausable) - 1, len(pausable) // 3))
                 victims = sorted(pausable, key=lambda entry: (entry.job.parameter_count, entry.job.depth, entry.job.name), reverse=True)[
                     :pause_count
