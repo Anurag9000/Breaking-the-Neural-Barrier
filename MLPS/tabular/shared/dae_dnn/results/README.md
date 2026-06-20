@@ -150,14 +150,13 @@ and both resume from the same child roots, checkpoint files, and
 `candidate_state.json` files. You can stop on CPU and resume on GPU, or stop
 on GPU and resume on CPU, without changing the directory layout.
 
-The recovery runner uses split admission gates:
+The recovery runner uses the same completion-gated admission model as the
+shared STL launcher:
 
-- GPU pauses only block GPU admissions until a GPU child finishes cleanly.
-- host RAM or swap pauses block all new admissions until pressure recovers;
-  the gate stays closed until a child completes cleanly, even if host
-  pressure drops back under the resume threshold.
-- CPU spillover remains available in the mixed runner whenever host RAM is
-  healthy and GPU admission is blocked.
+- any pressure pause closes the launcher
+- pressure recovery alone does not reopen admissions
+- only a genuine child completion reopens the gate
+- resumed or partial children are still considered before untouched work
 
 Requeued children return to the pending queue and the launcher keeps
 considering other eligible work as the active gates allow it. If a child has

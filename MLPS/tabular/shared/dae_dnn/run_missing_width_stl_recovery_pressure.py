@@ -556,6 +556,7 @@ def run(args: argparse.Namespace) -> None:
     free_slots = set(range(slot_count))
     gpu_launch_blocked = False
     host_launch_blocked = False
+    launches_enabled = True
     while pending or active:
         finished: List[subprocess.Popen[Any]] = []
         for proc, active_job in list(active.items()):
@@ -572,13 +573,13 @@ def run(args: argparse.Namespace) -> None:
             if job_completed(job):
                 update_job_state(job.root, {"status": "completed", "completed": True, "exit_code": int(code or 0), "completed_at": time.time()})
                 logger.log_console(f"[TASK] completed {job.name} params={job.parameter_count}")
-                if host_launch_blocked:
-                    logger.log_console("[STATE] host admission gate cleared by completion")
+                if not launches_enabled:
+                    logger.log_console(
+                        f"[STATE] admission gate reopened by completion job={job.name} params={job.parameter_count}"
+                    )
+                launches_enabled = True
                 host_launch_blocked = False
-                if active_job.device_mode == "cuda":
-                    if gpu_launch_blocked:
-                        logger.log_console("[STATE] gpu admission gate cleared by gpu completion")
-                    gpu_launch_blocked = False
+                gpu_launch_blocked = False
                 continue
             gpu_pause_count, host_pause_count = job_pause_counts(job)
             if active_job.pause_requested and active_job.pause_reason == "gpu_memory_pressure":
@@ -591,8 +592,9 @@ def run(args: argparse.Namespace) -> None:
                 gpu_launch_blocked = True
             if active_job.pause_requested and active_job.pause_reason in {"host_ram_pressure", "swap_pressure"}:
                 if not host_launch_blocked:
-                    logger.log_console("[STATE] host admission gate blocked until pressure recovers and a child completes")
+                    logger.log_console("[STATE] host admission gate blocked until a child completes")
                 host_launch_blocked = True
+            launches_enabled = False
             update_job_state(job.root, {"status": "paused" if active_job.pause_requested else "retrying", "completed": False, "exit_code": int(code or 0), "updated_at": time.time()})
             if gpu_pause_count or host_pause_count:
                 update_job_state(
@@ -618,16 +620,6 @@ def run(args: argparse.Namespace) -> None:
         host = pressure.sample_host_memory_pressure()
         swap = sample_swap_pressure()
         gpu = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index))
-        if host_launch_blocked and not active and host.used_pct <= float(args.host_ram_resume_pct) and (
-            swap.total_mib <= 0 or swap.used_pct <= float(args.swap_resume_pct)
-        ):
-            logger.log_console("[STATE] host admission gate auto-cleared after pressure recovery")
-            host_launch_blocked = False
-        if gpu_launch_blocked and not any(entry.device_mode == "cuda" for entry in active.values()) and gpu.used_pct <= float(
-            args.gpu_memory_resume_pct
-        ):
-            logger.log_console("[STATE] gpu admission gate auto-cleared after gpu recovery")
-            gpu_launch_blocked = False
         if active and gpu.total_mib > 0 and gpu.used_pct > float(args.gpu_memory_pressure_limit_pct):
             gpu_active = [entry for entry in active.values() if entry.device_mode == "cuda" and not entry.pause_requested]
             if gpu_active:
@@ -672,7 +664,8 @@ def run(args: argparse.Namespace) -> None:
             if pending
             else choose_device(args)
         )
-        if pending and len(active) < limit and free_slots and not host_launch_blocked and (device_mode is not None or not active):
+        can_launch_now = launches_enabled and not host_launch_blocked
+        if pending and len(active) < limit and free_slots and can_launch_now and (device_mode is not None or not active):
             job = pending.popleft()
             if job_completed(job):
                 update_job_state(job.root, {"status": "completed", "completed": True, "completed_at": time.time()})

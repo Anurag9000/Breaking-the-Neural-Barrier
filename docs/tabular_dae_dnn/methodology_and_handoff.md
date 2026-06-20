@@ -313,8 +313,8 @@ The recovery algorithm is:
 6. keep the architecture fixed to the candidate root being resumed
 7. no LR scheduler is used in this recovery runner, so there is no scheduler
    state to restore today
-8. treat host-RAM pressure as a global admission gate
-9. treat GPU memory pressure as a GPU-only admission gate in the mixed runner
+8. treat host-RAM pressure as a completion-gated admission block: any pressure pause closes the launcher and only a genuine child completion reopens it
+9. treat GPU memory pressure as a device-selection signal in the mixed runner; a GPU pause also keeps admissions closed until completion
 10. keep swap thresholds at `100 / 100`; swap control is delegated to the
    launcher scope request rather than a startup abort path
 

@@ -139,17 +139,18 @@ is still below the configured resume threshold. Host memory sampling is
 cross-platform through `platform_runtime.py`: Linux and WSL use `/proc`,
 native Windows uses `GlobalMemoryStatusEx`, and `psutil` is used as a
 fallback when available. The admission policy is split
-by pressure source: GPU pauses only block GPU admissions until a GPU child
-finishes cleanly, while host RAM or swap pauses block the whole launcher until
-pressure recovers and a child completion clears the gate. The scheduler
-resumes paused or partial children before it considers untouched jobs. If
-host RAM pressure crosses the configured threshold, it pauses the largest
-active child. If a child dies with a CUDA OOM signature, the scheduler pauses
-the largest active GPU child, requeues the failed child at the front of the
-pending queue, and retries it again as soon as a device slot becomes
-available. Children always resume from the same child root and reuse the
-normal STL checkpoints and `ablation_state.json`. The current recovery
-wrapper uses a 1 minute post-launch sample window.
+by pressure source for device selection, but admission itself is
+completion-gated: any pressure pause closes the launcher and pressure
+recovery alone does not reopen it. The scheduler waits for a genuine child
+completion before it allows the next launch, and that next launch resumes a
+paused or partial child before it considers untouched work. If host RAM
+pressure crosses the configured threshold, it pauses the largest active
+child. If a child dies with a CUDA OOM signature, the scheduler pauses the
+largest active GPU child, requeues the failed child at the front of the
+pending queue, and retries it again only after the gate reopens on completion.
+Children always resume from the same child root and reuse the normal STL
+checkpoints and `ablation_state.json`. The current recovery wrapper uses a 1
+minute post-launch sample window.
 
 The launcher also writes `job_manifest.json` under each `--run-root`. That
 manifest captures the fully expanded concrete job plan, so restarting the
