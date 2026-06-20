@@ -43,4 +43,6 @@ $env:TABULAR_CPU_WORKERS = "0"
   --max-epochs 100000000 `
   --num-workers 0 `
   --batch-size 0 `
+  --max-width 10000000000 `
+  --max-neurons 10000000000 `
   @args
