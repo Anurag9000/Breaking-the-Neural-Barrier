@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import math
 import json
 import os
 import signal
@@ -33,6 +34,7 @@ except ModuleNotFoundError:  # pragma: no cover - import shim for package-style 
 
 LAUNCHER_MANIFEST_SIGNATURE_VERSION = 3
 LAUNCHER_CODE_VERSION = 3
+LAUNCHER_BATCH_BACKOFF_VERSION = 1
 
 
 @dataclass(frozen=True)
@@ -124,7 +126,7 @@ def parse_args() -> argparse.Namespace:
         "--max-active-jobs",
         type=int,
         default=0,
-        help="Hard cap for pressure-aware child jobs. 0 means use all visible logical CPUs as job lanes.",
+        help="Hard cap for pressure-aware child jobs. 0 means no hard child-count cap beyond pressure gating.",
     )
     p.add_argument(
         "--host-ram-pressure-limit-pct",
@@ -147,8 +149,14 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--post-launch-sample-delay-sec",
         type=float,
-        default=60.0,
+        default=30.0,
         help="Delay after each child launch before the next pressure sample and admission decision.",
+    )
+    p.add_argument(
+        "--batch-backoff-factor",
+        type=float,
+        default=0.5,
+        help="Multiply the effective batch size by this factor after a pressure stall with no active children remaining.",
     )
     p.add_argument(
         "--max-retries-per-job",
@@ -218,6 +226,7 @@ def build_worker_command(
     architecture: Sequence[int],
     child_run_root: Path,
     device_mode: str,
+    batch_size: int,
 ) -> List[str]:
     command = [
         sys.executable,
@@ -237,7 +246,7 @@ def build_worker_command(
         "--repeat-count",
         str(int(args.repeat_count)),
         "--batch-size",
-        str(int(args.batch_size)),
+        str(int(batch_size)),
         "--pin-memory" if bool(args.pin_memory) else "--no-pin-memory",
         "--num-workers",
         str(int(args.num_workers)),
@@ -295,6 +304,79 @@ def build_worker_command(
             ]
         )
     return command
+
+
+def batch_backoff_state_path(run_root: Path) -> Path:
+    return run_root / "batch_backoff_state.json"
+
+
+def load_batch_backoff_state(run_root: Path) -> Dict[str, Any]:
+    data = rg.load_json_if_exists(batch_backoff_state_path(run_root))
+    if not isinstance(data, dict):
+        return {
+            "version": LAUNCHER_BATCH_BACKOFF_VERSION,
+            "batch_scale": 1.0,
+            "backoff_count": 0,
+            "pressure_backoff_pending": False,
+            "last_backoff_reason": None,
+            "last_backoff_at": None,
+        }
+    state = {
+        "version": int(data.get("version", LAUNCHER_BATCH_BACKOFF_VERSION)),
+        "batch_scale": float(data.get("batch_scale", 1.0) or 1.0),
+        "backoff_count": int(data.get("backoff_count", 0) or 0),
+        "pressure_backoff_pending": bool(data.get("pressure_backoff_pending", False)),
+        "last_backoff_reason": data.get("last_backoff_reason"),
+        "last_backoff_at": data.get("last_backoff_at"),
+    }
+    if state["batch_scale"] <= 0.0:
+        state["batch_scale"] = 1.0
+    return state
+
+
+def write_batch_backoff_state(run_root: Path, state: Dict[str, Any]) -> None:
+    payload = {
+        "version": LAUNCHER_BATCH_BACKOFF_VERSION,
+        "batch_scale": float(state.get("batch_scale", 1.0)),
+        "backoff_count": int(state.get("backoff_count", 0)),
+        "pressure_backoff_pending": bool(state.get("pressure_backoff_pending", False)),
+        "last_backoff_reason": state.get("last_backoff_reason"),
+        "last_backoff_at": state.get("last_backoff_at"),
+    }
+    rg.write_json(batch_backoff_state_path(run_root), payload)
+
+
+def scale_batch_size(batch_size: int, batch_scale: float) -> int:
+    base = max(1, int(batch_size))
+    scale = max(0.0, float(batch_scale))
+    return max(1, int(math.floor(float(base) * scale)))
+
+
+def resolve_task_base_batch_sizes(args: argparse.Namespace, tasks: Sequence[str]) -> Dict[str, int]:
+    base_batch_sizes: Dict[str, int] = {}
+    for task_name in tasks:
+        try:
+            task = build_task(task_name, args.data_dir, 1, 0, int(args.seed), pin_memory=False)
+            base_batch_sizes[task_name] = int(stl.stl_batch_size_for_task(task_name, task, int(args.batch_size)))
+        except Exception:
+            base_batch_sizes[task_name] = max(1, int(args.batch_size) if int(args.batch_size) > 0 else 1)
+    return base_batch_sizes
+
+
+def apply_batch_backoff(run_root: Path, state: Dict[str, Any], factor: float, reason: str) -> Dict[str, Any]:
+    prev_scale = float(state.get("batch_scale", 1.0) or 1.0)
+    factor = float(factor)
+    if factor <= 0.0 or factor >= 1.0:
+        raise ValueError(f"batch backoff factor must be between 0 and 1, got {factor!r}")
+    new_scale = max(1.0e-6, prev_scale * factor)
+    state = dict(state)
+    state["batch_scale"] = new_scale
+    state["backoff_count"] = int(state.get("backoff_count", 0)) + 1
+    state["pressure_backoff_pending"] = False
+    state["last_backoff_reason"] = str(reason)
+    state["last_backoff_at"] = time.time()
+    write_batch_backoff_state(run_root, state)
+    return state
 
 
 def child_summary_path(child_run_root: Path, task_name: str) -> Path:
@@ -376,7 +458,7 @@ def load_task_child_summary(child_run_root: Path, task_name: str) -> Dict[str, A
     return data
 
 
-def mark_child_running(child_root: Path, job: ChildJob, cmd: Sequence[str], launch_count: int) -> None:
+def mark_child_running(child_root: Path, job: ChildJob, cmd: Sequence[str], launch_count: int, batch_size: int) -> None:
     existing = load_child_state(child_root)
     update_child_state(
         child_root,
@@ -387,6 +469,7 @@ def mark_child_running(child_root: Path, job: ChildJob, cmd: Sequence[str], laun
             "parameter_count": int(job.parameter_count),
             "command": list(cmd),
             "launch_count": int(launch_count),
+            "batch_size": int(batch_size),
             "pause_count": int(existing.get("pause_count", 0)),
             "failure_count": int(existing.get("failure_count", 0)),
             "completed": False,
@@ -829,6 +912,7 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
                 architecture=architecture,
                 child_run_root=child_root,
                 device_mode="auto",
+                batch_size=int(args.batch_size),
             )
             child_root.mkdir(parents=True, exist_ok=True)
             slot_index = min(free_slots)
@@ -884,6 +968,7 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
 
 def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence[str], logger: ContinuousLogger) -> List[Dict[str, Any]]:
     jobs_by_task = build_task_jobs(args, tasks, run_root)
+    task_base_batch_sizes = resolve_task_base_batch_sizes(args, tasks)
     pending: Deque[ChildJob] = deque(sorted((job for jobs in jobs_by_task.values() for job in jobs), key=pending_job_sort_key))
     task_child_roots: Dict[str, List[Path]] = {task_name: [job.child_root for job in jobs] for task_name, jobs in jobs_by_task.items()}
     active: Dict[subprocess.Popen[Any], ActiveChildJob] = {}
@@ -896,6 +981,10 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
     launches_enabled = True
     launch_sample_delay_sec = max(0.0, float(getattr(args, "post_launch_sample_delay_sec", 30.0)))
     launch_sample_hold_until = 0.0
+    batch_backoff_state = load_batch_backoff_state(run_root)
+    batch_scale = float(batch_backoff_state.get("batch_scale", 1.0))
+    pressure_backoff_pending = bool(batch_backoff_state.get("pressure_backoff_pending", False))
+    pressure_backoff_reason: Optional[str] = batch_backoff_state.get("last_backoff_reason")
 
     def build_child_env(device_mode: str) -> Dict[str, str]:
         env = os.environ.copy()
@@ -933,6 +1022,16 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     f"[TASK] completed task={job.task_name} phase={job.phase_name} params={job.parameter_count}"
                 )
                 mark_child_completed(job.child_root, job)
+                pressure_backoff_pending = False
+                pressure_backoff_reason = None
+                batch_backoff_state.update(
+                    {
+                        "batch_scale": batch_scale,
+                        "pressure_backoff_pending": pressure_backoff_pending,
+                        "last_backoff_reason": pressure_backoff_reason,
+                    }
+                )
+                write_batch_backoff_state(run_root, batch_backoff_state)
                 if not launches_enabled:
                     logger.log_console(
                         f"[STATE] admission gate reopened by completion task={job.task_name} phase={job.phase_name} "
@@ -948,6 +1047,16 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 mark_child_paused(job.child_root, job, int(code or 0), pause_reason)
                 pending.appendleft(job)
                 launches_enabled = False
+                pressure_backoff_pending = True
+                pressure_backoff_reason = pause_reason
+                batch_backoff_state.update(
+                    {
+                        "batch_scale": batch_scale,
+                        "pressure_backoff_pending": pressure_backoff_pending,
+                        "last_backoff_reason": pressure_backoff_reason,
+                    }
+                )
+                write_batch_backoff_state(run_root, batch_backoff_state)
                 continue
             failure_counts[job.child_root] += 1
             if active_job.device_mode == "cuda" and child_log_indicates_cuda_oom(active_job.log_path):
@@ -973,6 +1082,16 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     terminate_child_process(next(peer_proc for peer_proc, entry in active.items() if entry is largest_gpu))
                 pending.appendleft(job)
                 launches_enabled = False
+                pressure_backoff_pending = True
+                pressure_backoff_reason = "cuda_oom"
+                batch_backoff_state.update(
+                    {
+                        "batch_scale": batch_scale,
+                        "pressure_backoff_pending": pressure_backoff_pending,
+                        "last_backoff_reason": pressure_backoff_reason,
+                    }
+                )
+                write_batch_backoff_state(run_root, batch_backoff_state)
                 continue
             logger.log_console(
                 f"[TASK] retry_forever task={job.task_name} phase={job.phase_name} params={job.parameter_count} "
@@ -981,12 +1100,40 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             mark_child_retrying(job.child_root, job, int(code or 0), active_job.cmd, failure_counts[job.child_root])
             pending.appendleft(job)
             launches_enabled = False
+            pressure_backoff_pending = True
+            pressure_backoff_reason = "retry"
+            batch_backoff_state.update(
+                {
+                    "batch_scale": batch_scale,
+                    "pressure_backoff_pending": pressure_backoff_pending,
+                    "last_backoff_reason": pressure_backoff_reason,
+                }
+            )
+            write_batch_backoff_state(run_root, batch_backoff_state)
             continue
 
         for proc in finished:
             entry = active.pop(proc, None)
             if entry is not None:
                 free_slots.add(entry.slot_index)
+
+        if not active and pending and pressure_backoff_pending:
+            previous_scale = batch_scale
+            batch_backoff_state = apply_batch_backoff(
+                run_root,
+                batch_backoff_state,
+                float(getattr(args, "batch_backoff_factor", 0.5)),
+                str(pressure_backoff_reason or "pressure_stall"),
+            )
+            batch_scale = float(batch_backoff_state.get("batch_scale", previous_scale))
+            pressure_backoff_pending = False
+            launches_enabled = True
+            launch_sample_hold_until = time.time() + launch_sample_delay_sec
+            logger.log_console(
+                f"[STATE] batch_backoff reason={pressure_backoff_reason or 'pressure_stall'} "
+                f"batch_scale={batch_scale:.6f} previous_scale={previous_scale:.6f}"
+            )
+            continue
 
         pressure = sample_host_memory_pressure()
         gpu_pressure = sample_gpu_memory_pressure(int(args.gpu_device_index))
@@ -1038,15 +1185,20 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 )
                 continue
             device_mode = chosen_device_mode or "cpu"
+            effective_batch_size = scale_batch_size(
+                task_base_batch_sizes.get(job.task_name, int(args.batch_size) if int(args.batch_size) > 0 else 1),
+                batch_scale,
+            )
             cmd = build_worker_command(
                 args=args,
                 task_name=job.task_name,
                 architecture=job.architecture,
                 child_run_root=job.child_root,
                 device_mode=device_mode,
+                batch_size=effective_batch_size,
             )
             launches_total += 1
-            mark_child_running(job.child_root, job, cmd, launches_total)
+            mark_child_running(job.child_root, job, cmd, launches_total, effective_batch_size)
             log_path = child_process_log_path(job.child_root)
             slot_index = min(free_slots)
             free_slots.remove(slot_index)
@@ -1072,7 +1224,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             )
             logger.log_console(
                 f"[TASK] launch task={job.task_name} phase={job.phase_name} params={job.parameter_count} "
-                f"device={device_mode} host_used_pct={pressure.used_pct:.2f} avail_mib={pressure.available_mib}/{pressure.total_mib} "
+                f"device={device_mode} batch_size={effective_batch_size} batch_scale={batch_scale:.6f} "
+                f"host_used_pct={pressure.used_pct:.2f} avail_mib={pressure.available_mib}/{pressure.total_mib} "
                 f"gpu_used_pct={gpu_pressure.used_pct:.2f} gpu_used_mib={gpu_pressure.used_mib}/{gpu_pressure.total_mib} "
                 f"active={len(active)}/{active_limit}"
             )
@@ -1136,6 +1289,8 @@ def main() -> None:
         raise SystemExit("--host-ram-resume-pct must be <= --host-ram-pressure-limit-pct")
     if float(args.gpu_memory_resume_pct) > float(args.gpu_memory_pressure_limit_pct):
         raise SystemExit("--gpu-memory-resume-pct must be <= --gpu-memory-pressure-limit-pct")
+    if not (0.0 < float(getattr(args, "batch_backoff_factor", 0.5)) < 1.0):
+        raise SystemExit("--batch-backoff-factor must be between 0 and 1")
     tasks = [str(t).lower() for t in args.tasks]
     architectures = stl.build_architectures(args)
     if not architectures:
@@ -1168,6 +1323,8 @@ def main() -> None:
         logger.log_console(f"GPU device index: {int(args.gpu_device_index)}")
         logger.log_console(f"Max active jobs: {int(args.max_active_jobs)}")
         logger.log_console(f"Max retries per job: {int(args.max_retries_per_job)}")
+        logger.log_console(f"Batch backoff factor: {float(args.batch_backoff_factor):.3f}")
+        logger.log_console(f"Batch backoff scale: {float(load_batch_backoff_state(run_root).get('batch_scale', 1.0)):.6f}")
     logger.log_console(f"Source run root: {args.source_run_root}")
     logger.log_console(f"Device: {torch.device('cuda' if torch.cuda.is_available() else 'cpu')}")
     logger.log_console(f"Git commit: {rg.git_commit()}")

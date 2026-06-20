@@ -55,7 +55,7 @@ tabular_runtime_bootstrap() {
   export MKL_DYNAMIC="${MKL_DYNAMIC:-FALSE}"
   export OMP_WAIT_POLICY="${OMP_WAIT_POLICY:-ACTIVE}"
   export TABULAR_CHILD_SHARED_CPU="${TABULAR_CHILD_SHARED_CPU:-1}"
-  export TABULAR_CPU_WORKERS="${TABULAR_CPU_WORKERS:-0}"
+  export TABULAR_CPU_WORKERS="0"
   if command -v renice >/dev/null 2>&1; then
     renice -n -20 -p "$$" >/dev/null 2>&1 || true
   fi

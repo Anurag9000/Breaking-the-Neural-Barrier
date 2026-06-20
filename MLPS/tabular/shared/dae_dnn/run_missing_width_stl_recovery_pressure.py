@@ -121,10 +121,16 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--post-launch-sample-delay-sec",
         type=float,
-        default=60.0,
+        default=30.0,
         help="Delay after each child launch before the next pressure sample and launch decision.",
     )
-    p.add_argument("--max-active-jobs", type=int, default=0, help="0 means use all queued jobs as lanes with no CPU-core ceiling.")
+    p.add_argument(
+        "--batch-backoff-factor",
+        type=float,
+        default=0.5,
+        help="Multiply the effective batch size by this factor after a pressure stall with no active children remaining.",
+    )
+    p.add_argument("--max-active-jobs", type=int, default=0, help="0 means no hard child-count cap beyond pressure gating.")
     p.add_argument("--max-active-gpu-jobs", type=int, default=0, help="Maximum concurrent GPU children. 0 means memory-pressure driven.")
     p.add_argument("--include-width-only", action="store_true", default=True)
     p.add_argument("--no-include-width-only", dest="include_width_only", action="store_false")
@@ -474,11 +480,33 @@ def command_for_device(job: RecoveryJob, device_mode: str) -> List[str]:
     return out
 
 
-def launch(job: RecoveryJob, device_mode: str, gpu_index: int, concurrency_hint: int, slot_index: int) -> Tuple[subprocess.Popen[Any], Any]:
+def scaled_batch_command(command: Sequence[str], batch_scale: float) -> List[str]:
+    cmd = list(command)
+    if batch_scale >= 0.999999:
+        return cmd
+    try:
+        idx = cmd.index("--batch-size")
+        if idx + 1 < len(cmd):
+            base_batch_size = int(cmd[idx + 1])
+            scaled = pressure.scale_batch_size(base_batch_size, batch_scale)
+            cmd[idx + 1] = str(int(scaled))
+    except Exception:
+        pass
+    return cmd
+
+
+def launch(
+    job: RecoveryJob,
+    device_mode: str,
+    gpu_index: int,
+    concurrency_hint: int,
+    slot_index: int,
+    batch_scale: float,
+) -> Tuple[subprocess.Popen[Any], Any]:
     job.root.mkdir(parents=True, exist_ok=True)
     log_path = job_log_path(job.root)
     log_handle = log_path.open("a", encoding="utf-8")
-    cmd = command_for_device(job, device_mode)
+    cmd = scaled_batch_command(command_for_device(job, device_mode), batch_scale)
     env = launcher_child_env(
         env_for(device_mode, int(gpu_index)),
         concurrency_hint=concurrency_hint,
@@ -539,8 +567,14 @@ def run(args: argparse.Namespace) -> None:
     logger.log_console(f"Jobs: {len(jobs)}")
     logger.log_console(f"Max active jobs: {limit}")
     logger.log_console(f"Max active GPU jobs: {gpu_active_limit(args)}")
-    launch_sample_delay_sec = max(0.0, float(getattr(args, "post_launch_sample_delay_sec", 60.0)))
+    logger.log_console(f"Batch backoff factor: {float(args.batch_backoff_factor):.3f}")
+    launch_sample_delay_sec = max(0.0, float(getattr(args, "post_launch_sample_delay_sec", 30.0)))
     launch_sample_hold_until = 0.0
+    batch_backoff_state = pressure.load_batch_backoff_state(run_root)
+    batch_scale = float(batch_backoff_state.get("batch_scale", 1.0))
+    pressure_backoff_pending = bool(batch_backoff_state.get("pressure_backoff_pending", False))
+    pressure_backoff_reason: Optional[str] = batch_backoff_state.get("last_backoff_reason")
+    logger.log_console(f"Batch backoff scale: {batch_scale:.6f}")
     if forced_cpu_jobs:
         logger.log_console(f"[STATE] CPU-forced jobs restored: {len(forced_cpu_jobs)}")
     if bool(args.dry_run):
@@ -580,6 +614,8 @@ def run(args: argparse.Namespace) -> None:
                 launches_enabled = True
                 host_launch_blocked = False
                 gpu_launch_blocked = False
+                pressure_backoff_pending = False
+                pressure_backoff_reason = None
                 continue
             gpu_pause_count, host_pause_count = job_pause_counts(job)
             if active_job.pause_requested and active_job.pause_reason == "gpu_memory_pressure":
@@ -595,6 +631,8 @@ def run(args: argparse.Namespace) -> None:
                     logger.log_console("[STATE] host admission gate blocked until a child completes")
                 host_launch_blocked = True
             launches_enabled = False
+            pressure_backoff_pending = True
+            pressure_backoff_reason = active_job.pause_reason or "retry"
             update_job_state(job.root, {"status": "paused" if active_job.pause_requested else "retrying", "completed": False, "exit_code": int(code or 0), "updated_at": time.time()})
             if gpu_pause_count or host_pause_count:
                 update_job_state(
@@ -612,6 +650,26 @@ def run(args: argparse.Namespace) -> None:
             entry = active.pop(proc, None)
             if entry is not None:
                 free_slots.add(entry.slot_index)
+
+        if not active and pending and pressure_backoff_pending:
+            previous_scale = batch_scale
+            batch_backoff_state = pressure.apply_batch_backoff(
+                run_root,
+                batch_backoff_state,
+                float(getattr(args, "batch_backoff_factor", 0.5)),
+                str(pressure_backoff_reason or "pressure_stall"),
+            )
+            batch_scale = float(batch_backoff_state.get("batch_scale", previous_scale))
+            pressure_backoff_pending = False
+            launches_enabled = True
+            host_launch_blocked = False
+            gpu_launch_blocked = False
+            launch_sample_hold_until = time.time() + launch_sample_delay_sec
+            logger.log_console(
+                f"[STATE] batch_backoff reason={pressure_backoff_reason or 'pressure_stall'} "
+                f"batch_scale={batch_scale:.6f} previous_scale={previous_scale:.6f}"
+            )
+            continue
 
         if time.time() < launch_sample_hold_until:
             time.sleep(max(0.1, float(args.pressure_poll_interval_sec)))
@@ -677,11 +735,28 @@ def run(args: argparse.Namespace) -> None:
                 forced_cpu_jobs.add(str(job.root))
             slot_index = min(free_slots)
             free_slots.remove(slot_index)
-            proc, handle = launch(job, chosen, int(args.gpu_device_index), concurrency_hint=int(limit), slot_index=slot_index)
+            proc, handle = launch(
+                job,
+                chosen,
+                int(args.gpu_device_index),
+                concurrency_hint=int(limit),
+                slot_index=slot_index,
+                batch_scale=batch_scale,
+            )
             active[proc] = ActiveRecoveryJob(job=job, device_mode=chosen, log_path=job_log_path(job.root), log_handle=handle, slot_index=slot_index)
-            update_job_state(job.root, {"status": "running", "completed": False, "device": chosen, "started_at": time.time(), "command": command_for_device(job, chosen)})
+            update_job_state(
+                job.root,
+                {
+                    "status": "running",
+                    "completed": False,
+                    "device": chosen,
+                    "started_at": time.time(),
+                    "command": scaled_batch_command(command_for_device(job, chosen), batch_scale),
+                    "batch_scale": batch_scale,
+                },
+            )
             logger.log_console(
-                f"[TASK] launch {job.name} params={job.parameter_count} device={chosen} "
+                f"[TASK] launch {job.name} params={job.parameter_count} device={chosen} batch_scale={batch_scale:.6f} "
                 f"host_used_pct={host.used_pct:.2f} swap_used_pct={swap.used_pct:.2f} "
                 f"gpu_used_pct={gpu.used_pct:.2f} active={len(active)}/{limit}"
             )
@@ -702,6 +777,8 @@ def main() -> None:
         raise SystemExit("--gpu-memory-resume-pct must be <= --gpu-memory-pressure-limit-pct")
     if float(args.swap_resume_pct) > float(args.swap_pressure_limit_pct):
         raise SystemExit("--swap-resume-pct must be <= --swap-pressure-limit-pct")
+    if not (0.0 < float(getattr(args, "batch_backoff_factor", 0.5)) < 1.0):
+        raise SystemExit("--batch-backoff-factor must be between 0 and 1")
     run(args)
 
 

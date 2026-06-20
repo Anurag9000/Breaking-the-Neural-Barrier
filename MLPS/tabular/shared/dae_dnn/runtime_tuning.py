@@ -196,20 +196,9 @@ def derive_cpu_budget(concurrency_hint: Optional[int] = None) -> Tuple[int, int,
 def resolve_num_workers(requested: int | None = None) -> int:
     """Resolve DataLoader worker count.
 
-    A positive explicit request wins. Otherwise an environment override wins.
-    If neither is provided, the default is zero workers so launchers only use
-    worker processes when a script explicitly asks for them.
+    The shared tabular launchers pin worker count to zero so DataLoader helper
+    processes do not fan out unexpectedly under the pressure-aware paths.
     """
-
-    if requested is not None:
-        requested = int(requested)
-        if requested > 0:
-            return requested
-
-    env_override = _safe_int(os.environ.get("TABULAR_CPU_WORKERS"))
-    if env_override is not None:
-        return env_override
-
     return 0
 
 
@@ -406,7 +395,7 @@ def launcher_child_env(
         env["OMP_PLACES"] = "cores"
         env["KMP_AFFINITY"] = "granularity=fine,compact,1,0"
     env["TABULAR_CPU_THREADS"] = str(thread_budget)
-    env.setdefault("TABULAR_CPU_WORKERS", "0")
+    env["TABULAR_CPU_WORKERS"] = "0"
     env["TABULAR_CPU_CORES"] = str(cores)
     env["TABULAR_CPU_JOB_CONCURRENCY"] = "1" if shared_cpu else str(max(1, int(current_concurrency_hint(concurrency_hint) or 1)))
     return env
@@ -435,7 +424,7 @@ def bootstrap_runtime(label: str = "tabular") -> Dict[str, int]:
         "KMP_AFFINITY": "granularity=fine,scatter",
         "TABULAR_CHILD_SHARED_CPU": "1",
         "TABULAR_CPU_THREADS": str(thread_budget),
-        "TABULAR_CPU_WORKERS": os.environ.get("TABULAR_CPU_WORKERS", "0"),
+        "TABULAR_CPU_WORKERS": "0",
         "TABULAR_CPU_CORES": str(cpu_cores),
     }
     for key, value in env_updates.items():
@@ -456,7 +445,7 @@ def bootstrap_runtime(label: str = "tabular") -> Dict[str, int]:
     return {
         "label": label,
         "cpu_cores": cpu_cores,
-        "num_workers": worker_budget,
+        "num_workers": 0,
         "torch_threads": thread_budget,
         "torch_interop_threads": 1,
     }
