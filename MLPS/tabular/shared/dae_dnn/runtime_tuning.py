@@ -16,6 +16,9 @@ import subprocess
 import sys
 from typing import Dict, Optional, Sequence, Tuple
 
+if os.name == "nt":
+    from ctypes import wintypes
+
 try:
     import torch
 except Exception:  # pragma: no cover - torch is always available in normal runs
@@ -216,6 +219,26 @@ def _apply_process_priority() -> None:
             }
             priority_class = priority_map.get(priority_name, priority_map["high"])
             kernel32.SetPriorityClass(process, priority_class)
+        except Exception:
+            pass
+        try:
+            kernel32 = ctypes.windll.kernel32
+            process = kernel32.GetCurrentProcess()
+            memory_priority_name = str(os.environ.get("TABULAR_WINDOWS_MEMORY_PRIORITY", "normal")).strip().lower()
+            memory_priority_map = {
+                "very_low": 1,
+                "low": 2,
+                "medium": 3,
+                "below_normal": 4,
+                "normal": 5,
+            }
+            memory_priority = memory_priority_map.get(memory_priority_name, 5)
+            class MEMORY_PRIORITY_INFORMATION(ctypes.Structure):
+                _fields_ = [("MemoryPriority", wintypes.ULONG)]
+
+            info = MEMORY_PRIORITY_INFORMATION(memory_priority)
+            # PROCESS_INFORMATION_CLASS::ProcessMemoryPriority = 0
+            kernel32.SetProcessInformation(process, 0, ctypes.byref(info), ctypes.sizeof(info))
         except Exception:
             pass
         return

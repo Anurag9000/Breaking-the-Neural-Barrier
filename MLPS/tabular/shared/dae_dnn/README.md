@@ -67,6 +67,9 @@ API with the same shape; the closest documented lower-priority analogue is
 `PROCESS_MODE_BACKGROUND_BEGIN`, which lowers CPU and resource scheduling
 priorities, but the training launchers do not enable background mode by
 default.
+The runtime also sets the current process memory priority to `normal`
+through `SetProcessInformation(ProcessMemoryPriority)` so Windows keeps the
+process's pages resident as long as it can.
 
 On Linux, the runtime scope also requests `MemorySwapMax=0`, so these
 launchers are asked to run with swap disabled inside the systemd cgroup when
