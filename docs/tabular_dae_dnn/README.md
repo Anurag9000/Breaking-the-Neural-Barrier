@@ -96,13 +96,10 @@ The runtime also sets the current process memory priority to `normal`
 through `SetProcessInformation(ProcessMemoryPriority)` so Windows keeps the
 process's pages resident as long as it can.
 
-Strict no-swap is now fail-closed for this launcher stack. On Linux the
-runtime requests `MemorySwapMax=0` and `MemoryZSwapMax=0` when
-`systemd-run --user --scope` is available, and it aborts immediately if
-active swap devices exist, host swap is already in use, or the cgroup does
-not expose the expected zero-swap limits. On Windows it aborts immediately
-when pagefile-backed swap is still enabled. These launchers no longer fall
-back to best-effort swap handling. Disable swap/pagefile before running them.
+On Linux, the runtime requests `MemorySwapMax=0` and `MemoryZSwapMax=0` when
+`systemd-run --user --scope` is available. That is the repo-local
+swap-control mechanism for these launchers. The repo does not try to mutate
+host swap configuration or block startup based on host-global swap state.
 
 Regenerate it with:
 

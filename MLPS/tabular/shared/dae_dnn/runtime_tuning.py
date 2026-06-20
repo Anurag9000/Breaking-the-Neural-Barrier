@@ -56,10 +56,6 @@ def _env_truthy(value: Optional[str], *, default: bool = False) -> bool:
     return default
 
 
-def strict_no_swap_enabled() -> bool:
-    return _env_truthy(os.environ.get("TABULAR_STRICT_NO_SWAP"), default=True)
-
-
 def _current_affinity_cpus() -> Tuple[int, ...]:
     try:
         affinity = os.sched_getaffinity(0)
@@ -282,137 +278,6 @@ def _apply_process_priority() -> None:
             pass
 
 
-def _linux_active_swap_entries() -> Tuple[str, ...]:
-    try:
-        with open("/proc/swaps", "r", encoding="utf-8") as handle:
-            lines = [line.strip() for line in handle.readlines()[1:] if line.strip()]
-    except Exception:
-        return tuple()
-    entries = []
-    for line in lines:
-        parts = line.split()
-        if parts:
-            entries.append(parts[0])
-    return tuple(entries)
-
-
-def _linux_swap_used_mib() -> int:
-    total_kib = 0
-    free_kib = 0
-    try:
-        with open("/proc/meminfo", "r", encoding="utf-8") as handle:
-            for line in handle:
-                if line.startswith("SwapTotal:"):
-                    total_kib = int(line.split()[1])
-                elif line.startswith("SwapFree:"):
-                    free_kib = int(line.split()[1])
-                if total_kib and free_kib >= 0:
-                    break
-    except Exception:
-        return 0
-    if total_kib <= 0:
-        return 0
-    return max(0, int((total_kib - free_kib) // 1024))
-
-
-def _current_cgroup_dir() -> Optional[str]:
-    try:
-        with open("/proc/self/cgroup", "r", encoding="utf-8") as handle:
-            for line in handle:
-                parts = line.strip().split(":", 2)
-                if len(parts) == 3:
-                    rel = parts[2].strip()
-                    if rel:
-                        return rel.lstrip("/")
-    except Exception:
-        return None
-    return None
-
-
-def _read_cgroup_value(filename: str) -> Optional[str]:
-    rel = _current_cgroup_dir()
-    candidates = []
-    if rel is not None:
-        candidates.append(os.path.join("/sys/fs/cgroup", rel, filename))
-    candidates.append(os.path.join("/sys/fs/cgroup", filename))
-    for path in candidates:
-        try:
-            with open(path, "r", encoding="utf-8") as handle:
-                return handle.read().strip()
-        except Exception:
-            continue
-    return None
-
-
-def _windows_pagefile_enabled() -> bool:
-    try:
-        import psutil  # type: ignore
-
-        swap = psutil.swap_memory()
-        if int(getattr(swap, "total", 0) or 0) > 0:
-            return True
-    except Exception:
-        pass
-
-    try:
-        class MEMORYSTATUSEX(ctypes.Structure):
-            _fields_ = [
-                ("dwLength", ctypes.c_ulong),
-                ("dwMemoryLoad", ctypes.c_ulong),
-                ("ullTotalPhys", ctypes.c_ulonglong),
-                ("ullAvailPhys", ctypes.c_ulonglong),
-                ("ullTotalPageFile", ctypes.c_ulonglong),
-                ("ullAvailPageFile", ctypes.c_ulonglong),
-                ("ullTotalVirtual", ctypes.c_ulonglong),
-                ("ullAvailVirtual", ctypes.c_ulonglong),
-                ("ullAvailExtendedVirtual", ctypes.c_ulonglong),
-            ]
-
-        status = MEMORYSTATUSEX()
-        status.dwLength = ctypes.sizeof(MEMORYSTATUSEX)
-        if ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(status)):
-            slack = 16 * 1024 * 1024
-            return int(status.ullTotalPageFile) > int(status.ullTotalPhys) + int(slack)
-    except Exception:
-        pass
-    return False
-
-
-def enforce_strict_no_swap(label: str) -> None:
-    if not strict_no_swap_enabled():
-        return
-
-    if os.name == "nt":
-        if _windows_pagefile_enabled():
-            raise SystemExit(
-                f"{label}: strict no-swap mode is enabled, but Windows pagefile usage is available. "
-                "Disable the pagefile system-wide before launching this repo."
-            )
-        return
-
-    active_swaps = _linux_active_swap_entries()
-    if active_swaps:
-        raise SystemExit(
-            f"{label}: strict no-swap mode is enabled, but active Linux swap devices exist: {', '.join(active_swaps)}. "
-            "Disable swap system-wide, for example with `sudo swapoff -a`, before launching this repo."
-        )
-
-    if _linux_swap_used_mib() > 0:
-        raise SystemExit(f"{label}: strict no-swap mode is enabled, but host swap usage is already non-zero.")
-
-    swap_max = _read_cgroup_value("memory.swap.max")
-    if os.environ.get("TABULAR_SYSTEMD_SCOPED") == "1" and swap_max not in {None, "", "0"}:
-        raise SystemExit(
-            f"{label}: strict no-swap mode expected memory.swap.max=0 inside the launcher scope, got {swap_max!r}."
-        )
-
-    zswap_max = _read_cgroup_value("memory.zswap.max")
-    if os.environ.get("TABULAR_SYSTEMD_SCOPED") == "1" and zswap_max not in {None, "", "0"}:
-        raise SystemExit(
-            f"{label}: strict no-swap mode expected memory.zswap.max=0 inside the launcher scope, got {zswap_max!r}."
-        )
-
-
 def _scope_properties() -> Tuple[str, ...]:
     props = [
         "CPUWeight=10000",
@@ -552,7 +417,6 @@ def bootstrap_runtime(label: str = "tabular") -> Dict[str, int]:
     """Apply best-effort runtime tuning and return the selected settings."""
 
     _maybe_reexec_under_systemd_scope(label)
-    enforce_strict_no_swap(label)
     _apply_affinity_from_env()
     thread_budget, worker_budget, cpu_cores = derive_cpu_budget()
     env_updates = {

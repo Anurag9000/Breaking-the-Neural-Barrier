@@ -15,7 +15,6 @@ if (-not $env:OMP_DYNAMIC) { $env:OMP_DYNAMIC = "FALSE" }
 if (-not $env:MKL_DYNAMIC) { $env:MKL_DYNAMIC = "FALSE" }
 if (-not $env:OMP_WAIT_POLICY) { $env:OMP_WAIT_POLICY = "ACTIVE" }
 if (-not $env:TABULAR_CHILD_SHARED_CPU) { $env:TABULAR_CHILD_SHARED_CPU = "1" }
-if (-not $env:TABULAR_STRICT_NO_SWAP) { $env:TABULAR_STRICT_NO_SWAP = "1" }
 if (-not $env:CUDA_VISIBLE_DEVICES) { $env:CUDA_VISIBLE_DEVICES = "0" }
 if (-not $env:PYTORCH_CUDA_ALLOC_CONF) {
     $env:PYTORCH_CUDA_ALLOC_CONF = "expandable_segments:True,max_split_size_mb:128"

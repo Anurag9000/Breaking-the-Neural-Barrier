@@ -315,8 +315,8 @@ The recovery algorithm is:
    state to restore today
 8. treat host-RAM pressure as a global admission gate
 9. treat GPU memory pressure as a GPU-only admission gate in the mixed runner
-10. enforce strict no-swap in the wrapper path by setting swap thresholds to
-   `0 / 0` and aborting immediately if any swap/pagefile usage is detected
+10. keep swap thresholds at `100 / 100`; swap control is delegated to the
+   launcher scope request rather than a startup abort path
 
 The default CPU-only wrapper hides CUDA before bootstrap and therefore never
 sees a GPU. The mixed runner leaves CUDA visible and uses the same root so a
@@ -331,8 +331,8 @@ The key knobs are:
 - `--host-ram-resume-pct 80`
 - `--gpu-memory-pressure-limit-pct 85`
 - `--gpu-memory-resume-pct 80`
-- `--swap-pressure-limit-pct 0`
-- `--swap-resume-pct 0`
+- `--swap-pressure-limit-pct 100`
+- `--swap-resume-pct 100`
 - `--pressure-poll-interval-sec 0.5`
 - `--post-launch-sample-delay-sec 60`
 - `--batch-size 186240`
