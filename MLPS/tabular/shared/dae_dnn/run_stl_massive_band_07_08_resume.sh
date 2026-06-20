@@ -4,8 +4,8 @@ set -euo pipefail
 cd "$(dirname "$0")/../../../.."
 
 RUN_ROOT="${RUN_ROOT:-MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08}"
-MAX_ACTIVE_JOBS="${MAX_ACTIVE_JOBS:-20}"
-CONCURRENCY="${CONCURRENCY:-20}"
+MAX_ACTIVE_JOBS="${MAX_ACTIVE_JOBS:-2}"
+CONCURRENCY="${CONCURRENCY:-2}"
 
 # Strict CPU-only: hide GPU before any runtime bootstrap/code can see it.
 export CUDA_VISIBLE_DEVICES=""
