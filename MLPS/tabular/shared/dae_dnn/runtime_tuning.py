@@ -177,19 +177,19 @@ def derive_cpu_budget(concurrency_hint: Optional[int] = None) -> Tuple[int, int,
 
     The per-process thread budget is the detected core count divided by the
     active launcher concurrency hint. When there is no concurrency hint, a
-    single process can use the whole machine. Worker count stays deliberately
-    small to avoid process explosion under many concurrent children.
+    single process can use the whole machine. Worker count is intentionally
+    aggressive so the default path keeps data loading and preprocessing busy.
     """
 
     cores = detect_cpu_cores()
     hint = current_concurrency_hint(concurrency_hint)
     if hint is None or hint <= 1:
         thread_budget = cores
-        worker_budget = max(1, min(4, cores // 4))
+        worker_budget = cores
         return thread_budget, worker_budget, cores
 
     thread_budget = max(1, cores // int(hint))
-    worker_budget = 1 if thread_budget >= 1 else 0
+    worker_budget = max(1, thread_budget)
     return thread_budget, worker_budget, cores
 
 
@@ -374,7 +374,7 @@ def launcher_child_env(
     shared_cpu = bool(shared_cpu) or _env_truthy(env.get("TABULAR_CHILD_SHARED_CPU"), default=True)
     if shared_cpu:
         thread_budget = max(1, int(cores))
-        worker_budget = max(1, min(4, int(cores) // 4))
+        worker_budget = max(1, int(cores))
     elif affinity_slot is not None and hint and len(affinity_cpus) > 1:
         slot_count = min(max(1, int(hint)), len(affinity_cpus))
         slot = max(0, min(int(affinity_slot), slot_count - 1))

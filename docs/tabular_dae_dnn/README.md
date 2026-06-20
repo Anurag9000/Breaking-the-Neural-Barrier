@@ -71,7 +71,9 @@ to run without GPU admission.
 Both wrappers now default child launchers into shared-CPU mode. The launcher
 does not partition the visible CPU set across siblings unless a caller
 explicitly overrides `TABULAR_CHILD_SHARED_CPU`. Each child therefore sees the
-full CPU budget and the OS scheduler handles contention.
+full CPU budget and the OS scheduler handles contention. The default
+DataLoader worker count now also tracks the visible core count unless a caller
+overrides `TABULAR_CPU_WORKERS`.
 
 The strict STL band launchers currently cover:
 

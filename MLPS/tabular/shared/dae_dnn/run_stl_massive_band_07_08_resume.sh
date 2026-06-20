@@ -45,7 +45,7 @@ NVIDIA_VISIBLE_DEVICES="none" \
   --concurrency "${CONCURRENCY}" \
   --max-active-jobs "${MAX_ACTIVE_JOBS}" \
   --pressure-poll-interval-sec 0.5 \
-  --post-launch-sample-delay-sec 30 \
+  --post-launch-sample-delay-sec 60 \
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
