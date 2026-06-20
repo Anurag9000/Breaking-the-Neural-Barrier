@@ -82,8 +82,6 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--source-run-root", default="MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current")
     p.add_argument("--tasks", nargs="+", default=list(stl.DEFAULT_TASKS))
     p.add_argument("--batch-size", type=int, default=0)
-    p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
-    p.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
@@ -247,7 +245,6 @@ def build_worker_command(
         str(int(args.repeat_count)),
         "--batch-size",
         str(int(batch_size)),
-        "--pin-memory" if bool(args.pin_memory) else "--no-pin-memory",
         "--num-workers",
         str(int(args.num_workers)),
         "--seed",
@@ -826,7 +823,7 @@ def build_task_jobs(args: argparse.Namespace, tasks: Sequence[str], run_root: Pa
         task_root = run_root / task_name
         child_base = task_root / "_children"
         child_base.mkdir(parents=True, exist_ok=True)
-        task = build_task(task_name, cfg.data_dir, 1, cfg.num_workers, cfg.seed, pin_memory=bool(args.pin_memory))
+        task = build_task(task_name, cfg.data_dir, 1, cfg.num_workers, cfg.seed, pin_memory=False)
         task_jobs: List[ChildJob] = []
         for architecture in base_architectures:
             family = [list(architecture)]

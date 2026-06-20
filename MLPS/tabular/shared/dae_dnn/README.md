@@ -91,8 +91,9 @@ mode. In practice that means the launcher does not split the core set across
 siblings by default; every child sees the full CPU budget and the OS scheduler
 time-slices contention. The loader-worker default is pinned to zero across the
 shared tabular runtime so pressure-aware launchers do not spawn surprise
-`pt_data_worker` processes. Repeated process-tree termination attempts are
-spaced by 30 seconds by default via `TABULAR_TERMINATION_GAP_SEC`.
+`pt_data_worker` processes, and `pin_memory` is forced off in the shared
+tabular loaders regardless of caller flags. Repeated process-tree termination
+attempts are spaced by 30 seconds by default via `TABULAR_TERMINATION_GAP_SEC`.
 
 Recovery wrapper contract:
 

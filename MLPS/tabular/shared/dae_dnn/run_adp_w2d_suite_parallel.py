@@ -75,8 +75,6 @@ def parse_args() -> argparse.Namespace:
         default=4,
         help="Base repeat count; simulation and prediction are given one extra repeat in this suite.",
     )
-    p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
-    p.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     return p.parse_args()
 
 
@@ -147,7 +145,6 @@ def build_worker_command(args: argparse.Namespace, task_name: str, task_root: Pa
         str(int(args.num_workers)),
         "--hidden",
         *[str(int(v)) for v in args.hidden],
-        "--pin-memory" if bool(args.pin_memory) else "--no-pin-memory",
     ]
     return command
 

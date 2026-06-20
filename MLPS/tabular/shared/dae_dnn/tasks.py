@@ -42,9 +42,7 @@ def _split_dataset(ds: Dataset, seed: int, val_split: float = 0.1, test_split: f
 
 
 def _resolve_pin_memory(pin_memory: Optional[bool]) -> bool:
-    if pin_memory is None:
-        return bool(torch.cuda.is_available())
-    return bool(pin_memory)
+    return False
 
 
 def capped_batch_size(batch_size: int, dataset: Dataset) -> int:
@@ -66,7 +64,7 @@ def _make_loaders(
         "batch_size": capped_batch_size(batch_size, ds),
         "shuffle": shuffle,
         "num_workers": num_workers,
-        "pin_memory": _resolve_pin_memory(pin_memory),
+        "pin_memory": False,
     }
     if num_workers > 0:
         loader_kwargs["persistent_workers"] = True
@@ -89,7 +87,7 @@ def clone_loader(
         "batch_size": effective_batch_size,
         "shuffle": shuffle,
         "num_workers": num_workers,
-        "pin_memory": bool(getattr(loader, "pin_memory", False)),
+        "pin_memory": False,
         "drop_last": bool(getattr(loader, "drop_last", False)),
         "collate_fn": getattr(loader, "collate_fn", None),
         "generator": generator,

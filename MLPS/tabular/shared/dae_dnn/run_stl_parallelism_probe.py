@@ -41,8 +41,6 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--source-run-root", default="MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current")
     p.add_argument("--tasks", nargs="+", default=list(stl.DEFAULT_TASKS))
     p.add_argument("--batch-size", type=int, default=0)
-    p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
-    p.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=2)
@@ -159,7 +157,7 @@ def build_probe_candidates(args: argparse.Namespace, run_root: Path) -> List[Pro
     candidates: List[ProbeCandidate] = []
 
     for task_name in tasks:
-        task = build_task(task_name, cfg.data_dir, 1, cfg.num_workers, cfg.seed, pin_memory=bool(args.pin_memory))
+        task = build_task(task_name, cfg.data_dir, 1, cfg.num_workers, cfg.seed, pin_memory=False)
         for architecture in base_architectures:
             family = [list(architecture)]
             if cfg.parameter_matched and len(architecture) == 1:
@@ -216,7 +214,6 @@ def trial_command(
         "1",
         "--batch-size",
         str(int(args.batch_size)),
-        "--pin-memory" if bool(args.pin_memory) else "--no-pin-memory",
         "--num-workers",
         str(int(args.num_workers)),
         "--seed",

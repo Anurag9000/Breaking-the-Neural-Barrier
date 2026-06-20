@@ -296,7 +296,6 @@ def build_stl_command(args: argparse.Namespace, architecture: Sequence[int], roo
         str(int(args.repeat_count)),
         "--batch-size",
         str(int(args.batch_size)),
-        "--no-pin-memory",
         "--num-workers",
         str(int(args.num_workers)),
         "--seed",
