@@ -1,4 +1,5 @@
 {
+  "batch_scale": 1.0,
   "command": [
     "/home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier/.venv/bin/python",
     "/home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier/MLPS/tabular/shared/dae_dnn/run_goliath_staged_width_only.py",
@@ -11,7 +12,7 @@
     "--tasks",
     "prediction",
     "--batch-size",
-    "186240",
+    "93120",
     "--num-workers",
     "0",
     "--seed",
@@ -46,7 +47,11 @@
   "completed": false,
   "device": "cpu",
   "exit_code": -15,
-  "started_at": 1781866717.0751753,
-  "status": "running",
-  "updated_at": 1781865838.8469253
+  "gpu_pause_count": 0,
+  "host_pause_count": 1,
+  "last_pause_reason": "host_ram_pressure",
+  "reason": "host_ram_pressure",
+  "started_at": 1781963087.074626,
+  "status": "paused",
+  "updated_at": 1781963359.196717
 }

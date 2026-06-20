@@ -14,7 +14,7 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 import torch
 
 from MLPS.tabular.shared.dae_dnn.platform_runtime import popen_process_group_kwargs, terminate_process_tree
-from MLPS.tabular.shared.dae_dnn.tasks import build_task
+from MLPS.tabular.shared.dae_dnn.tasks import build_task, stl_batch_size_for_task
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
 from utils.adp_logging import ContinuousLogger
 
@@ -65,6 +65,7 @@ class RecoveryJob:
     command: Tuple[str, ...]
     parameter_count: int
     depth: int
+    canonical_batch_size: int
     device_capable: bool = True
 
 
@@ -92,7 +93,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--results-dir", default="MLPS/tabular/shared/dae_dnn/results")
     p.add_argument("--run-root", default="MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1")
     p.add_argument("--source-run-root", default="MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current")
-    p.add_argument("--batch-size", type=int, default=93120)
+    p.add_argument("--batch-size", type=int, default=0, help="Batch size override. 0 (default) defers to per-task target-batches computation.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
@@ -324,6 +325,17 @@ def build_jobs(args: argparse.Namespace) -> List[RecoveryJob]:
     jobs: List[RecoveryJob] = []
     args.use_bn = True
     dims_cache: Dict[str, Tuple[int, int]] = {}
+    batch_cache: Dict[str, int] = {}
+
+    def get_batch_size(task_name: str) -> int:
+        if task_name not in batch_cache:
+            try:
+                task = build_task(task_name, args.data_dir, 1, 0, int(args.seed), pin_memory=False)
+                batch_cache[task_name] = int(stl_batch_size_for_task(task_name, len(task.train_loader.dataset), override=int(args.batch_size)))
+            except Exception:
+                batch_cache[task_name] = max(1, int(args.batch_size) if int(args.batch_size) > 0 else 1)
+        return batch_cache[task_name]
+
     if bool(args.include_width_only):
         depths = parse_csv_ints(args.width_depths)
         present_repeats = parse_csv_ints(args.missing_present_task_repeats)
@@ -341,6 +353,7 @@ def build_jobs(args: argparse.Namespace) -> List[RecoveryJob]:
                             command=build_width_command(args, task_name, depth, job_root),
                             parameter_count=estimated_width_params(task_name, depth, args, dims_cache),
                             depth=int(depth),
+                            canonical_batch_size=get_batch_size(task_name),
                         )
                     )
         for repeat in prediction_repeats:
@@ -355,6 +368,7 @@ def build_jobs(args: argparse.Namespace) -> List[RecoveryJob]:
                         command=build_width_command(args, "prediction", depth, job_root),
                         parameter_count=estimated_width_params("prediction", depth, args, dims_cache),
                         depth=int(depth),
+                        canonical_batch_size=get_batch_size("prediction"),
                     )
                 )
     if bool(args.include_small_stl):
@@ -371,6 +385,7 @@ def build_jobs(args: argparse.Namespace) -> List[RecoveryJob]:
                     command=build_stl_command(args, architecture, job_root),
                     parameter_count=stl_params("anomaly", architecture, args, dims_cache),
                     depth=int(depth),
+                    canonical_batch_size=get_batch_size("anomaly"),
                 )
             )
     return sorted(jobs, key=lambda job: (0 if job_state_path(job.root).exists() and not job_completed(job) else 1, job.parameter_count, job.depth, job.name))
@@ -479,15 +494,14 @@ def command_for_device(job: RecoveryJob, device_mode: str) -> List[str]:
     return out
 
 
-def scaled_batch_command(command: Sequence[str], batch_scale: float) -> List[str]:
+def scaled_batch_command(command: Sequence[str], batch_scale: float, canonical_batch_size: int) -> List[str]:
     cmd = list(command)
     if batch_scale >= 0.999999:
         return cmd
     try:
         idx = cmd.index("--batch-size")
         if idx + 1 < len(cmd):
-            base_batch_size = int(cmd[idx + 1])
-            scaled = pressure.scale_batch_size(base_batch_size, batch_scale)
+            scaled = pressure.scale_batch_size(canonical_batch_size, batch_scale)
             cmd[idx + 1] = str(int(scaled))
     except Exception:
         pass
@@ -505,7 +519,7 @@ def launch(
     job.root.mkdir(parents=True, exist_ok=True)
     log_path = job_log_path(job.root)
     log_handle = log_path.open("a", encoding="utf-8")
-    cmd = scaled_batch_command(command_for_device(job, device_mode), batch_scale)
+    cmd = scaled_batch_command(command_for_device(job, device_mode), batch_scale, job.canonical_batch_size)
     env = launcher_child_env(
         env_for(device_mode, int(gpu_index)),
         concurrency_hint=concurrency_hint,
@@ -541,6 +555,7 @@ def write_plan(run_root: Path, jobs: Sequence[RecoveryJob]) -> None:
                     "root": str(job.root),
                     "parameter_count": int(job.parameter_count),
                     "depth": int(job.depth),
+                    "canonical_batch_size": int(job.canonical_batch_size),
                     "command": list(job.command),
                 }
                 for job in jobs
@@ -750,7 +765,7 @@ def run(args: argparse.Namespace) -> None:
                     "completed": False,
                     "device": chosen,
                     "started_at": time.time(),
-                    "command": scaled_batch_command(command_for_device(job, chosen), batch_scale),
+                    "command": scaled_batch_command(command_for_device(job, chosen), batch_scale, job.canonical_batch_size),
                     "batch_scale": batch_scale,
                 },
             )

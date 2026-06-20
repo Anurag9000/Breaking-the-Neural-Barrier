@@ -12039,3 +12039,29 @@ Saved loss vs neurons plot to MLPS/tabular/shared/dae_dnn/results/recovery/missi
 [2026-06-19 16:32:36] [METRICS] task=anomaly phase=stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 candidate=cand_000_d8_w96 epoch=20 finished auxiliary metrics keys=['auroc']
 [2026-06-19 16:32:36] [CKPT] task=anomaly phase=stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 candidate=cand_000_d8_w96 epoch=20 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2002
 [2026-06-19 16:32:36] [anomaly][stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96][cand_000_d8_w96] epoch=20 architecture=[96, 96, 96, 96, 96, 96, 96, 96] train_loss=0.741367 val_loss=0.766513 candidate_best=0.766513 global_best=0.766513 es=0/10
+[2026-06-20 15:23:41] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-20 15:23:41] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0096_96_96_96_96_96_96_96_96/training_log.txt
+[2026-06-20 15:23:41] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0096_96_96_96_96_96_96_96_96/training_stats.csv
+[2026-06-20 15:23:41] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0096_96_96_96_96_96_96_96_96
+[2026-06-20 15:23:41] Tasks: ['anomaly']
+[2026-06-20 15:23:41] Architectures: ['[96, 96, 96, 96, 96, 96, 96, 96]']
+[2026-06-20 15:23:41] Repeat count: 5
+[2026-06-20 15:23:41] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-20 15:23:41] Device: cpu
+[2026-06-20 15:23:41] Git commit: f0ef3a2346bd3d253136150db7692f59cac166af
+[2026-06-20 15:23:41] [ABLATION:anomaly] STL phase start: stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 architecture=[96, 96, 96, 96, 96, 96, 96, 96]
+[2026-06-20 15:23:41] Initialized ContinuousLogger for anomaly_stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 (Mode: stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96)
+[2026-06-20 15:23:41] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0096_96_96_96_96_96_96_96_96/anomaly/stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96/cand_000_d8_w96/training_log.txt
+[2026-06-20 15:23:41] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0096_96_96_96_96_96_96_96_96/anomaly/stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96/cand_000_d8_w96/training_stats.csv
+[2026-06-20 15:23:44] [CKPT] task=anomaly phase=stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 candidate=cand_000_d8_w96 epoch=405 batch=1/1 start path=checkpoint_last.pt
+[2026-06-20 15:23:44] [CKPT] task=anomaly phase=stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 candidate=cand_000_d8_w96 epoch=405 batch=1/1 done gpu_used_mib=15 host_available_mib=8153
+[2026-06-20 15:23:44] [BATCH] task=anomaly phase=stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 candidate=cand_000_d8_w96 epoch=405 batch=1/1 batch_size=169386 running_batches=1 batch_loss=0.654194 running_loss=0.654194
+[2026-06-20 15:23:44] [VAL] task=anomaly phase=stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 candidate=cand_000_d8_w96 epoch=405 starting validation
+[2026-06-20 15:23:45] [VAL] task=anomaly phase=stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 candidate=cand_000_d8_w96 epoch=405 finished validation val_loss=0.141861
+[2026-06-20 15:23:45] [METRICS] task=anomaly phase=stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 candidate=cand_000_d8_w96 epoch=405 starting auxiliary metrics
+[2026-06-20 15:23:47] [METRICS] task=anomaly phase=stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 candidate=cand_000_d8_w96 epoch=405 finished auxiliary metrics keys=['auroc']
+[2026-06-20 15:23:47] [CKPT] task=anomaly phase=stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96 candidate=cand_000_d8_w96 epoch=405 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=7448
+[2026-06-20 15:23:47] [anomaly][stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96][cand_000_d8_w96] epoch=405 architecture=[96, 96, 96, 96, 96, 96, 96, 96] train_loss=0.654194 val_loss=0.141861 candidate_best=0.071304 global_best=0.071304 es=11/10
+Saved loss vs epoch plot to MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0096_96_96_96_96_96_96_96_96/anomaly/stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96/cand_000_d8_w96/val_loss_vs_step.png
+Saved loss vs neurons plot to MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d08_w0096_96_96_96_96_96_96_96_96/anomaly/stl_ablation_r05_d08_w0096_96_96_96_96_96_96_96_96/cand_000_d8_w96/loss_vs_neurons_best.png
+[2026-06-20 15:23:49] [ABLATION:anomaly] GPU VRAM samples=[] avg_mib=None

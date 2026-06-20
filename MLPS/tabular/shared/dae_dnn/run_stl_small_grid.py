@@ -229,7 +229,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--tasks", type=str, nargs="+", default=DEFAULT_TASKS)
     p.add_argument("--depths", type=int, nargs="+", default=DEFAULT_DEPTHS)
     p.add_argument("--widths", type=int, nargs="+", default=DEFAULT_WIDTHS)
-    p.add_argument("--batch-size", type=int, default=93120)
+    p.add_argument("--batch-size", type=int, default=0, help="Batch size override. 0 (default) defers to per-task target-batches computation.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
@@ -320,7 +320,7 @@ def main() -> None:
     task_summaries: Dict[str, Dict[str, Any]] = {}
     try:
         for task_name in tasks:
-            task_batch_size = rg.batch_size_for_task(task_name, int(args.batch_size))
+            task_batch_size = rg.batch_size_for_task(task_name, int(args.batch_size), data_dir=args.data_dir, num_workers=int(args.num_workers), seed=int(args.seed))
             task = rg.build_task(task_name, args.data_dir, task_batch_size, int(args.num_workers), int(args.seed))
             rg.refresh_task_loaders(task, task_batch_size)
             task_root = run_root / task_name

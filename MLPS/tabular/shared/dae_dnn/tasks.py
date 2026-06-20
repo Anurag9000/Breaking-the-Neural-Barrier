@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import math
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
 import urllib.request
@@ -16,6 +17,62 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import resolve_num_workers
+
+# ---------------------------------------------------------------------------
+# Canonical batch-target table.
+# Each value is the *desired number of gradient-update batches per epoch*.
+# When a runner passes batch_size=0 (deferred), stl_batch_size_for_task()
+# computes the actual batch size from train-set size / target_batches,
+# rounded up to the nearest `step` (default 16).
+#
+# Rationale:
+#   - Covtype tasks (classification, autoencoding, generation, denoising):
+#     ~464 k training rows / 100 batches ≈ 4 656 samples/batch.
+#   - Anomaly task uses only class-0 rows (~167 k) / 20 batches ≈ 8 350.
+#   - California-housing tasks (simulation, prediction):
+#     ~13 k training rows / 2 batches ≈ 6 508 (→ effectively 1-2 batches).
+#
+# Keeping this in tasks.py avoids a circular import:
+#   run_stl_ablation imports run_goliath; run_goliath can safely import tasks.
+# ---------------------------------------------------------------------------
+DEFAULT_BATCH_TARGETS: Dict[str, int] = {
+    "classification": 100,
+    "autoencoding": 100,
+    "generation": 100,
+    "denoising": 100,
+    "anomaly": 20,
+    "simulation": 2,
+    "prediction": 2,
+}
+
+
+def stl_batch_size_for_task(
+    task_name: str,
+    train_size: int,
+    override: int = 0,
+    step: int = 16,
+) -> int:
+    """Return the canonical batch size for *task_name*.
+
+    If *override* > 0, return *override* unchanged.
+    Otherwise compute from the target-batch-count table:
+
+        batch_size = ceil(train_size / target_batches), rounded to *step*.
+
+    Args:
+        task_name: lower-case task identifier, e.g. "classification".
+        train_size: number of rows in the training split.
+        override: explicit batch size; 0 means "use the target-based default".
+        step: granularity for rounding (default 16).
+    """
+    override = int(override)
+    if override > 0:
+        return override
+    target_batches = max(1, int(DEFAULT_BATCH_TARGETS.get(task_name.lower(), 50)))
+    min_batch = max(1, int(math.ceil(train_size / target_batches)))
+    rounded = max(int(step), int(math.ceil(min_batch / int(step)) * int(step)))
+    return int(rounded)
+
 
 
 @dataclass

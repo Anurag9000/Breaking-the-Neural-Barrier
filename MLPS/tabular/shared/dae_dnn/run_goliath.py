@@ -30,7 +30,7 @@ from MLPS.tabular.shared.dae_dnn.adp_search import expand_depth, expand_width, m
 from MLPS.tabular.shared.dae_dnn.mlp import MLP
 from MLPS.tabular.shared.dae_dnn.platform_runtime import sample_host_memory_mib
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
-from MLPS.tabular.shared.dae_dnn.tasks import Task, build_task, clone_loader, refresh_task_loaders, task_names
+from MLPS.tabular.shared.dae_dnn.tasks import Task, build_task, clone_loader, refresh_task_loaders, stl_batch_size_for_task, task_names
 from MLPS.tabular.shared.dae_dnn.train_utils import AdaptiveBatchController
 from MLPS.tabular.shared.dae_dnn.train_utils import eval_epoch, forward_train_safe, train_epoch, unpack_batch
 from utils.adp_logging import ContinuousLogger
@@ -92,15 +92,12 @@ def cleanup_runtime() -> None:
     finally:
         gc.collect()
 
-PER_TASK_BATCH_SIZES = {
-    "prediction": 327680,
-    "classification": 327680,
-    "autoencoding": 327680,
-    "generation": 327680,
-    "denoising": 327680,
-    "anomaly": 327680,
-    "simulation": 327680,
-}
+# PER_TASK_BATCH_SIZES is intentionally removed.
+# Batch sizing now uses stl_batch_size_for_task() from tasks.py, which
+# derives the batch size dynamically from train-set size and a per-task
+# target-batches-per-epoch table (DEFAULT_BATCH_TARGETS in tasks.py).
+# This ensures every runner — normal STL, ADP, pressure/recovery —
+# starts from the same canonical batch size rather than a stale constant.
 
 GOLIATH_ADP_PHASES = [
     ("ae_width_only", "width_only"),
@@ -465,15 +462,21 @@ def adp_seed_hidden_for_mode(mode: Optional[str]) -> List[int]:
     return adp_seed_hidden()
 
 
-def default_batch_size_for_task(task_name: str) -> int:
-    return int(PER_TASK_BATCH_SIZES.get(task_name.lower(), 327680))
+def default_batch_size_for_task(task_name: str, data_dir: str = "./data", num_workers: int = 0, seed: int = 0) -> int:
+    """Compute the canonical batch size for *task_name* by loading the task
+    once at batch_size=1, reading train-set size, then delegating to
+    stl_batch_size_for_task(). Result is deterministic given the dataset."""
+    probe = build_task(task_name, data_dir, 1, num_workers, seed)
+    train_size = len(probe.train_loader.dataset)
+    return stl_batch_size_for_task(task_name, train_size, override=0)
 
 
-def batch_size_for_task(task_name: str, override: int) -> int:
+def batch_size_for_task(task_name: str, override: int, data_dir: str = "./data", num_workers: int = 0, seed: int = 0) -> int:
+    """Return *override* if positive, otherwise call default_batch_size_for_task()."""
     override = int(override)
     if override > 0:
         return override
-    return default_batch_size_for_task(task_name)
+    return default_batch_size_for_task(task_name, data_dir=data_dir, num_workers=num_workers, seed=seed)
 
 
 def candidate_slug(candidate_index: int, hidden_widths: Sequence[int]) -> str:
@@ -2653,19 +2656,32 @@ def training_loop(
         restore_rng_state(ckpt)
         start_epoch = int(ckpt["epoch"])
         start_batch = int(ckpt.get("batch_index", 0) or 0)
-        checkpoint_batch_size = int(ckpt.get("batch_size", current_batch_size) or current_batch_size)
-        checkpoint_batch_size = max(int(current_batch_size), int(checkpoint_batch_size))
-        if checkpoint_batch_size > 0 and checkpoint_batch_size != current_batch_size:
-            refresh_task_loaders(task, checkpoint_batch_size)
-            current_batch_size = checkpoint_batch_size
+        requested_batch_size = int(current_batch_size)
+        checkpoint_batch_size = int(ckpt.get("batch_size", requested_batch_size) or requested_batch_size)
+        batch_size_changed = (checkpoint_batch_size != requested_batch_size)
+        if batch_size_changed:
+            # The saved batch index maps to a different loader layout; restart
+            # the current epoch cleanly under the newly requested batch size.
+            start_batch = 0
+        if requested_batch_size > 0:
+            refresh_task_loaders(task, requested_batch_size)
+            current_batch_size = requested_batch_size
         best_val = float(ckpt["best_val"])
         best_state = restore_best_state_from_candidate(candidate_dir, device, ckpt)
         best_epoch = int(ckpt["best_epoch"])
         es_counter = int(ckpt["es_counter"])
-        running_train_loss = float(ckpt.get("running_train_loss", 0.0) or 0.0)
-        running_train_correct = float(ckpt.get("running_train_correct", 0.0) or 0.0)
-        running_train_samples = int(ckpt.get("running_train_samples", 0) or 0)
-        running_train_batches = int(ckpt.get("running_train_batches", 0) or 0)
+        if batch_size_changed:
+            # Running stats from a different batch size are incompatible —
+            # zero them so the epoch starts fresh.
+            running_train_loss = 0.0
+            running_train_correct = 0.0
+            running_train_samples = 0
+            running_train_batches = 0
+        else:
+            running_train_loss = float(ckpt.get("running_train_loss", 0.0) or 0.0)
+            running_train_correct = float(ckpt.get("running_train_correct", 0.0) or 0.0)
+            running_train_samples = int(ckpt.get("running_train_samples", 0) or 0)
+            running_train_batches = int(ckpt.get("running_train_batches", 0) or 0)
         checkpoint_batches = int(ckpt.get("batches_per_epoch", 0) or 0)
         if bool(ckpt.get("epoch_complete", True)) or (
             checkpoint_batches > 0 and start_batch >= checkpoint_batches
@@ -3104,7 +3120,7 @@ def main() -> None:
         nargs="+",
         default=["ae_alt_width", "ae_alt_depth", "ae_width_to_depth", "ae_depth_to_width"],
     )
-    p.add_argument("--batch-size", type=int, default=819200, help="Global batch-size default/override.")
+    p.add_argument("--batch-size", type=int, default=0, help="Global batch-size override. 0 (default) defers to the per-task target-based computation.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--stl-width", type=int, default=128)
@@ -3182,7 +3198,7 @@ def main() -> None:
             "timestamp": now_stamp(),
             "batch_size_override": int(cfg.batch_size),
             "batch_size_policy": "override" if int(cfg.batch_size) > 0 else "per_task_default",
-            "default_batch_sizes": {task_name: default_batch_size_for_task(task_name) for task_name in tasks},
+            "default_batch_sizes": {task_name: default_batch_size_for_task(task_name, data_dir=cfg.data_dir, num_workers=cfg.num_workers, seed=cfg.seed) for task_name in tasks},
         },
     )
 
@@ -3200,7 +3216,7 @@ def main() -> None:
     task_summaries: Dict[str, Dict[str, Any]] = {}
 
     for task_name in tasks:
-        task_batch_size = batch_size_for_task(task_name, cfg.batch_size)
+        task_batch_size = batch_size_for_task(task_name, cfg.batch_size, data_dir=cfg.data_dir, num_workers=cfg.num_workers, seed=cfg.seed)
         task = build_task(task_name, cfg.data_dir, task_batch_size, cfg.num_workers, cfg.seed)
         refresh_task_loaders(task, task_batch_size)
         task_objects[task_name] = task

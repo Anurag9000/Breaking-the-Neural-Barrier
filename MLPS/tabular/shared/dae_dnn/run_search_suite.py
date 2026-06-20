@@ -24,6 +24,7 @@ from MLPS.tabular.shared.dae_dnn.mlp import MLP
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
 from MLPS.tabular.shared.dae_dnn.run_goliath import (
     RunConfig,
+    batch_size_for_task,
     build_run_root,
     eval_final,
     extract_hidden_widths,
@@ -1295,7 +1296,7 @@ def main() -> None:
         default=DEFAULT_BASELINE_METHODS,
         help="Search methods to run. Defaults to the stronger baselines only.",
     )
-    p.add_argument("--batch-size", type=int, default=819200)
+    p.add_argument("--batch-size", type=int, default=0, help="Batch size override. 0 (default) defers to per-task target-batches computation.")
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)
@@ -1384,7 +1385,7 @@ def main() -> None:
     task_objects: Dict[str, Task] = {}
 
     for task_name in tasks:
-        batch_size = int(cfg.batch_size)
+        batch_size = batch_size_for_task(task_name, int(cfg.batch_size), data_dir=cfg.data_dir, num_workers=cfg.num_workers, seed=cfg.seed)
         task = build_task(task_name, cfg.data_dir, batch_size, cfg.num_workers, cfg.seed)
         refresh_task_loaders(task, batch_size)
         task_objects[task_name] = task
