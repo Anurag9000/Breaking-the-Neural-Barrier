@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "$0")/../../../.."
+
+RUN_ROOT="${RUN_ROOT:-MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow09_10}"
+PYTHON_BIN="${PYTHON_BIN:-./.venv/bin/python}"
+if [[ ! -x "$PYTHON_BIN" && -x "./.venv/Scripts/python.exe" ]]; then
+  PYTHON_BIN="./.venv/Scripts/python.exe"
+fi
+
+export CUDA_VISIBLE_DEVICES=""
+export NVIDIA_VISIBLE_DEVICES="none"
+unset PYTORCH_CUDA_ALLOC_CONF
+export TABULAR_CPU_WORKERS=0
+
+exec "$PYTHON_BIN" MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
+  --data-dir ./data \
+  --results-dir MLPS/tabular/shared/dae_dnn/results \
+  --run-root "$RUN_ROOT" \
+  --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current \
+  --tasks classification autoencoding generation denoising anomaly simulation prediction \
+  --param-band 9 10 \
+  --repeat-count 5 \
+  --scheduler fixed \
+  --concurrency 5 \
+  "$@"
