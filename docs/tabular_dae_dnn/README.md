@@ -80,6 +80,7 @@ The strict STL band launchers currently cover:
 - `run_stl_massive_band_01_03_fresh.sh`
 - `run_stl_massive_band_04_06_fresh.sh`
 - `run_stl_massive_band_07_08_fresh.sh`
+- `run_stl_massive_band_07_08_pressure_resume.sh`
 - `run_stl_massive_band_09_10_fresh.sh`
 
 On Windows 11, the runtime uses the Win32 process-priority and affinity

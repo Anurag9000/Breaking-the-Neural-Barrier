@@ -56,6 +56,7 @@ The matching launcher set is:
 - `run_stl_massive_band_01_03_fresh.sh`
 - `run_stl_massive_band_04_06_fresh.sh`
 - `run_stl_massive_band_07_08_fresh.sh`
+- `run_stl_massive_band_07_08_pressure_resume.sh`
 - `run_stl_massive_band_09_10_fresh.sh`
 
 Merge those staged roots back into the canonical STL root with:
