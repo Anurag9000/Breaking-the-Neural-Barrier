@@ -13,6 +13,8 @@ export CUDA_VISIBLE_DEVICES=""
 export NVIDIA_VISIBLE_DEVICES="none"
 unset PYTORCH_CUDA_ALLOC_CONF
 export TABULAR_CPU_WORKERS=0
+MAX_ACTIVE_JOBS="${MAX_ACTIVE_JOBS:-20}"
+CONCURRENCY="${CONCURRENCY:-20}"
 
 exec "$PYTHON_BIN" MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
   --data-dir ./data \
@@ -23,11 +25,12 @@ exec "$PYTHON_BIN" MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
   --param-band 7 8 \
   --repeat-count 5 \
   --scheduler pressure_aware \
-  --max-active-jobs 1 \
-  --concurrency 1 \
-  --host-ram-pressure-limit-pct 100 \
-  --host-ram-resume-pct 100 \
-  --gpu-memory-pressure-limit-pct 100 \
-  --gpu-memory-resume-pct 100 \
-  --post-launch-sample-delay-sec 0 \
+  --max-active-jobs "$MAX_ACTIVE_JOBS" \
+  --concurrency "$CONCURRENCY" \
+  --host-ram-pressure-limit-pct 85 \
+  --host-ram-resume-pct 80 \
+  --gpu-memory-pressure-limit-pct 85 \
+  --gpu-memory-resume-pct 80 \
+  --pressure-poll-interval-sec 0.5 \
+  --post-launch-sample-delay-sec 30 \
   "$@"
