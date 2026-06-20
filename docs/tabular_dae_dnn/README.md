@@ -217,7 +217,7 @@ Key pressure-aware flags:
 - `--max-active-jobs 0` for no hard slot cap beyond RAM pressure
 - `--max-retries-per-job 0` as a legacy compatibility flag; pressure-aware mode now requeues failed children indefinitely
 - `--pressure-poll-interval-sec 0.5`
-- `--post-launch-sample-delay-sec 60`
+- `--post-launch-sample-delay-sec 30`
 
 For a fresh full rerun of the strict `10^4..10^6` massive STL band, use:
 

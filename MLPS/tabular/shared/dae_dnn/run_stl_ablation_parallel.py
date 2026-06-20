@@ -894,7 +894,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
     active_limit = active_job_limit(args, len(pending))
     gpu_available = bool(torch.cuda.is_available())
     launches_enabled = True
-    launch_sample_delay_sec = max(0.0, float(getattr(args, "post_launch_sample_delay_sec", 60.0)))
+    launch_sample_delay_sec = max(0.0, float(getattr(args, "post_launch_sample_delay_sec", 30.0)))
     launch_sample_hold_until = 0.0
 
     def build_child_env(device_mode: str) -> Dict[str, str]:
