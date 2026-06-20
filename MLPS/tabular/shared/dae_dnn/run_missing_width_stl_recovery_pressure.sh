@@ -40,7 +40,7 @@ NVIDIA_VISIBLE_DEVICES="none" \
   --grad-clip 1.0 \
   --max-width 10000000000 \
   --max-depth 10 \
-  --max-neurons 10000000 \
+  --max-neurons 10000000000 \
   --width-stage-margin-patience 10 \
   --width-stage-min-improve-pct 1.0 \
   --repeat-count 5 \
