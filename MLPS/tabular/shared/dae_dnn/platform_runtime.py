@@ -5,7 +5,33 @@ import os
 import signal
 import subprocess
 import time
+import threading
 from typing import Any, Dict, Optional, Tuple
+
+
+_TERMINATION_LOCK = threading.Lock()
+_LAST_TERMINATION_SIGNAL_TS = 0.0
+
+
+def _termination_gap_seconds() -> float:
+    raw = os.environ.get("TABULAR_TERMINATION_GAP_SEC", os.environ.get("TABULAR_MIN_TERMINATION_GAP_SEC", "30"))
+    try:
+        return max(0.0, float(raw))
+    except Exception:
+        return 30.0
+
+
+def _wait_for_termination_gap() -> None:
+    gap = _termination_gap_seconds()
+    if gap <= 0:
+        return
+    global _LAST_TERMINATION_SIGNAL_TS
+    with _TERMINATION_LOCK:
+        now = time.time()
+        elapsed = now - _LAST_TERMINATION_SIGNAL_TS
+        if _LAST_TERMINATION_SIGNAL_TS > 0 and elapsed < gap:
+            time.sleep(gap - elapsed)
+        _LAST_TERMINATION_SIGNAL_TS = time.time()
 
 
 def sample_host_memory_mib() -> Tuple[int, int]:
@@ -65,6 +91,11 @@ def popen_process_group_kwargs() -> Dict[str, Any]:
 
 def terminate_process_tree(proc: subprocess.Popen[Any], timeout_sec: float = 10.0) -> None:
     """Terminate a launcher child and its descendants on POSIX or Windows."""
+
+    if proc.poll() is not None:
+        return
+
+    _wait_for_termination_gap()
 
     if os.name == "nt":
         try:

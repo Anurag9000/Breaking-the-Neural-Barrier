@@ -90,7 +90,8 @@ The shared runtime bootstrap now defaults child launchers into full visible-CPU
 mode. In practice that means the launcher does not split the core set across
 siblings by default; every child sees the full CPU budget and the OS scheduler
 time-slices contention. The loader-worker default is zero unless a caller
-explicitly overrides `TABULAR_CPU_WORKERS`.
+explicitly overrides `TABULAR_CPU_WORKERS`. Repeated process-tree termination
+attempts are spaced by 30 seconds by default via `TABULAR_TERMINATION_GAP_SEC`.
 
 Recovery wrapper contract:
 

@@ -72,8 +72,7 @@ Both wrappers now default child launchers into shared-CPU mode. The launcher
 does not partition the visible CPU set across siblings unless a caller
 explicitly overrides `TABULAR_CHILD_SHARED_CPU`. Each child therefore sees the
 full CPU budget and the OS scheduler handles contention. The default
-DataLoader worker count now also tracks the visible core count unless a caller
-overrides `TABULAR_CPU_WORKERS`.
+DataLoader worker count is zero unless a caller overrides `TABULAR_CPU_WORKERS`.
 
 The strict STL band launchers currently cover:
 
@@ -183,13 +182,16 @@ Runtime tuning for the tabular launchers is centralized as well:
 - concurrent launchers now allocate explicit slot indices for active children,
   so simultaneously active jobs get disjoint CPU partitions instead of hashed
   best-effort placement
-- `--num-workers 0` is treated as auto-max for the tabular loaders
-- the loaders use all detected logical CPU cores by default, plus persistent
-  workers and prefetching when workers are enabled
+- `--num-workers 0` resolves to zero DataLoader workers unless a caller
+  overrides it
+- the loaders only use persistent workers and prefetching when workers are
+  explicitly enabled
 - the process makes a best-effort attempt to raise its priority with `renice`
   and `ionice`, and it also enables `OMP_WAIT_POLICY=ACTIVE`,
   `OMP_PROC_BIND=spread`, and `OMP_PLACES=cores`; if the OS denies the
   change, the thread, affinity, and worker settings still apply
+- repeated process-tree termination attempts are spaced by 30 seconds by
+  default via `TABULAR_TERMINATION_GAP_SEC`
 - the shell-side bootstrap also requests `SCHED_BATCH`, and the Python
   bootstrap attempts the same policy with `sched_setscheduler(2)`
 - Linux-specific priority features are best-effort. `systemd-run`, `renice`,
