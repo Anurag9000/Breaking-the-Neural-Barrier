@@ -3,6 +3,7 @@
     3129,
     3129
   ],
+  "batch_size": 1,
   "command": [
     "/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/bin/python",
     "/home/anurag/Projects/Breaking-the-Neural-Barrier/MLPS/tabular/shared/dae_dnn/run_stl_ablation.py",
@@ -21,8 +22,7 @@
     "--repeat-count",
     "5",
     "--batch-size",
-    "0",
-    "--no-pin-memory",
+    "1",
     "--num-workers",
     "0",
     "--seed",
@@ -75,14 +75,14 @@
   "last_exit_code": -15,
   "last_failed_at": 1781853785.7863712,
   "last_pause_reason": "host_ram_pressure",
-  "last_pause_requested_at": 1781955814.6201692,
-  "last_paused_at": 1781955814.7430856,
-  "last_started_at": 1781955802.2069874,
-  "launch_count": 2,
+  "last_pause_requested_at": 1781970872.817663,
+  "last_paused_at": 1781970901.8602493,
+  "last_started_at": 1781971131.500214,
+  "launch_count": 7,
   "parameter_count": 10000291,
-  "pause_count": 569,
+  "pause_count": 570,
   "pause_requested": false,
   "phase_name": "stl_ablation_r01_d02_w3129_3129_3129",
-  "status": "paused",
+  "status": "running",
   "task": "classification"
 }

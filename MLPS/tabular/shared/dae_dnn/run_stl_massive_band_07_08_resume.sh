@@ -23,5 +23,5 @@ exec "$PYTHON_BIN" MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
   --param-band 7 8 \
   --repeat-count 5 \
   --scheduler fixed \
-  --concurrency 1 \
+  --concurrency 5 \
   "$@"
