@@ -22,6 +22,16 @@ exec "$PYTHON_BIN" MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
   --tasks classification autoencoding generation denoising anomaly simulation prediction \
   --param-band 9 10 \
   --repeat-count 5 \
-  --scheduler fixed \
-  --concurrency 5 \
+  --scheduler pressure_aware \
+  --host-ram-pressure-limit-pct 95 \
+  --host-ram-resume-pct 90 \
+  --gpu-memory-pressure-limit-pct 85 \
+  --gpu-memory-resume-pct 80 \
+  --gpu-device-index 0 \
+  --max-active-jobs 0 \
+  --pressure-poll-interval-sec 0.5 \
+  --post-launch-sample-delay-sec 30 \
+  --max-epochs 100000000 \
+  --num-workers 0 \
+  --batch-size 0 \
   "$@"

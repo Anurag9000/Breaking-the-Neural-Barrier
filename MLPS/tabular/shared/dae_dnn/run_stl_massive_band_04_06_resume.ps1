@@ -31,6 +31,16 @@ $env:TABULAR_CPU_WORKERS = "0"
   --tasks classification autoencoding generation denoising anomaly simulation prediction `
   --param-band 4 6 `
   --repeat-count 5 `
-  --scheduler fixed `
-  --concurrency 5 `
+  --scheduler pressure_aware `
+  --host-ram-pressure-limit-pct 95 `
+  --host-ram-resume-pct 90 `
+  --gpu-memory-pressure-limit-pct 85 `
+  --gpu-memory-resume-pct 80 `
+  --gpu-device-index 0 `
+  --max-active-jobs 0 `
+  --pressure-poll-interval-sec 0.5 `
+  --post-launch-sample-delay-sec 30 `
+  --max-epochs 100000000 `
+  --num-workers 0 `
+  --batch-size 0 `
   @args
