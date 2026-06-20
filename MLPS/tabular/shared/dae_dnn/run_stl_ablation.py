@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 import torch
 
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
-from MLPS.tabular.shared.dae_dnn.tasks import build_task
+from MLPS.tabular.shared.dae_dnn.tasks import build_task, DEFAULT_BATCH_TARGETS
+from MLPS.tabular.shared.dae_dnn.tasks import stl_batch_size_for_task as _tasks_stl_batch_size_for_task
 from utils.adp_logging import ContinuousLogger
 
 try:  # pragma: no cover - import shim for direct script execution
@@ -38,15 +39,8 @@ DEFAULT_MAX_WIDTH = 1024
 DEFAULT_WIDTH_STEP = 1
 DEFAULT_WIDTH_COUNT_PER_DEPTH = 10
 DEFAULT_REPEAT_COUNT = 5
-DEFAULT_BATCH_TARGETS = {
-    "classification": 100,
-    "autoencoding": 100,
-    "generation": 100,
-    "denoising": 100,
-    "anomaly": 20,
-    "simulation": 2,
-    "prediction": 2,
-}
+# DEFAULT_BATCH_TARGETS is re-exported from tasks.py — single source of truth.
+# Kept here so existing imports of ``run_stl_ablation.DEFAULT_BATCH_TARGETS`` keep working.
 
 CLASSIFICATION_MAX_WIDTH_BY_DEPTH = {
     1: 37376,
@@ -332,14 +326,13 @@ def target_parameter_count(task: rg.Task, cfg: rg.RunConfig) -> int:
 
 
 def stl_batch_size_for_task(task_name: str, task: rg.Task, override: int, step: int = 16) -> int:
-    override = int(override)
-    if override > 0:
-        return override
-    target_batches = max(1, int(DEFAULT_BATCH_TARGETS.get(task_name.lower(), 50)))
-    train_rows = len(task.train_loader.dataset)
-    min_batch = max(1, int(math.ceil(train_rows / target_batches)))
-    rounded = max(int(step), int(math.ceil(min_batch / int(step)) * int(step)))
-    return int(rounded)
+    """Wrapper that calls the canonical implementation in tasks.py.
+
+    Kept with the same signature as the old local version so all existing
+    callers continue to work without changes.
+    """
+    train_size = len(task.train_loader.dataset)
+    return _tasks_stl_batch_size_for_task(task_name, train_size, override=int(override), step=int(step))
 
 
 def query_gpu_memory_used_mib(device_index: int = 0) -> Optional[int]:

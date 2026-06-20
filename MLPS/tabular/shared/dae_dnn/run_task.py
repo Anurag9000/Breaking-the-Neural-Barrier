@@ -1,4 +1,4 @@
-﻿import argparse
+import argparse
 import json
 import datetime as _dt
 import sys
@@ -13,7 +13,7 @@ from utils.adp_plot import plot_best_loss_per_neurons_from_csv, plot_val_loss_fr
 
 from MLPS.tabular.shared.dae_dnn.mlp import MLP
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime
-from MLPS.tabular.shared.dae_dnn.tasks import build_task, refresh_task_loaders
+from MLPS.tabular.shared.dae_dnn.tasks import build_task, refresh_task_loaders, stl_batch_size_for_task
 from MLPS.tabular.shared.dae_dnn.adp_search import ADPConfig, adp_search, train_with_early_stopping
 from MLPS.tabular.shared.dae_dnn.train_utils import AdaptiveBatchController
 from MLPS.tabular.shared.dae_dnn.train_utils import eval_epoch
@@ -35,7 +35,7 @@ def main() -> None:
         choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"],
     )
     p.add_argument("--hidden", type=int, nargs="+", default=[50, 50])
-    p.add_argument("--batch-size", type=int, default=819200)
+    p.add_argument("--batch-size", type=int, default=0, help="Batch size override. 0 (default) defers to per-task target-batches computation.")
     p.add_argument("--run-root", type=str, default=None, help="Optional fixed output root for resumable runs.")
     p.add_argument("--max-epochs", type=int, default=100000000)
     p.add_argument("--patience", type=int, default=10)
@@ -56,7 +56,18 @@ def main() -> None:
 
     torch.manual_seed(int(args.seed))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    initial_batch_size = int(args.batch_size)
+    # Build a probe task at batch_size=1 to discover train-set size, then
+    # apply the canonical target-based default when batch_size==0.
+    probe_task = build_task(
+        args.task,
+        args.data_dir,
+        1,
+        args.num_workers,
+        args.seed,
+        pin_memory=False,
+    )
+    train_size = len(probe_task.train_loader.dataset)
+    initial_batch_size = stl_batch_size_for_task(args.task, train_size, override=int(args.batch_size))
 
     task = build_task(
         args.task,

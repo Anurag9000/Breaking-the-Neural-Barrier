@@ -1,4 +1,5 @@
 {
+  "batch_scale": 1.0,
   "command": [
     "/home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier/.venv/bin/python",
     "/home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier/MLPS/tabular/shared/dae_dnn/run_stl_ablation.py",
@@ -17,8 +18,7 @@
     "--repeat-count",
     "5",
     "--batch-size",
-    "186240",
-    "--no-pin-memory",
+    "93120",
     "--num-workers",
     "0",
     "--seed",
@@ -42,6 +42,12 @@
   ],
   "completed": false,
   "device": "cpu",
-  "started_at": 1781866940.5972137,
-  "status": "running"
+  "exit_code": -15,
+  "gpu_pause_count": 0,
+  "host_pause_count": 4,
+  "last_pause_reason": "host_ram_pressure",
+  "reason": "host_ram_pressure",
+  "started_at": 1781962905.726416,
+  "status": "paused",
+  "updated_at": 1781968745.1095245
 }
