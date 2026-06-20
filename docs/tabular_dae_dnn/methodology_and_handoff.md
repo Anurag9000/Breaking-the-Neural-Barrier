@@ -165,7 +165,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_sm
   --widths 64 96 128 160 192 224 256 \
   --num-workers 0 \
   --patience 10 \
-  --batch-size 186240 \
+  --batch-size 93120 \
   --max-epochs 100000000
 ```
 
@@ -269,8 +269,9 @@ Runtime policy for the tabular runners is centralized:
   `OMP_PLACES=cores`; the run still proceeds if the OS denies those calls
 - repeated process-tree termination attempts are spaced by 30 seconds by
   default via `TABULAR_TERMINATION_GAP_SEC`
-- pressure-aware launchers halve the effective batch size and persist that
-  backoff state after a pressure stall drains the active set
+- pressure-aware launchers start from the halved batch defaults and then
+  halve the effective batch size again if a pressure stall drains the active
+  set, persisting that backoff state
 - both shell and Python bootstraps attempt `SCHED_BATCH` for long-running
   throughput-oriented CPU work where the OS exposes it
 - Windows does not provide the Linux `systemd-run`, `renice`, `ionice`,
@@ -339,7 +340,7 @@ The key knobs are:
 - `--swap-resume-pct 100`
 - `--pressure-poll-interval-sec 0.5`
 - `--post-launch-sample-delay-sec 30`
-- `--batch-size 186240`
+- `--batch-size 93120`
 - `--num-workers 0`
 - `--batch-backoff-factor 0.5`
 - `--repeat-count 5`
@@ -393,7 +394,7 @@ cd /home/anurag-basistha/Projects/Untapped/Breaking-the-Neural-Barrier
   --tasks classification autoencoding generation denoising anomaly simulation prediction \
   --param-band 1 3 \
   --num-workers 0 \
-  --batch-size 186240
+  --batch-size 93120
 ```
 
 The planner reports every sampled target per depth and the deduped candidate
@@ -416,7 +417,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_pa
   --probe-epochs 2 \
   --start-n 2 \
   --num-workers 0 \
-  --batch-size 186240
+  --batch-size 93120
 ```
 
 Example real run command using the pressure-aware scheduler:
@@ -443,7 +444,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --post-launch-sample-delay-sec 30 \
   --max-epochs 100000000 \
   --num-workers 0 \
-  --batch-size 186240
+  --batch-size 93120
 ```
 
 Example legacy fixed-slot run using the probe output:
@@ -463,7 +464,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --repeat-count 5 \
   --max-epochs 100000000 \
   --num-workers 0 \
-  --batch-size 186240
+  --batch-size 93120
 ```
 
 Example for one band:
@@ -484,7 +485,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --post-launch-sample-delay-sec 30 \
   --max-epochs 100000000 \
   --num-workers 0 \
-  --batch-size 186240
+  --batch-size 93120
 ```
 
 Repeat the same command on the other laptops, changing only the parameter band

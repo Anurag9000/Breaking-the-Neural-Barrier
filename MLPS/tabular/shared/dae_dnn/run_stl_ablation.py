@@ -39,13 +39,13 @@ DEFAULT_WIDTH_STEP = 1
 DEFAULT_WIDTH_COUNT_PER_DEPTH = 10
 DEFAULT_REPEAT_COUNT = 5
 DEFAULT_BATCH_TARGETS = {
-    "classification": 50,
-    "autoencoding": 50,
-    "generation": 50,
-    "denoising": 50,
-    "anomaly": 10,
-    "simulation": 1,
-    "prediction": 1,
+    "classification": 100,
+    "autoencoding": 100,
+    "generation": 100,
+    "denoising": 100,
+    "anomaly": 20,
+    "simulation": 2,
+    "prediction": 2,
 }
 
 CLASSIFICATION_MAX_WIDTH_BY_DEPTH = {

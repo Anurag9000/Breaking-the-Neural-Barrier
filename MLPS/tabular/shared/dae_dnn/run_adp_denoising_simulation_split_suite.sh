@@ -16,5 +16,5 @@ CUDA_VISIBLE_DEVICES=0 "${PYTHON_BIN}" MLPS/tabular/shared/dae_dnn/run_adp_expli
   --plan-file MLPS/tabular/shared/dae_dnn/adp_denoising_simulation_suite_plan.json \
   --concurrency 6 \
   --num-workers 0 \
-  --batch-size 186240 \
+  --batch-size 93120 \
   --adp-mode width_to_depth

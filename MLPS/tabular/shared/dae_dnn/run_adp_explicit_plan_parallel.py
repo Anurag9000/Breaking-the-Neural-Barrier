@@ -34,7 +34,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--results-dir", default="MLPS/tabular/shared/dae_dnn/results")
     p.add_argument("--run-root", required=True)
     p.add_argument("--plan-file", required=True, help="JSON file listing phases and jobs to run.")
-    p.add_argument("--batch-size", type=int, default=186240)
+    p.add_argument("--batch-size", type=int, default=93120)
     p.add_argument("--hidden", type=int, nargs="+", default=[1])
     p.add_argument("--adp-mode", default="width_to_depth", choices=["alt_width", "alt_depth", "width_to_depth", "depth_to_width"])
     p.add_argument("--mode", default="adp", choices=["adp"])
