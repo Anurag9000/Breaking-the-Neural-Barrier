@@ -34,4 +34,6 @@ exec "$PYTHON_BIN" MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
   --max-epochs 100000000 \
   --num-workers 0 \
   --batch-size 0 \
+  --max-width 10000000000 \
+  --max-neurons 10000000000 \
   "$@"
