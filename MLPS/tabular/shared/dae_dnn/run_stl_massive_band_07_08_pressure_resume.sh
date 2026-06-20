@@ -19,8 +19,8 @@ CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" \
   --param-band 7 8 \
   --repeat-count 5 \
   --scheduler pressure_aware \
-  --host-ram-pressure-limit-pct 85 \
-  --host-ram-resume-pct 80 \
+  --host-ram-pressure-limit-pct 95 \
+  --host-ram-resume-pct 90 \
   --gpu-memory-pressure-limit-pct 85 \
   --gpu-memory-resume-pct 80 \
   --gpu-device-index 0 \

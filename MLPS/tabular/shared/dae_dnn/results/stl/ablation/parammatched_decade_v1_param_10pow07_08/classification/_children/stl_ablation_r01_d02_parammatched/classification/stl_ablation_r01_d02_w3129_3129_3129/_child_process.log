@@ -21111,3 +21111,78 @@ torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 112.00 MiB. GPU 0 
 [2026-06-20 16:33:32] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d02_parammatched/classification/stl_ablation_r01_d02_w3129_3129_3129/classification/stl_ablation_r01_d02_w3129_3129_3129/cand_000_d2_w3129/training_stats.csv
 /home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
   super().__init__(loader)
+[2026-06-20 21:24:02] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-20 21:24:02] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d02_parammatched/classification/stl_ablation_r01_d02_w3129_3129_3129/training_log.txt
+[2026-06-20 21:24:02] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d02_parammatched/classification/stl_ablation_r01_d02_w3129_3129_3129/training_stats.csv
+[2026-06-20 21:24:02] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d02_parammatched/classification/stl_ablation_r01_d02_w3129_3129_3129
+[2026-06-20 21:24:02] Tasks: ['classification']
+[2026-06-20 21:24:02] Architectures: ['[3129, 3129]']
+[2026-06-20 21:24:02] Parameter decade band: [7, 8]
+[2026-06-20 21:24:02] Repeat count: 5
+[2026-06-20 21:24:02] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-20 21:24:02] Device: cpu
+[2026-06-20 21:24:02] Git commit: a095f9a22fd9c1f87b107a5add6d05ab75d747cf
+[2026-06-20 21:24:04] [ABLATION:classification] STL phase start: stl_ablation_r01_d02_w3129_3129_3129 architecture=[3129, 3129]
+[2026-06-20 21:24:05] Initialized ContinuousLogger for classification_stl_ablation_r01_d02_w3129_3129_3129 (Mode: stl_ablation_r01_d02_w3129_3129_3129)
+[2026-06-20 21:24:05] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d02_parammatched/classification/stl_ablation_r01_d02_w3129_3129_3129/classification/stl_ablation_r01_d02_w3129_3129_3129/cand_000_d2_w3129/training_log.txt
+[2026-06-20 21:24:05] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d02_parammatched/classification/stl_ablation_r01_d02_w3129_3129_3129/classification/stl_ablation_r01_d02_w3129_3129_3129/cand_000_d2_w3129/training_stats.csv
+[2026-06-20 21:24:22] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=15/50 start path=checkpoint_last.pt
+[2026-06-20 21:24:22] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=15/50 done gpu_used_mib=7 host_available_mib=3616
+[2026-06-20 21:24:22] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=15/50 batch_size=9312 running_batches=15 batch_loss=2.979482 running_loss=0.270847 running_acc=0.943993
+[2026-06-20 21:24:32] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=16/50 start path=checkpoint_last.pt
+[2026-06-20 21:24:33] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=16/50 done gpu_used_mib=7 host_available_mib=2720
+[2026-06-20 21:24:33] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=16/50 batch_size=9312 running_batches=16 batch_loss=2.426875 running_loss=0.405599 running_acc=0.923338
+[2026-06-20 21:24:44] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=17/50 start path=checkpoint_last.pt
+[2026-06-20 21:24:45] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=17/50 done gpu_used_mib=7 host_available_mib=2809
+[2026-06-20 21:24:45] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=17/50 batch_size=9312 running_batches=17 batch_loss=1.595295 running_loss=0.475581 running_acc=0.908139
+[2026-06-20 21:24:54] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=18/50 start path=checkpoint_last.pt
+[2026-06-20 21:24:54] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=18/50 done gpu_used_mib=7 host_available_mib=2833
+[2026-06-20 21:24:54] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=18/50 batch_size=9312 running_batches=18 batch_loss=1.035940 running_loss=0.506712 running_acc=0.898691
+[2026-06-20 21:29:01] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-20 21:29:01] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d02_parammatched/classification/stl_ablation_r01_d02_w3129_3129_3129/training_log.txt
+[2026-06-20 21:29:01] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d02_parammatched/classification/stl_ablation_r01_d02_w3129_3129_3129/training_stats.csv
+[2026-06-20 21:29:01] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d02_parammatched/classification/stl_ablation_r01_d02_w3129_3129_3129
+[2026-06-20 21:29:01] Tasks: ['classification']
+[2026-06-20 21:29:01] Architectures: ['[3129, 3129]']
+[2026-06-20 21:29:01] Parameter decade band: [7, 8]
+[2026-06-20 21:29:01] Repeat count: 5
+[2026-06-20 21:29:01] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-20 21:29:01] Device: cpu
+[2026-06-20 21:29:01] Git commit: a095f9a22fd9c1f87b107a5add6d05ab75d747cf
+[2026-06-20 21:29:03] [ABLATION:classification] STL phase start: stl_ablation_r01_d02_w3129_3129_3129 architecture=[3129, 3129]
+[2026-06-20 21:29:03] Initialized ContinuousLogger for classification_stl_ablation_r01_d02_w3129_3129_3129 (Mode: stl_ablation_r01_d02_w3129_3129_3129)
+[2026-06-20 21:29:03] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d02_parammatched/classification/stl_ablation_r01_d02_w3129_3129_3129/classification/stl_ablation_r01_d02_w3129_3129_3129/cand_000_d2_w3129/training_log.txt
+[2026-06-20 21:29:03] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d02_parammatched/classification/stl_ablation_r01_d02_w3129_3129_3129/classification/stl_ablation_r01_d02_w3129_3129_3129/cand_000_d2_w3129/training_stats.csv
+[2026-06-20 21:29:19] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=19/50 start path=checkpoint_last.pt
+[2026-06-20 21:29:19] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=19/50 done gpu_used_mib=7 host_available_mib=5954
+[2026-06-20 21:29:19] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=19/50 batch_size=9312 running_batches=19 batch_loss=1.121593 running_loss=0.539074 running_acc=0.888746
+[2026-06-20 21:29:29] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=20/50 start path=checkpoint_last.pt
+[2026-06-20 21:29:30] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=20/50 done gpu_used_mib=7 host_available_mib=5751
+[2026-06-20 21:29:30] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=20/50 batch_size=9312 running_batches=20 batch_loss=0.895437 running_loss=0.556893 running_acc=0.879591
+[2026-06-20 21:29:43] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=21/50 start path=checkpoint_last.pt
+[2026-06-20 21:29:44] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=21/50 done gpu_used_mib=7 host_available_mib=4955
+[2026-06-20 21:29:44] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=21/50 batch_size=9312 running_batches=21 batch_loss=1.539063 running_loss=0.603663 running_acc=0.867529
+[2026-06-20 21:30:04] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=22/50 start path=checkpoint_last.pt
+[2026-06-20 21:30:05] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=22/50 done gpu_used_mib=7 host_available_mib=4805
+[2026-06-20 21:30:05] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=22/50 batch_size=9312 running_batches=22 batch_loss=1.335220 running_loss=0.636915 running_acc=0.857745
+[2026-06-20 21:30:26] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=23/50 start path=checkpoint_last.pt
+[2026-06-20 21:30:27] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=23/50 done gpu_used_mib=7 host_available_mib=3695
+[2026-06-20 21:30:27] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=23/50 batch_size=9312 running_batches=23 batch_loss=1.054228 running_loss=0.655059 running_acc=0.850240
+[2026-06-20 21:30:55] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=24/50 start path=checkpoint_last.pt
+[2026-06-20 21:30:56] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=24/50 done gpu_used_mib=7 host_available_mib=3037
+[2026-06-20 21:30:56] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=24/50 batch_size=9312 running_batches=24 batch_loss=0.834126 running_loss=0.662520 running_acc=0.845249
+[2026-06-20 21:31:36] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=25/50 start path=checkpoint_last.pt
+[2026-06-20 21:31:37] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=25/50 done gpu_used_mib=7 host_available_mib=1768
+[2026-06-20 21:31:37] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=25/50 batch_size=9312 running_batches=25 batch_loss=0.909308 running_loss=0.672392 running_acc=0.840790
+[2026-06-20 21:32:20] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=26/50 start path=checkpoint_last.pt
+[2026-06-20 21:32:21] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=26/50 done gpu_used_mib=7 host_available_mib=2602
+[2026-06-20 21:32:21] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=26/50 batch_size=9312 running_batches=26 batch_loss=0.864819 running_loss=0.679793 running_acc=0.837100
+[2026-06-20 21:32:56] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=27/50 start path=checkpoint_last.pt
+[2026-06-20 21:32:57] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=27/50 done gpu_used_mib=7 host_available_mib=3925
+[2026-06-20 21:32:57] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=27/50 batch_size=9312 running_batches=27 batch_loss=0.804671 running_loss=0.684418 running_acc=0.834025
+[2026-06-20 21:33:36] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=28/50 start path=checkpoint_last.pt
+[2026-06-20 21:33:37] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=28/50 done gpu_used_mib=7 host_available_mib=4003
+[2026-06-20 21:33:37] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=28/50 batch_size=9312 running_batches=28 batch_loss=0.807551 running_loss=0.688816 running_acc=0.830929
+[2026-06-20 21:34:11] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=29/50 start path=checkpoint_last.pt
+[2026-06-20 21:34:12] [CKPT] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=29/50 done gpu_used_mib=7 host_available_mib=2046
+[2026-06-20 21:34:12] [BATCH] task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 candidate=cand_000_d2_w3129 epoch=107 batch=29/50 batch_size=9312 running_batches=29 batch_loss=0.645411 running_loss=0.687319 running_acc=0.828549
