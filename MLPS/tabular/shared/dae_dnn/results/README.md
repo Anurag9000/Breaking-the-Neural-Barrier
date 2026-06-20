@@ -110,9 +110,10 @@ Runtime tuning for this tabular family is centralized:
 - concurrent launchers allocate explicit slot indices for active children so
   simultaneously active jobs get disjoint CPU partitions rather than hashed
   best-effort placement
-- `--num-workers 0` means auto-max for these runners, not disabled workers
-- loader workers default to the full logical CPU count, and the loaders use
-  persistent workers plus prefetching when workers are enabled
+- `--num-workers 0` means zero DataLoader workers unless a script explicitly
+  overrides it
+- loader workers default to zero, and the loaders only use persistent workers
+  plus prefetching when workers are explicitly enabled
 - the process attempts best-effort `renice -20` and `ionice -c2 -n0`, and it
   also enables `OMP_WAIT_POLICY=ACTIVE`, `OMP_PROC_BIND=spread`, and
   `OMP_PLACES=cores`; if the OS refuses, the thread, affinity, and worker

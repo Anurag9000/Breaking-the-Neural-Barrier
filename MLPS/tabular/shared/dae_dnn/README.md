@@ -87,10 +87,8 @@ resume each other without any layout fork.
 The shared runtime bootstrap now defaults child launchers into full visible-CPU
 mode. In practice that means the launcher does not split the core set across
 siblings by default; every child sees the full CPU budget and the OS scheduler
-time-slices contention. The loader-worker default is also set to the visible
-core count so the child does not quietly under-fill its own input pipeline.
-That is the default on both Linux and Windows entry points unless a caller
-explicitly overrides `TABULAR_CHILD_SHARED_CPU` or `TABULAR_CPU_WORKERS`.
+time-slices contention. The loader-worker default is zero unless a caller
+explicitly overrides `TABULAR_CPU_WORKERS`.
 
 Recovery wrapper contract:
 
