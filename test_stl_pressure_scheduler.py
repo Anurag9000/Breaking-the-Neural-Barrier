@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest import mock
 
 from MLPS.tabular.shared.dae_dnn import run_stl_ablation_parallel as parallel
+from MLPS.tabular.shared.dae_dnn import runtime_tuning
 
 
 class FakeProc:
@@ -78,7 +79,8 @@ class STLPressureSchedulerTests(unittest.TestCase):
             gpu_memory_resume_pct=85.0,
             gpu_device_index=0,
             pressure_poll_interval_sec=0.0,
-            pressure_settle_sec=0.0,
+            post_launch_sample_delay_sec=0.0,
+            batch_backoff_factor=0.5,
             max_retries_per_job=0,
             data_dir="./data",
             results_dir="MLPS/tabular/shared/dae_dnn/results",
@@ -102,6 +104,7 @@ class STLPressureSchedulerTests(unittest.TestCase):
             launch_counts = {"small": 0, "medium": 0, "large": 0}
             live: list["GateProc"] = []
             launch_order: list[str] = []
+            pressure_hits = 0
 
             class GateProc:
                 _next_pid = 5000
@@ -138,7 +141,7 @@ class STLPressureSchedulerTests(unittest.TestCase):
             def fake_build_jobs(args, tasks, root):
                 return jobs_by_task
 
-            def fake_build_cmd(*, args, task_name, architecture, child_run_root, device_mode):
+            def fake_build_cmd(*, args, task_name, architecture, child_run_root, device_mode, batch_size):
                 if child_run_root == small_root:
                     return ["small"]
                 if child_run_root == medium_root:
@@ -163,8 +166,10 @@ class STLPressureSchedulerTests(unittest.TestCase):
                 return child_root in completed_roots
 
             def fake_memory_sample():
+                nonlocal pressure_hits
                 active_names = {proc.job_name for proc in live if not proc.terminated and not proc.completed}
-                if active_names == {"small", "large"}:
+                if active_names == {"small", "large"} and pressure_hits == 0:
+                    pressure_hits += 1
                     return parallel.MemoryPressureSample(total_mib=1000, available_mib=50, used_pct=95.0)
                 return parallel.MemoryPressureSample(total_mib=1000, available_mib=500, used_pct=50.0)
 
@@ -195,6 +200,99 @@ class STLPressureSchedulerTests(unittest.TestCase):
             self.assertEqual(launch_order[3], "medium")
             self.assertIn(small_root, completed_roots)
             self.assertIn(medium_root, completed_roots)
+
+    def test_pressure_stall_halves_batch_size_before_relaunch(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_root = Path(tmp) / "run"
+            job_root = run_root / "task_a" / "_children" / "job"
+            jobs_by_task = {
+                "task_a": [
+                    parallel.ChildJob("task_a", (4, 4), job_root, 100, 2, "job"),
+                ]
+            }
+            completed_roots: set[Path] = set()
+            launch_batches: list[int] = []
+            live: list["BackoffProc"] = []
+
+            class BackoffProc:
+                _next_pid = 7000
+
+                def __init__(self, batch_size: int, child_root: Path) -> None:
+                    self.batch_size = int(batch_size)
+                    self.child_root = child_root
+                    self.pid = BackoffProc._next_pid
+                    BackoffProc._next_pid += 1
+                    self.terminated = False
+                    self.completed = False
+                    self.poll_calls = 0
+
+                def poll(self) -> int | None:
+                    if self.terminated:
+                        return 143
+                    if self.completed:
+                        return 0
+                    self.poll_calls += 1
+                    active_batches = [proc.batch_size for proc in live if not proc.terminated and not proc.completed]
+                    if active_batches and max(active_batches) >= 200:
+                        return None
+                    if self.batch_size <= 100 and self.poll_calls >= 2:
+                        self.completed = True
+                        completed_roots.add(self.child_root)
+                        return 0
+                    return None
+
+            def fake_build_jobs(args, tasks, root):
+                return jobs_by_task
+
+            def fake_resolve_task_base_batch_sizes(args, tasks):
+                return {"task_a": 200}
+
+            def fake_build_cmd(*, args, task_name, architecture, child_run_root, device_mode, batch_size):
+                launch_batches.append(int(batch_size))
+                return [str(int(batch_size))]
+
+            def fake_launch(cmd, env=None, log_path=None):
+                batch_size = int(cmd[0])
+                proc = BackoffProc(batch_size, job_root)
+                live.append(proc)
+                return proc, None
+
+            def fake_terminate(proc):
+                proc.terminated = True
+
+            def fake_child_completed(child_root, task_name):
+                return child_root in completed_roots
+
+            def fake_memory_sample():
+                active_batches = [proc.batch_size for proc in live if not proc.terminated and not proc.completed]
+                if active_batches and max(active_batches) >= 200:
+                    return parallel.MemoryPressureSample(total_mib=1000, available_mib=50, used_pct=95.0)
+                return parallel.MemoryPressureSample(total_mib=1000, available_mib=500, used_pct=50.0)
+
+            logger = mock.Mock()
+            args = self.make_args()
+            args.max_active_jobs = 1
+            args.batch_size = 200
+            args.post_launch_sample_delay_sec = 0.0
+            args.pressure_poll_interval_sec = 0.0
+
+            with mock.patch.object(parallel, "build_task_jobs", side_effect=fake_build_jobs), \
+                mock.patch.object(parallel, "resolve_task_base_batch_sizes", side_effect=fake_resolve_task_base_batch_sizes), \
+                mock.patch.object(parallel, "build_worker_command", side_effect=fake_build_cmd), \
+                mock.patch.object(parallel, "launch_child_process", side_effect=fake_launch), \
+                mock.patch.object(parallel, "terminate_child_process", side_effect=fake_terminate), \
+                mock.patch.object(parallel, "child_completed", side_effect=fake_child_completed), \
+                mock.patch.object(parallel, "sample_host_memory_pressure", side_effect=fake_memory_sample), \
+                mock.patch.object(parallel, "sample_gpu_memory_pressure", return_value=parallel.GpuPressureSample(total_mib=0, used_mib=0, used_pct=0.0)), \
+                mock.patch.object(parallel, "aggregate_task", return_value={"task": "task_a", "comparisons": []}), \
+                mock.patch.object(parallel.time, "sleep", return_value=None):
+                parallel.run_pressure_aware(args, run_root, ["task_a"], logger)
+
+            self.assertEqual(launch_batches[:2], [200, 100])
+            self.assertTrue((run_root / "batch_backoff_state.json").exists())
+            state = parallel.load_batch_backoff_state(run_root)
+            self.assertGreaterEqual(int(state.get("backoff_count", 0)), 1)
+            self.assertAlmostEqual(float(state.get("batch_scale", 0.0)), 0.5, places=6)
 
     def test_launch_child_process_uses_new_session(self) -> None:
         proc, handle = parallel.launch_child_process(["sleep", "30"])
@@ -263,7 +361,7 @@ class STLPressureSchedulerTests(unittest.TestCase):
             def fake_build_jobs(args, tasks, root):
                 return jobs_by_task
 
-            def fake_build_cmd(*, args, task_name, architecture, child_run_root, device_mode):
+            def fake_build_cmd(*, args, task_name, architecture, child_run_root, device_mode, batch_size):
                 if child_run_root == success_root:
                     return ["success"]
                 return ["failing"]
@@ -281,6 +379,7 @@ class STLPressureSchedulerTests(unittest.TestCase):
 
             logger = mock.Mock()
             args = self.make_args()
+            args.max_active_jobs = 1
 
             with mock.patch.object(parallel, "build_task_jobs", side_effect=fake_build_jobs), \
                 mock.patch.object(parallel, "build_worker_command", side_effect=fake_build_cmd), \
@@ -299,6 +398,11 @@ class STLPressureSchedulerTests(unittest.TestCase):
             self.assertIn(state.get("status"), {"retrying", "running"})
             self.assertFalse(bool(state.get("failed", False)))
             self.assertGreaterEqual(int(state.get("failure_count", 0)), 1)
+
+    def test_num_workers_are_pinned_to_zero(self) -> None:
+        with mock.patch.dict(os.environ, {"TABULAR_CPU_WORKERS": "8"}, clear=False):
+            self.assertEqual(runtime_tuning.resolve_num_workers(8), 0)
+            self.assertEqual(runtime_tuning.resolve_num_workers(0), 0)
 
 
 if __name__ == "__main__":

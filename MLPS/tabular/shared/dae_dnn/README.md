@@ -89,9 +89,10 @@ resume each other without any layout fork.
 The shared runtime bootstrap now defaults child launchers into full visible-CPU
 mode. In practice that means the launcher does not split the core set across
 siblings by default; every child sees the full CPU budget and the OS scheduler
-time-slices contention. The loader-worker default is zero unless a caller
-explicitly overrides `TABULAR_CPU_WORKERS`. Repeated process-tree termination
-attempts are spaced by 30 seconds by default via `TABULAR_TERMINATION_GAP_SEC`.
+time-slices contention. The loader-worker default is pinned to zero across the
+shared tabular runtime so pressure-aware launchers do not spawn surprise
+`pt_data_worker` processes. Repeated process-tree termination attempts are
+spaced by 30 seconds by default via `TABULAR_TERMINATION_GAP_SEC`.
 
 Recovery wrapper contract:
 
@@ -109,9 +110,12 @@ Recovery wrapper contract:
 8. keep swap thresholds at `100 / 100`; swap control is delegated to the
    launcher scope request rather than a startup abort path
 9. use the shared-CPU default so every child sees the full visible core set,
-   and keep `--post-launch-sample-delay-sec 60` as the standard 1 minute
-   post-launch sample window
-10. use shared platform helpers for host memory sampling and child-process
+   and keep `--post-launch-sample-delay-sec 30` as the standard post-launch
+   sample window
+10. when a pressure stall drains the active set without a clean completion,
+    halve the effective batch size, persist the backoff state under
+    `batch_backoff_state.json`, and try again
+11. use shared platform helpers for host memory sampling and child-process
     tree termination on Linux, WSL, Git Bash, and native Windows
 
 Canonical result layout:

@@ -72,7 +72,8 @@ Both wrappers now default child launchers into shared-CPU mode. The launcher
 does not partition the visible CPU set across siblings unless a caller
 explicitly overrides `TABULAR_CHILD_SHARED_CPU`. Each child therefore sees the
 full CPU budget and the OS scheduler handles contention. The default
-DataLoader worker count is zero unless a caller overrides `TABULAR_CPU_WORKERS`.
+DataLoader worker count is pinned to zero across the shared tabular runtime,
+so pressure-aware launchers do not spawn surprise loader workers.
 
 The strict STL band launchers currently cover:
 
@@ -182,8 +183,8 @@ Runtime tuning for the tabular launchers is centralized as well:
 - concurrent launchers now allocate explicit slot indices for active children,
   so simultaneously active jobs get disjoint CPU partitions instead of hashed
   best-effort placement
-- `--num-workers 0` resolves to zero DataLoader workers unless a caller
-  overrides it
+- `--num-workers 0` is pinned to zero DataLoader workers by default in the
+  shared tabular runtime
 - the loaders only use persistent workers and prefetching when workers are
   explicitly enabled
 - the process makes a best-effort attempt to raise its priority with `renice`
@@ -219,12 +220,18 @@ permits it. GPU admission is memory-pressure driven by default: the scheduler
 keeps launching GPU children while VRAM is below the resume threshold, then
 spills additional work to CPU when GPU admission is blocked. If host RAM
 pressure pauses admissions, the gate stays closed until a child completes
-cleanly; resumed work is always reconsidered before untouched work. Use
+cleanly, or the batch-backoff escape hatch halves the effective batch size
+after the active set drains under pressure. Resumed work is always
+reconsidered before untouched work. Use
 `--max-active-jobs <n>` or `--max-active-gpu-jobs <n>` only when you need an
 explicit child-count cap.
 
 That policy is aggressive by design. It keeps the CPU side busy when the
 current workload can exploit the extra parallelism.
+
+When a pressure stall drains the active set without a clean completion, the
+launcher halves the effective batch size and persists the current backoff
+state in `batch_backoff_state.json` under the run root before trying again.
 
 Key pressure-aware flags:
 
@@ -239,6 +246,7 @@ Key pressure-aware flags:
 - `--max-retries-per-job 0` as a legacy compatibility flag; pressure-aware mode now requeues failed children indefinitely
 - `--pressure-poll-interval-sec 0.5`
 - `--post-launch-sample-delay-sec 30`
+- `--batch-backoff-factor 0.5`
 
 For a fresh full rerun of the strict `10^4..10^6` massive STL band, use:
 
@@ -268,6 +276,7 @@ and keeps the current pressure-aware settings:
 - GPU memory thresholds: `85 / 80`
 - hard active-job cap: `0` (disabled)
 - batch size: `186240`
+- DataLoader workers: `0`
 
 Windows portability note: native Windows can run the Python launchers and
 PowerShell wrappers, but it should not be expected to match Linux throughput

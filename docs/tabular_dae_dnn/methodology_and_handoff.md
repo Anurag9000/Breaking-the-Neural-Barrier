@@ -260,8 +260,8 @@ Runtime policy for the tabular runners is centralized:
 - concurrent launchers allocate explicit slot indices for active children so
   simultaneously active jobs get disjoint CPU partitions rather than hashed
   best-effort placement
-- `--num-workers 0` resolves to zero DataLoader workers unless an explicit
-  positive worker count is passed
+- `--num-workers 0` is pinned to zero DataLoader workers by the shared
+  runtime
 - the loaders use persistent workers and prefetching only when worker
   processes are explicitly enabled
 - the process attempts best-effort `renice -20` and `ionice -c2 -n0`, and it
@@ -269,6 +269,8 @@ Runtime policy for the tabular runners is centralized:
   `OMP_PLACES=cores`; the run still proceeds if the OS denies those calls
 - repeated process-tree termination attempts are spaced by 30 seconds by
   default via `TABULAR_TERMINATION_GAP_SEC`
+- pressure-aware launchers halve the effective batch size and persist that
+  backoff state after a pressure stall drains the active set
 - both shell and Python bootstraps attempt `SCHED_BATCH` for long-running
   throughput-oriented CPU work where the OS exposes it
 - Windows does not provide the Linux `systemd-run`, `renice`, `ionice`,
@@ -336,9 +338,10 @@ The key knobs are:
 - `--swap-pressure-limit-pct 100`
 - `--swap-resume-pct 100`
 - `--pressure-poll-interval-sec 0.5`
-- `--post-launch-sample-delay-sec 60`
+- `--post-launch-sample-delay-sec 30`
 - `--batch-size 186240`
 - `--num-workers 0`
+- `--batch-backoff-factor 0.5`
 - `--repeat-count 5`
 - `--width-depths 1,2,3,4,5,6`
 - `--missing-present-task-repeats 2,3,4,5`
@@ -438,7 +441,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --gpu-memory-resume-pct 80 \
   --gpu-device-index 0 \
   --max-active-jobs 0 \
-  --post-launch-sample-delay-sec 60 \
+  --post-launch-sample-delay-sec 30 \
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
@@ -481,7 +484,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --param-band 4 6 \
   --repeat-count 5 \
   --concurrency 7 \
-  --post-launch-sample-delay-sec 60 \
+  --post-launch-sample-delay-sec 30 \
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
