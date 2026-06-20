@@ -29,7 +29,7 @@ NVIDIA_VISIBLE_DEVICES="none" \
   --results-dir MLPS/tabular/shared/dae_dnn/results \
   --run-root MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1 \
   --source-run-root MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current \
-  --batch-size 186240 \
+  --batch-size 93120 \
   --num-workers 0 \
   --seed 0 \
   --patience 10 \

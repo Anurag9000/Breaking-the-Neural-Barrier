@@ -229,7 +229,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--tasks", type=str, nargs="+", default=DEFAULT_TASKS)
     p.add_argument("--depths", type=int, nargs="+", default=DEFAULT_DEPTHS)
     p.add_argument("--widths", type=int, nargs="+", default=DEFAULT_WIDTHS)
-    p.add_argument("--batch-size", type=int, default=186240)
+    p.add_argument("--batch-size", type=int, default=93120)
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--patience", type=int, default=10)

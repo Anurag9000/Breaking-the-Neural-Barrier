@@ -39,7 +39,7 @@ def parse_args() -> argparse.Namespace:
         "--task-batch-size",
         action="append",
         default=[],
-        help="Override batch size for a specific task, e.g. classification=186240. May be passed multiple times.",
+        help="Override batch size for a specific task, e.g. classification=93120. May be passed multiple times.",
     )
     p.add_argument("--num-workers", type=int, default=0)
     p.add_argument("--seed", type=int, default=0)

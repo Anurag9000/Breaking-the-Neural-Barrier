@@ -276,7 +276,7 @@ and keeps the current pressure-aware settings:
 - host RAM thresholds: `85 / 80`
 - GPU memory thresholds: `85 / 80`
 - hard active-job cap: `0` (disabled)
-- batch size: `186240`
+- batch size: `93120` (halved starting default for the shared tabular pressure-aware runners)
 - DataLoader workers: `0`
 
 Windows portability note: native Windows can run the Python launchers and

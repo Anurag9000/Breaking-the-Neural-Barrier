@@ -52,5 +52,5 @@ if (-not (Test-Path $Python)) {
   --post-launch-sample-delay-sec 30 `
   --max-epochs 100000000 `
   --num-workers 0 `
-  --batch-size 186240 `
+  --batch-size 93120 `
   @args
