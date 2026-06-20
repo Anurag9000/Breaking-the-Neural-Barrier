@@ -15,8 +15,6 @@ if (-not $env:OMP_DYNAMIC) { $env:OMP_DYNAMIC = "FALSE" }
 if (-not $env:MKL_DYNAMIC) { $env:MKL_DYNAMIC = "FALSE" }
 if (-not $env:OMP_WAIT_POLICY) { $env:OMP_WAIT_POLICY = "ACTIVE" }
 if (-not $env:TABULAR_CHILD_SHARED_CPU) { $env:TABULAR_CHILD_SHARED_CPU = "1" }
-if (-not $env:TABULAR_STRICT_NO_SWAP) { $env:TABULAR_STRICT_NO_SWAP = "1" }
-
 if (-not $env:CUDA_VISIBLE_DEVICES) { $env:CUDA_VISIBLE_DEVICES = "0" }
 if (-not $env:PYTORCH_CUDA_ALLOC_CONF) {
     $env:PYTORCH_CUDA_ALLOC_CONF = "expandable_segments:True,max_split_size_mb:128"
@@ -57,8 +55,8 @@ if (-not (Test-Path $Python)) {
   --host-ram-resume-pct 80 `
   --gpu-memory-pressure-limit-pct 85 `
   --gpu-memory-resume-pct 80 `
-  --swap-pressure-limit-pct 0 `
-  --swap-resume-pct 0 `
+  --swap-pressure-limit-pct 100 `
+  --swap-resume-pct 100 `
   --gpu-device-index 0 `
   --pressure-poll-interval-sec 0.5 `
   --post-launch-sample-delay-sec 60 `

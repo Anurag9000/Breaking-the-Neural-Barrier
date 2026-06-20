@@ -51,8 +51,8 @@ NVIDIA_VISIBLE_DEVICES="none" \
   --host-ram-resume-pct 80 \
   --gpu-memory-pressure-limit-pct 85 \
   --gpu-memory-resume-pct 80 \
-  --swap-pressure-limit-pct 0 \
-  --swap-resume-pct 0 \
+  --swap-pressure-limit-pct 100 \
+  --swap-resume-pct 100 \
   --gpu-device-index 0 \
   --pressure-poll-interval-sec 0.5 \
   --post-launch-sample-delay-sec 60 \
