@@ -75,6 +75,17 @@ The strict STL band launchers currently cover:
 - `run_stl_massive_band_07_08_fresh.sh`
 - `run_stl_massive_band_09_10_fresh.sh`
 
+On Windows 11, the runtime uses the Win32 process-priority and affinity
+surface instead of Linux `renice` / `ionice`:
+
+- `SetPriorityClass` for process priority
+- `SetProcessAffinityMask` for CPU affinity
+
+Windows does not have a direct user-facing `ionice` equivalent with the same
+shape. The closest documented background-resource mode is
+`PROCESS_MODE_BACKGROUND_BEGIN`, but the training wrappers keep that disabled
+by default because these are throughput jobs.
+
 Regenerate it with:
 
 ```bash

@@ -59,6 +59,15 @@ points. Native `cmd.exe` and PowerShell do not execute `./.../*.sh` directly;
 use the matching `.ps1` wrapper there. All wrappers call the same Python
 launchers and write the same result roots.
 
+On Windows 11, the Python runtime applies best-effort `SetPriorityClass`
+process priority and `SetProcessAffinityMask` CPU affinity through the Win32
+API. That is the documented equivalent surface for Linux `renice` and CPU
+affinity control. Windows does not expose a direct `ionice`-style user-facing
+API with the same shape; the closest documented lower-priority analogue is
+`PROCESS_MODE_BACKGROUND_BEGIN`, which lowers CPU and resource scheduling
+priorities, but the training launchers do not enable background mode by
+default.
+
 The CPU-only wrapper is now the default launcher for this recovery family.
 It hides CUDA before bootstrap, uses the same
 `MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1` root,

@@ -566,6 +566,14 @@ and is intended for a full clean rerun of the strict `10^4..10^6` band. Under
 the current generator logic, that band expands to `1928` child architecture
 jobs and `9640` repeat phases total because each child runs `--repeat-count 5`.
 
+On Windows 11, the checked-in `.ps1` wrappers call the same Python launchers
+and the runtime applies best-effort `SetPriorityClass` plus
+`SetProcessAffinityMask`. That is the documented Win32 equivalent surface for
+the Linux CPU-priority and affinity tuning we use here. There is no direct
+`ionice`-style user-facing Windows API with the same shape; the documented
+lower-resource analogue is `PROCESS_MODE_BACKGROUND_BEGIN`, but the training
+wrappers do not enable background mode by default.
+
 The current result roots are:
 
 - STL: `MLPS/tabular/shared/dae_dnn/results/stl/ablation/<suite_name>/`

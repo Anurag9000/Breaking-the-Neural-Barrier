@@ -8,6 +8,7 @@ priority changes are ignored.
 
 from __future__ import annotations
 
+import ctypes
 import hashlib
 import os
 import shutil
@@ -114,6 +115,23 @@ def _parse_cpu_list(text: str) -> Tuple[int, ...]:
 
 def _apply_affinity_from_env() -> None:
     affinity_text = os.environ.get("TABULAR_CPU_AFFINITY_CPUS")
+    if os.name == "nt":
+        try:
+            kernel32 = ctypes.windll.kernel32
+            process = kernel32.GetCurrentProcess()
+            cpus = set(_parse_cpu_list(affinity_text)) if affinity_text else set()
+            if not cpus:
+                cpus = set(range(max(1, int(os.cpu_count() or 1))))
+            mask = 0
+            for cpu in cpus:
+                if 0 <= int(cpu) < 64:
+                    mask |= 1 << int(cpu)
+            if mask:
+                kernel32.SetProcessAffinityMask(process, mask)
+        except Exception:
+            pass
+        return
+
     if affinity_text:
         try:
             cpus = set(_parse_cpu_list(affinity_text))
@@ -183,6 +201,25 @@ def resolve_num_workers(requested: int | None = None) -> int:
 
 
 def _apply_process_priority() -> None:
+    if os.name == "nt":
+        try:
+            kernel32 = ctypes.windll.kernel32
+            process = kernel32.GetCurrentProcess()
+            priority_name = str(os.environ.get("TABULAR_WINDOWS_PRIORITY_CLASS", "high")).strip().lower()
+            priority_map = {
+                "idle": 0x00000040,  # IDLE_PRIORITY_CLASS
+                "below_normal": 0x00004000,  # BELOW_NORMAL_PRIORITY_CLASS
+                "normal": 0x00000020,  # NORMAL_PRIORITY_CLASS
+                "above_normal": 0x00008000,  # ABOVE_NORMAL_PRIORITY_CLASS
+                "high": 0x00000080,  # HIGH_PRIORITY_CLASS
+                "background": 0x00100000,  # PROCESS_MODE_BACKGROUND_BEGIN
+            }
+            priority_class = priority_map.get(priority_name, priority_map["high"])
+            kernel32.SetPriorityClass(process, priority_class)
+        except Exception:
+            pass
+        return
+
     try:
         os.nice(-20)
     except Exception:
