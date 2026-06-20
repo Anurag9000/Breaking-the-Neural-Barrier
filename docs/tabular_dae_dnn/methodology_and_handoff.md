@@ -519,6 +519,7 @@ Use the matching launcher for each staged band:
 - `run_stl_massive_band_01_03_fresh.sh`
 - `run_stl_massive_band_04_06_fresh.sh`
 - `run_stl_massive_band_07_08_fresh.sh`
+- `run_stl_massive_band_07_08_pressure_resume.sh`
 - `run_stl_massive_band_09_10_fresh.sh`
 
 ## ADP repeat schedule
