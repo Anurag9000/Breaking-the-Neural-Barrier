@@ -35,7 +35,7 @@ DEFAULT_TASKS = [
 DEFAULT_MIN_DEPTH = 1
 DEFAULT_MAX_DEPTH = 10
 DEFAULT_MIN_WIDTH = 1
-DEFAULT_MAX_WIDTH = 1024
+DEFAULT_MAX_WIDTH = 10000000000
 DEFAULT_WIDTH_STEP = 1
 DEFAULT_WIDTH_COUNT_PER_DEPTH = 10
 DEFAULT_REPEAT_COUNT = 5
@@ -280,27 +280,7 @@ def parameter_count_for_summary(task: rg.Task, task_root: Path, summary: Dict[st
 
 
 def task_depth_max_width(task_name: str, depth: int) -> int:
-    depth = max(1, int(depth))
-    task_name = str(task_name).lower()
-    if task_name == "classification":
-        return int(
-            CLASSIFICATION_MAX_WIDTH_BY_DEPTH.get(depth, CLASSIFICATION_MAX_WIDTH_BY_DEPTH[max(CLASSIFICATION_MAX_WIDTH_BY_DEPTH)])
-        )
-    if task_name == "autoencoding":
-        return int(
-            AUTOENCODING_MAX_WIDTH_BY_DEPTH.get(depth, AUTOENCODING_MAX_WIDTH_BY_DEPTH[max(AUTOENCODING_MAX_WIDTH_BY_DEPTH)])
-        )
-    if task_name == "generation":
-        return int(GENERATION_MAX_WIDTH_BY_DEPTH.get(depth, GENERATION_MAX_WIDTH_BY_DEPTH[max(GENERATION_MAX_WIDTH_BY_DEPTH)]))
-    if task_name == "denoising":
-        return int(DENOISING_MAX_WIDTH_BY_DEPTH.get(depth, DENOISING_MAX_WIDTH_BY_DEPTH[max(DENOISING_MAX_WIDTH_BY_DEPTH)]))
-    if task_name == "anomaly" and depth in ANOMALY_MAX_WIDTH_BY_DEPTH:
-        return int(ANOMALY_MAX_WIDTH_BY_DEPTH[depth])
-    if task_name == "simulation":
-        return int(SIMULATION_MAX_WIDTH_BY_DEPTH.get(depth, SIMULATION_MAX_WIDTH_BY_DEPTH[max(SIMULATION_MAX_WIDTH_BY_DEPTH)]))
-    if task_name == "prediction":
-        return int(PREDICTION_MAX_WIDTH_BY_DEPTH.get(depth, PREDICTION_MAX_WIDTH_BY_DEPTH[max(PREDICTION_MAX_WIDTH_BY_DEPTH)]))
-    return int(DEFAULT_MAX_WIDTH)
+    return 10000000000
 
 
 def parameter_count_for_architecture(in_dim: int, out_dim: int, hidden_widths: Sequence[int], use_bn: bool) -> int:
