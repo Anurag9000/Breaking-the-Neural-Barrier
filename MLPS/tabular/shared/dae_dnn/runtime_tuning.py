@@ -45,6 +45,17 @@ def _safe_int(value: Optional[str]) -> Optional[int]:
     return parsed if parsed > 0 else None
 
 
+def _env_truthy(value: Optional[str], *, default: bool = False) -> bool:
+    if value is None:
+        return default
+    lowered = str(value).strip().lower()
+    if lowered in {"1", "true", "yes", "on", "y"}:
+        return True
+    if lowered in {"0", "false", "no", "off", "n", ""}:
+        return False
+    return default
+
+
 def _current_affinity_cpus() -> Tuple[int, ...]:
     try:
         affinity = os.sched_getaffinity(0)
@@ -358,7 +369,9 @@ def launcher_child_env(
                 affinity_cpus = parsed
         except Exception:
             pass
-    shared_cpu = bool(shared_cpu) or env.get("TABULAR_CHILD_SHARED_CPU") == "1"
+    # Shared CPU mode is the default: children inherit the full visible CPU set
+    # unless a caller explicitly disables it.
+    shared_cpu = bool(shared_cpu) or _env_truthy(env.get("TABULAR_CHILD_SHARED_CPU"), default=True)
     if shared_cpu:
         thread_budget = max(1, int(cores))
         worker_budget = max(1, min(4, int(cores) // 4))
@@ -421,6 +434,7 @@ def bootstrap_runtime(label: str = "tabular") -> Dict[str, int]:
         "OMP_PROC_BIND": "spread",
         "OMP_PLACES": "cores",
         "KMP_AFFINITY": "granularity=fine,scatter",
+        "TABULAR_CHILD_SHARED_CPU": "1",
         "TABULAR_CPU_THREADS": str(thread_budget),
         "TABULAR_CPU_WORKERS": str(worker_budget),
         "TABULAR_CPU_CORES": str(cpu_cores),

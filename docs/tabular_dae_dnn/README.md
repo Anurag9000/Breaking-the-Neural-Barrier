@@ -68,6 +68,11 @@ the same checkpoint files, and can resume each other across device changes.
 The CPU-only wrapper is the recommended default when you just want the suite
 to run without GPU admission.
 
+Both wrappers now default child launchers into shared-CPU mode. The launcher
+does not partition the visible CPU set across siblings unless a caller
+explicitly overrides `TABULAR_CHILD_SHARED_CPU`. Each child therefore sees the
+full CPU budget and the OS scheduler handles contention.
+
 The strict STL band launchers currently cover:
 
 - `run_stl_massive_band_01_03_fresh.sh`
@@ -205,13 +210,13 @@ results. Keep them only long enough to validate launcher behavior, then
 remove the generated scratch tree before publishing a results snapshot.
 
 For the missing-width/small-STL recovery wrapper and the massive STL pressure
-scheduler, `--max-active-jobs 0` exposes all visible logical CPUs as job lanes.
-On the 20-core laptop this allows up to 20 active children. GPU admission is
-memory-pressure driven by default: the scheduler keeps launching GPU children
-while VRAM is below the resume threshold, then spills additional work to CPU
-when GPU admission is blocked. If host RAM pressure pauses admissions, the gate
-reopens once host pressure drops back under the configured resume threshold.
-Use `--max-active-jobs <n>` or
+scheduler, the shared-CPU default gives every child the full visible logical
+CPU set. `--max-active-jobs 0` keeps admissions open while RAM pressure
+permits it. GPU admission is memory-pressure driven by default: the scheduler
+keeps launching GPU children while VRAM is below the resume threshold, then
+spills additional work to CPU when GPU admission is blocked. If host RAM
+pressure pauses admissions, the gate reopens once host pressure drops back
+under the configured resume threshold. Use `--max-active-jobs <n>` or
 `--max-active-gpu-jobs <n>` only when you need an explicit child-count cap.
 
 That policy is aggressive by design. It keeps the CPU side busy when the
@@ -225,10 +230,11 @@ Key pressure-aware flags:
 - `--gpu-memory-pressure-limit-pct 85`
 - `--gpu-memory-resume-pct 80`
 - `--gpu-device-index 0`
-- `--max-active-jobs 0` for no hard slot cap beyond RAM pressure
+- `--max-active-jobs 0` for no hard slot cap beyond RAM pressure while each
+  child still sees the full visible CPU set
 - `--max-retries-per-job 0` as a legacy compatibility flag; pressure-aware mode now requeues failed children indefinitely
 - `--pressure-poll-interval-sec 0.5`
-- `--post-launch-sample-delay-sec 30`
+- `--post-launch-sample-delay-sec 60`
 
 For a fresh full rerun of the strict `10^4..10^6` massive STL band, use:
 

@@ -87,6 +87,12 @@ runner is a separate script that keeps CUDA visible and uses the same root,
 same child directories, and same checkpoint files, so CPU and GPU runs can
 resume each other without any layout fork.
 
+The shared runtime bootstrap now defaults child launchers into full visible-CPU
+mode. In practice that means the launcher does not split the core set across
+siblings by default; every child sees the full CPU budget and the OS scheduler
+time-slices contention. That is the default on both Linux and Windows entry
+points unless a caller explicitly overrides `TABULAR_CHILD_SHARED_CPU`.
+
 Recovery wrapper contract:
 
 1. build the recovery job list from the width-only and anomaly small-grid gaps
@@ -102,8 +108,9 @@ Recovery wrapper contract:
    a global admission block
 8. ignore swap in the default wrapper path by setting swap thresholds to
    `100 / 100`
-9. use `--max-active-jobs 0` as the all-visible-CPU default and keep
-   `--post-launch-sample-delay-sec 60` as the standard 1 minute post-launch sample window
+9. use the shared-CPU default so every child sees the full visible core set,
+   and keep `--post-launch-sample-delay-sec 60` as the standard 1 minute
+   post-launch sample window
 10. use shared platform helpers for host memory sampling and child-process
     tree termination on Linux, WSL, Git Bash, and native Windows
 

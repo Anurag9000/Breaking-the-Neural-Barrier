@@ -239,7 +239,7 @@ The checkpoint boundary is the last completed batch or epoch that reached
 `checkpoint_last.pt`; an OOM that kills the process before the next save
 resumes from that last durable state, not from the exact Python instruction
 that faulted. On the slower laptop split, set
-`--post-launch-sample-delay-sec 30` to give each launch a 30 second
+`--post-launch-sample-delay-sec 60` to give each launch a 1 minute
 post-launch sample window before the next admission decision.
 
 Runtime policy for the tabular runners is centralized:
@@ -324,7 +324,8 @@ GPU run can be resumed on CPU later, and vice versa.
 
 The key knobs are:
 
-- `--max-active-jobs 0` for all visible logical CPUs as job lanes
+- `--max-active-jobs 0` when you want the launcher to keep admitting work
+  while every child still sees the full visible CPU set
 - `--max-active-gpu-jobs 0` for memory-driven GPU concurrency in the mixed runner
 - `--host-ram-pressure-limit-pct 85`
 - `--host-ram-resume-pct 80`
@@ -333,7 +334,7 @@ The key knobs are:
 - `--swap-pressure-limit-pct 100`
 - `--swap-resume-pct 100`
 - `--pressure-poll-interval-sec 0.5`
-- `--post-launch-sample-delay-sec 30`
+- `--post-launch-sample-delay-sec 60`
 - `--batch-size 186240`
 - `--num-workers 0`
 - `--repeat-count 5`
@@ -435,7 +436,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --gpu-memory-resume-pct 80 \
   --gpu-device-index 0 \
   --max-active-jobs 0 \
-  --post-launch-sample-delay-sec 30 \
+  --post-launch-sample-delay-sec 60 \
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
@@ -478,7 +479,7 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --param-band 4 6 \
   --repeat-count 5 \
   --concurrency 7 \
-  --post-launch-sample-delay-sec 30 \
+  --post-launch-sample-delay-sec 60 \
   --max-epochs 100000000 \
   --num-workers 0 \
   --pin-memory \
