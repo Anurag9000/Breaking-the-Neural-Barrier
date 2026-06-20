@@ -154,8 +154,8 @@ The recovery runner uses split admission gates:
 
 - GPU pauses only block GPU admissions until a GPU child finishes cleanly.
 - host RAM or swap pauses block all new admissions until pressure recovers;
-  the gate can reopen as soon as host pressure is back under the configured
-  resume threshold.
+  the gate stays closed until a child completes cleanly, even if host
+  pressure drops back under the resume threshold.
 - CPU spillover remains available in the mixed runner whenever host RAM is
   healthy and GPU admission is blocked.
 

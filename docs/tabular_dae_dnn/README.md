@@ -214,9 +214,10 @@ CPU set. `--max-active-jobs 0` keeps admissions open while RAM pressure
 permits it. GPU admission is memory-pressure driven by default: the scheduler
 keeps launching GPU children while VRAM is below the resume threshold, then
 spills additional work to CPU when GPU admission is blocked. If host RAM
-pressure pauses admissions, the gate reopens once host pressure drops back
-under the configured resume threshold. Use `--max-active-jobs <n>` or
-`--max-active-gpu-jobs <n>` only when you need an explicit child-count cap.
+pressure pauses admissions, the gate stays closed until a child completes
+cleanly; resumed work is always reconsidered before untouched work. Use
+`--max-active-jobs <n>` or `--max-active-gpu-jobs <n>` only when you need an
+explicit child-count cap.
 
 That policy is aggressive by design. It keeps the CPU side busy when the
 current workload can exploit the extra parallelism.
@@ -233,7 +234,7 @@ Key pressure-aware flags:
   child still sees the full visible CPU set
 - `--max-retries-per-job 0` as a legacy compatibility flag; pressure-aware mode now requeues failed children indefinitely
 - `--pressure-poll-interval-sec 0.5`
-- `--post-launch-sample-delay-sec 60`
+- `--post-launch-sample-delay-sec 30`
 
 For a fresh full rerun of the strict `10^4..10^6` massive STL band, use:
 

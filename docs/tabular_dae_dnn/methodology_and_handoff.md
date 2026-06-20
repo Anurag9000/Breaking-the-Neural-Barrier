@@ -209,13 +209,13 @@ CPU while host RAM is still below its resume threshold. It monitors host RAM
 through `platform_runtime.py`: `/proc/meminfo` on Linux/WSL,
 `GlobalMemoryStatusEx` on native Windows, and `psutil` as a fallback. GPU
 memory is sampled through `nvidia-smi`. After the initial saturation phase,
-admission is pressure-gated: a host-RAM pause closes the admission window for
-new work until host pressure falls back under the resume threshold. GPU
+admission is completion-gated: a host-RAM pause closes the admission window
+and RAM recovery alone does not reopen it. The launcher waits for a genuine
+child completion before it allows the next launch, and that next launch
+resumes a paused or partial child before it considers untouched work. GPU
 pressure only blocks GPU admissions; CPU spillover can continue whenever host
-pressure is healthy. The launcher does not use the pause itself as a launch
-signal. That next launch attempt resumes a paused or partial child before it
-considers untouched work. If used RAM crosses the configured host threshold,
-it requests a pause on the largest active child, terminates only that child
+pressure is healthy. If used RAM crosses the configured host threshold, it
+requests a pause on the largest active child, terminates only that child
 process group, and requeues that same child root. If a child exits with a CUDA
 OOM or cuBLAS allocation failure, the scheduler requests a pause on the
 largest active GPU child, requeues the failed child at the front of the
@@ -239,7 +239,7 @@ The checkpoint boundary is the last completed batch or epoch that reached
 `checkpoint_last.pt`; an OOM that kills the process before the next save
 resumes from that last durable state, not from the exact Python instruction
 that faulted. On the slower laptop split, set
-`--post-launch-sample-delay-sec 60` to give each launch a 1 minute
+`--post-launch-sample-delay-sec 30` to give each launch a 30 second
 post-launch sample window before the next admission decision.
 
 Runtime policy for the tabular runners is centralized:
@@ -492,8 +492,9 @@ and the `--run-root` suffix.
 The pressure-aware scheduler runs concrete children globally from
 smallest-to-largest and prefers GPU children first while GPU memory is still
 below the resume threshold. It may temporarily pause the largest one if host
-memory pressure spikes. The probe uses the opposite order and is intentionally
-adversarial: it stress tests the heaviest models first.
+memory pressure spikes. That pause does not reopen admissions by itself;
+only a real child completion does. The probe uses the opposite order and is
+intentionally adversarial: it stress tests the heaviest models first.
 
 After all bands finish, merge them into the canonical STL root:
 

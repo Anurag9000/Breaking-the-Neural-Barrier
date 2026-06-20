@@ -933,6 +933,11 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     f"[TASK] completed task={job.task_name} phase={job.phase_name} params={job.parameter_count}"
                 )
                 mark_child_completed(job.child_root, job)
+                if not launches_enabled:
+                    logger.log_console(
+                        f"[STATE] admission gate reopened by completion task={job.task_name} phase={job.phase_name} "
+                        f"host_used_pct={pressure.used_pct:.2f} gpu_used_pct={gpu_pressure.used_pct:.2f}"
+                    )
                 launches_enabled = True
                 continue
             if active_job.pause_requested:
@@ -942,8 +947,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 )
                 mark_child_paused(job.child_root, job, int(code or 0), pause_reason)
                 pending.appendleft(job)
-                if pause_reason == "host_ram_pressure":
-                    launches_enabled = False
+                launches_enabled = False
                 continue
             failure_counts[job.child_root] += 1
             if active_job.device_mode == "cuda" and child_log_indicates_cuda_oom(active_job.log_path):
@@ -968,6 +972,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     )
                     terminate_child_process(next(peer_proc for peer_proc, entry in active.items() if entry is largest_gpu))
                 pending.appendleft(job)
+                launches_enabled = False
                 continue
             logger.log_console(
                 f"[TASK] retry_forever task={job.task_name} phase={job.phase_name} params={job.parameter_count} "
@@ -975,6 +980,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             )
             mark_child_retrying(job.child_root, job, int(code or 0), active_job.cmd, failure_counts[job.child_root])
             pending.appendleft(job)
+            launches_enabled = False
             continue
 
         for proc in finished:
@@ -1018,12 +1024,6 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
         if time.time() < launch_sample_hold_until:
             time.sleep(max(0.1, float(args.pressure_poll_interval_sec)))
             continue
-
-        if pending and not launches_enabled and pressure.used_pct <= float(args.host_ram_resume_pct):
-            launches_enabled = True
-            logger.log_console(
-                f"[STATE] admission gate reopened host_used_pct={pressure.used_pct:.2f} gpu_used_pct={gpu_pressure.used_pct:.2f}"
-            )
 
         under_active_limit = len(active) < int(active_limit)
         active_gpu_jobs = sum(1 for entry in active.values() if entry.device_mode == "cuda")
