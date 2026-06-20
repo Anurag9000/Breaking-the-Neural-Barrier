@@ -68,8 +68,6 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--width-step", type=int, default=64)
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
-    p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
-    p.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     p.add_argument("--use-bn", action="store_true", default=True)
     p.add_argument("--no-bn", dest="use_bn", action="store_false")
     return p.parse_args()
@@ -254,7 +252,7 @@ def main() -> None:
                     batch_size_override=int(args.batch_size),
                     num_workers=int(args.num_workers),
                     seed=int(args.seed),
-                    pin_memory=bool(args.pin_memory),
+                    pin_memory=False,
                 )
                 model = rg.make_stl_model(task, architecture, bool(args.use_bn)).to(device)
                 cfg = make_cfg(args, task_name, run_root)

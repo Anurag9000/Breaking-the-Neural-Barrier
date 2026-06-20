@@ -132,8 +132,6 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--batch-size", type=int, default=0, help="Default batch size override. 0 defers to the task builder.")
     parser.add_argument("--device", default="cuda")
-    parser.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
-    parser.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     parser.add_argument("--use-bn", action="store_true", default=True)
     parser.add_argument("--no-bn", dest="use_bn", action="store_false")
     parser.add_argument("--min-depth", type=int, default=DEFAULT_MIN_DEPTH)
@@ -384,8 +382,8 @@ def build_task_bundle(
 ) -> TaskBundle:
     kwargs = dict(base_kwargs)
     kwargs.update({"task_name": task_name, "batch_size": int(batch_size)})
-    if pin_memory is not None and "pin_memory" not in kwargs:
-        kwargs["pin_memory"] = bool(pin_memory)
+    if "pin_memory" not in kwargs:
+        kwargs["pin_memory"] = False
     try:
         raw = task_factory(**kwargs)
     except TypeError:
@@ -965,7 +963,7 @@ def main() -> None:
             task_name,
             requested_batch,
             task_factory_kwargs,
-            pin_memory=bool(args.pin_memory),
+            pin_memory=False,
         )
         # annotate task factory name for reports
         task_factory_name = str(args.task_factory)

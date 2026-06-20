@@ -599,7 +599,7 @@ def run_task_ablation(
         1,
         cfg.num_workers,
         cfg.seed,
-        pin_memory=bool(pin_memory),
+        pin_memory=False,
     )
     task_batch_size = stl_batch_size_for_task(task_name, task, cfg.batch_size)
     rg.refresh_task_loaders(task, task_batch_size)
@@ -935,8 +935,6 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--stl-width", type=int, default=128)
     p.add_argument("--stl-depth", type=int, default=2)
     p.add_argument("--metrics-every", type=int, default=0, help="Run auxiliary task metrics every N epochs; 0 disables them.")
-    p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
-    p.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     p.add_argument("--use-bn", action="store_true", default=True)
     p.add_argument("--no-bn", dest="use_bn", action="store_false")
     p.add_argument("--widths", default="")
@@ -1009,7 +1007,7 @@ def main() -> None:
                 task_name=task_name,
                 task_root=task_root,
                 cfg=cfg,
-                pin_memory=bool(args.pin_memory),
+                pin_memory=False,
                 source_run_root=source_run_root,
                 architectures=architectures,
                 repeat_count=int(args.repeat_count),

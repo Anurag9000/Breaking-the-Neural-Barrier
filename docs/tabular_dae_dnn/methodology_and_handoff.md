@@ -416,7 +416,6 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_pa
   --probe-epochs 2 \
   --start-n 2 \
   --num-workers 0 \
-  --pin-memory \
   --batch-size 186240
 ```
 
@@ -444,7 +443,6 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --post-launch-sample-delay-sec 30 \
   --max-epochs 100000000 \
   --num-workers 0 \
-  --pin-memory \
   --batch-size 186240
 ```
 
@@ -465,7 +463,6 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --repeat-count 5 \
   --max-epochs 100000000 \
   --num-workers 0 \
-  --pin-memory \
   --batch-size 186240
 ```
 
@@ -487,7 +484,6 @@ CUDA_VISIBLE_DEVICES=0 ./.venv/bin/python MLPS/tabular/shared/dae_dnn/run_stl_ab
   --post-launch-sample-delay-sec 30 \
   --max-epochs 100000000 \
   --num-workers 0 \
-  --pin-memory \
   --batch-size 186240
 ```
 

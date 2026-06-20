@@ -73,7 +73,8 @@ does not partition the visible CPU set across siblings unless a caller
 explicitly overrides `TABULAR_CHILD_SHARED_CPU`. Each child therefore sees the
 full CPU budget and the OS scheduler handles contention. The default
 DataLoader worker count is pinned to zero across the shared tabular runtime,
-so pressure-aware launchers do not spawn surprise loader workers.
+`pin_memory` is forced off at the shared loader layer, and pressure-aware
+launchers do not spawn surprise loader workers.
 
 The strict STL band launchers currently cover:
 

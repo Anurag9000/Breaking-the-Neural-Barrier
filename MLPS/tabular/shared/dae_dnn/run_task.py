@@ -50,8 +50,6 @@ def main() -> None:
     p.add_argument("--metrics-interval", type=int, default=5)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--num-workers", type=int, default=0)
-    p.add_argument("--pin-memory", dest="pin_memory", action="store_true", default=False)
-    p.add_argument("--no-pin-memory", dest="pin_memory", action="store_false")
     p.add_argument("--data-dir", type=str, default="./data")
     p.add_argument("--results-dir", type=str, default="MLPS/tabular/shared/dae_dnn/results")
     args = p.parse_args()
@@ -66,7 +64,7 @@ def main() -> None:
         initial_batch_size,
         args.num_workers,
         args.seed,
-        pin_memory=bool(args.pin_memory),
+        pin_memory=False,
     )
 
     max_width = args.max_width
