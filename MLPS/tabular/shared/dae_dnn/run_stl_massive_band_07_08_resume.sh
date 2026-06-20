@@ -24,4 +24,6 @@ exec "$PYTHON_BIN" MLPS/tabular/shared/dae_dnn/run_stl_ablation_parallel.py \
   --repeat-count 5 \
   --scheduler fixed \
   --concurrency 5 \
+  --max-width 10000000000 \
+  --max-neurons 10000000000 \
   "$@"
