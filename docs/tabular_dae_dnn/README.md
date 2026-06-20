@@ -86,6 +86,14 @@ shape. The closest documented background-resource mode is
 `PROCESS_MODE_BACKGROUND_BEGIN`, but the training wrappers keep that disabled
 by default because these are throughput jobs.
 
+On Linux, the runtime scope also requests `MemorySwapMax=0` when
+`systemd-run --user --scope` is available, which is the repo's strict
+no-swap path for these launchers. If systemd scope support is unavailable,
+there is no exact per-process swap disable equivalent, so the launcher falls
+back to best-effort memory handling.
+On newer systemd builds that support it, the runtime also requests
+`MemoryZSwapMax=0` so compressed swap is disabled too.
+
 Regenerate it with:
 
 ```bash

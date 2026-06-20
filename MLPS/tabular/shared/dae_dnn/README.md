@@ -68,6 +68,14 @@ API with the same shape; the closest documented lower-priority analogue is
 priorities, but the training launchers do not enable background mode by
 default.
 
+On Linux, the runtime scope also requests `MemorySwapMax=0`, so these
+launchers are asked to run with swap disabled inside the systemd cgroup when
+`systemd-run --user --scope` is available. That is the repo's strict no-swap
+path. If systemd scope support is missing, no equivalent per-process swap
+guarantee exists and the launcher falls back to best-effort memory handling.
+On systemd versions new enough to expose it, the runtime also requests
+`MemoryZSwapMax=0` so compressed swap is disabled too.
+
 The CPU-only wrapper is now the default launcher for this recovery family.
 It hides CUDA before bootstrap, uses the same
 `MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1` root,
