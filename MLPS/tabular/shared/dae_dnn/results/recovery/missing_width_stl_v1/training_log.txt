@@ -226,3 +226,27 @@
 [2026-06-20 19:27:45] [TASK] requeued small_stl:anomaly:d06:w256 exit=-15 pause=True
 [2026-06-20 20:49:04] [PRESSURE] pause_host small_stl:anomaly:d10:w192 host_used_pct=87.20 swap_used_pct=60.63
 [2026-06-20 20:49:05] [TASK] requeued small_stl:anomaly:d10:w192 exit=-15 pause=True
+[2026-06-20 21:19:02] Initialized ContinuousLogger for missing_width_stl_recovery (Mode: pressure_aware_recovery)
+[2026-06-20 21:19:02] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_log.txt
+[2026-06-20 21:19:02] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_stats.csv
+[2026-06-20 21:19:11] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1
+[2026-06-20 21:19:11] Jobs: 189
+[2026-06-20 21:19:11] Max active jobs: 189
+[2026-06-20 21:19:11] Max active GPU jobs: 0
+[2026-06-20 21:19:11] Batch backoff factor: 0.500
+[2026-06-20 21:19:11] Batch backoff scale: 1.000000
+[2026-06-20 21:19:13] [TASK] launch small_stl:anomaly:d08:w192 params=283446 device=cpu batch_scale=1.000000 host_used_pct=47.55 swap_used_pct=79.24 gpu_used_pct=0.24 active=1/189
+[2026-06-20 21:19:43] [TASK] launch small_stl:anomaly:d10:w192 params=358326 device=cpu batch_scale=1.000000 host_used_pct=51.32 swap_used_pct=76.56 gpu_used_pct=0.24 active=2/189
+[2026-06-20 21:20:13] [TASK] launch small_stl:anomaly:d06:w256 params=359990 device=cpu batch_scale=1.000000 host_used_pct=60.53 swap_used_pct=76.53 gpu_used_pct=0.24 active=3/189
+[2026-06-20 21:20:43] [TASK] launch width_only:prediction:r01:d01 params=450817 device=cpu batch_scale=1.000000 host_used_pct=65.94 swap_used_pct=76.53 gpu_used_pct=0.24 active=4/189
+[2026-06-20 21:21:13] [TASK] launch width_only:prediction:r02:d01 params=450817 device=cpu batch_scale=1.000000 host_used_pct=60.91 swap_used_pct=76.46 gpu_used_pct=0.24 active=5/189
+[2026-06-20 21:21:43] [TASK] launch width_only:prediction:r03:d01 params=450817 device=cpu batch_scale=1.000000 host_used_pct=64.60 swap_used_pct=76.46 gpu_used_pct=0.24 active=6/189
+[2026-06-20 21:22:14] [TASK] launch width_only:prediction:r04:d01 params=450817 device=cpu batch_scale=1.000000 host_used_pct=67.59 swap_used_pct=76.43 gpu_used_pct=0.24 active=7/189
+[2026-06-20 21:22:44] [TASK] launch width_only:prediction:r05:d01 params=450817 device=cpu batch_scale=1.000000 host_used_pct=69.63 swap_used_pct=76.41 gpu_used_pct=0.24 active=8/189
+[2026-06-20 21:23:14] [TASK] launch width_only:simulation:r02:d01 params=450817 device=cpu batch_scale=1.000000 host_used_pct=72.00 swap_used_pct=76.41 gpu_used_pct=0.24 active=9/189
+[2026-06-20 21:23:44] [TASK] launch width_only:simulation:r03:d01 params=450817 device=cpu batch_scale=1.000000 host_used_pct=77.07 swap_used_pct=76.34 gpu_used_pct=0.24 active=10/189
+[2026-06-20 21:24:15] [TASK] launch width_only:simulation:r04:d01 params=450817 device=cpu batch_scale=1.000000 host_used_pct=78.15 swap_used_pct=76.34 gpu_used_pct=0.24 active=11/189
+[2026-06-20 21:32:14] [TASK] launch width_only:simulation:r05:d01 params=450817 device=cpu batch_scale=1.000000 host_used_pct=79.72 swap_used_pct=75.36 gpu_used_pct=0.24 active=12/189
+[2026-06-20 21:37:33] [PRESSURE] pause_host width_only:simulation:r05:d01 host_used_pct=85.11 swap_used_pct=82.78
+[2026-06-20 21:37:34] [STATE] host admission gate blocked until a child completes
+[2026-06-20 21:37:34] [TASK] requeued width_only:simulation:r05:d01 exit=-15 pause=True

@@ -8,12 +8,12 @@
     "simulation",
     "prediction"
   ],
-  "batch_size_override": 93120,
-  "batch_size_policy": "override",
+  "batch_size_override": 0,
+  "batch_size_policy": "per_task_default",
   "config": {
     "alt_start_depth": 1,
     "alt_start_width": 1,
-    "batch_size": 93120,
+    "batch_size": 0,
     "data_dir": "./data",
     "delta": 0.0001,
     "demo": false,
@@ -50,12 +50,12 @@
     "width_step": 16
   },
   "default_batch_sizes": {
-    "prediction": 327680
+    "prediction": 8256
   },
   "device": "cpu",
-  "git_commit": "a095f9a22fd9c1f87b107a5add6d05ab75d747cf",
+  "git_commit": "3736dc73c6cab9e4b232cacb1d4a0654b21ffc95",
   "tasks": [
     "prediction"
   ],
-  "timestamp": "20260620_191354"
+  "timestamp": "20260620_212151"
 }
