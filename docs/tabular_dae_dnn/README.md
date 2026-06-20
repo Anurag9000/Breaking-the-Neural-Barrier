@@ -68,6 +68,13 @@ the same checkpoint files, and can resume each other across device changes.
 The CPU-only wrapper is the recommended default when you just want the suite
 to run without GPU admission.
 
+The strict STL band launchers currently cover:
+
+- `run_stl_massive_band_01_03_fresh.sh`
+- `run_stl_massive_band_04_06_fresh.sh`
+- `run_stl_massive_band_07_08_fresh.sh`
+- `run_stl_massive_band_09_10_fresh.sh`
+
 Regenerate it with:
 
 ```bash
