@@ -197,8 +197,8 @@ def resolve_num_workers(requested: int | None = None) -> int:
     """Resolve DataLoader worker count.
 
     A positive explicit request wins. Otherwise an environment override wins.
-    If neither is provided, the count is derived from the current concurrency
-    budget rather than blindly claiming every core.
+    If neither is provided, the default is zero workers so launchers only use
+    worker processes when a script explicitly asks for them.
     """
 
     if requested is not None:
@@ -210,8 +210,7 @@ def resolve_num_workers(requested: int | None = None) -> int:
     if env_override is not None:
         return env_override
 
-    _, worker_budget, _ = derive_cpu_budget()
-    return max(0, int(worker_budget))
+    return 0
 
 
 def _apply_process_priority() -> None:
@@ -407,7 +406,7 @@ def launcher_child_env(
         env["OMP_PLACES"] = "cores"
         env["KMP_AFFINITY"] = "granularity=fine,compact,1,0"
     env["TABULAR_CPU_THREADS"] = str(thread_budget)
-    env["TABULAR_CPU_WORKERS"] = str(worker_budget)
+    env.setdefault("TABULAR_CPU_WORKERS", "0")
     env["TABULAR_CPU_CORES"] = str(cores)
     env["TABULAR_CPU_JOB_CONCURRENCY"] = "1" if shared_cpu else str(max(1, int(current_concurrency_hint(concurrency_hint) or 1)))
     return env
@@ -436,7 +435,7 @@ def bootstrap_runtime(label: str = "tabular") -> Dict[str, int]:
         "KMP_AFFINITY": "granularity=fine,scatter",
         "TABULAR_CHILD_SHARED_CPU": "1",
         "TABULAR_CPU_THREADS": str(thread_budget),
-        "TABULAR_CPU_WORKERS": str(worker_budget),
+        "TABULAR_CPU_WORKERS": os.environ.get("TABULAR_CPU_WORKERS", "0"),
         "TABULAR_CPU_CORES": str(cpu_cores),
     }
     for key, value in env_updates.items():
