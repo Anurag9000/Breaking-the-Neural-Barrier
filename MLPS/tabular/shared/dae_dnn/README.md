@@ -35,6 +35,7 @@ Primary entry points:
 - `run_stl_massive_band_01_03_fresh.sh` - strict STL band `1-3` launcher
 - `run_stl_massive_band_04_06_fresh.sh` - strict STL band `4-6` launcher
 - `run_stl_massive_band_07_08_fresh.sh` - strict STL band `7-8` launcher
+- `run_stl_massive_band_09_10_fresh.sh` - strict STL band `9-10` launcher
 - `run_adp_w2d_suite_parallel.py` - resumable ADP width-to-depth suite
 - `probe_capacity.py` - capacity probing helper
 - `summarize_repeat_metrics.py` - repeat-level summary generation
@@ -50,6 +51,8 @@ Windows entry points:
   band `4-6` launcher
 - `run_stl_massive_band_07_08_fresh.ps1` - native PowerShell strict STL
   band `7-8` launcher
+- `run_stl_massive_band_09_10_fresh.ps1` - native PowerShell strict STL
+  band `9-10` launcher
 
 The `.sh` wrappers remain the canonical Linux, WSL, and Git Bash entry
 points. Native `cmd.exe` and PowerShell do not execute `./.../*.sh` directly;
