@@ -260,13 +260,15 @@ Runtime policy for the tabular runners is centralized:
 - concurrent launchers allocate explicit slot indices for active children so
   simultaneously active jobs get disjoint CPU partitions rather than hashed
   best-effort placement
-- `--num-workers 0` resolves to the full logical CPU count unless an explicit
+- `--num-workers 0` resolves to zero DataLoader workers unless an explicit
   positive worker count is passed
-- the loaders use persistent workers and prefetching when worker processes are
-  enabled
+- the loaders use persistent workers and prefetching only when worker
+  processes are explicitly enabled
 - the process attempts best-effort `renice -20` and `ionice -c2 -n0`, and it
   also enables `OMP_WAIT_POLICY=ACTIVE`, `OMP_PROC_BIND=spread`, and
   `OMP_PLACES=cores`; the run still proceeds if the OS denies those calls
+- repeated process-tree termination attempts are spaced by 30 seconds by
+  default via `TABULAR_TERMINATION_GAP_SEC`
 - both shell and Python bootstraps attempt `SCHED_BATCH` for long-running
   throughput-oriented CPU work where the OS exposes it
 - Windows does not provide the Linux `systemd-run`, `renice`, `ionice`,

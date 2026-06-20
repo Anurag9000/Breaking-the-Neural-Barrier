@@ -119,6 +119,8 @@ Runtime tuning for this tabular family is centralized:
   also enables `OMP_WAIT_POLICY=ACTIVE`, `OMP_PROC_BIND=spread`, and
   `OMP_PLACES=cores`; if the OS refuses, the thread, affinity, and worker
   settings still apply
+- repeated process-tree termination attempts are spaced by 30 seconds by
+  default via `TABULAR_TERMINATION_GAP_SEC`
 - both bootstraps also request `SCHED_BATCH` so long-running CPU-bound jobs
   are treated as throughput work rather than interactive foreground work
 - `MLPS/tabular/shared/dae_dnn/install_linux_runtime_priority.sh` installs the
