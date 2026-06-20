@@ -202,7 +202,7 @@ Relevant flags:
 - `--max-active-jobs`
 - `--max-retries-per-job` as a legacy compatibility flag; pressure-aware mode requeues failed children indefinitely
 - `--pressure-poll-interval-sec`
-- `--post-launch-sample-delay-sec` default `60`
+- `--post-launch-sample-delay-sec` default `30`
 
 For a fresh full strict-band rerun, the repo now includes:
 
