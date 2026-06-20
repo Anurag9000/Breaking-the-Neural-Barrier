@@ -250,12 +250,31 @@ def _scope_properties() -> Tuple[str, ...]:
         "StartupCPUWeight=10000",
         "IOWeight=10000",
         "StartupIOWeight=10000",
+        "MemorySwapMax=0",
         "TasksMax=infinity",
         "CPUAccounting=yes",
         "IOAccounting=yes",
         "MemoryAccounting=yes",
         "TasksAccounting=yes",
     ]
+    try:
+        systemctl = shutil.which("systemctl")
+        if systemctl is not None:
+            proc = subprocess.run(
+                [systemctl, "--version"],
+                check=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                text=True,
+            )
+            first_line = (proc.stdout or "").splitlines()[0] if proc.stdout else ""
+            parts = first_line.split()
+            if len(parts) >= 2 and parts[0].lower() == "systemd":
+                version = int(parts[1])
+                if version >= 253:
+                    props.append("MemoryZSwapMax=0")
+    except Exception:
+        pass
     affinity_cpus = _current_affinity_cpus()
     if affinity_cpus:
         props.append(f"AllowedCPUs={_format_cpu_list(affinity_cpus)}")
