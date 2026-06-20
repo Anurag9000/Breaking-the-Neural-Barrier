@@ -85,6 +85,9 @@ Windows does not have a direct user-facing `ionice` equivalent with the same
 shape. The closest documented background-resource mode is
 `PROCESS_MODE_BACKGROUND_BEGIN`, but the training wrappers keep that disabled
 by default because these are throughput jobs.
+The runtime also sets the current process memory priority to `normal`
+through `SetProcessInformation(ProcessMemoryPriority)` so Windows keeps the
+process's pages resident as long as it can.
 
 On Linux, the runtime scope also requests `MemorySwapMax=0` when
 `systemd-run --user --scope` is available, which is the repo's strict
