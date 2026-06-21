@@ -265,6 +265,27 @@ def _apply_process_priority() -> None:
         except Exception:
             pass
 
+def _enforce_no_swap() -> None:
+    # Attempt to lock all current and future pages into physical RAM (disables swapping)
+    if os.name == "posix" and sys.platform.startswith("linux"):
+        try:
+            import ctypes
+            libc = ctypes.CDLL("libc.so.6", use_errno=True)
+            # MCL_CURRENT = 1, MCL_FUTURE = 2 -> 3
+            libc.mlockall(3)
+        except Exception:
+            pass
+    elif os.name == "nt":
+        # Windows: best-effort via setting working set to maximum achievable
+        try:
+            kernel32 = ctypes.windll.kernel32
+            process = kernel32.GetCurrentProcess()
+            # SetProcessWorkingSetSize with -1, -1 attempts to lock working set
+            # but usually requires SE_INC_BASE_PRIORITY_NAME privilege
+            kernel32.SetProcessWorkingSetSize(process, -1, -1)
+        except Exception:
+            pass
+
 
 def _scope_properties() -> Tuple[str, ...]:
     props = [
@@ -431,6 +452,7 @@ def bootstrap_runtime(label: str = "tabular") -> Dict[str, int]:
         os.environ[key] = value
 
     _apply_process_priority()
+    _enforce_no_swap()
 
     if torch is not None:
         try:
