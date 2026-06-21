@@ -30,24 +30,17 @@ for run_idx in {1..5}; do
     # Phase 1: Vanilla Ablation (Scaling from small width/depth to Band 10 equivalent)
     echo ""
     echo ">>> Phase 1: Vanilla Ablation (Param Bands 1-10)"
-    # DeiT tricks enabled: mixup=0.8, cutmix=1.0, label-smoothing=0.1, patch=16
-    for depth in 1 2 4 8 12; do
-        for embed in 64 128 256 512 768; do
-            heads=$((embed / 64))
-            if [ $heads -lt 1 ]; then heads=1; fi
-            
-            echo "--> Vanilla Ablation: Depth=${depth}, Embed=${embed}, Heads=${heads}"
-            python "$VISION_RUNNER" \
-                --depth "$depth" \
-                --embed "$embed" \
-                --heads "$heads" \
-                --patch 16 \
-                --batch-size 32 \
-                --epochs 10 \
-                --mixup 0.8 \
-                --cutmix 1.0 \
-                --label-smoothing 0.1 || echo "Config ($depth, $embed) failed/OOMed. Continuing..."
-        done
+    
+    # Generate dynamic (depth, embed) pairs targeting param bands 1 to 10
+    GRID=$($Python utils/generate_ablation_grid.py --arch vision --min-band 1 --max-band 10 --samples 3 --depths 1,2,4,8,12)
+    
+    echo "$GRID" | while read -r depth embed; do
+        heads=$((embed / 64))
+        if [ "$heads" -lt 1 ]; then heads=1; fi
+        
+        echo "--> Vanilla Ablation: Depth=$depth, Embed=$embed, Heads=$heads"
+        $Python "$VISION_RUNNER" --depth "$depth" --embed "$embed" --heads "$heads" \
+            --patch 16 --batch-size 32 --epochs 10 --mixup 0.8 --cutmix 1.0 --label-smoothing 0.1 || echo "OOM or Failed. Continuing..."
     done
 
     # Phase 2: ADP Width-Only Suite (Depths 1 to 5)

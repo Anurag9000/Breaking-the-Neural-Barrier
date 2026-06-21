@@ -30,17 +30,18 @@ for run_idx in {1..5}; do
     # Phase 1: Vanilla Ablation (Scaling from small width/depth to Band 10 equivalent)
     echo ""
     echo ">>> Phase 1: Vanilla Ablation (Param Bands 1-10)"
-    # Note: Expanding context lengths or vocabulary would blow up VRAM. We scale depth and d_model.
-    for depth in 1 2 4 8 12; do
-        for width in 64 128 256 512 1024 2048; do
-            ff=$((width * 4))
-            nhead=$((width / 64))
-            if [ $nhead -lt 1 ]; then nhead=1; fi
-            
-            echo "--> Vanilla Ablation: Depth=${depth}, Width=${width}, FF=${ff}, Heads=${nhead}"
-            # We wrap in '|| true' so that if a massive configuration OOMs, the suite continues
-            python "$TEXT_RUNNER" --layers "$depth" --d_model "$width" --ff "$ff" --nhead "$nhead" --epochs 10 --batch_size 16 || echo "Config ($depth, $width) failed/OOMed. Continuing..."
-        done
+    
+    # Generate dynamic (depth, width) pairs targeting param bands 1 to 10
+    # Using 3 samples per band (e.g. 1e4, 5e4, 1e5...)
+    GRID=$($Python utils/generate_ablation_grid.py --arch text --min-band 1 --max-band 10 --samples 3 --depths 1,2,4,8,12)
+    
+    echo "$GRID" | while read -r depth width; do
+        ff=$((width * 4))
+        nhead=$((width / 64))
+        if [ "$nhead" -lt 1 ]; then nhead=1; fi
+        
+        echo "--> Vanilla Ablation: Depth=$depth, Width=$width, FF=$ff, Heads=$nhead"
+        $Python "$TEXT_RUNNER" --layers "$depth" --d_model "$width" --ff "$ff" --nhead "$nhead" --epochs 10 --batch_size 16 || echo "OOM or Failed. Continuing..."
     done
 
     # Phase 2: ADP Width-Only Suite (Depths 1 to 5)

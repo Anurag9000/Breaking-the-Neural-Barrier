@@ -1,0 +1,129 @@
+{
+  "ablation_stl_runs": [
+    {
+      "architecture": [
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192
+      ],
+      "best_epoch": 61,
+      "best_val": 0.0019807277405699676,
+      "candidate_dir": "cand_000_d10_w192",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0192_192_192_192_192_192_192_192_192_192_192/anomaly/stl_ablation_r03_d10_w0192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0192_192_192_192_192_192_192_192_192_192_192/anomaly/stl_ablation_r03_d10_w0192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_last.pt",
+      "final_epoch": 71,
+      "phase": "stl_ablation_r03_d10_w0192_192_192_192_192_192_192_192_192_192_192",
+      "resumed": false,
+      "source_phase": null,
+      "task": "anomaly",
+      "test_metrics": {
+        "auroc": 0.7235731348245135,
+        "test_loss": 0.2979107499372678
+      }
+    },
+    {
+      "architecture": [
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192
+      ],
+      "best_epoch": 41,
+      "best_val": 0.0021761380643847083,
+      "candidate_dir": "cand_000_d10_w192",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0192_192_192_192_192_192_192_192_192_192_192/anomaly/stl_ablation_r04_d10_w0192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0192_192_192_192_192_192_192_192_192_192_192/anomaly/stl_ablation_r04_d10_w0192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_last.pt",
+      "final_epoch": 51,
+      "phase": "stl_ablation_r04_d10_w0192_192_192_192_192_192_192_192_192_192_192",
+      "resumed": false,
+      "source_phase": null,
+      "task": "anomaly",
+      "test_metrics": {
+        "auroc": 0.7227671229813427,
+        "test_loss": 0.29546072329627027
+      }
+    },
+    {
+      "architecture": [
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192,
+        192
+      ],
+      "best_epoch": 55,
+      "best_val": 0.0017475313187423106,
+      "candidate_dir": "cand_000_d10_w192",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0192_192_192_192_192_192_192_192_192_192_192/anomaly/stl_ablation_r05_d10_w0192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0192_192_192_192_192_192_192_192_192_192_192/anomaly/stl_ablation_r05_d10_w0192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_last.pt",
+      "final_epoch": 65,
+      "phase": "stl_ablation_r05_d10_w0192_192_192_192_192_192_192_192_192_192_192",
+      "resumed": false,
+      "source_phase": null,
+      "task": "anomaly",
+      "test_metrics": {
+        "auroc": 0.7800167385467243,
+        "test_loss": 0.2928883207636873
+      }
+    }
+  ],
+  "architecture_count": 1,
+  "best_ablation": {
+    "architecture": [
+      192,
+      192,
+      192,
+      192,
+      192,
+      192,
+      192,
+      192,
+      192,
+      192
+    ],
+    "best_epoch": 55,
+    "best_val": 0.0017475313187423106,
+    "candidate_dir": "cand_000_d10_w192",
+    "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0192_192_192_192_192_192_192_192_192_192_192/anomaly/stl_ablation_r05_d10_w0192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_best.pt",
+    "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/small_grid_anomaly/_children/stl_ablation_r01_d10_w0192_192_192_192_192_192_192_192_192_192_192/anomaly/stl_ablation_r05_d10_w0192_192_192_192_192_192_192_192_192_192_192/cand_000_d10_w192/checkpoint_last.pt",
+    "final_epoch": 65,
+    "parameter_count": 358326,
+    "phase": "stl_ablation_r05_d10_w0192_192_192_192_192_192_192_192_192_192_192",
+    "repeat": 5,
+    "resumed": false,
+    "source_phase": null,
+    "task": "anomaly",
+    "test_metrics": {
+      "auroc": 0.7800167385467243,
+      "test_loss": 0.2928883207636873
+    }
+  },
+  "comparisons": [],
+  "gpu_vram_avg_mib": null,
+  "gpu_vram_samples_mib": [],
+  "parameter_budget_target": 625206,
+  "parameter_matched": true,
+  "repeat_count": 5,
+  "source_adp_runs": [],
+  "source_paired_stl_runs": [],
+  "source_task_summary": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/anomaly/task_summary.json",
+  "task": "anomaly"
+}
