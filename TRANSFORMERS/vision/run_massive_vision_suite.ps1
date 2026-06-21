@@ -21,15 +21,17 @@ for ($runIdx = 1; $runIdx -le 5; $runIdx++) {
     Write-Host "############################################################" -ForegroundColor Magenta
 
     Write-Host "`n>>> Phase 1: Vanilla Ablation (Param Bands 1-10)" -ForegroundColor Yellow
-    $Depths = @(1, 2, 4, 8, 12)
-    $Embeds = @(64, 128, 256, 512, 768)
-
-    foreach ($depth in $Depths) {
-        foreach ($embed in $Embeds) {
-            $heads = [math]::Max([math]::Floor($embed / 64), 1)
-            Write-Host "--> Vanilla Ablation: Depth=$depth, Embed=$embed, Heads=$heads"
-            & $Python $VisionRunner --depth $depth --embed $embed --heads $heads --patch 16 --batch-size 32 --epochs 10 --mixup 0.8 --cutmix 1.0 --label-smoothing 0.1
-        }
+    $GridOutput = & $Python utils\generate_ablation_grid.py --arch vision --min-band 1 --max-band 10 --samples 3 --depths 1,2,4,8,12
+    $Lines = $GridOutput -split "`n" | Where-Object { $_.Trim() -ne "" }
+    
+    foreach ($line in $Lines) {
+        $parts = $line.Trim() -split "\s+"
+        $depth = [int]$parts[0]
+        $embed = [int]$parts[1]
+        
+        $heads = [math]::Max([math]::Floor($embed / 64), 1)
+        Write-Host "--> Vanilla Ablation: Depth=$depth, Embed=$embed, Heads=$heads"
+        & $Python $VisionRunner --depth $depth --embed $embed --heads $heads --patch 16 --batch-size 32 --epochs 10 --mixup 0.8 --cutmix 1.0 --label-smoothing 0.1
     }
 
     Write-Host "`n>>> Phase 2: ADP Width-Only Suite (Depths 1 to 5)" -ForegroundColor Yellow
