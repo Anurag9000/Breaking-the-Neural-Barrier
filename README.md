@@ -37,3 +37,17 @@ Tabular run outputs, logs, JSON summaries, CSV metrics, plots, and watchdog stat
 - `MLPS/tabular/shared/dae_dnn/results/`
 
 Model checkpoint binaries remain separate from the lightweight metadata/log artefacts when Git ignore rules exclude `*.pt` and `*.ckpt`.
+
+## Emergency Operations
+
+If you need to instantly terminate all running MLPS/tabular Python models, generators, or child processes on your system, use the cross-platform emergency kill switch. This will exhaustively scan for and kill all orphaned or running Python processes associated with the pipeline.
+
+**On Linux:**
+```bash
+./scripts/kill_all_runners.sh
+```
+
+**On Windows:**
+```powershell
+.\scripts\kill_all_runners.ps1
+```
