@@ -40,7 +40,7 @@ Model checkpoint binaries remain separate from the lightweight metadata/log arte
 
 ## Transformer Massive Ablation Suites (Vision & Text)
 
-Fully wired end-to-end orchestration scripts are provided to natively execute the entire sweep across Vision (DeiT) and Text (Causal LLM) architectures. These scripts natively support our ADP algorithm on the Transformer MLP blocks, enforce OS-level zero-swap constraints, and orchestrate the full `1 to 10 band` vanilla ablations followed by `width_only` (depths 1-5) and full `width_to_depth` scaling.
+Fully wired end-to-end orchestration scripts are provided to natively execute the entire sweep across Vision (DeiT) and Text (Causal LLM) architectures. These scripts natively support our ADP algorithm on the Transformer MLP blocks, enforce OS-level zero-swap constraints, and orchestrate the full `1 to 10 band` vanilla ablations followed by `width_only` (depths 1-5) and full `width_to_depth` scaling. The entire suite automatically loops **5 times (x5 repeat)** for each configuration to gather robust variance and statistical significance.
 
 **To run the Text Transformer (Causal LM) Suite:**
 *   **Linux:** `./TRANSFORMERS/text/run_massive_text_suite.sh`
