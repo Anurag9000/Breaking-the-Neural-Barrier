@@ -344,3 +344,27 @@
 [2026-06-21 14:24:46] [TASK] requeued width_only:anomaly:r02:d01 exit=-15 pause=True
 [2026-06-21 14:25:16] [PRESSURE] pause_host small_stl:anomaly:d10:w256 host_used_pct=85.15 swap_used_pct=18.53
 [2026-06-21 14:25:18] [TASK] requeued small_stl:anomaly:d10:w256 exit=-15 pause=True
+[2026-06-21 14:34:16] [PRESSURE] pause_host small_stl:anomaly:d08:w256 host_used_pct=85.04 swap_used_pct=23.13
+[2026-06-21 14:34:16] [TASK] requeued small_stl:anomaly:d08:w256 exit=-15 pause=True
+[2026-06-21 15:31:22] [TASK] completed small_stl:anomaly:d06:w256 params=359990
+[2026-06-21 15:31:22] [STATE] admission gate reopened by completion job=small_stl:anomaly:d06:w256 params=359990
+[2026-06-21 15:31:22] [TASK] launch small_stl:anomaly:d08:w256 params=492598 device=cpu batch_scale=1.000000 host_used_pct=71.19 swap_used_pct=25.96 gpu_used_pct=0.24 active=4/189
+[2026-06-21 15:31:53] [TASK] launch small_stl:anomaly:d10:w256 params=625206 device=cpu batch_scale=1.000000 host_used_pct=72.99 swap_used_pct=25.96 gpu_used_pct=0.24 active=5/189
+[2026-06-21 15:32:23] [TASK] launch width_only:anomaly:r02:d01 params=2266230 device=cpu batch_scale=1.000000 host_used_pct=79.83 swap_used_pct=27.69 gpu_used_pct=0.24 active=6/189
+[2026-06-21 15:33:19] [TASK] launch width_only:anomaly:r03:d01 params=2266230 device=cpu batch_scale=1.000000 host_used_pct=80.02 swap_used_pct=47.59 gpu_used_pct=0.24 active=7/189
+[2026-06-21 15:33:53] [TASK] launch width_only:anomaly:r04:d01 params=2266230 device=cpu batch_scale=1.000000 host_used_pct=79.82 swap_used_pct=55.43 gpu_used_pct=0.24 active=8/189
+[2026-06-21 15:37:58] [PRESSURE] pause_host width_only:anomaly:r04:d01 host_used_pct=85.34 swap_used_pct=65.05
+[2026-06-21 15:37:59] [STATE] host admission gate blocked until a child completes
+[2026-06-21 15:37:59] [TASK] requeued width_only:anomaly:r04:d01 exit=-15 pause=True
+[2026-06-21 15:52:35] [PRESSURE] pause_host width_only:anomaly:r03:d01 host_used_pct=85.25 swap_used_pct=51.09
+[2026-06-21 15:52:36] [TASK] requeued width_only:anomaly:r03:d01 exit=-15 pause=True
+[2026-06-21 16:39:54] [TASK] completed small_stl:anomaly:d10:w192 params=358326
+[2026-06-21 16:39:54] [STATE] admission gate reopened by completion job=small_stl:anomaly:d10:w192 params=358326
+[2026-06-21 16:39:54] [TASK] launch width_only:anomaly:r03:d01 params=2266230 device=cpu batch_scale=1.000000 host_used_pct=73.64 swap_used_pct=51.60 gpu_used_pct=0.24 active=6/189
+[2026-06-21 16:40:24] [TASK] launch width_only:anomaly:r04:d01 params=2266230 device=cpu batch_scale=1.000000 host_used_pct=75.86 swap_used_pct=57.61 gpu_used_pct=0.24 active=7/189
+[2026-06-21 16:40:55] [TASK] launch width_only:anomaly:r05:d01 params=2266230 device=cpu batch_scale=1.000000 host_used_pct=77.39 swap_used_pct=60.29 gpu_used_pct=0.24 active=8/189
+[2026-06-21 16:42:55] [PRESSURE] pause_host width_only:anomaly:r05:d01 host_used_pct=85.27 swap_used_pct=62.22
+[2026-06-21 16:42:55] [STATE] host admission gate blocked until a child completes
+[2026-06-21 16:42:55] [TASK] requeued width_only:anomaly:r05:d01 exit=-15 pause=True
+[2026-06-21 17:05:04] [PRESSURE] pause_host width_only:anomaly:r04:d01 host_used_pct=85.01 swap_used_pct=62.17
+[2026-06-21 17:05:05] [TASK] requeued width_only:anomaly:r04:d01 exit=-15 pause=True
