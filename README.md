@@ -38,6 +38,18 @@ Tabular run outputs, logs, JSON summaries, CSV metrics, plots, and watchdog stat
 
 Model checkpoint binaries remain separate from the lightweight metadata/log artefacts when Git ignore rules exclude `*.pt` and `*.ckpt`.
 
+## Transformer Massive Ablation Suites (Vision & Text)
+
+Fully wired end-to-end orchestration scripts are provided to natively execute the entire sweep across Vision (DeiT) and Text (Causal LLM) architectures. These scripts natively support our ADP algorithm on the Transformer MLP blocks, enforce OS-level zero-swap constraints, and orchestrate the full `1 to 10 band` vanilla ablations followed by `width_only` (depths 1-5) and full `width_to_depth` scaling.
+
+**To run the Text Transformer (Causal LM) Suite:**
+*   **Linux:** `./TRANSFORMERS/text/run_massive_text_suite.sh`
+*   **Windows:** `.\TRANSFORMERS\text\run_massive_text_suite.ps1`
+
+**To run the Vision Transformer (DeiT) Suite:**
+*   **Linux:** `./TRANSFORMERS/vision/run_massive_vision_suite.sh`
+*   **Windows:** `.\TRANSFORMERS\vision\run_massive_vision_suite.ps1`
+
 ## Emergency Operations
 
 If you need to instantly terminate all running MLPS/tabular Python models, generators, or child processes on your system, use the cross-platform emergency kill switch. This will exhaustively scan for and kill all orphaned or running Python processes associated with the pipeline.
