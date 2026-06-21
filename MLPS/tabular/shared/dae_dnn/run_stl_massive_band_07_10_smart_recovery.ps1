@@ -15,7 +15,7 @@ if (-not $env:OMP_DYNAMIC) { $env:OMP_DYNAMIC = "FALSE" }
 if (-not $env:MKL_DYNAMIC) { $env:MKL_DYNAMIC = "FALSE" }
 if (-not $env:OMP_WAIT_POLICY) { $env:OMP_WAIT_POLICY = "ACTIVE" }
 if (-not $env:TABULAR_CHILD_SHARED_CPU) { $env:TABULAR_CHILD_SHARED_CPU = "1" }
-if (-not $env:CUDA_VISIBLE_DEVICES) { $env:CUDA_VISIBLE_DEVICES = "0" }
+$env:CUDA_VISIBLE_DEVICES = ""
 if (-not $env:PYTORCH_CUDA_ALLOC_CONF) {
     $env:PYTORCH_CUDA_ALLOC_CONF = "expandable_segments:True,max_split_size_mb:128"
 }
@@ -50,9 +50,6 @@ $RunRoot78 = "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_deca
   --scheduler pressure_aware `
   --host-ram-pressure-limit-pct 85 `
   --host-ram-resume-pct 80 `
-  --gpu-memory-pressure-limit-pct 85 `
-  --gpu-memory-resume-pct 80 `
-  --gpu-device-index 0 `
   --max-active-jobs 0 `
   --pressure-poll-interval-sec 0.5 `
   --post-launch-sample-delay-sec 30 `
@@ -80,9 +77,6 @@ $RunRoot910 = "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_dec
   --scheduler pressure_aware `
   --host-ram-pressure-limit-pct 85 `
   --host-ram-resume-pct 80 `
-  --gpu-memory-pressure-limit-pct 85 `
-  --gpu-memory-resume-pct 80 `
-  --gpu-device-index 0 `
   --max-active-jobs 0 `
   --pressure-poll-interval-sec 0.5 `
   --post-launch-sample-delay-sec 30 `
