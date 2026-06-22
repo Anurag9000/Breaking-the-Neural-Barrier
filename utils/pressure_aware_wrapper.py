@@ -108,9 +108,9 @@ def main():
             time.sleep(max(0.1, args.pressure_poll_interval_sec))
             
     except KeyboardInterrupt:
-        print("\n[INTERRUPT] Caught KeyboardInterrupt. Killing child process...")
+        print("\n[INTERRUPT] Caught KeyboardInterrupt. Initiating global python purge (pkill -9 -f python)...")
         try:
-            ps_proc.kill()
+            subprocess.run(["pkill", "-9", "-f", "python"])
         except Exception:
             pass
         sys.exit(130)
