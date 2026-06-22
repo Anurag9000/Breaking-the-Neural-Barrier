@@ -845,4 +845,13 @@ if __name__ == "__main__":
             _ctypes.windll.kernel32.SetProcessWorkingSetSize(_ctypes.windll.kernel32.GetCurrentProcess(), -1, -1)
     except Exception:
         pass
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n[INTERRUPT] Caught KeyboardInterrupt. Initiating global python purge (pkill -9 -f python)...")
+        import subprocess, sys
+        try:
+            subprocess.run(["pkill", "-9", "-f", "python"])
+        except Exception:
+            pass
+        sys.exit(130)
