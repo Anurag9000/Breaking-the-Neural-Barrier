@@ -1005,6 +1005,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             return "cuda"
         return "cpu"
 
+    peak_paused_host_mib = 0.0
+    peak_paused_gpu_mib = 0.0
     while pending or active:
         finished: List[subprocess.Popen[Any]] = []
         for proc, active_job in list(active.items()):
@@ -1043,7 +1045,10 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 )
                 mark_child_paused(job.child_root, job, int(code or 0), pause_reason)
                 pending.appendleft(job)
-                launches_enabled = False
+                if launches_enabled:
+                    launches_enabled = False
+                    peak_paused_host_mib = sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0
+                    peak_paused_gpu_mib = sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
                 pressure_backoff_pending = True
                 pressure_backoff_reason = pause_reason
                 batch_backoff_state.update(
@@ -1078,7 +1083,10 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     )
                     terminate_child_process(next(peer_proc for peer_proc, entry in active.items() if entry is largest_gpu))
                 pending.appendleft(job)
-                launches_enabled = False
+                if launches_enabled:
+                    launches_enabled = False
+                    peak_paused_host_mib = sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0
+                    peak_paused_gpu_mib = sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
                 pressure_backoff_pending = True
                 pressure_backoff_reason = "cuda_oom"
                 batch_backoff_state.update(
@@ -1096,7 +1104,10 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             )
             mark_child_retrying(job.child_root, job, int(code or 0), active_job.cmd, failure_counts[job.child_root])
             pending.appendleft(job)
-            launches_enabled = False
+            if launches_enabled:
+                launches_enabled = False
+                peak_paused_host_mib = sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0
+                peak_paused_gpu_mib = sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
             pressure_backoff_pending = True
             pressure_backoff_reason = "retry"
             batch_backoff_state.update(
@@ -1113,6 +1124,14 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             entry = active.pop(proc, None)
             if entry is not None:
                 free_slots.add(entry.slot_index)
+                if not launches_enabled:
+                    if entry.pause_requested:
+                        peak_paused_host_mib = sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0
+                        peak_paused_gpu_mib = sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
+                    else:
+                        logger.log_console(f"[STATE] admission gate reopened by genuine process completion")
+                        launches_enabled = True
+                        pressure_backoff_pending = False
 
         if not active and pending and pressure_backoff_pending:
             previous_scale = batch_scale
@@ -1149,13 +1168,22 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 terminate_child_process(next(proc for proc, entry in active.items() if entry is largest_gpu))
                 continue
 
-        if not launches_enabled and pressure.used_pct <= float(args.host_ram_resume_pct):
-            logger.log_console(
-                f"[STATE] admission gate reopened by host RAM drop (foreign or paused process terminated) "
-                f"host_used_pct={pressure.used_pct:.2f} <= {args.host_ram_resume_pct}"
-            )
-            launches_enabled = True
-            pressure_backoff_pending = False
+        current_host_mib = pressure.total_mib * pressure.used_pct / 100.0
+        current_gpu_mib = gpu_pressure.total_mib * gpu_pressure.used_pct / 100.0
+
+        if not launches_enabled:
+            peak_paused_host_mib = max(peak_paused_host_mib, current_host_mib)
+            peak_paused_gpu_mib = max(peak_paused_gpu_mib, current_gpu_mib)
+            host_drop = peak_paused_host_mib - current_host_mib
+            gpu_drop = peak_paused_gpu_mib - current_gpu_mib
+            
+            if host_drop >= 500.0 or gpu_drop >= 500.0 or (pressure.used_pct <= float(args.host_ram_resume_pct) and gpu_pressure.used_pct <= float(args.gpu_memory_resume_pct)):
+                logger.log_console(
+                    f"[STATE] admission gate reopened by >500MiB external drop or thresholds met "
+                    f"host_drop={host_drop:.1f} gpu_drop={gpu_drop:.1f} host_used_pct={pressure.used_pct:.2f}"
+                )
+                launches_enabled = True
+                pressure_backoff_pending = False
 
         if active and pressure.used_pct > float(args.host_ram_pressure_limit_pct):
             pausable = [entry for entry in active.values() if not entry.pause_requested]
@@ -1170,7 +1198,10 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                     f"avail_mib={pressure.available_mib}/{pressure.total_mib}"
                 )
                 terminate_child_process(next(proc for proc, entry in active.items() if entry is largest))
-                launches_enabled = False
+                if launches_enabled:
+                    launches_enabled = False
+                    peak_paused_host_mib = sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0
+                    peak_paused_gpu_mib = sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
                 continue
 
         if time.time() < launch_sample_hold_until:

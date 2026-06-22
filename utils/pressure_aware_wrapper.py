@@ -19,8 +19,8 @@ def sample_gpu_memory_pressure(device_index=0):
     except Exception:
         pass
     if total_mib <= 0:
-        return 0.0
-    return max(0.0, min(100.0, (float(used_mib) / float(total_mib)) * 100.0))
+        return 0.0, 0
+    return max(0.0, min(100.0, (float(used_mib) / float(total_mib)) * 100.0)), used_mib
 
 def main():
     parser = argparse.ArgumentParser()
@@ -50,16 +50,19 @@ def main():
         sys.exit(proc.wait())
 
     paused = False
+    peak_paused_host_mib = 0.0
+    peak_paused_gpu_mib = 0.0
 
     try:
         while proc.poll() is None:
             mem = psutil.virtual_memory()
             host_used_pct = mem.percent
+            current_host_mib = mem.used / 1048576.0
             
             swap = psutil.swap_memory()
             swap_used_pct = swap.percent
 
-            gpu_used_pct = sample_gpu_memory_pressure(args.gpu_device_index)
+            gpu_used_pct, current_gpu_mib = sample_gpu_memory_pressure(args.gpu_device_index)
             
             host_pressure = host_used_pct > args.host_ram_pressure_limit_pct
             swap_pressure = swap_used_pct > args.swap_pressure_limit_pct
@@ -78,17 +81,29 @@ def main():
                 try:
                     ps_proc.suspend()
                     paused = True
+                    peak_paused_host_mib = current_host_mib
+                    peak_paused_gpu_mib = current_gpu_mib
                 except Exception as e:
                     print(f"Failed to suspend: {e}")
                 
-            elif paused and host_resume and swap_resume and gpu_resume:
-                print(f"\n[STATE] admission gate reopened by RAM/GPU drop (foreign or paused process terminated) "
-                      f"host={host_used_pct:.2f} swap={swap_used_pct:.2f} gpu={gpu_used_pct:.2f}")
-                try:
-                    ps_proc.resume()
-                    paused = False
-                except Exception as e:
-                    print(f"Failed to resume: {e}")
+            elif paused:
+                peak_paused_host_mib = max(peak_paused_host_mib, current_host_mib)
+                peak_paused_gpu_mib = max(peak_paused_gpu_mib, current_gpu_mib)
+                
+                host_drop = peak_paused_host_mib - current_host_mib
+                gpu_drop = peak_paused_gpu_mib - current_gpu_mib
+                
+                if (host_resume and swap_resume and gpu_resume) or host_drop >= 500.0 or gpu_drop >= 500.0:
+                    print(f"\n[STATE] admission gate reopened by RAM/GPU drop or thresholds met "
+                          f"host_drop={host_drop:.1f} gpu_drop={gpu_drop:.1f} "
+                          f"host={host_used_pct:.2f} swap={swap_used_pct:.2f} gpu={gpu_used_pct:.2f}")
+                    try:
+                        ps_proc.resume()
+                        paused = False
+                        peak_paused_host_mib = 0.0
+                        peak_paused_gpu_mib = 0.0
+                    except Exception as e:
+                        print(f"Failed to resume: {e}")
                 
             time.sleep(max(0.1, args.pressure_poll_interval_sec))
             
