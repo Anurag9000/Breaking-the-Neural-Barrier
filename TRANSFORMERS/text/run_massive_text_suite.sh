@@ -41,7 +41,7 @@ for run_idx in {1..5}; do
         if [ "$nhead" -lt 1 ]; then nhead=1; fi
         
         echo "--> Vanilla Ablation: Depth=$depth, Width=$width, FF=$ff, Heads=$nhead"
-        $Python "$TEXT_RUNNER" --layers "$depth" --d_model "$width" --ff "$ff" --nhead "$nhead" --epochs 10 --batch_size 16 || echo "OOM or Failed. Continuing..."
+        $Python utils/pressure_aware_wrapper.py $Python "$TEXT_RUNNER" --layers "$depth" --d_model "$width" --ff "$ff" --nhead "$nhead" --epochs 10 --batch_size 16 || echo "OOM or Failed. Continuing..."
     done
 
     # Phase 2: ADP Width-Only Suite (Depths 1 to 5)
@@ -49,14 +49,14 @@ for run_idx in {1..5}; do
     echo ">>> Phase 2: ADP Width-Only Suite (Depths 1 to 5)"
     for depth in 1 2 3 4 5; do
         echo "--> ADP Width-Only Search: Initial Depth=${depth}"
-        python "$TEXT_ADP_MODEL" --adp-mode width_only --depth "$depth" --width 64 --max-epochs 10 || echo "ADP Depth $depth failed."
+        python utils/pressure_aware_wrapper.py python "$TEXT_ADP_MODEL" --adp-mode width_only --depth "$depth" --width 64 --max-epochs 10 || echo "ADP Depth $depth failed."
     done
 
     # Phase 3: ADP Width-to-Depth Suite
     echo ""
     echo ">>> Phase 3: ADP Width-to-Depth (W2D) Suite"
     echo "--> Starting dynamic w2d search from minimal seed (Depth=1, Width=64)"
-    python "$TEXT_ADP_MODEL" --adp-mode width_to_depth --depth 1 --width 64 --max-epochs 10 || echo "ADP W2D failed."
+    python utils/pressure_aware_wrapper.py python "$TEXT_ADP_MODEL" --adp-mode width_to_depth --depth 1 --width 64 --max-epochs 10 || echo "ADP W2D failed."
 done
 
 echo "============================================================"
