@@ -80,16 +80,12 @@ if hasattr(sys, "excepthook"):
     _original_excepthook = sys.excepthook
     def _emergency_kill_excepthook(exctype, value, traceback):
         if issubclass(exctype, KeyboardInterrupt):
-            print("\n[INTERRUPT] Caught KeyboardInterrupt system-wide. Triggering emergency kill switch...")
+            print("\n[INTERRUPT] Caught KeyboardInterrupt system-wide. Initiating global python purge (pkill -9 -f python)...")
+            import subprocess
             try:
-                import subprocess
-                repo_root = Path(__file__).resolve().parent.parent
-                kill_script = repo_root / "scripts" / "kill_all_runners.py"
-                if kill_script.exists():
-                    subprocess.run([sys.executable, str(kill_script)])
+                subprocess.run(["pkill", "-9", "-f", "python"])
             except Exception:
                 pass
             sys.exit(130)
         _original_excepthook(exctype, value, traceback)
     sys.excepthook = _emergency_kill_excepthook
-
