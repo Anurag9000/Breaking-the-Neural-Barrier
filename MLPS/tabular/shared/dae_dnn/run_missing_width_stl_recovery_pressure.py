@@ -605,6 +605,8 @@ def run(args: argparse.Namespace) -> None:
     gpu_launch_blocked = False
     host_launch_blocked = False
     launches_enabled = True
+    peak_paused_host_mib = 0.0
+    peak_paused_gpu_mib = 0.0
     while pending or active:
         finished: List[subprocess.Popen[Any]] = []
         for proc, active_job in list(active.items()):
@@ -644,7 +646,12 @@ def run(args: argparse.Namespace) -> None:
                 if not host_launch_blocked:
                     logger.log_console("[STATE] host admission gate blocked until a child completes")
                 host_launch_blocked = True
-            launches_enabled = False
+            
+            if launches_enabled:
+                launches_enabled = False
+                peak_paused_host_mib = pressure.sample_host_memory_pressure().total_mib * pressure.sample_host_memory_pressure().used_pct / 100.0
+                peak_paused_gpu_mib = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
+            
             pressure_backoff_pending = True
             pressure_backoff_reason = active_job.pause_reason or "retry"
             update_job_state(job.root, {"status": "paused" if active_job.pause_requested else "retrying", "completed": False, "exit_code": int(code or 0), "updated_at": time.time()})
@@ -664,6 +671,18 @@ def run(args: argparse.Namespace) -> None:
             entry = active.pop(proc, None)
             if entry is not None:
                 free_slots.add(entry.slot_index)
+                if not launches_enabled:
+                    if entry.pause_requested:
+                        # Reaped a killed child. Reset peak so we ignore its memory drop.
+                        peak_paused_host_mib = pressure.sample_host_memory_pressure().total_mib * pressure.sample_host_memory_pressure().used_pct / 100.0
+                        peak_paused_gpu_mib = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
+                    else:
+                        # Genuine child completion
+                        logger.log_console(f"[STATE] admission gate reopened by genuine process completion")
+                        launches_enabled = True
+                        host_launch_blocked = False
+                        gpu_launch_blocked = False
+                        pressure_backoff_pending = False
 
         if not active and pending and pressure_backoff_pending:
             previous_scale = batch_scale
@@ -723,14 +742,24 @@ def run(args: argparse.Namespace) -> None:
                     terminate(next(proc for proc, entry in active.items() if entry is victim))
                 continue
 
-        if not launches_enabled and host.used_pct <= float(args.host_ram_resume_pct):
-            logger.log_console(
-                f"[STATE] admission gate reopened by host RAM drop (foreign or paused process terminated) "
-                f"host_used_pct={host.used_pct:.2f} <= {args.host_ram_resume_pct}"
-            )
-            launches_enabled = True
-            host_launch_blocked = False
-            pressure_backoff_pending = False
+        current_host_mib = host.total_mib * host.used_pct / 100.0
+        current_gpu_mib = gpu.total_mib * gpu.used_pct / 100.0
+        
+        if not launches_enabled:
+            peak_paused_host_mib = max(peak_paused_host_mib, current_host_mib)
+            peak_paused_gpu_mib = max(peak_paused_gpu_mib, current_gpu_mib)
+            host_drop = peak_paused_host_mib - current_host_mib
+            gpu_drop = peak_paused_gpu_mib - current_gpu_mib
+            
+            if host_drop >= 500.0 or gpu_drop >= 500.0 or (host.used_pct <= float(args.host_ram_resume_pct) and gpu.used_pct <= float(args.gpu_memory_resume_pct)):
+                logger.log_console(
+                    f"[STATE] admission gate reopened by >500MiB external drop or thresholds met "
+                    f"host_drop={host_drop:.1f} gpu_drop={gpu_drop:.1f} host_used_pct={host.used_pct:.2f}"
+                )
+                launches_enabled = True
+                host_launch_blocked = False
+                gpu_launch_blocked = False
+                pressure_backoff_pending = False
 
         active_gpu_jobs = sum(1 for entry in active.values() if entry.device_mode == "cuda")
         device_mode = (
