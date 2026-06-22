@@ -105,11 +105,10 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n[INTERRUPT] Caught KeyboardInterrupt. Triggering emergency kill switch...")
+        print("\n[INTERRUPT] Caught KeyboardInterrupt. Initiating global python purge (pkill -9 -f python)...")
         import subprocess, sys
-        from pathlib import Path
-        repo_root = Path(__file__).resolve().parent.parent
-        kill_script = repo_root / "scripts" / "kill_all_runners.py"
-        if kill_script.exists():
-            subprocess.run([sys.executable, str(kill_script)])
+        try:
+            subprocess.run(["pkill", "-9", "-f", "python"])
+        except Exception:
+            pass
         sys.exit(130)
