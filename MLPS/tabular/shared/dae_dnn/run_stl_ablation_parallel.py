@@ -1149,6 +1149,14 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 terminate_child_process(next(proc for proc, entry in active.items() if entry is largest_gpu))
                 continue
 
+        if not launches_enabled and pressure.used_pct <= float(args.host_ram_resume_pct):
+            logger.log_console(
+                f"[STATE] admission gate reopened by host RAM drop (foreign or paused process terminated) "
+                f"host_used_pct={pressure.used_pct:.2f} <= {args.host_ram_resume_pct}"
+            )
+            launches_enabled = True
+            pressure_backoff_pending = False
+
         if active and pressure.used_pct > float(args.host_ram_pressure_limit_pct):
             pausable = [entry for entry in active.values() if not entry.pause_requested]
             if pausable:

@@ -723,6 +723,15 @@ def run(args: argparse.Namespace) -> None:
                     terminate(next(proc for proc, entry in active.items() if entry is victim))
                 continue
 
+        if not launches_enabled and host.used_pct <= float(args.host_ram_resume_pct):
+            logger.log_console(
+                f"[STATE] admission gate reopened by host RAM drop (foreign or paused process terminated) "
+                f"host_used_pct={host.used_pct:.2f} <= {args.host_ram_resume_pct}"
+            )
+            launches_enabled = True
+            host_launch_blocked = False
+            pressure_backoff_pending = False
+
         active_gpu_jobs = sum(1 for entry in active.values() if entry.device_mode == "cuda")
         device_mode = (
             choose_device_for_job(
