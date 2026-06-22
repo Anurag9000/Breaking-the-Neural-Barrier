@@ -102,4 +102,14 @@ def main():
         print(f"{depth} {w}")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n[INTERRUPT] Caught KeyboardInterrupt. Triggering emergency kill switch...")
+        import subprocess, sys
+        from pathlib import Path
+        repo_root = Path(__file__).resolve().parent.parent
+        kill_script = repo_root / "scripts" / "kill_all_runners.py"
+        if kill_script.exists():
+            subprocess.run([sys.executable, str(kill_script)])
+        sys.exit(130)

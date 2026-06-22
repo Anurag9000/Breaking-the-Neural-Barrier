@@ -1386,4 +1386,17 @@ if __name__ == "__main__":
             _ctypes.windll.kernel32.SetProcessWorkingSetSize(_ctypes.windll.kernel32.GetCurrentProcess(), -1, -1)
     except Exception:
         pass
-    main()
+
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n[INTERRUPT] Caught KeyboardInterrupt. Triggering emergency kill switch...")
+        import subprocess, sys
+        from pathlib import Path
+        repo_root = Path(__file__).resolve().parent.parent.parent.parent.parent
+        kill_script = repo_root / "scripts" / "kill_all_runners.py"
+        if kill_script.exists():
+            subprocess.run([sys.executable, str(kill_script)])
+        else:
+            print(f"[ERROR] Kill script not found at {kill_script}")
+        sys.exit(130)
