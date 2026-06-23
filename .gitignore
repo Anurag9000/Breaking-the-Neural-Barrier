@@ -34,3 +34,18 @@ wandb/
 **/*.bz2
 **/*.xz
 CNN/data/
+
+# Local experiment outputs - never push
+MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08_fresh_v1/
+MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow09_10_fresh_v1/
+
+# Model checkpoints / temporary checkpoint files
+*.pt
+*.pth
+*.ckpt
+*.tmp
+
+# Local thermal/runtime logs
+thermal_guard.log
+thermal_guard.stop
+
