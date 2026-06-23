@@ -706,6 +706,35 @@ def sample_gpu_memory_pressure(device_index: int = 0) -> GpuPressureSample:
     used_pct = max(0.0, min(100.0, (float(used_mib) / float(total_mib)) * 100.0))
     return GpuPressureSample(total_mib=int(total_mib), used_mib=int(used_mib), used_pct=float(used_pct))
 
+def sample_python_host_memory_mib() -> float:
+    total_py_mib = 0.0
+    for p in psutil.process_iter(['name', 'memory_info']):
+        try:
+            name = p.info['name']
+            if name and ('python' in name.lower() or 'python3' in name.lower()):
+                total_py_mib += p.info['memory_info'].rss / 1048576.0
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess, TypeError, KeyError):
+            pass
+    return total_py_mib
+
+def sample_python_gpu_memory_mib(device_index: int = 0) -> float:
+    total_py_gpu_mib = 0.0
+    try:
+        out = subprocess.check_output(
+            ["nvidia-smi", f"--id={device_index}", "--query-compute-apps=process_name,used_memory", "--format=csv,noheader,nounits"],
+            stderr=subprocess.DEVNULL,
+        )
+        for line in out.decode("utf-8").strip().splitlines():
+            parts = line.split(',')
+            if len(parts) >= 2:
+                pname = parts[0].strip()
+                mem_str = parts[1].strip()
+                if mem_str.isdigit() and ('python' in pname.lower() or 'python3' in pname.lower()):
+                    total_py_gpu_mib += float(mem_str)
+    except Exception:
+        pass
+    return total_py_gpu_mib
+
 
 def concrete_job_sort_key(job: ChildJob) -> Tuple[int, int, str, Tuple[int, ...]]:
     return (int(job.parameter_count), int(job.depth), str(job.task_name), tuple(job.architecture))
@@ -1047,8 +1076,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 pending.appendleft(job)
                 if launches_enabled:
                     launches_enabled = False
-                    peak_paused_host_mib = sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0
-                    peak_paused_gpu_mib = sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
+                    peak_paused_host_mib = (sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0) - sample_python_host_memory_mib()
+                    peak_paused_gpu_mib = (sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0) - sample_python_gpu_memory_mib(int(args.gpu_device_index))
                 pressure_backoff_pending = True
                 pressure_backoff_reason = pause_reason
                 batch_backoff_state.update(
@@ -1085,8 +1114,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 pending.appendleft(job)
                 if launches_enabled:
                     launches_enabled = False
-                    peak_paused_host_mib = sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0
-                    peak_paused_gpu_mib = sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
+                    peak_paused_host_mib = (sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0) - sample_python_host_memory_mib()
+                    peak_paused_gpu_mib = (sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0) - sample_python_gpu_memory_mib(int(args.gpu_device_index))
                 pressure_backoff_pending = True
                 pressure_backoff_reason = "cuda_oom"
                 batch_backoff_state.update(
@@ -1106,8 +1135,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             pending.appendleft(job)
             if launches_enabled:
                 launches_enabled = False
-                peak_paused_host_mib = sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0
-                peak_paused_gpu_mib = sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
+                peak_paused_host_mib = (sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0) - sample_python_host_memory_mib()
+                peak_paused_gpu_mib = (sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0) - sample_python_gpu_memory_mib(int(args.gpu_device_index))
             pressure_backoff_pending = True
             pressure_backoff_reason = "retry"
             batch_backoff_state.update(
@@ -1126,8 +1155,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 free_slots.add(entry.slot_index)
                 if not launches_enabled:
                     if entry.pause_requested:
-                        peak_paused_host_mib = sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0
-                        peak_paused_gpu_mib = sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
+                        peak_paused_host_mib = (sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0) - sample_python_host_memory_mib()
+                        peak_paused_gpu_mib = (sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0) - sample_python_gpu_memory_mib(int(args.gpu_device_index))
                     else:
                         logger.log_console(f"[STATE] admission gate reopened by genuine process completion")
                         launches_enabled = True
@@ -1172,10 +1201,12 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
         current_gpu_mib = gpu_pressure.total_mib * gpu_pressure.used_pct / 100.0
 
         if not launches_enabled:
-            peak_paused_host_mib = max(peak_paused_host_mib, current_host_mib)
-            peak_paused_gpu_mib = max(peak_paused_gpu_mib, current_gpu_mib)
-            host_drop = peak_paused_host_mib - current_host_mib
-            gpu_drop = peak_paused_gpu_mib - current_gpu_mib
+            effective_host_mib = current_host_mib - sample_python_host_memory_mib()
+            effective_gpu_mib = current_gpu_mib - sample_python_gpu_memory_mib(int(args.gpu_device_index))
+            peak_paused_host_mib = max(peak_paused_host_mib, effective_host_mib)
+            peak_paused_gpu_mib = max(peak_paused_gpu_mib, effective_gpu_mib)
+            host_drop = peak_paused_host_mib - effective_host_mib
+            gpu_drop = peak_paused_gpu_mib - effective_gpu_mib
             
             if host_drop >= 500.0 or gpu_drop >= 500.0 or (pressure.used_pct <= float(args.host_ram_resume_pct) and gpu_pressure.used_pct <= float(args.gpu_memory_resume_pct)):
                 logger.log_console(
@@ -1200,8 +1231,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 terminate_child_process(next(proc for proc, entry in active.items() if entry is largest))
                 if launches_enabled:
                     launches_enabled = False
-                    peak_paused_host_mib = sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0
-                    peak_paused_gpu_mib = sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
+                    peak_paused_host_mib = (sample_host_memory_pressure().total_mib * sample_host_memory_pressure().used_pct / 100.0) - sample_python_host_memory_mib()
+                    peak_paused_gpu_mib = (sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0) - sample_python_gpu_memory_mib(int(args.gpu_device_index))
                 continue
 
         if time.time() < launch_sample_hold_until:

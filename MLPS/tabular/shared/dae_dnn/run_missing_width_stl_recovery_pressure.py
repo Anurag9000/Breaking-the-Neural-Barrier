@@ -649,8 +649,8 @@ def run(args: argparse.Namespace) -> None:
             
             if launches_enabled:
                 launches_enabled = False
-                peak_paused_host_mib = pressure.sample_host_memory_pressure().total_mib * pressure.sample_host_memory_pressure().used_pct / 100.0
-                peak_paused_gpu_mib = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
+                peak_paused_host_mib = (pressure.sample_host_memory_pressure().total_mib * pressure.sample_host_memory_pressure().used_pct / 100.0) - pressure.sample_python_host_memory_mib()
+                peak_paused_gpu_mib = (pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0) - pressure.sample_python_gpu_memory_mib(int(args.gpu_device_index))
             
             pressure_backoff_pending = True
             pressure_backoff_reason = active_job.pause_reason or "retry"
@@ -674,8 +674,8 @@ def run(args: argparse.Namespace) -> None:
                 if not launches_enabled:
                     if entry.pause_requested:
                         # Reaped a killed child. Reset peak so we ignore its memory drop.
-                        peak_paused_host_mib = pressure.sample_host_memory_pressure().total_mib * pressure.sample_host_memory_pressure().used_pct / 100.0
-                        peak_paused_gpu_mib = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0
+                        peak_paused_host_mib = (pressure.sample_host_memory_pressure().total_mib * pressure.sample_host_memory_pressure().used_pct / 100.0) - pressure.sample_python_host_memory_mib()
+                        peak_paused_gpu_mib = (pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).total_mib * pressure.sample_gpu_memory_pressure(int(args.gpu_device_index)).used_pct / 100.0) - pressure.sample_python_gpu_memory_mib(int(args.gpu_device_index))
                     else:
                         # Genuine child completion
                         logger.log_console(f"[STATE] admission gate reopened by genuine process completion")
@@ -746,10 +746,12 @@ def run(args: argparse.Namespace) -> None:
         current_gpu_mib = gpu.total_mib * gpu.used_pct / 100.0
         
         if not launches_enabled:
-            peak_paused_host_mib = max(peak_paused_host_mib, current_host_mib)
-            peak_paused_gpu_mib = max(peak_paused_gpu_mib, current_gpu_mib)
-            host_drop = peak_paused_host_mib - current_host_mib
-            gpu_drop = peak_paused_gpu_mib - current_gpu_mib
+            effective_host_mib = current_host_mib - pressure.sample_python_host_memory_mib()
+            effective_gpu_mib = current_gpu_mib - pressure.sample_python_gpu_memory_mib(int(args.gpu_device_index))
+            peak_paused_host_mib = max(peak_paused_host_mib, effective_host_mib)
+            peak_paused_gpu_mib = max(peak_paused_gpu_mib, effective_gpu_mib)
+            host_drop = peak_paused_host_mib - effective_host_mib
+            gpu_drop = peak_paused_gpu_mib - effective_gpu_mib
             
             if host_drop >= 500.0 or gpu_drop >= 500.0 or (host.used_pct <= float(args.host_ram_resume_pct) and gpu.used_pct <= float(args.gpu_memory_resume_pct)):
                 logger.log_console(
