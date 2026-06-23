@@ -1,0 +1,38 @@
+{
+  "architecture": [
+    126,
+    126,
+    126,
+    126,
+    126,
+    126,
+    59
+  ],
+  "candidate_index": 814,
+  "depth": 7,
+  "hyperparameters": {
+    "adp_mode": "width_to_depth",
+    "delta": 0.0001,
+    "ex_k": 1,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 100000000,
+    "max_neurons": 10000000,
+    "max_width": 4096,
+    "metrics_interval": 5,
+    "min_new_layer_width": 1,
+    "patience": 10,
+    "trials_depth": 2,
+    "trials_width": 10,
+    "weight_decay": 0.0001,
+    "width_stage_margin_patience": 10,
+    "width_stage_min_improve_pct": 1.0
+  },
+  "mode": "width_to_depth",
+  "module": "MLPS.tabular.shared.dae_dnn.adp_search",
+  "results_dir": "MLPS/tabular/shared/dae_dnn/results/adp/w2d/repeat4_plus_sim_pred5_v1/repeat_01/simulation",
+  "resume_granularity": "last_completed_epoch",
+  "search_phase": "width_fill",
+  "width": 126
+}

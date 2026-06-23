@@ -1,0 +1,33 @@
+[2026-06-14 01:19:09] Initialized ContinuousLogger for adp_w2d_explicit_plan (Mode: adp_width_to_depth)
+[2026-06-14 01:19:09] Logs: MLPS/tabular/shared/dae_dnn/results/adp/w2d/main_without_denoising_v1/training_log.txt
+[2026-06-14 01:19:09] CSV: MLPS/tabular/shared/dae_dnn/results/adp/w2d/main_without_denoising_v1/training_stats.csv
+[2026-06-14 01:19:09] Run root: MLPS/tabular/shared/dae_dnn/results/adp/w2d/main_without_denoising_v1
+[2026-06-14 01:19:09] Plan file: MLPS/tabular/shared/dae_dnn/adp_main_suite_plan.json
+[2026-06-14 01:19:09] Batch size: 9312
+[2026-06-14 01:19:09] Hidden seed: [1]
+[2026-06-14 01:19:09] Concurrency: 6
+[2026-06-14 01:19:09] Git commit: d3202cdc2c5580173dc39cf03b43286761544e56
+[2026-06-14 01:19:09] [PHASE] start name=repeat_03 jobs=6 repeat_03=['classification', 'autoencoding', 'generation', 'anomaly', 'prediction', 'simulation']
+[2026-06-14 02:11:16] [TASK] completed phase=repeat_03 repeat=3 task=prediction
+[2026-06-14 03:57:55] [TASK] completed phase=repeat_03 repeat=3 task=simulation
+[2026-06-14 04:07:31] [TASK] completed phase=repeat_03 repeat=3 task=generation
+[2026-06-14 14:42:49] Initialized ContinuousLogger for adp_w2d_explicit_plan (Mode: adp_width_to_depth)
+[2026-06-14 14:42:49] Logs: MLPS/tabular/shared/dae_dnn/results/adp/w2d/main_without_denoising_v1/training_log.txt
+[2026-06-14 14:42:49] CSV: MLPS/tabular/shared/dae_dnn/results/adp/w2d/main_without_denoising_v1/training_stats.csv
+[2026-06-14 14:42:49] Run root: MLPS/tabular/shared/dae_dnn/results/adp/w2d/main_without_denoising_v1
+[2026-06-14 14:42:49] Plan file: MLPS/tabular/shared/dae_dnn/adp_main_suite_plan.json
+[2026-06-14 14:42:49] Batch size: 9312
+[2026-06-14 14:42:49] Hidden seed: [1]
+[2026-06-14 14:42:49] Concurrency: 6
+[2026-06-14 14:42:49] Git commit: d3202cdc2c5580173dc39cf03b43286761544e56
+[2026-06-14 14:42:49] [PHASE] start name=repeat_03 jobs=6 repeat_03=['classification', 'autoencoding', 'generation', 'anomaly', 'prediction', 'simulation']
+[2026-06-15 03:28:56] [TASK] completed phase=repeat_03 repeat=3 task=autoencoding
+[2026-06-15 03:48:10] [TASK] completed phase=repeat_03 repeat=3 task=anomaly
+[2026-06-15 06:46:22] [TASK] completed phase=repeat_03 repeat=3 task=classification
+[2026-06-15 06:46:22] [PHASE] start name=repeat_04 jobs=6 repeat_04=['classification', 'autoencoding', 'generation', 'anomaly', 'prediction', 'simulation']
+[2026-06-15 07:27:49] [TASK] completed phase=repeat_04 repeat=4 task=prediction
+[2026-06-15 08:45:45] [TASK] completed phase=repeat_04 repeat=4 task=generation
+[2026-06-15 08:50:25] [TASK] completed phase=repeat_04 repeat=4 task=simulation
+[2026-06-15 22:46:15] [TASK] completed phase=repeat_04 repeat=4 task=autoencoding
+[2026-06-15 23:14:53] [TASK] completed phase=repeat_04 repeat=4 task=anomaly
+[2026-06-16 05:49:04] [TASK] completed phase=repeat_04 repeat=4 task=classification

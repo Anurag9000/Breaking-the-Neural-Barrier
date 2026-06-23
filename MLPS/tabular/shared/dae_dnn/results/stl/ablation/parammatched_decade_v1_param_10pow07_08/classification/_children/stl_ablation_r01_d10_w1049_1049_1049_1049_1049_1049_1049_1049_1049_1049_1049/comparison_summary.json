@@ -1,0 +1,717 @@
+{
+  "architectures": [
+    [
+      1049,
+      1049,
+      1049,
+      1049,
+      1049,
+      1049,
+      1049,
+      1049,
+      1049,
+      1049
+    ]
+  ],
+  "param_band": [
+    7,
+    8
+  ],
+  "repeat_count": 5,
+  "reports": [
+    {
+      "ablation_stl_runs": [
+        {
+          "architecture": [
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049
+          ],
+          "best_epoch": 44,
+          "best_val": 0.10218888031080363,
+          "candidate_dir": "cand_000_d10_w1049",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/classification/stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/cand_000_d10_w1049/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/classification/stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/cand_000_d10_w1049/checkpoint_last.pt",
+          "final_epoch": 54,
+          "phase": "stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "resumed": false,
+          "source_phase": null,
+          "task": "classification",
+          "test_metrics": {
+            "test_acc": 0.9632020102924218,
+            "test_loss": 0.10250376435322281
+          }
+        },
+        {
+          "architecture": [
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049
+          ],
+          "best_epoch": 39,
+          "best_val": 0.1048522768605166,
+          "candidate_dir": "cand_000_d10_w1049",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/classification/stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/cand_000_d10_w1049/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/classification/stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/cand_000_d10_w1049/checkpoint_last.pt",
+          "final_epoch": 49,
+          "phase": "stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "resumed": false,
+          "source_phase": null,
+          "task": "classification",
+          "test_metrics": {
+            "test_acc": 0.9617046178206916,
+            "test_loss": 0.10749795033403671
+          }
+        },
+        {
+          "architecture": [
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049,
+            1049
+          ],
+          "best_epoch": 45,
+          "best_val": 0.10336244923098256,
+          "candidate_dir": "cand_000_d10_w1049",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/classification/stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/cand_000_d10_w1049/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/classification/stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/cand_000_d10_w1049/checkpoint_last.pt",
+          "final_epoch": 55,
+          "phase": "stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "resumed": false,
+          "source_phase": null,
+          "task": "classification",
+          "test_metrics": {
+            "test_acc": 0.9631331646615376,
+            "test_loss": 0.10800288306269222
+          }
+        }
+      ],
+      "best_ablation": {
+        "architecture": [
+          1049,
+          1049,
+          1049,
+          1049,
+          1049,
+          1049,
+          1049,
+          1049,
+          1049,
+          1049
+        ],
+        "best_epoch": 44,
+        "best_val": 0.10218888031080363,
+        "candidate_dir": "cand_000_d10_w1049",
+        "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/classification/stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/cand_000_d10_w1049/checkpoint_best.pt",
+        "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08/classification/_children/stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/classification/stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049/cand_000_d10_w1049/checkpoint_last.pt",
+        "final_epoch": 54,
+        "parameter_count": 9999075,
+        "phase": "stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+        "repeat": 3,
+        "resumed": false,
+        "source_phase": null,
+        "task": "classification",
+        "test_metrics": {
+          "test_acc": 0.9632020102924218,
+          "test_loss": 0.10250376435322281
+        }
+      },
+      "comparisons": [
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10218888031080363,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[105, 105, 105, 104, 104, 104]",
+          "reference_best_val": 0.08898697692691039,
+          "reference_kind": "adp",
+          "reference_phase": "ae_alt_depth",
+          "repeat": 3,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.08898697692691039
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10218888031080363,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[227, 227, 227, 227, 227, 227, 227, 227, 226, 226]",
+          "reference_best_val": 0.09031726454395253,
+          "reference_kind": "adp",
+          "reference_phase": "ae_alt_width",
+          "repeat": 3,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.09031726454395253
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10218888031080363,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[161, 160, 160, 160]",
+          "reference_best_val": 0.08618749312472872,
+          "reference_kind": "adp",
+          "reference_phase": "ae_width_to_depth",
+          "repeat": 3,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.08618749312472872
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10218888031080363,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[93, 93, 93, 93, 93, 93, 93, 92, 92, 92]",
+          "reference_best_val": 0.08750509213577258,
+          "reference_kind": "adp",
+          "reference_phase": "ae_depth_to_width",
+          "repeat": 3,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.08750509213577258
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10218888031080363,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[105, 105, 105, 104, 104, 104]",
+          "reference_best_val": 0.18634911513076596,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_alt_depth",
+          "repeat": 3,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.10218888031080363
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10218888031080363,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[227, 227, 227, 227, 227, 227, 227, 227, 226, 226]",
+          "reference_best_val": 0.14570796492767568,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_alt_width",
+          "repeat": 3,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.10218888031080363
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10218888031080363,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[161, 160, 160, 160]",
+          "reference_best_val": 0.2009544138106579,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_width_to_depth",
+          "repeat": 3,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.10218888031080363
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10218888031080363,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[93, 93, 93, 93, 93, 93, 93, 92, 92, 92]",
+          "reference_best_val": 0.16479575640055377,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_depth_to_width",
+          "repeat": 3,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.10218888031080363
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.1048522768605166,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[105, 105, 105, 104, 104, 104]",
+          "reference_best_val": 0.08898697692691039,
+          "reference_kind": "adp",
+          "reference_phase": "ae_alt_depth",
+          "repeat": 4,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.08898697692691039
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.1048522768605166,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[227, 227, 227, 227, 227, 227, 227, 227, 226, 226]",
+          "reference_best_val": 0.09031726454395253,
+          "reference_kind": "adp",
+          "reference_phase": "ae_alt_width",
+          "repeat": 4,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.09031726454395253
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.1048522768605166,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[161, 160, 160, 160]",
+          "reference_best_val": 0.08618749312472872,
+          "reference_kind": "adp",
+          "reference_phase": "ae_width_to_depth",
+          "repeat": 4,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.08618749312472872
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.1048522768605166,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[93, 93, 93, 93, 93, 93, 93, 92, 92, 92]",
+          "reference_best_val": 0.08750509213577258,
+          "reference_kind": "adp",
+          "reference_phase": "ae_depth_to_width",
+          "repeat": 4,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.08750509213577258
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.1048522768605166,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[105, 105, 105, 104, 104, 104]",
+          "reference_best_val": 0.18634911513076596,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_alt_depth",
+          "repeat": 4,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.1048522768605166
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.1048522768605166,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[227, 227, 227, 227, 227, 227, 227, 227, 226, 226]",
+          "reference_best_val": 0.14570796492767568,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_alt_width",
+          "repeat": 4,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.1048522768605166
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.1048522768605166,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[161, 160, 160, 160]",
+          "reference_best_val": 0.2009544138106579,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_width_to_depth",
+          "repeat": 4,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.1048522768605166
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.1048522768605166,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[93, 93, 93, 93, 93, 93, 93, 92, 92, 92]",
+          "reference_best_val": 0.16479575640055377,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_depth_to_width",
+          "repeat": 4,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.1048522768605166
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10336244923098256,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[105, 105, 105, 104, 104, 104]",
+          "reference_best_val": 0.08898697692691039,
+          "reference_kind": "adp",
+          "reference_phase": "ae_alt_depth",
+          "repeat": 5,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.08898697692691039
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10336244923098256,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[227, 227, 227, 227, 227, 227, 227, 227, 226, 226]",
+          "reference_best_val": 0.09031726454395253,
+          "reference_kind": "adp",
+          "reference_phase": "ae_alt_width",
+          "repeat": 5,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.09031726454395253
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10336244923098256,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[161, 160, 160, 160]",
+          "reference_best_val": 0.08618749312472872,
+          "reference_kind": "adp",
+          "reference_phase": "ae_width_to_depth",
+          "repeat": 5,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.08618749312472872
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10336244923098256,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[93, 93, 93, 93, 93, 93, 93, 92, 92, 92]",
+          "reference_best_val": 0.08750509213577258,
+          "reference_kind": "adp",
+          "reference_phase": "ae_depth_to_width",
+          "repeat": 5,
+          "task": "classification",
+          "winner": "adp",
+          "winner_value": 0.08750509213577258
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10336244923098256,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[105, 105, 105, 104, 104, 104]",
+          "reference_best_val": 0.18634911513076596,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_alt_depth",
+          "repeat": 5,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.10336244923098256
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10336244923098256,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[227, 227, 227, 227, 227, 227, 227, 227, 226, 226]",
+          "reference_best_val": 0.14570796492767568,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_alt_width",
+          "repeat": 5,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.10336244923098256
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10336244923098256,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[161, 160, 160, 160]",
+          "reference_best_val": 0.2009544138106579,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_width_to_depth",
+          "repeat": 5,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.10336244923098256
+        },
+        {
+          "ablation_architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "ablation_best_val": 0.10336244923098256,
+          "ablation_parameter_count": 9999075,
+          "ablation_phase": "stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "reference_architecture": "[93, 93, 93, 93, 93, 93, 93, 92, 92, 92]",
+          "reference_best_val": 0.16479575640055377,
+          "reference_kind": "paired_stl",
+          "reference_phase": "stl_from_ae_depth_to_width",
+          "repeat": 5,
+          "task": "classification",
+          "winner": "ablation_stl",
+          "winner_value": 0.10336244923098256
+        }
+      ],
+      "curve_rows": [
+        {
+          "architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "best_epoch": 44,
+          "best_val": 0.10218888031080363,
+          "final_epoch": 54,
+          "parameter_count": 9999075,
+          "phase": "stl_ablation_r03_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "repeat": 3,
+          "task": "classification",
+          "test_acc": 0.9632020102924218,
+          "test_loss": 0.10250376435322281
+        },
+        {
+          "architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "best_epoch": 39,
+          "best_val": 0.1048522768605166,
+          "final_epoch": 49,
+          "parameter_count": 9999075,
+          "phase": "stl_ablation_r04_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "repeat": 4,
+          "task": "classification",
+          "test_acc": 0.9617046178206916,
+          "test_loss": 0.10749795033403671
+        },
+        {
+          "architecture": "[1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049, 1049]",
+          "best_epoch": 45,
+          "best_val": 0.10336244923098256,
+          "final_epoch": 55,
+          "parameter_count": 9999075,
+          "phase": "stl_ablation_r05_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049",
+          "repeat": 5,
+          "task": "classification",
+          "test_acc": 0.9631331646615376,
+          "test_loss": 0.10800288306269222
+        }
+      ],
+      "gpu_vram_avg_mib": null,
+      "gpu_vram_samples_mib": [],
+      "repeat_count": 5,
+      "source_adp_runs": [
+        {
+          "architecture": [
+            105,
+            105,
+            105,
+            104,
+            104,
+            104
+          ],
+          "best_candidate_dir": "cand_626_d6_w105",
+          "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/ae_alt_depth/cand_626_d6_w105/checkpoint_best.pt",
+          "best_epoch": 7,
+          "best_val": 0.08898697692691039,
+          "final_epoch": 7,
+          "mode": "alt_depth",
+          "phase": "ae_alt_depth",
+          "reconstruct": false,
+          "task": "representation"
+        },
+        {
+          "architecture": [
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            226,
+            226
+          ],
+          "best_candidate_dir": "cand_278_d10_w227",
+          "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/ae_alt_width/cand_278_d10_w227/checkpoint_best.pt",
+          "best_epoch": 2,
+          "best_val": 0.09031726454395253,
+          "final_epoch": 2,
+          "mode": "alt_width",
+          "phase": "ae_alt_width",
+          "reconstruct": false,
+          "task": "representation"
+        },
+        {
+          "architecture": [
+            161,
+            160,
+            160,
+            160
+          ],
+          "best_candidate_dir": "cand_348_d4_w161",
+          "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/ae_width_to_depth/cand_348_d4_w161/checkpoint_best.pt",
+          "best_epoch": 6,
+          "best_val": 0.08618749312472872,
+          "final_epoch": 6,
+          "mode": "width_to_depth",
+          "phase": "ae_width_to_depth",
+          "reconstruct": false,
+          "task": "representation"
+        },
+        {
+          "architecture": [
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            92,
+            92,
+            92
+          ],
+          "best_candidate_dir": "cand_922_d10_w93",
+          "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/ae_depth_to_width/cand_922_d10_w93/checkpoint_best.pt",
+          "best_epoch": 6,
+          "best_val": 0.08750509213577258,
+          "final_epoch": 6,
+          "mode": "depth_to_width",
+          "phase": "ae_depth_to_width",
+          "reconstruct": false,
+          "task": "representation"
+        }
+      ],
+      "source_paired_stl_runs": [
+        {
+          "architecture": [
+            105,
+            105,
+            105,
+            104,
+            104,
+            104
+          ],
+          "best_epoch": 60,
+          "best_val": 0.18634911513076596,
+          "candidate_dir": "cand_000_d6_w105",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_alt_depth/cand_000_d6_w105/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_alt_depth/cand_000_d6_w105/checkpoint_last.pt",
+          "final_epoch": 65,
+          "phase": "stl_from_ae_alt_depth",
+          "resumed": false,
+          "source_phase": "ae_alt_depth",
+          "task": "representation",
+          "test_metrics": {
+            "knn_acc": 0.9501901860553175,
+            "test_acc": 0.92750555067899,
+            "test_loss": 0.18737022728263913
+          }
+        },
+        {
+          "architecture": [
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            227,
+            226,
+            226
+          ],
+          "best_epoch": 31,
+          "best_val": 0.14570796492767568,
+          "candidate_dir": "cand_000_d10_w227",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_alt_width/cand_000_d10_w227/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_alt_width/cand_000_d10_w227/checkpoint_last.pt",
+          "final_epoch": 36,
+          "phase": "stl_from_ae_alt_width",
+          "resumed": false,
+          "source_phase": "ae_alt_width",
+          "task": "representation",
+          "test_metrics": {
+            "knn_acc": 0.9619455775287861,
+            "test_acc": 0.9431851431128552,
+            "test_loss": 0.14881777614485886
+          }
+        },
+        {
+          "architecture": [
+            161,
+            160,
+            160,
+            160
+          ],
+          "best_epoch": 62,
+          "best_val": 0.2009544138106579,
+          "candidate_dir": "cand_000_d4_w161",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_width_to_depth/cand_000_d4_w161/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_width_to_depth/cand_000_d4_w161/checkpoint_last.pt",
+          "final_epoch": 67,
+          "phase": "stl_from_ae_width_to_depth",
+          "resumed": false,
+          "source_phase": "ae_width_to_depth",
+          "task": "representation",
+          "test_metrics": {
+            "knn_acc": 0.9440629249066281,
+            "test_acc": 0.9196227259427548,
+            "test_loss": 0.20391259318541846
+          }
+        },
+        {
+          "architecture": [
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            93,
+            92,
+            92,
+            92
+          ],
+          "best_epoch": 60,
+          "best_val": 0.16479575640055377,
+          "candidate_dir": "cand_000_d10_w93",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_depth_to_width/cand_000_d10_w93/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current/representation/stl_from_ae_depth_to_width/cand_000_d10_w93/checkpoint_last.pt",
+          "final_epoch": 65,
+          "phase": "stl_from_ae_depth_to_width",
+          "resumed": false,
+          "source_phase": "ae_depth_to_width",
+          "task": "representation",
+          "test_metrics": {
+            "knn_acc": 0.9563174472040068,
+            "test_acc": 0.9358530834236932,
+            "test_loss": 0.16542206570534052
+          }
+        }
+      ],
+      "task": "classification"
+    }
+  ],
+  "source_run_root": "MLPS/tabular/shared/dae_dnn/results/archive/goliath_w2d_staged_current",
+  "tasks": [
+    "classification"
+  ]
+}
