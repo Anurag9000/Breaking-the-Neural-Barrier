@@ -1,0 +1,91 @@
+[2026-06-14 01:19:17] Initialized ContinuousLogger for dnn_generation (Mode: width_to_depth)
+[2026-06-14 01:19:17] Logs: MLPS/tabular/shared/dae_dnn/results/adp/w2d/main_without_denoising_v1/repeat_03/generation/training_log.txt
+[2026-06-14 01:19:17] CSV: MLPS/tabular/shared/dae_dnn/results/adp/w2d/main_without_denoising_v1/repeat_03/generation/training_stats.csv
+[2026-06-14 01:19:17] Task=generation mode=adp adp_mode=width_to_depth hidden=[1] in_dim=54 out_dim=54
+[2026-06-14 01:19:17] ADP: ex_k=1 trials_width=10 trials_depth=2 max_width=4096 max_depth=10 max_neurons=10000000
+[2026-06-14 01:19:17] Train: batch_size=9312 lr=1e-3 weight_decay=1e-4 es_patience=10 max_epochs=100000000
+[2026-06-14 01:19:17] Device: cuda
+[2026-06-14 01:30:38] [STAGED][WIDTH] [1] -> [2]
+[2026-06-14 01:34:26] [STAGED][WIDTH] completed arch=[2] stage_improved=False stage_pct=0.0000 global_best=1.008266 width_fail=1/10 margin_fail=1/10
+[2026-06-14 01:34:26] [STAGED][WIDTH] [2] -> [3]
+[2026-06-14 01:37:28] [STAGED][WIDTH] completed arch=[3] stage_improved=False stage_pct=0.0000 global_best=1.008266 width_fail=2/10 margin_fail=2/10
+[2026-06-14 01:37:28] [STAGED][WIDTH] [3] -> [4]
+[2026-06-14 01:40:39] [STAGED][WIDTH] completed arch=[4] stage_improved=True stage_pct=0.0102 global_best=1.008163 width_fail=0/10 margin_fail=3/10
+[2026-06-14 01:40:39] [STAGED][WIDTH] [4] -> [5]
+[2026-06-14 01:42:53] [STAGED][WIDTH] completed arch=[5] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=1/10 margin_fail=4/10
+[2026-06-14 01:42:53] [STAGED][WIDTH] [5] -> [6]
+[2026-06-14 01:45:15] [STAGED][WIDTH] completed arch=[6] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=2/10 margin_fail=5/10
+[2026-06-14 01:45:15] [STAGED][WIDTH] [6] -> [7]
+[2026-06-14 01:48:47] [STAGED][WIDTH] completed arch=[7] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=3/10 margin_fail=6/10
+[2026-06-14 01:48:47] [STAGED][WIDTH] [7] -> [8]
+[2026-06-14 01:51:10] [STAGED][WIDTH] completed arch=[8] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=4/10 margin_fail=7/10
+[2026-06-14 01:51:10] [STAGED][WIDTH] [8] -> [9]
+[2026-06-14 01:53:54] [STAGED][WIDTH] completed arch=[9] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=5/10 margin_fail=8/10
+[2026-06-14 01:53:54] [STAGED][WIDTH] [9] -> [10]
+[2026-06-14 01:56:16] [STAGED][WIDTH] completed arch=[10] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=6/10 margin_fail=9/10
+[2026-06-14 01:56:16] [STAGED][WIDTH] [10] -> [11]
+[2026-06-14 01:59:00] [STAGED][WIDTH] completed arch=[11] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=7/10 margin_fail=10/10
+[2026-06-14 01:59:00] [STAGED][DEPTH] [11] -> [11, 1]
+[2026-06-14 02:06:38] [STAGED][WIDTH-FILL] [11, 1] -> [11, 2]
+[2026-06-14 02:10:33] [STAGED][WIDTH-FILL] [11, 2] -> [11, 3]
+[2026-06-14 02:13:48] [STAGED][WIDTH-FILL] [11, 3] -> [11, 4]
+[2026-06-14 02:18:52] [STAGED][WIDTH-FILL] [11, 4] -> [11, 5]
+[2026-06-14 02:21:54] [STAGED][WIDTH-FILL] [11, 5] -> [11, 6]
+[2026-06-14 02:24:22] [STAGED][WIDTH-FILL] [11, 6] -> [11, 7]
+[2026-06-14 02:26:34] [STAGED][WIDTH-FILL] [11, 7] -> [11, 8]
+[2026-06-14 02:28:37] [STAGED][WIDTH-FILL] [11, 8] -> [11, 9]
+[2026-06-14 02:30:36] [STAGED][WIDTH-FILL] [11, 9] -> [11, 10]
+[2026-06-14 02:32:39] [STAGED][WIDTH-FILL] [11, 10] -> [11, 11]
+[2026-06-14 02:34:23] [STAGED][WIDTH] [11, 11] -> [12, 11]
+[2026-06-14 02:36:51] [STAGED][WIDTH] [12, 11] -> [12, 12]
+[2026-06-14 02:38:36] [STAGED][WIDTH] completed arch=[12, 12] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=1/10 margin_fail=1/10
+[2026-06-14 02:38:36] [STAGED][WIDTH] [12, 12] -> [13, 12]
+[2026-06-14 02:40:46] [STAGED][WIDTH] [13, 12] -> [13, 13]
+[2026-06-14 02:42:34] [STAGED][WIDTH] completed arch=[13, 13] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=2/10 margin_fail=2/10
+[2026-06-14 02:42:34] [STAGED][WIDTH] [13, 13] -> [14, 13]
+[2026-06-14 02:44:21] [STAGED][WIDTH] [14, 13] -> [14, 14]
+[2026-06-14 02:46:56] [STAGED][WIDTH] completed arch=[14, 14] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=3/10 margin_fail=3/10
+[2026-06-14 02:46:56] [STAGED][WIDTH] [14, 14] -> [15, 14]
+[2026-06-14 02:48:42] [STAGED][WIDTH] [15, 14] -> [15, 15]
+[2026-06-14 02:51:02] [STAGED][WIDTH] completed arch=[15, 15] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=4/10 margin_fail=4/10
+[2026-06-14 02:51:02] [STAGED][WIDTH] [15, 15] -> [16, 15]
+[2026-06-14 02:53:05] [STAGED][WIDTH] [16, 15] -> [16, 16]
+[2026-06-14 02:56:00] [STAGED][WIDTH] completed arch=[16, 16] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=5/10 margin_fail=5/10
+[2026-06-14 02:56:00] [STAGED][WIDTH] [16, 16] -> [17, 16]
+[2026-06-14 02:58:13] [STAGED][WIDTH] [17, 16] -> [17, 17]
+[2026-06-14 03:00:02] [STAGED][WIDTH] completed arch=[17, 17] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=6/10 margin_fail=6/10
+[2026-06-14 03:00:02] [STAGED][WIDTH] [17, 17] -> [18, 17]
+[2026-06-14 03:03:08] [STAGED][WIDTH] [18, 17] -> [18, 18]
+[2026-06-14 03:05:00] [STAGED][WIDTH] completed arch=[18, 18] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=7/10 margin_fail=7/10
+[2026-06-14 03:05:00] [STAGED][WIDTH] [18, 18] -> [19, 18]
+[2026-06-14 03:07:04] [STAGED][WIDTH] [19, 18] -> [19, 19]
+[2026-06-14 03:09:12] [STAGED][WIDTH] completed arch=[19, 19] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=8/10 margin_fail=8/10
+[2026-06-14 03:09:12] [STAGED][WIDTH] [19, 19] -> [20, 19]
+[2026-06-14 03:10:51] [STAGED][WIDTH] [20, 19] -> [20, 20]
+[2026-06-14 03:12:36] [STAGED][WIDTH] completed arch=[20, 20] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=9/10 margin_fail=9/10
+[2026-06-14 03:12:36] [STAGED][WIDTH] [20, 20] -> [21, 20]
+[2026-06-14 03:14:17] [STAGED][WIDTH] [21, 20] -> [21, 21]
+[2026-06-14 03:16:07] [STAGED][WIDTH] completed arch=[21, 21] stage_improved=False stage_pct=0.0000 global_best=1.008163 width_fail=10/10 margin_fail=10/10
+[2026-06-14 03:16:07] [STAGED][DEPTH] [21, 21] -> [21, 21, 1]
+[2026-06-14 03:19:45] [STAGED][WIDTH-FILL] [21, 21, 1] -> [21, 21, 2]
+[2026-06-14 03:24:42] [STAGED][WIDTH-FILL] [21, 21, 2] -> [21, 21, 3]
+[2026-06-14 03:28:03] [STAGED][WIDTH-FILL] [21, 21, 3] -> [21, 21, 4]
+[2026-06-14 03:31:00] [STAGED][WIDTH-FILL] [21, 21, 4] -> [21, 21, 5]
+[2026-06-14 03:33:39] [STAGED][WIDTH-FILL] [21, 21, 5] -> [21, 21, 6]
+[2026-06-14 03:36:42] [STAGED][WIDTH-FILL] [21, 21, 6] -> [21, 21, 7]
+[2026-06-14 03:38:47] [STAGED][WIDTH-FILL] [21, 21, 7] -> [21, 21, 8]
+[2026-06-14 03:41:00] [STAGED][WIDTH-FILL] [21, 21, 8] -> [21, 21, 9]
+[2026-06-14 03:42:56] [STAGED][WIDTH-FILL] [21, 21, 9] -> [21, 21, 10]
+[2026-06-14 03:45:18] [STAGED][WIDTH-FILL] [21, 21, 10] -> [21, 21, 11]
+[2026-06-14 03:48:22] [STAGED][WIDTH-FILL] [21, 21, 11] -> [21, 21, 12]
+[2026-06-14 03:50:07] [STAGED][WIDTH-FILL] [21, 21, 12] -> [21, 21, 13]
+[2026-06-14 03:52:45] [STAGED][WIDTH-FILL] [21, 21, 13] -> [21, 21, 14]
+[2026-06-14 03:54:52] [STAGED][WIDTH-FILL] [21, 21, 14] -> [21, 21, 15]
+[2026-06-14 03:56:41] [STAGED][WIDTH-FILL] [21, 21, 15] -> [21, 21, 16]
+[2026-06-14 03:58:29] [STAGED][WIDTH-FILL] [21, 21, 16] -> [21, 21, 17]
+[2026-06-14 04:00:44] [STAGED][WIDTH-FILL] [21, 21, 17] -> [21, 21, 18]
+[2026-06-14 04:02:15] [STAGED][WIDTH-FILL] [21, 21, 18] -> [21, 21, 19]
+[2026-06-14 04:03:56] [STAGED][WIDTH-FILL] [21, 21, 19] -> [21, 21, 20]
+[2026-06-14 04:05:47] [STAGED][WIDTH-FILL] [21, 21, 20] -> [21, 21, 21]
+[2026-06-14 04:07:28] [ADP] best_val_loss=1.008163 hidden=[4]
+[2026-06-14 04:07:29] [VAL] loss=1.008163 acc=na

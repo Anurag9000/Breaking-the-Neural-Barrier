@@ -1,0 +1,61 @@
+{
+  "available_tasks": [
+    "classification",
+    "autoencoding",
+    "generation",
+    "denoising",
+    "anomaly",
+    "simulation",
+    "prediction"
+  ],
+  "batch_size_override": 0,
+  "batch_size_policy": "per_task_default",
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 0,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "depth_expansion_patience": 2,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 100000000,
+    "max_neurons": 10000000,
+    "max_width": 10000000000,
+    "metrics_every": 0,
+    "min_width": 16,
+    "num_workers": 0,
+    "parameter_band": null,
+    "parameter_matched": false,
+    "patience": 10,
+    "phases": [
+      "ae_width_only"
+    ],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_03/d01",
+    "seed": 0,
+    "stl_depth": 1,
+    "stl_width": 128,
+    "tasks": [
+      "simulation"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_count_per_depth": 10,
+    "width_expansion_patience": 10,
+    "width_stage_margin_patience": 10,
+    "width_stage_min_improve_pct": 1.0,
+    "width_step": 16
+  },
+  "default_batch_sizes": {
+    "simulation": 8256
+  },
+  "device": "cpu",
+  "git_commit": "3736dc73c6cab9e4b232cacb1d4a0654b21ffc95",
+  "tasks": [
+    "simulation"
+  ],
+  "timestamp": "20260620_212400"
+}

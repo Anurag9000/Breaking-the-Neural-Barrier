@@ -1,0 +1,524 @@
+[2026-06-21 00:04:52] Initialized ContinuousLogger for prediction_ae_width_only (Mode: ae_width_only)
+[2026-06-21 00:04:52] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_01/d01/prediction/ae_width_only/cand_025_d1_w26/training_log.txt
+[2026-06-21 00:04:52] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_01/d01/prediction/ae_width_only/cand_025_d1_w26/training_stats.csv
+[2026-06-21 00:04:52] [CANDIDATE] task=prediction phase=ae_width_only index=25 search_phase=width architecture=[26]
+[2026-06-21 00:04:54] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=1 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:04:54] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=1 batch=1/2 done gpu_used_mib=15 host_available_mib=6821
+[2026-06-21 00:04:54] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=1 batch=1/2 batch_size=8256 running_batches=1 batch_loss=1.183930 running_loss=1.183930
+[2026-06-21 00:04:56] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=1 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:04:56] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=1 batch=2/2 done gpu_used_mib=15 host_available_mib=6847
+[2026-06-21 00:04:56] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=1 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.544312 running_loss=0.864121
+[2026-06-21 00:04:56] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=1 starting validation
+[2026-06-21 00:04:56] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=1 finished validation val_loss=0.344423
+[2026-06-21 00:04:56] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=1 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6860
+[2026-06-21 00:04:56] [prediction][ae_width_only][cand_025_d1_w26] epoch=1 architecture=[26] train_loss=0.864121 val_loss=0.344423 candidate_best=0.344423 global_best=0.319729 es=0/10
+[2026-06-21 00:04:58] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=2 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:04:58] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=2 batch=1/2 done gpu_used_mib=15 host_available_mib=6880
+[2026-06-21 00:04:58] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=2 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.307052 running_loss=0.307052
+[2026-06-21 00:04:59] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=2 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:04:59] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=2 batch=2/2 done gpu_used_mib=15 host_available_mib=6804
+[2026-06-21 00:04:59] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=2 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.317322 running_loss=0.312187
+[2026-06-21 00:04:59] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=2 starting validation
+[2026-06-21 00:05:00] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=2 finished validation val_loss=0.330284
+[2026-06-21 00:05:00] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=2 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6802
+[2026-06-21 00:05:00] [prediction][ae_width_only][cand_025_d1_w26] epoch=2 architecture=[26] train_loss=0.312187 val_loss=0.330284 candidate_best=0.330284 global_best=0.319729 es=0/10
+[2026-06-21 00:05:02] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=3 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:02] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=3 batch=1/2 done gpu_used_mib=15 host_available_mib=6816
+[2026-06-21 00:05:02] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=3 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.302774 running_loss=0.302774
+[2026-06-21 00:05:03] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=3 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:03] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=3 batch=2/2 done gpu_used_mib=15 host_available_mib=6806
+[2026-06-21 00:05:03] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=3 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.302948 running_loss=0.302861
+[2026-06-21 00:05:03] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=3 starting validation
+[2026-06-21 00:05:04] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=3 finished validation val_loss=0.327408
+[2026-06-21 00:05:04] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=3 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6780
+[2026-06-21 00:05:04] [prediction][ae_width_only][cand_025_d1_w26] epoch=3 architecture=[26] train_loss=0.302861 val_loss=0.327408 candidate_best=0.327408 global_best=0.319729 es=0/10
+[2026-06-21 00:05:06] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=4 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:06] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=4 batch=1/2 done gpu_used_mib=15 host_available_mib=6864
+[2026-06-21 00:05:06] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=4 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.298879 running_loss=0.298879
+[2026-06-21 00:05:07] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=4 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:07] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=4 batch=2/2 done gpu_used_mib=15 host_available_mib=6807
+[2026-06-21 00:05:07] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=4 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.302192 running_loss=0.300536
+[2026-06-21 00:05:07] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=4 starting validation
+[2026-06-21 00:05:07] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=4 finished validation val_loss=0.330770
+[2026-06-21 00:05:08] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=4 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6745
+[2026-06-21 00:05:08] [prediction][ae_width_only][cand_025_d1_w26] epoch=4 architecture=[26] train_loss=0.300536 val_loss=0.330770 candidate_best=0.327408 global_best=0.319729 es=1/10
+[2026-06-21 00:05:09] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=5 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:09] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=5 batch=1/2 done gpu_used_mib=15 host_available_mib=6827
+[2026-06-21 00:05:09] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=5 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.300081 running_loss=0.300081
+[2026-06-21 00:05:11] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=5 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:11] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=5 batch=2/2 done gpu_used_mib=15 host_available_mib=6837
+[2026-06-21 00:05:11] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=5 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.303993 running_loss=0.302037
+[2026-06-21 00:05:11] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=5 starting validation
+[2026-06-21 00:05:11] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=5 finished validation val_loss=0.332425
+[2026-06-21 00:05:12] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=5 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6818
+[2026-06-21 00:05:12] [prediction][ae_width_only][cand_025_d1_w26] epoch=5 architecture=[26] train_loss=0.302037 val_loss=0.332425 candidate_best=0.327408 global_best=0.319729 es=2/10
+[2026-06-21 00:05:13] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=6 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:13] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=6 batch=1/2 done gpu_used_mib=15 host_available_mib=6871
+[2026-06-21 00:05:13] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=6 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.307858 running_loss=0.307858
+[2026-06-21 00:05:14] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=6 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:15] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=6 batch=2/2 done gpu_used_mib=15 host_available_mib=6814
+[2026-06-21 00:05:15] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=6 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.295275 running_loss=0.301567
+[2026-06-21 00:05:15] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=6 starting validation
+[2026-06-21 00:05:15] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=6 finished validation val_loss=0.330338
+[2026-06-21 00:05:15] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=6 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6821
+[2026-06-21 00:05:15] [prediction][ae_width_only][cand_025_d1_w26] epoch=6 architecture=[26] train_loss=0.301567 val_loss=0.330338 candidate_best=0.327408 global_best=0.319729 es=3/10
+[2026-06-21 00:05:17] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=7 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:17] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=7 batch=1/2 done gpu_used_mib=15 host_available_mib=6833
+[2026-06-21 00:05:17] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=7 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.301177 running_loss=0.301177
+[2026-06-21 00:05:18] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=7 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:18] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=7 batch=2/2 done gpu_used_mib=15 host_available_mib=6780
+[2026-06-21 00:05:18] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=7 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.298816 running_loss=0.299997
+[2026-06-21 00:05:18] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=7 starting validation
+[2026-06-21 00:05:19] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=7 finished validation val_loss=0.327812
+[2026-06-21 00:05:19] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=7 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6833
+[2026-06-21 00:05:19] [prediction][ae_width_only][cand_025_d1_w26] epoch=7 architecture=[26] train_loss=0.299997 val_loss=0.327812 candidate_best=0.327408 global_best=0.319729 es=4/10
+[2026-06-21 00:05:21] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=8 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:21] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=8 batch=1/2 done gpu_used_mib=15 host_available_mib=6833
+[2026-06-21 00:05:21] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=8 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.297897 running_loss=0.297897
+[2026-06-21 00:05:22] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=8 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:22] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=8 batch=2/2 done gpu_used_mib=15 host_available_mib=6804
+[2026-06-21 00:05:22] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=8 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.299486 running_loss=0.298691
+[2026-06-21 00:05:22] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=8 starting validation
+[2026-06-21 00:05:22] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=8 finished validation val_loss=0.326514
+[2026-06-21 00:05:22] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=8 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6782
+[2026-06-21 00:05:22] [prediction][ae_width_only][cand_025_d1_w26] epoch=8 architecture=[26] train_loss=0.298691 val_loss=0.326514 candidate_best=0.326514 global_best=0.319729 es=0/10
+[2026-06-21 00:05:24] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=9 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:24] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=9 batch=1/2 done gpu_used_mib=15 host_available_mib=6781
+[2026-06-21 00:05:24] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=9 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.305040 running_loss=0.305040
+[2026-06-21 00:05:25] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=9 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:26] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=9 batch=2/2 done gpu_used_mib=15 host_available_mib=6793
+[2026-06-21 00:05:26] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=9 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.291267 running_loss=0.298154
+[2026-06-21 00:05:26] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=9 starting validation
+[2026-06-21 00:05:26] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=9 finished validation val_loss=0.325654
+[2026-06-21 00:05:26] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=9 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6816
+[2026-06-21 00:05:26] [prediction][ae_width_only][cand_025_d1_w26] epoch=9 architecture=[26] train_loss=0.298154 val_loss=0.325654 candidate_best=0.325654 global_best=0.319729 es=0/10
+[2026-06-21 00:05:28] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=10 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:28] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=10 batch=1/2 done gpu_used_mib=15 host_available_mib=6830
+[2026-06-21 00:05:28] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=10 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.296145 running_loss=0.296145
+[2026-06-21 00:05:30] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=10 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:30] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=10 batch=2/2 done gpu_used_mib=15 host_available_mib=6818
+[2026-06-21 00:05:30] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=10 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.299859 running_loss=0.298002
+[2026-06-21 00:05:30] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=10 starting validation
+[2026-06-21 00:05:30] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=10 finished validation val_loss=0.324827
+[2026-06-21 00:05:30] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=10 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6870
+[2026-06-21 00:05:30] [prediction][ae_width_only][cand_025_d1_w26] epoch=10 architecture=[26] train_loss=0.298002 val_loss=0.324827 candidate_best=0.324827 global_best=0.319729 es=0/10
+[2026-06-21 00:05:32] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=11 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:32] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=11 batch=1/2 done gpu_used_mib=15 host_available_mib=6906
+[2026-06-21 00:05:32] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=11 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.293839 running_loss=0.293839
+[2026-06-21 00:05:33] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=11 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:33] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=11 batch=2/2 done gpu_used_mib=15 host_available_mib=6914
+[2026-06-21 00:05:33] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=11 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.301473 running_loss=0.297656
+[2026-06-21 00:05:33] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=11 starting validation
+[2026-06-21 00:05:34] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=11 finished validation val_loss=0.324045
+[2026-06-21 00:05:34] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=11 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6869
+[2026-06-21 00:05:34] [prediction][ae_width_only][cand_025_d1_w26] epoch=11 architecture=[26] train_loss=0.297656 val_loss=0.324045 candidate_best=0.324045 global_best=0.319729 es=0/10
+[2026-06-21 00:05:35] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=12 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:35] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=12 batch=1/2 done gpu_used_mib=15 host_available_mib=6878
+[2026-06-21 00:05:35] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=12 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.299894 running_loss=0.299894
+[2026-06-21 00:05:36] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=12 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:36] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=12 batch=2/2 done gpu_used_mib=15 host_available_mib=6787
+[2026-06-21 00:05:36] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=12 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.294810 running_loss=0.297352
+[2026-06-21 00:05:36] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=12 starting validation
+[2026-06-21 00:05:37] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=12 finished validation val_loss=0.323554
+[2026-06-21 00:05:37] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=12 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6825
+[2026-06-21 00:05:37] [prediction][ae_width_only][cand_025_d1_w26] epoch=12 architecture=[26] train_loss=0.297352 val_loss=0.323554 candidate_best=0.323554 global_best=0.319729 es=0/10
+[2026-06-21 00:05:39] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=13 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:39] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=13 batch=1/2 done gpu_used_mib=15 host_available_mib=6755
+[2026-06-21 00:05:39] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=13 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.298241 running_loss=0.298241
+[2026-06-21 00:05:40] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=13 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:40] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=13 batch=2/2 done gpu_used_mib=15 host_available_mib=6724
+[2026-06-21 00:05:40] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=13 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.295787 running_loss=0.297014
+[2026-06-21 00:05:40] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=13 starting validation
+[2026-06-21 00:05:40] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=13 finished validation val_loss=0.323397
+[2026-06-21 00:05:41] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=13 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6728
+[2026-06-21 00:05:41] [prediction][ae_width_only][cand_025_d1_w26] epoch=13 architecture=[26] train_loss=0.297014 val_loss=0.323397 candidate_best=0.323397 global_best=0.319729 es=0/10
+[2026-06-21 00:05:42] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=14 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:42] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=14 batch=1/2 done gpu_used_mib=15 host_available_mib=6774
+[2026-06-21 00:05:42] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=14 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.310317 running_loss=0.310317
+[2026-06-21 00:05:43] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=14 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:43] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=14 batch=2/2 done gpu_used_mib=15 host_available_mib=6788
+[2026-06-21 00:05:43] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=14 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.283129 running_loss=0.296723
+[2026-06-21 00:05:43] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=14 starting validation
+[2026-06-21 00:05:44] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=14 finished validation val_loss=0.323739
+[2026-06-21 00:05:44] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=14 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6777
+[2026-06-21 00:05:44] [prediction][ae_width_only][cand_025_d1_w26] epoch=14 architecture=[26] train_loss=0.296723 val_loss=0.323739 candidate_best=0.323397 global_best=0.319729 es=1/10
+[2026-06-21 00:05:45] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=15 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:45] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=15 batch=1/2 done gpu_used_mib=15 host_available_mib=6831
+[2026-06-21 00:05:45] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=15 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.290785 running_loss=0.290785
+[2026-06-21 00:05:47] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=15 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:48] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=15 batch=2/2 done gpu_used_mib=15 host_available_mib=6805
+[2026-06-21 00:05:48] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=15 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.302126 running_loss=0.296455
+[2026-06-21 00:05:48] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=15 starting validation
+[2026-06-21 00:05:48] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=15 finished validation val_loss=0.324639
+[2026-06-21 00:05:48] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=15 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6796
+[2026-06-21 00:05:48] [prediction][ae_width_only][cand_025_d1_w26] epoch=15 architecture=[26] train_loss=0.296455 val_loss=0.324639 candidate_best=0.323397 global_best=0.319729 es=2/10
+[2026-06-21 00:05:50] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=16 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:50] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=16 batch=1/2 done gpu_used_mib=15 host_available_mib=6861
+[2026-06-21 00:05:50] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=16 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.294564 running_loss=0.294564
+[2026-06-21 00:05:51] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=16 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:51] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=16 batch=2/2 done gpu_used_mib=15 host_available_mib=6820
+[2026-06-21 00:05:51] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=16 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.298095 running_loss=0.296330
+[2026-06-21 00:05:51] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=16 starting validation
+[2026-06-21 00:05:51] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=16 finished validation val_loss=0.324881
+[2026-06-21 00:05:52] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=16 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6793
+[2026-06-21 00:05:52] [prediction][ae_width_only][cand_025_d1_w26] epoch=16 architecture=[26] train_loss=0.296330 val_loss=0.324881 candidate_best=0.323397 global_best=0.319729 es=3/10
+[2026-06-21 00:05:53] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=17 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:53] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=17 batch=1/2 done gpu_used_mib=15 host_available_mib=6821
+[2026-06-21 00:05:53] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=17 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.288435 running_loss=0.288435
+[2026-06-21 00:05:54] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=17 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:54] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=17 batch=2/2 done gpu_used_mib=15 host_available_mib=6797
+[2026-06-21 00:05:54] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=17 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.304052 running_loss=0.296244
+[2026-06-21 00:05:54] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=17 starting validation
+[2026-06-21 00:05:55] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=17 finished validation val_loss=0.324321
+[2026-06-21 00:05:55] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=17 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6761
+[2026-06-21 00:05:55] [prediction][ae_width_only][cand_025_d1_w26] epoch=17 architecture=[26] train_loss=0.296244 val_loss=0.324321 candidate_best=0.323397 global_best=0.319729 es=4/10
+[2026-06-21 00:05:57] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=18 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:57] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=18 batch=1/2 done gpu_used_mib=15 host_available_mib=6770
+[2026-06-21 00:05:57] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=18 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.303166 running_loss=0.303166
+[2026-06-21 00:05:58] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=18 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:05:58] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=18 batch=2/2 done gpu_used_mib=15 host_available_mib=6702
+[2026-06-21 00:05:58] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=18 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.289007 running_loss=0.296087
+[2026-06-21 00:05:58] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=18 starting validation
+[2026-06-21 00:05:58] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=18 finished validation val_loss=0.323131
+[2026-06-21 00:05:58] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=18 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6722
+[2026-06-21 00:05:58] [prediction][ae_width_only][cand_025_d1_w26] epoch=18 architecture=[26] train_loss=0.296087 val_loss=0.323131 candidate_best=0.323131 global_best=0.319729 es=0/10
+[2026-06-21 00:06:00] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=19 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:00] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=19 batch=1/2 done gpu_used_mib=15 host_available_mib=6788
+[2026-06-21 00:06:00] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=19 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.295767 running_loss=0.295767
+[2026-06-21 00:06:01] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=19 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:02] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=19 batch=2/2 done gpu_used_mib=15 host_available_mib=6813
+[2026-06-21 00:06:02] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=19 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.295984 running_loss=0.295876
+[2026-06-21 00:06:02] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=19 starting validation
+[2026-06-21 00:06:02] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=19 finished validation val_loss=0.321942
+[2026-06-21 00:06:02] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=19 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6815
+[2026-06-21 00:06:02] [prediction][ae_width_only][cand_025_d1_w26] epoch=19 architecture=[26] train_loss=0.295876 val_loss=0.321942 candidate_best=0.321942 global_best=0.319729 es=0/10
+[2026-06-21 00:06:04] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=20 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:05] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=20 batch=1/2 done gpu_used_mib=15 host_available_mib=6881
+[2026-06-21 00:06:05] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=20 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.302887 running_loss=0.302887
+[2026-06-21 00:06:06] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=20 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:06] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=20 batch=2/2 done gpu_used_mib=15 host_available_mib=6825
+[2026-06-21 00:06:06] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=20 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.288538 running_loss=0.295713
+[2026-06-21 00:06:06] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=20 starting validation
+[2026-06-21 00:06:06] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=20 finished validation val_loss=0.321180
+[2026-06-21 00:06:07] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=20 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6855
+[2026-06-21 00:06:07] [prediction][ae_width_only][cand_025_d1_w26] epoch=20 architecture=[26] train_loss=0.295713 val_loss=0.321180 candidate_best=0.321180 global_best=0.319729 es=0/10
+[2026-06-21 00:06:08] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=21 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:08] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=21 batch=1/2 done gpu_used_mib=15 host_available_mib=6909
+[2026-06-21 00:06:08] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=21 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.290002 running_loss=0.290002
+[2026-06-21 00:06:09] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=21 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:10] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=21 batch=2/2 done gpu_used_mib=15 host_available_mib=6868
+[2026-06-21 00:06:10] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=21 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.301308 running_loss=0.295655
+[2026-06-21 00:06:10] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=21 starting validation
+[2026-06-21 00:06:10] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=21 finished validation val_loss=0.321095
+[2026-06-21 00:06:10] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=21 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6857
+[2026-06-21 00:06:10] [prediction][ae_width_only][cand_025_d1_w26] epoch=21 architecture=[26] train_loss=0.295655 val_loss=0.321095 candidate_best=0.321180 global_best=0.319729 es=1/10
+[2026-06-21 00:06:11] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=22 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:12] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=22 batch=1/2 done gpu_used_mib=15 host_available_mib=6862
+[2026-06-21 00:06:12] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=22 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.300200 running_loss=0.300200
+[2026-06-21 00:06:13] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=22 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:13] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=22 batch=2/2 done gpu_used_mib=15 host_available_mib=6839
+[2026-06-21 00:06:13] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=22 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.290979 running_loss=0.295589
+[2026-06-21 00:06:13] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=22 starting validation
+[2026-06-21 00:06:13] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=22 finished validation val_loss=0.321768
+[2026-06-21 00:06:13] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=22 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6851
+[2026-06-21 00:06:13] [prediction][ae_width_only][cand_025_d1_w26] epoch=22 architecture=[26] train_loss=0.295589 val_loss=0.321768 candidate_best=0.321180 global_best=0.319729 es=2/10
+[2026-06-21 00:06:16] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=23 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:16] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=23 batch=1/2 done gpu_used_mib=15 host_available_mib=6744
+[2026-06-21 00:06:16] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=23 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.308777 running_loss=0.308777
+[2026-06-21 00:06:17] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=23 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:17] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=23 batch=2/2 done gpu_used_mib=15 host_available_mib=6750
+[2026-06-21 00:06:17] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=23 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.282207 running_loss=0.295492
+[2026-06-21 00:06:17] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=23 starting validation
+[2026-06-21 00:06:17] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=23 finished validation val_loss=0.322295
+[2026-06-21 00:06:18] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=23 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6714
+[2026-06-21 00:06:18] [prediction][ae_width_only][cand_025_d1_w26] epoch=23 architecture=[26] train_loss=0.295492 val_loss=0.322295 candidate_best=0.321180 global_best=0.319729 es=3/10
+[2026-06-21 00:06:19] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=24 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:19] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=24 batch=1/2 done gpu_used_mib=15 host_available_mib=6766
+[2026-06-21 00:06:19] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=24 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.299460 running_loss=0.299460
+[2026-06-21 00:06:20] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=24 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:20] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=24 batch=2/2 done gpu_used_mib=15 host_available_mib=6836
+[2026-06-21 00:06:20] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=24 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.291223 running_loss=0.295341
+[2026-06-21 00:06:20] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=24 starting validation
+[2026-06-21 00:06:21] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=24 finished validation val_loss=0.322532
+[2026-06-21 00:06:21] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=24 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6858
+[2026-06-21 00:06:21] [prediction][ae_width_only][cand_025_d1_w26] epoch=24 architecture=[26] train_loss=0.295341 val_loss=0.322532 candidate_best=0.321180 global_best=0.319729 es=4/10
+[2026-06-21 00:06:22] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=25 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:22] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=25 batch=1/2 done gpu_used_mib=15 host_available_mib=6888
+[2026-06-21 00:06:22] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=25 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.300697 running_loss=0.300697
+[2026-06-21 00:06:24] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=25 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:25] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=25 batch=2/2 done gpu_used_mib=15 host_available_mib=6873
+[2026-06-21 00:06:25] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=25 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.289821 running_loss=0.295259
+[2026-06-21 00:06:25] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=25 starting validation
+[2026-06-21 00:06:25] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=25 finished validation val_loss=0.322103
+[2026-06-21 00:06:25] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=25 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6866
+[2026-06-21 00:06:25] [prediction][ae_width_only][cand_025_d1_w26] epoch=25 architecture=[26] train_loss=0.295259 val_loss=0.322103 candidate_best=0.321180 global_best=0.319729 es=5/10
+[2026-06-21 00:06:27] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=26 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:27] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=26 batch=1/2 done gpu_used_mib=15 host_available_mib=6866
+[2026-06-21 00:06:27] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=26 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.296247 running_loss=0.296247
+[2026-06-21 00:06:28] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=26 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:28] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=26 batch=2/2 done gpu_used_mib=15 host_available_mib=6850
+[2026-06-21 00:06:28] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=26 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.294116 running_loss=0.295181
+[2026-06-21 00:06:28] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=26 starting validation
+[2026-06-21 00:06:29] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=26 finished validation val_loss=0.321514
+[2026-06-21 00:06:29] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=26 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6813
+[2026-06-21 00:06:29] [prediction][ae_width_only][cand_025_d1_w26] epoch=26 architecture=[26] train_loss=0.295181 val_loss=0.321514 candidate_best=0.321180 global_best=0.319729 es=6/10
+[2026-06-21 00:06:30] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=27 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:30] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=27 batch=1/2 done gpu_used_mib=15 host_available_mib=6873
+[2026-06-21 00:06:30] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=27 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.307967 running_loss=0.307967
+[2026-06-21 00:06:32] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=27 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:32] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=27 batch=2/2 done gpu_used_mib=15 host_available_mib=6892
+[2026-06-21 00:06:32] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=27 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.282272 running_loss=0.295119
+[2026-06-21 00:06:32] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=27 starting validation
+[2026-06-21 00:06:33] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=27 finished validation val_loss=0.321058
+[2026-06-21 00:06:33] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=27 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6811
+[2026-06-21 00:06:33] [prediction][ae_width_only][cand_025_d1_w26] epoch=27 architecture=[26] train_loss=0.295119 val_loss=0.321058 candidate_best=0.321058 global_best=0.319729 es=0/10
+[2026-06-21 00:06:34] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=28 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:35] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=28 batch=1/2 done gpu_used_mib=15 host_available_mib=6856
+[2026-06-21 00:06:35] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=28 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.295344 running_loss=0.295344
+[2026-06-21 00:06:36] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=28 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:36] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=28 batch=2/2 done gpu_used_mib=15 host_available_mib=6844
+[2026-06-21 00:06:36] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=28 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.294732 running_loss=0.295038
+[2026-06-21 00:06:36] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=28 starting validation
+[2026-06-21 00:06:36] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=28 finished validation val_loss=0.321009
+[2026-06-21 00:06:36] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=28 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6792
+[2026-06-21 00:06:36] [prediction][ae_width_only][cand_025_d1_w26] epoch=28 architecture=[26] train_loss=0.295038 val_loss=0.321009 candidate_best=0.321058 global_best=0.319729 es=1/10
+[2026-06-21 00:06:38] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=29 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:38] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=29 batch=1/2 done gpu_used_mib=15 host_available_mib=6800
+[2026-06-21 00:06:38] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=29 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.296470 running_loss=0.296470
+[2026-06-21 00:06:39] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=29 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:39] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=29 batch=2/2 done gpu_used_mib=15 host_available_mib=6818
+[2026-06-21 00:06:39] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=29 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.293432 running_loss=0.294951
+[2026-06-21 00:06:39] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=29 starting validation
+[2026-06-21 00:06:39] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=29 finished validation val_loss=0.321630
+[2026-06-21 00:06:40] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=29 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6835
+[2026-06-21 00:06:40] [prediction][ae_width_only][cand_025_d1_w26] epoch=29 architecture=[26] train_loss=0.294951 val_loss=0.321630 candidate_best=0.321058 global_best=0.319729 es=2/10
+[2026-06-21 00:06:43] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=30 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:43] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=30 batch=1/2 done gpu_used_mib=15 host_available_mib=6737
+[2026-06-21 00:06:43] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=30 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.301865 running_loss=0.301865
+[2026-06-21 00:06:44] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=30 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:44] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=30 batch=2/2 done gpu_used_mib=15 host_available_mib=6754
+[2026-06-21 00:06:44] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=30 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.287951 running_loss=0.294908
+[2026-06-21 00:06:44] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=30 starting validation
+[2026-06-21 00:06:44] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=30 finished validation val_loss=0.321975
+[2026-06-21 00:06:45] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=30 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6729
+[2026-06-21 00:06:45] [prediction][ae_width_only][cand_025_d1_w26] epoch=30 architecture=[26] train_loss=0.294908 val_loss=0.321975 candidate_best=0.321058 global_best=0.319729 es=3/10
+[2026-06-21 00:06:46] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=31 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:46] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=31 batch=1/2 done gpu_used_mib=15 host_available_mib=6732
+[2026-06-21 00:06:46] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=31 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.296842 running_loss=0.296842
+[2026-06-21 00:06:47] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=31 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:47] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=31 batch=2/2 done gpu_used_mib=15 host_available_mib=6780
+[2026-06-21 00:06:47] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=31 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.292816 running_loss=0.294829
+[2026-06-21 00:06:47] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=31 starting validation
+[2026-06-21 00:06:48] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=31 finished validation val_loss=0.322019
+[2026-06-21 00:06:48] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=31 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6792
+[2026-06-21 00:06:48] [prediction][ae_width_only][cand_025_d1_w26] epoch=31 architecture=[26] train_loss=0.294829 val_loss=0.322019 candidate_best=0.321058 global_best=0.319729 es=4/10
+[2026-06-21 00:06:49] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=32 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:49] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=32 batch=1/2 done gpu_used_mib=15 host_available_mib=6759
+[2026-06-21 00:06:49] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=32 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.294696 running_loss=0.294696
+[2026-06-21 00:06:51] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=32 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:51] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=32 batch=2/2 done gpu_used_mib=15 host_available_mib=6735
+[2026-06-21 00:06:51] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=32 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.294801 running_loss=0.294748
+[2026-06-21 00:06:51] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=32 starting validation
+[2026-06-21 00:06:51] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=32 finished validation val_loss=0.321505
+[2026-06-21 00:06:51] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=32 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6768
+[2026-06-21 00:06:51] [prediction][ae_width_only][cand_025_d1_w26] epoch=32 architecture=[26] train_loss=0.294748 val_loss=0.321505 candidate_best=0.321058 global_best=0.319729 es=5/10
+[2026-06-21 00:06:53] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=33 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:53] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=33 batch=1/2 done gpu_used_mib=15 host_available_mib=6785
+[2026-06-21 00:06:53] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=33 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.304673 running_loss=0.304673
+[2026-06-21 00:06:55] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=33 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:55] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=33 batch=2/2 done gpu_used_mib=15 host_available_mib=6756
+[2026-06-21 00:06:55] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=33 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.284690 running_loss=0.294682
+[2026-06-21 00:06:55] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=33 starting validation
+[2026-06-21 00:06:55] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=33 finished validation val_loss=0.320911
+[2026-06-21 00:06:55] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=33 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6721
+[2026-06-21 00:06:55] [prediction][ae_width_only][cand_025_d1_w26] epoch=33 architecture=[26] train_loss=0.294682 val_loss=0.320911 candidate_best=0.320911 global_best=0.319729 es=0/10
+[2026-06-21 00:06:57] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=34 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:57] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=34 batch=1/2 done gpu_used_mib=15 host_available_mib=6783
+[2026-06-21 00:06:57] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=34 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.295713 running_loss=0.295713
+[2026-06-21 00:06:58] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=34 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:06:58] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=34 batch=2/2 done gpu_used_mib=15 host_available_mib=6758
+[2026-06-21 00:06:58] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=34 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.293534 running_loss=0.294623
+[2026-06-21 00:06:58] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=34 starting validation
+[2026-06-21 00:06:59] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=34 finished validation val_loss=0.320729
+[2026-06-21 00:06:59] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=34 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6747
+[2026-06-21 00:06:59] [prediction][ae_width_only][cand_025_d1_w26] epoch=34 architecture=[26] train_loss=0.294623 val_loss=0.320729 candidate_best=0.320729 global_best=0.319729 es=0/10
+[2026-06-21 00:07:00] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=35 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:00] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=35 batch=1/2 done gpu_used_mib=15 host_available_mib=6732
+[2026-06-21 00:07:00] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=35 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.293046 running_loss=0.293046
+[2026-06-21 00:07:02] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=35 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:02] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=35 batch=2/2 done gpu_used_mib=15 host_available_mib=6735
+[2026-06-21 00:07:02] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=35 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.296131 running_loss=0.294588
+[2026-06-21 00:07:02] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=35 starting validation
+[2026-06-21 00:07:03] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=35 finished validation val_loss=0.320918
+[2026-06-21 00:07:03] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=35 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6727
+[2026-06-21 00:07:03] [prediction][ae_width_only][cand_025_d1_w26] epoch=35 architecture=[26] train_loss=0.294588 val_loss=0.320918 candidate_best=0.320729 global_best=0.319729 es=1/10
+[2026-06-21 00:07:04] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=36 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:04] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=36 batch=1/2 done gpu_used_mib=15 host_available_mib=6824
+[2026-06-21 00:07:04] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=36 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.300745 running_loss=0.300745
+[2026-06-21 00:07:06] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=36 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:06] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=36 batch=2/2 done gpu_used_mib=15 host_available_mib=6786
+[2026-06-21 00:07:06] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=36 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.288265 running_loss=0.294505
+[2026-06-21 00:07:06] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=36 starting validation
+[2026-06-21 00:07:06] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=36 finished validation val_loss=0.320940
+[2026-06-21 00:07:06] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=36 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6775
+[2026-06-21 00:07:06] [prediction][ae_width_only][cand_025_d1_w26] epoch=36 architecture=[26] train_loss=0.294505 val_loss=0.320940 candidate_best=0.320729 global_best=0.319729 es=2/10
+[2026-06-21 00:07:08] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=37 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:08] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=37 batch=1/2 done gpu_used_mib=15 host_available_mib=6767
+[2026-06-21 00:07:08] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=37 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.303022 running_loss=0.303022
+[2026-06-21 00:07:09] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=37 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:10] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=37 batch=2/2 done gpu_used_mib=15 host_available_mib=6791
+[2026-06-21 00:07:10] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=37 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.285836 running_loss=0.294429
+[2026-06-21 00:07:10] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=37 starting validation
+[2026-06-21 00:07:11] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=37 finished validation val_loss=0.321107
+[2026-06-21 00:07:11] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=37 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6851
+[2026-06-21 00:07:11] [prediction][ae_width_only][cand_025_d1_w26] epoch=37 architecture=[26] train_loss=0.294429 val_loss=0.321107 candidate_best=0.320729 global_best=0.319729 es=3/10
+[2026-06-21 00:07:12] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=38 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:12] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=38 batch=1/2 done gpu_used_mib=15 host_available_mib=6844
+[2026-06-21 00:07:12] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=38 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.297152 running_loss=0.297152
+[2026-06-21 00:07:14] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=38 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:14] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=38 batch=2/2 done gpu_used_mib=15 host_available_mib=6837
+[2026-06-21 00:07:14] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=38 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.291650 running_loss=0.294401
+[2026-06-21 00:07:14] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=38 starting validation
+[2026-06-21 00:07:14] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=38 finished validation val_loss=0.321447
+[2026-06-21 00:07:14] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=38 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6878
+[2026-06-21 00:07:14] [prediction][ae_width_only][cand_025_d1_w26] epoch=38 architecture=[26] train_loss=0.294401 val_loss=0.321447 candidate_best=0.320729 global_best=0.319729 es=4/10
+[2026-06-21 00:07:16] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=39 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:16] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=39 batch=1/2 done gpu_used_mib=15 host_available_mib=6893
+[2026-06-21 00:07:16] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=39 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.297307 running_loss=0.297307
+[2026-06-21 00:07:17] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=39 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:17] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=39 batch=2/2 done gpu_used_mib=15 host_available_mib=6888
+[2026-06-21 00:07:17] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=39 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.291374 running_loss=0.294341
+[2026-06-21 00:07:17] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=39 starting validation
+[2026-06-21 00:07:18] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=39 finished validation val_loss=0.321509
+[2026-06-21 00:07:18] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=39 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6868
+[2026-06-21 00:07:18] [prediction][ae_width_only][cand_025_d1_w26] epoch=39 architecture=[26] train_loss=0.294341 val_loss=0.321509 candidate_best=0.320729 global_best=0.319729 es=5/10
+[2026-06-21 00:07:21] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=40 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:21] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=40 batch=1/2 done gpu_used_mib=15 host_available_mib=6847
+[2026-06-21 00:07:21] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=40 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.300325 running_loss=0.300325
+[2026-06-21 00:07:22] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=40 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:23] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=40 batch=2/2 done gpu_used_mib=15 host_available_mib=6840
+[2026-06-21 00:07:23] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=40 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.288234 running_loss=0.294280
+[2026-06-21 00:07:23] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=40 starting validation
+[2026-06-21 00:07:23] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=40 finished validation val_loss=0.321139
+[2026-06-21 00:07:23] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=40 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6832
+[2026-06-21 00:07:23] [prediction][ae_width_only][cand_025_d1_w26] epoch=40 architecture=[26] train_loss=0.294280 val_loss=0.321139 candidate_best=0.320729 global_best=0.319729 es=6/10
+[2026-06-21 00:07:24] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=41 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:25] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=41 batch=1/2 done gpu_used_mib=15 host_available_mib=6758
+[2026-06-21 00:07:25] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=41 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.289341 running_loss=0.289341
+[2026-06-21 00:07:26] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=41 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:26] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=41 batch=2/2 done gpu_used_mib=15 host_available_mib=6794
+[2026-06-21 00:07:26] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=41 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.299075 running_loss=0.294208
+[2026-06-21 00:07:26] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=41 starting validation
+[2026-06-21 00:07:26] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=41 finished validation val_loss=0.320533
+[2026-06-21 00:07:27] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=41 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6795
+[2026-06-21 00:07:27] [prediction][ae_width_only][cand_025_d1_w26] epoch=41 architecture=[26] train_loss=0.294208 val_loss=0.320533 candidate_best=0.320533 global_best=0.319729 es=0/10
+[2026-06-21 00:07:28] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=42 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:28] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=42 batch=1/2 done gpu_used_mib=15 host_available_mib=6813
+[2026-06-21 00:07:28] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=42 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.288855 running_loss=0.288855
+[2026-06-21 00:07:29] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=42 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:29] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=42 batch=2/2 done gpu_used_mib=15 host_available_mib=6787
+[2026-06-21 00:07:29] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=42 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.299485 running_loss=0.294170
+[2026-06-21 00:07:29] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=42 starting validation
+[2026-06-21 00:07:30] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=42 finished validation val_loss=0.320337
+[2026-06-21 00:07:30] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=42 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6805
+[2026-06-21 00:07:30] [prediction][ae_width_only][cand_025_d1_w26] epoch=42 architecture=[26] train_loss=0.294170 val_loss=0.320337 candidate_best=0.320337 global_best=0.319729 es=0/10
+[2026-06-21 00:07:33] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=43 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:33] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=43 batch=1/2 done gpu_used_mib=15 host_available_mib=6942
+[2026-06-21 00:07:33] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=43 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.300486 running_loss=0.300486
+[2026-06-21 00:07:35] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=43 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:35] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=43 batch=2/2 done gpu_used_mib=15 host_available_mib=6899
+[2026-06-21 00:07:35] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=43 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.287761 running_loss=0.294124
+[2026-06-21 00:07:35] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=43 starting validation
+[2026-06-21 00:07:35] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=43 finished validation val_loss=0.320610
+[2026-06-21 00:07:35] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=43 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6931
+[2026-06-21 00:07:35] [prediction][ae_width_only][cand_025_d1_w26] epoch=43 architecture=[26] train_loss=0.294124 val_loss=0.320610 candidate_best=0.320337 global_best=0.319729 es=1/10
+[2026-06-21 00:07:37] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=44 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:37] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=44 batch=1/2 done gpu_used_mib=15 host_available_mib=6846
+[2026-06-21 00:07:37] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=44 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.296750 running_loss=0.296750
+[2026-06-21 00:07:38] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=44 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:38] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=44 batch=2/2 done gpu_used_mib=15 host_available_mib=6884
+[2026-06-21 00:07:38] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=44 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.291344 running_loss=0.294047
+[2026-06-21 00:07:38] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=44 starting validation
+[2026-06-21 00:07:39] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=44 finished validation val_loss=0.320988
+[2026-06-21 00:07:39] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=44 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6870
+[2026-06-21 00:07:39] [prediction][ae_width_only][cand_025_d1_w26] epoch=44 architecture=[26] train_loss=0.294047 val_loss=0.320988 candidate_best=0.320337 global_best=0.319729 es=2/10
+[2026-06-21 00:07:40] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=45 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:40] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=45 batch=1/2 done gpu_used_mib=15 host_available_mib=6841
+[2026-06-21 00:07:40] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=45 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.296621 running_loss=0.296621
+[2026-06-21 00:07:42] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=45 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:42] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=45 batch=2/2 done gpu_used_mib=15 host_available_mib=6851
+[2026-06-21 00:07:42] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=45 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.291371 running_loss=0.293996
+[2026-06-21 00:07:42] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=45 starting validation
+[2026-06-21 00:07:43] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=45 finished validation val_loss=0.321256
+[2026-06-21 00:07:43] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=45 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6852
+[2026-06-21 00:07:43] [prediction][ae_width_only][cand_025_d1_w26] epoch=45 architecture=[26] train_loss=0.293996 val_loss=0.321256 candidate_best=0.320337 global_best=0.319729 es=3/10
+[2026-06-21 00:07:44] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=46 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:45] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=46 batch=1/2 done gpu_used_mib=15 host_available_mib=6850
+[2026-06-21 00:07:45] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=46 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.287304 running_loss=0.287304
+[2026-06-21 00:07:46] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=46 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:46] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=46 batch=2/2 done gpu_used_mib=15 host_available_mib=6828
+[2026-06-21 00:07:46] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=46 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.300586 running_loss=0.293945
+[2026-06-21 00:07:46] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=46 starting validation
+[2026-06-21 00:07:47] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=46 finished validation val_loss=0.321184
+[2026-06-21 00:07:47] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=46 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6790
+[2026-06-21 00:07:47] [prediction][ae_width_only][cand_025_d1_w26] epoch=46 architecture=[26] train_loss=0.293945 val_loss=0.321184 candidate_best=0.320337 global_best=0.319729 es=4/10
+[2026-06-21 00:07:48] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=47 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:49] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=47 batch=1/2 done gpu_used_mib=15 host_available_mib=6828
+[2026-06-21 00:07:49] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=47 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.292575 running_loss=0.292575
+[2026-06-21 00:07:50] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=47 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:50] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=47 batch=2/2 done gpu_used_mib=15 host_available_mib=6845
+[2026-06-21 00:07:50] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=47 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.295220 running_loss=0.293898
+[2026-06-21 00:07:50] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=47 starting validation
+[2026-06-21 00:07:52] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=47 finished validation val_loss=0.320882
+[2026-06-21 00:07:53] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=47 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6808
+[2026-06-21 00:07:53] [prediction][ae_width_only][cand_025_d1_w26] epoch=47 architecture=[26] train_loss=0.293898 val_loss=0.320882 candidate_best=0.320337 global_best=0.319729 es=5/10
+[2026-06-21 00:07:54] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=48 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:54] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=48 batch=1/2 done gpu_used_mib=15 host_available_mib=6804
+[2026-06-21 00:07:54] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=48 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.290009 running_loss=0.290009
+[2026-06-21 00:07:55] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=48 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:55] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=48 batch=2/2 done gpu_used_mib=15 host_available_mib=6818
+[2026-06-21 00:07:55] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=48 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.297701 running_loss=0.293855
+[2026-06-21 00:07:55] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=48 starting validation
+[2026-06-21 00:07:56] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=48 finished validation val_loss=0.320632
+[2026-06-21 00:07:56] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=48 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6807
+[2026-06-21 00:07:56] [prediction][ae_width_only][cand_025_d1_w26] epoch=48 architecture=[26] train_loss=0.293855 val_loss=0.320632 candidate_best=0.320337 global_best=0.319729 es=6/10
+[2026-06-21 00:07:57] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=49 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:58] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=49 batch=1/2 done gpu_used_mib=15 host_available_mib=6867
+[2026-06-21 00:07:58] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=49 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.291445 running_loss=0.291445
+[2026-06-21 00:07:59] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=49 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:07:59] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=49 batch=2/2 done gpu_used_mib=15 host_available_mib=6842
+[2026-06-21 00:07:59] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=49 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.296187 running_loss=0.293816
+[2026-06-21 00:07:59] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=49 starting validation
+[2026-06-21 00:08:00] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=49 finished validation val_loss=0.320481
+[2026-06-21 00:08:00] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=49 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6822
+[2026-06-21 00:08:00] [prediction][ae_width_only][cand_025_d1_w26] epoch=49 architecture=[26] train_loss=0.293816 val_loss=0.320481 candidate_best=0.320337 global_best=0.319729 es=7/10
+[2026-06-21 00:08:03] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=50 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:08:03] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=50 batch=1/2 done gpu_used_mib=15 host_available_mib=6803
+[2026-06-21 00:08:03] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=50 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.293533 running_loss=0.293533
+[2026-06-21 00:08:04] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=50 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:08:04] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=50 batch=2/2 done gpu_used_mib=15 host_available_mib=6818
+[2026-06-21 00:08:04] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=50 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.293977 running_loss=0.293755
+[2026-06-21 00:08:04] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=50 starting validation
+[2026-06-21 00:08:05] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=50 finished validation val_loss=0.320511
+[2026-06-21 00:08:05] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=50 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6801
+[2026-06-21 00:08:05] [prediction][ae_width_only][cand_025_d1_w26] epoch=50 architecture=[26] train_loss=0.293755 val_loss=0.320511 candidate_best=0.320337 global_best=0.319729 es=8/10
+[2026-06-21 00:08:06] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=51 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:08:06] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=51 batch=1/2 done gpu_used_mib=15 host_available_mib=6757
+[2026-06-21 00:08:06] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=51 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.307845 running_loss=0.307845
+[2026-06-21 00:08:07] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=51 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:08:08] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=51 batch=2/2 done gpu_used_mib=15 host_available_mib=6804
+[2026-06-21 00:08:08] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=51 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.279664 running_loss=0.293755
+[2026-06-21 00:08:08] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=51 starting validation
+[2026-06-21 00:08:08] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=51 finished validation val_loss=0.320665
+[2026-06-21 00:08:08] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=51 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6831
+[2026-06-21 00:08:08] [prediction][ae_width_only][cand_025_d1_w26] epoch=51 architecture=[26] train_loss=0.293755 val_loss=0.320665 candidate_best=0.320337 global_best=0.319729 es=9/10
+[2026-06-21 00:08:09] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=52 batch=1/2 start path=checkpoint_last.pt
+[2026-06-21 00:08:09] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=52 batch=1/2 done gpu_used_mib=15 host_available_mib=6821
+[2026-06-21 00:08:09] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=52 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.292995 running_loss=0.292995
+[2026-06-21 00:08:11] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=52 batch=2/2 start path=checkpoint_last.pt
+[2026-06-21 00:08:11] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=52 batch=2/2 done gpu_used_mib=15 host_available_mib=6840
+[2026-06-21 00:08:11] [BATCH] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=52 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.294343 running_loss=0.293669
+[2026-06-21 00:08:11] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=52 starting validation
+[2026-06-21 00:08:11] [VAL] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=52 finished validation val_loss=0.321027
+[2026-06-21 00:08:11] [CKPT] task=prediction phase=ae_width_only candidate=cand_025_d1_w26 epoch=52 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=6832
+[2026-06-21 00:08:11] [prediction][ae_width_only][cand_025_d1_w26] epoch=52 architecture=[26] train_loss=0.293669 val_loss=0.321027 candidate_best=0.320337 global_best=0.319729 es=10/10

@@ -1,0 +1,14 @@
+[2026-06-20 21:49:12] Initialized ContinuousLogger for simulation_ae_width_only (Mode: ae_width_only)
+[2026-06-20 21:49:12] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_02/d01/simulation/ae_width_only/cand_000_d1_w1/training_log.txt
+[2026-06-20 21:49:12] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/simulation/repeat_02/d01/simulation/ae_width_only/cand_000_d1_w1/training_stats.csv
+[2026-06-20 21:49:12] [CANDIDATE] task=simulation phase=ae_width_only index=0 search_phase=width architecture=[1]
+[2026-06-20 21:49:13] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=741 batch=1/2 start path=checkpoint_last.pt
+[2026-06-20 21:49:13] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=741 batch=1/2 done gpu_used_mib=15 host_available_mib=2775
+[2026-06-20 21:49:13] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=741 batch=1/2 batch_size=8256 running_batches=1 batch_loss=1.707675 running_loss=1.707675
+[2026-06-20 21:49:14] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=741 batch=2/2 start path=checkpoint_last.pt
+[2026-06-20 21:49:14] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=741 batch=2/2 done gpu_used_mib=15 host_available_mib=2728
+[2026-06-20 21:49:14] [BATCH] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=741 batch=2/2 batch_size=8256 running_batches=2 batch_loss=1.695733 running_loss=1.701704
+[2026-06-20 21:49:14] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=741 starting validation
+[2026-06-20 21:49:15] [VAL] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=741 finished validation val_loss=0.784851
+[2026-06-20 21:49:15] [CKPT] task=simulation phase=ae_width_only candidate=cand_000_d1_w1 epoch=741 done path=checkpoint_last.pt gpu_used_mib=15 host_available_mib=2711
+[2026-06-20 21:49:15] [simulation][ae_width_only][cand_000_d1_w1] epoch=741 architecture=[1] train_loss=1.701704 val_loss=0.784851 candidate_best=0.761546 global_best=0.761546 es=11/10

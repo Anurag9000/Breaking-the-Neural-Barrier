@@ -1,0 +1,144 @@
+{
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 0,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "depth_expansion_patience": 2,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 100000000,
+    "max_neurons": 10000000,
+    "max_width": 10000000000,
+    "metrics_every": 0,
+    "min_width": 16,
+    "num_workers": 0,
+    "parameter_band": null,
+    "parameter_matched": false,
+    "patience": 10,
+    "phases": [
+      "ae_width_only"
+    ],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_05/d01",
+    "seed": 0,
+    "stl_depth": 1,
+    "stl_width": 128,
+    "tasks": [
+      "prediction"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_count_per_depth": 10,
+    "width_expansion_patience": 10,
+    "width_stage_margin_patience": 10,
+    "width_stage_min_improve_pct": 1.0,
+    "width_step": 16
+  },
+  "device": "cpu",
+  "git_commit": "f5cc76d508790208e390cb6ea77dd9da007411fd",
+  "run_root": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_05/d01",
+  "summary": {
+    "num_tasks_completed": 1,
+    "num_tasks_requested": 1,
+    "tasks_completed": [
+      "prediction"
+    ],
+    "tasks_requested": [
+      "prediction"
+    ]
+  },
+  "tasks": [
+    {
+      "adp_runs": [
+        {
+          "architecture": [
+            121
+          ],
+          "best_epoch": 8,
+          "best_val": 0.2872466742992401,
+          "candidate_dir": "cand_120_d1_w121",
+          "final_epoch": 8,
+          "mode": "width_only",
+          "phase": "ae_width_only",
+          "test_metrics": null
+        }
+      ],
+      "baseline_comparisons": [],
+      "baseline_stl_runs": [],
+      "comparisons": [
+        {
+          "adp_architecture": [
+            121
+          ],
+          "adp_best_val": 0.2872466742992401,
+          "adp_phase": "ae_width_only",
+          "stl_architecture": [
+            121
+          ],
+          "stl_best_val": 0.3036608099937439,
+          "stl_phase": "stl_from_ae_width_only",
+          "task": "prediction",
+          "winner": "adp",
+          "winner_phase": "ae_width_only",
+          "winner_value": 0.2872466742992401
+        }
+      ],
+      "paired_stl_runs": [
+        {
+          "adp_architecture": [
+            121
+          ],
+          "adp_best_val": 0.2872466742992401,
+          "adp_phase": "ae_width_only",
+          "stl_architecture": [
+            121
+          ],
+          "stl_best_val": 0.3036608099937439,
+          "stl_phase": "stl_from_ae_width_only",
+          "stl_run": {
+            "architecture": [
+              121
+            ],
+            "best_epoch": 622,
+            "best_val": 0.3036608099937439,
+            "candidate_dir": "cand_000_d1_w121",
+            "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_05/d01/prediction/stl_from_ae_width_only/cand_000_d1_w121/checkpoint_best.pt",
+            "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/prediction/repeat_05/d01/prediction/stl_from_ae_width_only/cand_000_d1_w121/checkpoint_last.pt",
+            "final_epoch": 632,
+            "phase": "stl_from_ae_width_only",
+            "resumed": false,
+            "source_phase": "ae_width_only",
+            "task": "prediction",
+            "test_metrics": {
+              "test_loss": 0.2970689535140991
+            }
+          },
+          "winner": "adp",
+          "winner_phase": "ae_width_only",
+          "winner_value": 0.2872466742992401
+        }
+      ],
+      "task": "prediction",
+      "winner": {
+        "adp_architecture": [
+          121
+        ],
+        "adp_best_val": 0.2872466742992401,
+        "adp_phase": "ae_width_only",
+        "stl_architecture": [
+          121
+        ],
+        "stl_best_val": 0.3036608099937439,
+        "stl_phase": "stl_from_ae_width_only",
+        "task": "prediction",
+        "winner": "adp",
+        "winner_phase": "ae_width_only",
+        "winner_value": 0.2872466742992401
+      }
+    }
+  ]
+}
