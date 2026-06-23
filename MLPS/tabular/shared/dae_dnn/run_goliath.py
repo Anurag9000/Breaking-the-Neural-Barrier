@@ -635,8 +635,11 @@ def save_checkpoint(
                 signal.setitimer(signal.ITIMER_REAL, 0.0)
                 if previous_handler is not None:
                     signal.signal(signal.SIGALRM, previous_handler)
-        with tmp_path.open("rb") as f:
-            os.fsync(f.fileno())
+        try:
+            with tmp_path.open("r+b") as f:
+                os.fsync(f.fileno())
+        except OSError:
+            pass
         os.replace(tmp_path, path)
         try:
             dir_fd = os.open(str(path.parent), os.O_RDONLY)
