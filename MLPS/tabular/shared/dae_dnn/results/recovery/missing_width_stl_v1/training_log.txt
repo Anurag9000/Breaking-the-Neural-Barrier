@@ -1232,3 +1232,34 @@
 [2026-06-23 11:27:13] [STATE] host admission gate blocked until a child completes
 [2026-06-23 11:27:13] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
 [2026-06-23 11:29:14] [STATE] admission gate reopened by >500MiB external drop or thresholds met host_drop=507.0 gpu_drop=0.0 host_used_pct=80.76
+[2026-06-23 15:19:22] Initialized ContinuousLogger for missing_width_stl_recovery (Mode: pressure_aware_recovery)
+[2026-06-23 15:19:22] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_log.txt
+[2026-06-23 15:19:22] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_stats.csv
+[2026-06-23 15:19:33] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1
+[2026-06-23 15:19:33] Jobs: 189
+[2026-06-23 15:19:33] Max active jobs: 189
+[2026-06-23 15:19:33] Max active GPU jobs: 0
+[2026-06-23 15:19:33] Batch backoff factor: 0.500
+[2026-06-23 15:19:33] Batch backoff scale: 1.000000
+[2026-06-23 15:19:34] [TASK] launch width_only:classification:r02:d01 params=640000000007 device=cpu batch_scale=1.000000 host_used_pct=37.24 swap_used_pct=64.03 gpu_used_pct=0.24 active=1/189
+[2026-06-23 15:39:08] Initialized ContinuousLogger for missing_width_stl_recovery (Mode: pressure_aware_recovery)
+[2026-06-23 15:39:08] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_log.txt
+[2026-06-23 15:39:08] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_stats.csv
+[2026-06-23 15:39:18] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1
+[2026-06-23 15:39:18] Jobs: 189
+[2026-06-23 15:39:18] Max active jobs: 189
+[2026-06-23 15:39:18] Max active GPU jobs: 0
+[2026-06-23 15:39:18] Batch backoff factor: 0.500
+[2026-06-23 15:39:18] Batch backoff scale: 1.000000
+[2026-06-23 15:39:20] [TASK] launch width_only:classification:r02:d01 params=640000000007 device=cpu batch_scale=1.000000 host_used_pct=37.19 swap_used_pct=61.61 gpu_used_pct=0.24 active=1/189
+[2026-06-23 15:39:25] [TASK] requeued width_only:classification:r02:d01 exit=1 pause=False
+[2026-06-23 15:39:25] [STATE] admission gate reopened by genuine process completion
+[2026-06-23 15:39:52] [TASK] launch width_only:classification:r02:d01 params=640000000007 device=cpu batch_scale=1.000000 host_used_pct=40.01 swap_used_pct=61.25 gpu_used_pct=0.24 active=1/189
+[2026-06-23 15:39:57] [TASK] requeued width_only:classification:r02:d01 exit=1 pause=False
+[2026-06-23 15:39:57] [STATE] admission gate reopened by genuine process completion
+[2026-06-23 15:40:24] [TASK] launch width_only:classification:r02:d01 params=640000000007 device=cpu batch_scale=1.000000 host_used_pct=37.40 swap_used_pct=61.20 gpu_used_pct=0.24 active=1/189
+[2026-06-23 15:40:29] [TASK] requeued width_only:classification:r02:d01 exit=1 pause=False
+[2026-06-23 15:40:29] [STATE] admission gate reopened by genuine process completion
+[2026-06-23 15:40:56] [TASK] launch width_only:classification:r02:d01 params=640000000007 device=cpu batch_scale=1.000000 host_used_pct=38.13 swap_used_pct=61.20 gpu_used_pct=0.24 active=1/189
+[2026-06-23 15:41:01] [TASK] requeued width_only:classification:r02:d01 exit=1 pause=False
+[2026-06-23 15:41:01] [STATE] admission gate reopened by genuine process completion
