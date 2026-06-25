@@ -1,0 +1,630 @@
+[2026-06-23 07:31:48] Initialized ContinuousLogger for prediction_stl_ablation_r02_d04_w1822_1822_1822_1822_1822 (Mode: stl_ablation_r02_d04_w1822_1822_1822_1822_1822)
+[2026-06-23 07:31:48] Logs: MLPS\tabular\shared\dae_dnn\results\stl\ablation\parammatched_decade_v1_param_10pow07_08_fresh_v1\prediction\_children\stl_ablation_r01_d04_w1822_1822_1822_1822_1822\prediction\stl_ablation_r02_d04_w1822_1822_1822_1822_1822\cand_000_d4_w1822\training_log.txt
+[2026-06-23 07:31:48] CSV: MLPS\tabular\shared\dae_dnn\results\stl\ablation\parammatched_decade_v1_param_10pow07_08_fresh_v1\prediction\_children\stl_ablation_r01_d04_w1822_1822_1822_1822_1822\prediction\stl_ablation_r02_d04_w1822_1822_1822_1822_1822\cand_000_d4_w1822\training_stats.csv
+[2026-06-23 07:32:56] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=1 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 07:32:59] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=1 batch=1/2 done gpu_used_mib=209 host_available_mib=11727
+[2026-06-23 07:32:59] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=1 batch=1/2 batch_size=8256 running_batches=1 batch_loss=5.878665 running_loss=5.878665
+[2026-06-23 07:33:36] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=1 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 07:33:37] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=1 batch=2/2 done gpu_used_mib=199 host_available_mib=11859
+[2026-06-23 07:33:37] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=1 batch=2/2 batch_size=8256 running_batches=2 batch_loss=10.680991 running_loss=8.279828
+[2026-06-23 07:33:37] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=1 starting validation
+[2026-06-23 07:33:40] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=1 finished validation val_loss=4.708607
+[2026-06-23 07:33:44] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=1 done path=checkpoint_last.pt gpu_used_mib=181 host_available_mib=11611
+[2026-06-23 07:33:44] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=1 architecture=[1822, 1822, 1822, 1822] train_loss=8.279828 val_loss=4.708607 candidate_best=4.708607 global_best=4.708607 es=0/10
+[2026-06-23 07:34:12] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=2 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 07:34:13] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=2 batch=1/2 done gpu_used_mib=174 host_available_mib=11841
+[2026-06-23 07:34:13] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=2 batch=1/2 batch_size=8256 running_batches=1 batch_loss=4.715390 running_loss=4.715390
+[2026-06-23 07:34:42] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=2 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 07:34:44] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=2 batch=2/2 done gpu_used_mib=235 host_available_mib=11825
+[2026-06-23 07:34:44] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=2 batch=2/2 batch_size=8256 running_batches=2 batch_loss=43.581741 running_loss=24.148566
+[2026-06-23 07:34:44] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=2 starting validation
+[2026-06-23 07:34:49] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=2 finished validation val_loss=50.548027
+[2026-06-23 07:34:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=2 done path=checkpoint_last.pt gpu_used_mib=235 host_available_mib=12480
+[2026-06-23 07:34:50] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=2 architecture=[1822, 1822, 1822, 1822] train_loss=24.148566 val_loss=50.548027 candidate_best=4.708607 global_best=4.708607 es=1/10
+[2026-06-23 07:35:49] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=3 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 07:35:52] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=3 batch=1/2 done gpu_used_mib=224 host_available_mib=10994
+[2026-06-23 07:35:52] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=3 batch=1/2 batch_size=8256 running_batches=1 batch_loss=38.392551 running_loss=38.392551
+[2026-06-23 07:36:31] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=3 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 07:36:31] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=3 batch=2/2 done gpu_used_mib=250 host_available_mib=11443
+[2026-06-23 07:36:31] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=3 batch=2/2 batch_size=8256 running_batches=2 batch_loss=5.516670 running_loss=21.954611
+[2026-06-23 07:36:32] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=3 starting validation
+[2026-06-23 07:36:35] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=3 finished validation val_loss=2.595115
+[2026-06-23 07:36:40] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=3 done path=checkpoint_last.pt gpu_used_mib=250 host_available_mib=11376
+[2026-06-23 07:36:40] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=3 architecture=[1822, 1822, 1822, 1822] train_loss=21.954611 val_loss=2.595115 candidate_best=2.595115 global_best=2.595115 es=0/10
+[2026-06-23 07:37:26] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=4 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 07:37:29] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=4 batch=1/2 done gpu_used_mib=250 host_available_mib=11388
+[2026-06-23 07:37:29] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=4 batch=1/2 batch_size=8256 running_batches=1 batch_loss=2.731359 running_loss=2.731359
+[2026-06-23 07:38:40] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=4 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 07:38:43] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=4 batch=2/2 done gpu_used_mib=248 host_available_mib=11787
+[2026-06-23 07:38:43] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=4 batch=2/2 batch_size=8256 running_batches=2 batch_loss=2.314011 running_loss=2.522685
+[2026-06-23 07:38:44] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=4 starting validation
+[2026-06-23 07:38:59] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=4 finished validation val_loss=1.369840
+[2026-06-23 07:39:04] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=4 done path=checkpoint_last.pt gpu_used_mib=248 host_available_mib=11797
+[2026-06-23 07:39:04] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=4 architecture=[1822, 1822, 1822, 1822] train_loss=2.522685 val_loss=1.369840 candidate_best=1.369840 global_best=1.369840 es=0/10
+[2026-06-23 07:40:33] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=5 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 07:40:34] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=5 batch=1/2 done gpu_used_mib=248 host_available_mib=12390
+[2026-06-23 07:40:34] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=5 batch=1/2 batch_size=8256 running_batches=1 batch_loss=1.117622 running_loss=1.117622
+[2026-06-23 07:42:11] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=5 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 07:42:15] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=5 batch=2/2 done gpu_used_mib=248 host_available_mib=12175
+[2026-06-23 07:42:15] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=5 batch=2/2 batch_size=8256 running_batches=2 batch_loss=1.959276 running_loss=1.538449
+[2026-06-23 07:42:16] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=5 starting validation
+[2026-06-23 07:42:24] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=5 finished validation val_loss=1.462978
+[2026-06-23 07:42:28] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=5 done path=checkpoint_last.pt gpu_used_mib=248 host_available_mib=12008
+[2026-06-23 07:42:28] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=5 architecture=[1822, 1822, 1822, 1822] train_loss=1.538449 val_loss=1.462978 candidate_best=1.369840 global_best=1.369840 es=1/10
+[2026-06-23 07:43:38] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=6 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 07:43:40] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=6 batch=1/2 done gpu_used_mib=0 host_available_mib=11350
+[2026-06-23 07:43:40] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=6 batch=1/2 batch_size=8256 running_batches=1 batch_loss=1.331014 running_loss=1.331014
+[2026-06-23 07:44:42] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=6 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 07:44:44] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=6 batch=2/2 done gpu_used_mib=0 host_available_mib=11371
+[2026-06-23 07:44:44] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=6 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.957433 running_loss=1.144223
+[2026-06-23 07:44:44] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=6 starting validation
+[2026-06-23 07:44:50] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=6 finished validation val_loss=0.878137
+[2026-06-23 07:44:54] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=6 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11846
+[2026-06-23 07:44:54] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=6 architecture=[1822, 1822, 1822, 1822] train_loss=1.144223 val_loss=0.878137 candidate_best=0.878137 global_best=0.878137 es=0/10
+[2026-06-23 07:45:59] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=7 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 07:46:01] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=7 batch=1/2 done gpu_used_mib=0 host_available_mib=11663
+[2026-06-23 07:46:01] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=7 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.937234 running_loss=0.937234
+[2026-06-23 07:46:57] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=7 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 07:47:00] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=7 batch=2/2 done gpu_used_mib=0 host_available_mib=12354
+[2026-06-23 07:47:00] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=7 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.748075 running_loss=0.842654
+[2026-06-23 07:47:00] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=7 starting validation
+[2026-06-23 07:47:07] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=7 finished validation val_loss=0.685438
+[2026-06-23 07:47:13] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=7 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=12205
+[2026-06-23 07:47:13] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=7 architecture=[1822, 1822, 1822, 1822] train_loss=0.842654 val_loss=0.685438 candidate_best=0.685438 global_best=0.685438 es=0/10
+[2026-06-23 07:48:20] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=8 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 07:48:26] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=8 batch=1/2 done gpu_used_mib=9 host_available_mib=11716
+[2026-06-23 07:48:26] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=8 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.694393 running_loss=0.694393
+[2026-06-23 07:50:19] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=8 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 07:50:25] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=8 batch=2/2 done gpu_used_mib=0 host_available_mib=11643
+[2026-06-23 07:50:25] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=8 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.786727 running_loss=0.740560
+[2026-06-23 07:50:26] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=8 starting validation
+[2026-06-23 07:50:34] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=8 finished validation val_loss=0.719168
+[2026-06-23 07:50:38] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=8 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11318
+[2026-06-23 07:50:38] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=8 architecture=[1822, 1822, 1822, 1822] train_loss=0.740560 val_loss=0.719168 candidate_best=0.685438 global_best=0.685438 es=1/10
+[2026-06-23 07:52:12] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=9 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 07:52:18] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=9 batch=1/2 done gpu_used_mib=0 host_available_mib=11540
+[2026-06-23 07:52:18] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=9 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.762768 running_loss=0.762768
+[2026-06-23 07:54:08] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=9 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 07:54:12] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=9 batch=2/2 done gpu_used_mib=0 host_available_mib=12012
+[2026-06-23 07:54:12] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=9 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.694317 running_loss=0.728542
+[2026-06-23 07:54:13] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=9 starting validation
+[2026-06-23 07:54:22] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=9 finished validation val_loss=0.644439
+[2026-06-23 07:54:24] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=9 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11976
+[2026-06-23 07:54:24] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=9 architecture=[1822, 1822, 1822, 1822] train_loss=0.728542 val_loss=0.644439 candidate_best=0.644439 global_best=0.644439 es=0/10
+[2026-06-23 07:56:01] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=10 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 07:56:04] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=10 batch=1/2 done gpu_used_mib=0 host_available_mib=11402
+[2026-06-23 07:56:04] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=10 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.634843 running_loss=0.634843
+[2026-06-23 07:57:15] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=10 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 07:57:19] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=10 batch=2/2 done gpu_used_mib=0 host_available_mib=11636
+[2026-06-23 07:57:19] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=10 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.584137 running_loss=0.609490
+[2026-06-23 07:57:19] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=10 starting validation
+[2026-06-23 07:57:27] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=10 finished validation val_loss=0.536898
+[2026-06-23 07:57:29] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=10 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11292
+[2026-06-23 07:57:29] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=10 architecture=[1822, 1822, 1822, 1822] train_loss=0.609490 val_loss=0.536898 candidate_best=0.536898 global_best=0.536898 es=0/10
+[2026-06-23 07:58:42] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=11 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 07:58:48] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=11 batch=1/2 done gpu_used_mib=0 host_available_mib=11365
+[2026-06-23 07:58:48] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=11 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.545518 running_loss=0.545518
+[2026-06-23 08:00:00] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=11 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:00:02] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=11 batch=2/2 done gpu_used_mib=0 host_available_mib=11857
+[2026-06-23 08:00:02] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=11 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.573142 running_loss=0.559330
+[2026-06-23 08:00:02] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=11 starting validation
+[2026-06-23 08:00:08] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=11 finished validation val_loss=0.538359
+[2026-06-23 08:00:10] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=11 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11844
+[2026-06-23 08:00:10] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=11 architecture=[1822, 1822, 1822, 1822] train_loss=0.559330 val_loss=0.538359 candidate_best=0.536898 global_best=0.536898 es=1/10
+[2026-06-23 08:01:24] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=12 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:01:28] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=12 batch=1/2 done gpu_used_mib=0 host_available_mib=11075
+[2026-06-23 08:01:28] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=12 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.541427 running_loss=0.541427
+[2026-06-23 08:02:42] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=12 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:02:43] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=12 batch=2/2 done gpu_used_mib=0 host_available_mib=11230
+[2026-06-23 08:02:43] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=12 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.539230 running_loss=0.540328
+[2026-06-23 08:02:43] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=12 starting validation
+[2026-06-23 08:02:49] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=12 finished validation val_loss=0.442485
+[2026-06-23 08:02:54] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=12 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11198
+[2026-06-23 08:02:54] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=12 architecture=[1822, 1822, 1822, 1822] train_loss=0.540328 val_loss=0.442485 candidate_best=0.442485 global_best=0.442485 es=0/10
+[2026-06-23 08:04:01] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=13 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:04:06] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=13 batch=1/2 done gpu_used_mib=0 host_available_mib=11654
+[2026-06-23 08:04:06] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=13 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.466397 running_loss=0.466397
+[2026-06-23 08:05:25] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=13 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:05:26] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=13 batch=2/2 done gpu_used_mib=0 host_available_mib=10911
+[2026-06-23 08:05:26] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=13 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.563714 running_loss=0.515055
+[2026-06-23 08:05:26] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=13 starting validation
+[2026-06-23 08:05:31] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=13 finished validation val_loss=0.567995
+[2026-06-23 08:05:32] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=13 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11427
+[2026-06-23 08:05:32] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=13 architecture=[1822, 1822, 1822, 1822] train_loss=0.515055 val_loss=0.567995 candidate_best=0.442485 global_best=0.442485 es=1/10
+[2026-06-23 08:06:44] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=14 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:06:46] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=14 batch=1/2 done gpu_used_mib=0 host_available_mib=11353
+[2026-06-23 08:06:46] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=14 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.565776 running_loss=0.565776
+[2026-06-23 08:08:01] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=14 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:08:04] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=14 batch=2/2 done gpu_used_mib=0 host_available_mib=11339
+[2026-06-23 08:08:04] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=14 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.438940 running_loss=0.502358
+[2026-06-23 08:08:05] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=14 starting validation
+[2026-06-23 08:08:12] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=14 finished validation val_loss=0.420521
+[2026-06-23 08:08:14] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=14 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11112
+[2026-06-23 08:08:14] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=14 architecture=[1822, 1822, 1822, 1822] train_loss=0.502358 val_loss=0.420521 candidate_best=0.420521 global_best=0.420521 es=0/10
+[2026-06-23 08:09:28] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=15 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:09:31] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=15 batch=1/2 done gpu_used_mib=0 host_available_mib=11343
+[2026-06-23 08:09:31] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=15 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.436073 running_loss=0.436073
+[2026-06-23 08:10:44] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=15 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:10:46] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=15 batch=2/2 done gpu_used_mib=0 host_available_mib=11260
+[2026-06-23 08:10:46] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=15 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.454349 running_loss=0.445211
+[2026-06-23 08:10:46] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=15 starting validation
+[2026-06-23 08:10:54] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=15 finished validation val_loss=0.435922
+[2026-06-23 08:10:58] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=15 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11577
+[2026-06-23 08:10:58] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=15 architecture=[1822, 1822, 1822, 1822] train_loss=0.445211 val_loss=0.435922 candidate_best=0.420521 global_best=0.420521 es=1/10
+[2026-06-23 08:12:12] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=16 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:12:15] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=16 batch=1/2 done gpu_used_mib=0 host_available_mib=11061
+[2026-06-23 08:12:15] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=16 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.427583 running_loss=0.427583
+[2026-06-23 08:13:29] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=16 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:13:32] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=16 batch=2/2 done gpu_used_mib=0 host_available_mib=11076
+[2026-06-23 08:13:32] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=16 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.430033 running_loss=0.428808
+[2026-06-23 08:13:32] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=16 starting validation
+[2026-06-23 08:13:38] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=16 finished validation val_loss=0.388278
+[2026-06-23 08:13:41] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=16 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=10975
+[2026-06-23 08:13:41] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=16 architecture=[1822, 1822, 1822, 1822] train_loss=0.428808 val_loss=0.388278 candidate_best=0.388278 global_best=0.388278 es=0/10
+[2026-06-23 08:14:53] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=17 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:14:57] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=17 batch=1/2 done gpu_used_mib=0 host_available_mib=11476
+[2026-06-23 08:14:57] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=17 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.390229 running_loss=0.390229
+[2026-06-23 08:16:09] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=17 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:16:10] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=17 batch=2/2 done gpu_used_mib=0 host_available_mib=10908
+[2026-06-23 08:16:10] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=17 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.482610 running_loss=0.436420
+[2026-06-23 08:16:10] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=17 starting validation
+[2026-06-23 08:16:18] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=17 finished validation val_loss=0.450112
+[2026-06-23 08:16:21] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=17 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11772
+[2026-06-23 08:16:21] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=17 architecture=[1822, 1822, 1822, 1822] train_loss=0.436420 val_loss=0.450112 candidate_best=0.388278 global_best=0.388278 es=1/10
+[2026-06-23 08:17:31] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=18 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:17:33] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=18 batch=1/2 done gpu_used_mib=0 host_available_mib=10741
+[2026-06-23 08:17:33] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=18 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.436870 running_loss=0.436870
+[2026-06-23 08:18:48] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=18 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:18:51] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=18 batch=2/2 done gpu_used_mib=0 host_available_mib=11156
+[2026-06-23 08:18:51] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=18 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.392216 running_loss=0.414543
+[2026-06-23 08:18:51] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=18 starting validation
+[2026-06-23 08:18:58] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=18 finished validation val_loss=0.393459
+[2026-06-23 08:18:59] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=18 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11062
+[2026-06-23 08:18:59] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=18 architecture=[1822, 1822, 1822, 1822] train_loss=0.414543 val_loss=0.393459 candidate_best=0.388278 global_best=0.388278 es=2/10
+[2026-06-23 08:20:14] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=19 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:20:16] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=19 batch=1/2 done gpu_used_mib=0 host_available_mib=10839
+[2026-06-23 08:20:16] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=19 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.409002 running_loss=0.409002
+[2026-06-23 08:21:24] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=19 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:21:25] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=19 batch=2/2 done gpu_used_mib=0 host_available_mib=11246
+[2026-06-23 08:21:25] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=19 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.400504 running_loss=0.404753
+[2026-06-23 08:21:25] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=19 starting validation
+[2026-06-23 08:21:32] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=19 finished validation val_loss=0.389229
+[2026-06-23 08:21:33] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=19 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11224
+[2026-06-23 08:21:33] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=19 architecture=[1822, 1822, 1822, 1822] train_loss=0.404753 val_loss=0.389229 candidate_best=0.388278 global_best=0.388278 es=3/10
+[2026-06-23 08:22:47] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=20 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:22:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=20 batch=1/2 done gpu_used_mib=0 host_available_mib=11051
+[2026-06-23 08:22:50] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=20 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.388036 running_loss=0.388036
+[2026-06-23 08:24:08] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=20 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:24:11] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=20 batch=2/2 done gpu_used_mib=0 host_available_mib=10812
+[2026-06-23 08:24:11] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=20 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.391098 running_loss=0.389567
+[2026-06-23 08:24:11] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=20 starting validation
+[2026-06-23 08:24:17] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=20 finished validation val_loss=0.378137
+[2026-06-23 08:24:20] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=20 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=10760
+[2026-06-23 08:24:20] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=20 architecture=[1822, 1822, 1822, 1822] train_loss=0.389567 val_loss=0.378137 candidate_best=0.378137 global_best=0.378137 es=0/10
+[2026-06-23 08:25:33] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=21 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:25:37] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=21 batch=1/2 done gpu_used_mib=0 host_available_mib=10926
+[2026-06-23 08:25:37] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=21 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.390225 running_loss=0.390225
+[2026-06-23 08:26:48] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=21 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:26:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=21 batch=2/2 done gpu_used_mib=0 host_available_mib=11699
+[2026-06-23 08:26:50] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=21 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.392620 running_loss=0.391423
+[2026-06-23 08:26:50] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=21 starting validation
+[2026-06-23 08:26:56] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=21 finished validation val_loss=0.368507
+[2026-06-23 08:26:58] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=21 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11207
+[2026-06-23 08:26:58] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=21 architecture=[1822, 1822, 1822, 1822] train_loss=0.391423 val_loss=0.368507 candidate_best=0.368507 global_best=0.368507 es=0/10
+[2026-06-23 08:28:14] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=22 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:28:16] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=22 batch=1/2 done gpu_used_mib=0 host_available_mib=11186
+[2026-06-23 08:28:16] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=22 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.365505 running_loss=0.365505
+[2026-06-23 08:29:25] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=22 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:29:27] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=22 batch=2/2 done gpu_used_mib=0 host_available_mib=10824
+[2026-06-23 08:29:27] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=22 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.409541 running_loss=0.387523
+[2026-06-23 08:29:27] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=22 starting validation
+[2026-06-23 08:29:36] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=22 finished validation val_loss=0.403594
+[2026-06-23 08:29:40] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=22 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=10864
+[2026-06-23 08:29:40] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=22 architecture=[1822, 1822, 1822, 1822] train_loss=0.387523 val_loss=0.403594 candidate_best=0.368507 global_best=0.368507 es=1/10
+[2026-06-23 08:30:54] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=23 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:30:56] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=23 batch=1/2 done gpu_used_mib=0 host_available_mib=10932
+[2026-06-23 08:30:56] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=23 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.423149 running_loss=0.423149
+[2026-06-23 08:32:13] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=23 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:32:16] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=23 batch=2/2 done gpu_used_mib=0 host_available_mib=11094
+[2026-06-23 08:32:16] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=23 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.350548 running_loss=0.386849
+[2026-06-23 08:32:16] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=23 starting validation
+[2026-06-23 08:32:23] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=23 finished validation val_loss=0.361591
+[2026-06-23 08:32:27] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=23 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=10872
+[2026-06-23 08:32:27] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=23 architecture=[1822, 1822, 1822, 1822] train_loss=0.386849 val_loss=0.361591 candidate_best=0.361591 global_best=0.361591 es=0/10
+[2026-06-23 08:33:35] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=24 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:33:39] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=24 batch=1/2 done gpu_used_mib=0 host_available_mib=11450
+[2026-06-23 08:33:39] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=24 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.352708 running_loss=0.352708
+[2026-06-23 08:34:48] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=24 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:34:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=24 batch=2/2 done gpu_used_mib=0 host_available_mib=11226
+[2026-06-23 08:34:50] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=24 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.397103 running_loss=0.374906
+[2026-06-23 08:34:50] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=24 starting validation
+[2026-06-23 08:34:56] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=24 finished validation val_loss=0.387117
+[2026-06-23 08:34:58] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=24 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11102
+[2026-06-23 08:34:58] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=24 architecture=[1822, 1822, 1822, 1822] train_loss=0.374906 val_loss=0.387117 candidate_best=0.361591 global_best=0.361591 es=1/10
+[2026-06-23 08:36:12] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=25 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:36:14] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=25 batch=1/2 done gpu_used_mib=0 host_available_mib=10770
+[2026-06-23 08:36:14] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=25 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.403503 running_loss=0.403503
+[2026-06-23 08:37:29] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=25 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:37:32] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=25 batch=2/2 done gpu_used_mib=0 host_available_mib=10938
+[2026-06-23 08:37:32] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=25 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.360299 running_loss=0.381901
+[2026-06-23 08:37:32] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=25 starting validation
+[2026-06-23 08:37:39] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=25 finished validation val_loss=0.343085
+[2026-06-23 08:37:41] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=25 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=10698
+[2026-06-23 08:37:41] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=25 architecture=[1822, 1822, 1822, 1822] train_loss=0.381901 val_loss=0.343085 candidate_best=0.343085 global_best=0.343085 es=0/10
+[2026-06-23 08:38:46] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=26 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:38:51] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=26 batch=1/2 done gpu_used_mib=0 host_available_mib=11425
+[2026-06-23 08:38:51] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=26 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.340529 running_loss=0.340529
+[2026-06-23 08:39:59] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=26 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:40:01] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=26 batch=2/2 done gpu_used_mib=0 host_available_mib=10712
+[2026-06-23 08:40:01] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=26 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.394306 running_loss=0.367417
+[2026-06-23 08:40:01] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=26 starting validation
+[2026-06-23 08:40:08] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=26 finished validation val_loss=0.416406
+[2026-06-23 08:40:12] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=26 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11204
+[2026-06-23 08:40:12] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=26 architecture=[1822, 1822, 1822, 1822] train_loss=0.367417 val_loss=0.416406 candidate_best=0.343085 global_best=0.343085 es=1/10
+[2026-06-23 08:41:20] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=27 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:41:22] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=27 batch=1/2 done gpu_used_mib=0 host_available_mib=11125
+[2026-06-23 08:41:22] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=27 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.417143 running_loss=0.417143
+[2026-06-23 08:42:35] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=27 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:42:37] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=27 batch=2/2 done gpu_used_mib=0 host_available_mib=11106
+[2026-06-23 08:42:37] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=27 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.388592 running_loss=0.402868
+[2026-06-23 08:42:37] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=27 starting validation
+[2026-06-23 08:42:47] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=27 finished validation val_loss=0.390718
+[2026-06-23 08:42:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=27 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11151
+[2026-06-23 08:42:50] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=27 architecture=[1822, 1822, 1822, 1822] train_loss=0.402868 val_loss=0.390718 candidate_best=0.343085 global_best=0.343085 es=2/10
+[2026-06-23 08:44:00] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=28 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:44:02] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=28 batch=1/2 done gpu_used_mib=0 host_available_mib=11000
+[2026-06-23 08:44:02] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=28 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.368036 running_loss=0.368036
+[2026-06-23 08:45:14] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=28 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:45:16] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=28 batch=2/2 done gpu_used_mib=0 host_available_mib=11053
+[2026-06-23 08:45:16] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=28 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.343794 running_loss=0.355915
+[2026-06-23 08:45:16] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=28 starting validation
+[2026-06-23 08:45:23] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=28 finished validation val_loss=0.353378
+[2026-06-23 08:45:25] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=28 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11546
+[2026-06-23 08:45:25] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=28 architecture=[1822, 1822, 1822, 1822] train_loss=0.355915 val_loss=0.353378 candidate_best=0.343085 global_best=0.343085 es=3/10
+[2026-06-23 08:46:42] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=29 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:46:44] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=29 batch=1/2 done gpu_used_mib=0 host_available_mib=10792
+[2026-06-23 08:46:44] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=29 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.351772 running_loss=0.351772
+[2026-06-23 08:47:49] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=29 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:47:52] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=29 batch=2/2 done gpu_used_mib=0 host_available_mib=10885
+[2026-06-23 08:47:52] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=29 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.379877 running_loss=0.365825
+[2026-06-23 08:47:52] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=29 starting validation
+[2026-06-23 08:48:00] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=29 finished validation val_loss=0.374175
+[2026-06-23 08:48:03] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=29 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=10871
+[2026-06-23 08:48:03] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=29 architecture=[1822, 1822, 1822, 1822] train_loss=0.365825 val_loss=0.374175 candidate_best=0.343085 global_best=0.343085 es=4/10
+[2026-06-23 08:49:15] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=30 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:49:17] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=30 batch=1/2 done gpu_used_mib=0 host_available_mib=11174
+[2026-06-23 08:49:17] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=30 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.361802 running_loss=0.361802
+[2026-06-23 08:50:33] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=30 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:50:35] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=30 batch=2/2 done gpu_used_mib=0 host_available_mib=11475
+[2026-06-23 08:50:35] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=30 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.332737 running_loss=0.347269
+[2026-06-23 08:50:35] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=30 starting validation
+[2026-06-23 08:50:41] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=30 finished validation val_loss=0.345774
+[2026-06-23 08:50:42] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=30 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11195
+[2026-06-23 08:50:42] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=30 architecture=[1822, 1822, 1822, 1822] train_loss=0.347269 val_loss=0.345774 candidate_best=0.343085 global_best=0.343085 es=5/10
+[2026-06-23 08:51:53] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=31 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:51:57] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=31 batch=1/2 done gpu_used_mib=0 host_available_mib=10967
+[2026-06-23 08:51:57] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=31 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.346799 running_loss=0.346799
+[2026-06-23 08:53:09] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=31 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:53:13] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=31 batch=2/2 done gpu_used_mib=0 host_available_mib=11277
+[2026-06-23 08:53:13] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=31 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.355715 running_loss=0.351257
+[2026-06-23 08:53:13] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=31 starting validation
+[2026-06-23 08:53:23] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=31 finished validation val_loss=0.352130
+[2026-06-23 08:53:27] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=31 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11155
+[2026-06-23 08:53:27] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=31 architecture=[1822, 1822, 1822, 1822] train_loss=0.351257 val_loss=0.352130 candidate_best=0.343085 global_best=0.343085 es=6/10
+[2026-06-23 08:54:38] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=32 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:54:42] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=32 batch=1/2 done gpu_used_mib=0 host_available_mib=11291
+[2026-06-23 08:54:42] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=32 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.335249 running_loss=0.335249
+[2026-06-23 08:55:49] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=32 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:55:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=32 batch=2/2 done gpu_used_mib=0 host_available_mib=11694
+[2026-06-23 08:55:50] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=32 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.333171 running_loss=0.334210
+[2026-06-23 08:55:50] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=32 starting validation
+[2026-06-23 08:55:58] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=32 finished validation val_loss=0.330312
+[2026-06-23 08:56:03] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=32 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11409
+[2026-06-23 08:56:03] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=32 architecture=[1822, 1822, 1822, 1822] train_loss=0.334210 val_loss=0.330312 candidate_best=0.330312 global_best=0.330312 es=0/10
+[2026-06-23 08:57:19] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=33 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:57:20] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=33 batch=1/2 done gpu_used_mib=0 host_available_mib=11363
+[2026-06-23 08:57:20] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=33 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.339304 running_loss=0.339304
+[2026-06-23 08:58:27] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=33 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 08:58:30] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=33 batch=2/2 done gpu_used_mib=0 host_available_mib=11180
+[2026-06-23 08:58:30] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=33 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.340638 running_loss=0.339971
+[2026-06-23 08:58:30] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=33 starting validation
+[2026-06-23 08:58:38] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=33 finished validation val_loss=0.364974
+[2026-06-23 08:58:41] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=33 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11170
+[2026-06-23 08:58:41] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=33 architecture=[1822, 1822, 1822, 1822] train_loss=0.339971 val_loss=0.364974 candidate_best=0.330312 global_best=0.330312 es=1/10
+[2026-06-23 08:59:49] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=34 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 08:59:54] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=34 batch=1/2 done gpu_used_mib=0 host_available_mib=11520
+[2026-06-23 08:59:54] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=34 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.335312 running_loss=0.335312
+[2026-06-23 09:01:07] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=34 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:01:10] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=34 batch=2/2 done gpu_used_mib=0 host_available_mib=12349
+[2026-06-23 09:01:10] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=34 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.333962 running_loss=0.334637
+[2026-06-23 09:01:10] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=34 starting validation
+[2026-06-23 09:01:15] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=34 finished validation val_loss=0.351067
+[2026-06-23 09:01:17] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=34 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=12021
+[2026-06-23 09:01:17] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=34 architecture=[1822, 1822, 1822, 1822] train_loss=0.334637 val_loss=0.351067 candidate_best=0.330312 global_best=0.330312 es=2/10
+[2026-06-23 09:02:58] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=35 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:03:03] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=35 batch=1/2 done gpu_used_mib=0 host_available_mib=12294
+[2026-06-23 09:03:03] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=35 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.338359 running_loss=0.338359
+[2026-06-23 09:04:41] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=35 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:04:45] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=35 batch=2/2 done gpu_used_mib=0 host_available_mib=12078
+[2026-06-23 09:04:45] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=35 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.328242 running_loss=0.333300
+[2026-06-23 09:04:45] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=35 starting validation
+[2026-06-23 09:04:55] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=35 finished validation val_loss=0.343458
+[2026-06-23 09:04:58] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=35 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=12027
+[2026-06-23 09:04:58] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=35 architecture=[1822, 1822, 1822, 1822] train_loss=0.333300 val_loss=0.343458 candidate_best=0.330312 global_best=0.330312 es=3/10
+[2026-06-23 09:06:35] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=36 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:06:40] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=36 batch=1/2 done gpu_used_mib=0 host_available_mib=11706
+[2026-06-23 09:06:40] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=36 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.329463 running_loss=0.329463
+[2026-06-23 09:07:53] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=36 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:07:56] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=36 batch=2/2 done gpu_used_mib=0 host_available_mib=11729
+[2026-06-23 09:07:56] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=36 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.321861 running_loss=0.325662
+[2026-06-23 09:07:56] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=36 starting validation
+[2026-06-23 09:08:04] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=36 finished validation val_loss=0.328584
+[2026-06-23 09:08:09] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=36 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=12055
+[2026-06-23 09:08:09] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=36 architecture=[1822, 1822, 1822, 1822] train_loss=0.325662 val_loss=0.328584 candidate_best=0.328584 global_best=0.328584 es=0/10
+[2026-06-23 09:09:24] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=37 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:09:27] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=37 batch=1/2 done gpu_used_mib=0 host_available_mib=12270
+[2026-06-23 09:09:27] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=37 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.333704 running_loss=0.333704
+[2026-06-23 09:10:46] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=37 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:10:47] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=37 batch=2/2 done gpu_used_mib=0 host_available_mib=11159
+[2026-06-23 09:10:47] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=37 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.320726 running_loss=0.327215
+[2026-06-23 09:10:47] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=37 starting validation
+[2026-06-23 09:10:56] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=37 finished validation val_loss=0.338037
+[2026-06-23 09:11:00] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=37 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11674
+[2026-06-23 09:11:00] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=37 architecture=[1822, 1822, 1822, 1822] train_loss=0.327215 val_loss=0.338037 candidate_best=0.328584 global_best=0.328584 es=1/10
+[2026-06-23 09:12:12] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=38 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:12:14] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=38 batch=1/2 done gpu_used_mib=0 host_available_mib=11068
+[2026-06-23 09:12:14] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=38 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.321538 running_loss=0.321538
+[2026-06-23 09:13:26] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=38 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:13:27] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=38 batch=2/2 done gpu_used_mib=0 host_available_mib=12139
+[2026-06-23 09:13:27] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=38 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.315727 running_loss=0.318632
+[2026-06-23 09:13:27] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=38 starting validation
+[2026-06-23 09:13:35] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=38 finished validation val_loss=0.330984
+[2026-06-23 09:13:37] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=38 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11526
+[2026-06-23 09:13:37] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=38 architecture=[1822, 1822, 1822, 1822] train_loss=0.318632 val_loss=0.330984 candidate_best=0.328584 global_best=0.328584 es=2/10
+[2026-06-23 09:14:59] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=39 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:15:00] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=39 batch=1/2 done gpu_used_mib=0 host_available_mib=11332
+[2026-06-23 09:15:00] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=39 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.327481 running_loss=0.327481
+[2026-06-23 09:16:07] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=39 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:16:10] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=39 batch=2/2 done gpu_used_mib=0 host_available_mib=11645
+[2026-06-23 09:16:10] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=39 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.314441 running_loss=0.320961
+[2026-06-23 09:16:11] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=39 starting validation
+[2026-06-23 09:16:20] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=39 finished validation val_loss=0.332661
+[2026-06-23 09:16:23] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=39 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11385
+[2026-06-23 09:16:23] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=39 architecture=[1822, 1822, 1822, 1822] train_loss=0.320961 val_loss=0.332661 candidate_best=0.328584 global_best=0.328584 es=3/10
+[2026-06-23 09:17:33] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=40 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:17:35] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=40 batch=1/2 done gpu_used_mib=0 host_available_mib=11808
+[2026-06-23 09:17:35] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=40 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.309165 running_loss=0.309165
+[2026-06-23 09:18:52] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=40 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:18:55] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=40 batch=2/2 done gpu_used_mib=0 host_available_mib=11079
+[2026-06-23 09:18:55] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=40 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.319529 running_loss=0.314347
+[2026-06-23 09:18:55] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=40 starting validation
+[2026-06-23 09:19:02] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=40 finished validation val_loss=0.331043
+[2026-06-23 09:19:05] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=40 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11060
+[2026-06-23 09:19:05] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=40 architecture=[1822, 1822, 1822, 1822] train_loss=0.314347 val_loss=0.331043 candidate_best=0.328584 global_best=0.328584 es=4/10
+[2026-06-23 09:20:22] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=41 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:20:26] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=41 batch=1/2 done gpu_used_mib=0 host_available_mib=11507
+[2026-06-23 09:20:26] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=41 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.310272 running_loss=0.310272
+[2026-06-23 09:21:41] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=41 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:21:43] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=41 batch=2/2 done gpu_used_mib=0 host_available_mib=12146
+[2026-06-23 09:21:43] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=41 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.319758 running_loss=0.315015
+[2026-06-23 09:21:43] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=41 starting validation
+[2026-06-23 09:21:51] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=41 finished validation val_loss=0.326226
+[2026-06-23 09:21:55] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=41 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=12070
+[2026-06-23 09:21:55] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=41 architecture=[1822, 1822, 1822, 1822] train_loss=0.315015 val_loss=0.326226 candidate_best=0.326226 global_best=0.326226 es=0/10
+[2026-06-23 09:23:10] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=42 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:23:14] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=42 batch=1/2 done gpu_used_mib=0 host_available_mib=11554
+[2026-06-23 09:23:14] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=42 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.298781 running_loss=0.298781
+[2026-06-23 09:24:32] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=42 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:24:34] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=42 batch=2/2 done gpu_used_mib=0 host_available_mib=12042
+[2026-06-23 09:24:34] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=42 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.335078 running_loss=0.316929
+[2026-06-23 09:24:35] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=42 starting validation
+[2026-06-23 09:24:45] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=42 finished validation val_loss=0.330650
+[2026-06-23 09:24:46] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=42 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11876
+[2026-06-23 09:24:46] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=42 architecture=[1822, 1822, 1822, 1822] train_loss=0.316929 val_loss=0.330650 candidate_best=0.326226 global_best=0.326226 es=1/10
+[2026-06-23 09:26:04] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=43 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:26:06] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=43 batch=1/2 done gpu_used_mib=0 host_available_mib=12231
+[2026-06-23 09:26:06] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=43 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.333454 running_loss=0.333454
+[2026-06-23 09:27:29] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=43 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:27:33] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=43 batch=2/2 done gpu_used_mib=0 host_available_mib=11619
+[2026-06-23 09:27:33] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=43 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.297249 running_loss=0.315352
+[2026-06-23 09:27:34] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=43 starting validation
+[2026-06-23 09:27:42] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=43 finished validation val_loss=0.310725
+[2026-06-23 09:27:45] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=43 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=11332
+[2026-06-23 09:27:45] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=43 architecture=[1822, 1822, 1822, 1822] train_loss=0.315352 val_loss=0.310725 candidate_best=0.310725 global_best=0.310725 es=0/10
+[2026-06-23 09:29:09] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=44 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:29:13] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=44 batch=1/2 done gpu_used_mib=0 host_available_mib=11918
+[2026-06-23 09:29:13] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=44 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.296902 running_loss=0.296902
+[2026-06-23 09:30:44] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=44 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:30:49] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=44 batch=2/2 done gpu_used_mib=0 host_available_mib=11786
+[2026-06-23 09:30:49] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=44 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.322194 running_loss=0.309548
+[2026-06-23 09:30:50] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=44 starting validation
+[2026-06-23 09:30:56] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=44 finished validation val_loss=0.329190
+[2026-06-23 09:31:00] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=44 done path=checkpoint_last.pt gpu_used_mib=115 host_available_mib=11340
+[2026-06-23 09:31:00] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=44 architecture=[1822, 1822, 1822, 1822] train_loss=0.309548 val_loss=0.329190 candidate_best=0.310725 global_best=0.310725 es=1/10
+[2026-06-23 09:31:49] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=45 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:31:54] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=45 batch=1/2 done gpu_used_mib=261 host_available_mib=11689
+[2026-06-23 09:31:54] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=45 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.327779 running_loss=0.327779
+[2026-06-23 09:32:55] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=45 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:32:59] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=45 batch=2/2 done gpu_used_mib=201 host_available_mib=11357
+[2026-06-23 09:32:59] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=45 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.302330 running_loss=0.315054
+[2026-06-23 09:33:00] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=45 starting validation
+[2026-06-23 09:33:04] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=45 finished validation val_loss=0.314506
+[2026-06-23 09:33:08] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=45 done path=checkpoint_last.pt gpu_used_mib=195 host_available_mib=11576
+[2026-06-23 09:33:08] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=45 architecture=[1822, 1822, 1822, 1822] train_loss=0.315054 val_loss=0.314506 candidate_best=0.310725 global_best=0.310725 es=2/10
+[2026-06-23 09:33:47] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=46 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:33:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=46 batch=1/2 done gpu_used_mib=213 host_available_mib=11878
+[2026-06-23 09:33:50] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=46 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.278943 running_loss=0.278943
+[2026-06-23 09:34:44] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=46 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:34:47] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=46 batch=2/2 done gpu_used_mib=213 host_available_mib=11367
+[2026-06-23 09:34:47] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=46 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.341183 running_loss=0.310063
+[2026-06-23 09:34:48] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=46 starting validation
+[2026-06-23 09:34:53] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=46 finished validation val_loss=0.350085
+[2026-06-23 09:34:53] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=46 done path=checkpoint_last.pt gpu_used_mib=213 host_available_mib=11125
+[2026-06-23 09:34:53] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=46 architecture=[1822, 1822, 1822, 1822] train_loss=0.310063 val_loss=0.350085 candidate_best=0.310725 global_best=0.310725 es=3/10
+[2026-06-23 09:35:26] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=47 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:35:27] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=47 batch=1/2 done gpu_used_mib=213 host_available_mib=11825
+[2026-06-23 09:35:27] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=47 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.344347 running_loss=0.344347
+[2026-06-23 09:36:03] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=47 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:36:04] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=47 batch=2/2 done gpu_used_mib=147 host_available_mib=11533
+[2026-06-23 09:36:04] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=47 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.302257 running_loss=0.323302
+[2026-06-23 09:36:04] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=47 starting validation
+[2026-06-23 09:36:08] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=47 finished validation val_loss=0.308458
+[2026-06-23 09:36:13] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=47 done path=checkpoint_last.pt gpu_used_mib=181 host_available_mib=11621
+[2026-06-23 09:36:13] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=47 architecture=[1822, 1822, 1822, 1822] train_loss=0.323302 val_loss=0.308458 candidate_best=0.308458 global_best=0.308458 es=0/10
+[2026-06-23 09:36:49] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=48 batch=1/2 start path=checkpoint_last.pt
+[2026-06-23 09:36:51] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=48 batch=1/2 done gpu_used_mib=173 host_available_mib=11778
+[2026-06-23 09:36:51] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=48 batch=1/2 batch_size=8256 running_batches=1 batch_loss=0.277443 running_loss=0.277443
+[2026-06-23 09:37:22] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=48 batch=2/2 start path=checkpoint_last.pt
+[2026-06-23 09:37:25] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=48 batch=2/2 done gpu_used_mib=189 host_available_mib=11758
+[2026-06-23 09:37:25] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=48 batch=2/2 batch_size=8256 running_batches=2 batch_loss=0.323870 running_loss=0.300656
+[2026-06-23 09:37:25] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=48 starting validation
+[2026-06-23 09:37:32] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=48 finished validation val_loss=0.334994
+[2026-06-23 09:37:35] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=48 done path=checkpoint_last.pt gpu_used_mib=186 host_available_mib=12204
+[2026-06-23 09:37:35] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=48 architecture=[1822, 1822, 1822, 1822] train_loss=0.300656 val_loss=0.334994 candidate_best=0.308458 global_best=0.308458 es=1/10
+[2026-06-23 10:23:06] Initialized ContinuousLogger for prediction_stl_ablation_r02_d04_w1822_1822_1822_1822_1822 (Mode: stl_ablation_r02_d04_w1822_1822_1822_1822_1822)
+[2026-06-23 10:23:06] Logs: MLPS\tabular\shared\dae_dnn\results\stl\ablation\parammatched_decade_v1_param_10pow07_08_fresh_v1\prediction\_children\stl_ablation_r01_d04_w1822_1822_1822_1822_1822\prediction\stl_ablation_r02_d04_w1822_1822_1822_1822_1822\cand_000_d4_w1822\training_log.txt
+[2026-06-23 10:23:06] CSV: MLPS\tabular\shared\dae_dnn\results\stl\ablation\parammatched_decade_v1_param_10pow07_08_fresh_v1\prediction\_children\stl_ablation_r01_d04_w1822_1822_1822_1822_1822\prediction\stl_ablation_r02_d04_w1822_1822_1822_1822_1822\cand_000_d4_w1822\training_stats.csv
+[2026-06-23 10:23:18] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=1/4 start path=checkpoint_last.pt
+[2026-06-23 10:23:19] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=1/4 done gpu_used_mib=205 host_available_mib=36106
+[2026-06-23 10:23:19] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=1/4 batch_size=4128 running_batches=1 batch_loss=8.563403 running_loss=8.563403
+[2026-06-23 10:23:28] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=2/4 start path=checkpoint_last.pt
+[2026-06-23 10:23:28] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=2/4 done gpu_used_mib=205 host_available_mib=35989
+[2026-06-23 10:23:28] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=2/4 batch_size=4128 running_batches=2 batch_loss=5.325594 running_loss=6.944499
+[2026-06-23 10:23:40] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=3/4 start path=checkpoint_last.pt
+[2026-06-23 10:23:40] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=3/4 done gpu_used_mib=205 host_available_mib=35285
+[2026-06-23 10:23:40] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=3/4 batch_size=4128 running_batches=3 batch_loss=1.757860 running_loss=5.215619
+[2026-06-23 10:23:51] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=4/4 start path=checkpoint_last.pt
+[2026-06-23 10:23:51] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=4/4 done gpu_used_mib=205 host_available_mib=34648
+[2026-06-23 10:23:51] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 batch=4/4 batch_size=4128 running_batches=4 batch_loss=1.059700 running_loss=4.176640
+[2026-06-23 10:23:51] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 starting validation
+[2026-06-23 10:23:52] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 finished validation val_loss=0.470146
+[2026-06-23 10:23:53] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=49 done path=checkpoint_last.pt gpu_used_mib=205 host_available_mib=35050
+[2026-06-23 10:23:53] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=49 architecture=[1822, 1822, 1822, 1822] train_loss=4.176640 val_loss=0.470146 candidate_best=0.308458 global_best=0.308458 es=2/10
+[2026-06-23 10:24:01] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=1/4 start path=checkpoint_last.pt
+[2026-06-23 10:24:01] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=1/4 done gpu_used_mib=205 host_available_mib=35023
+[2026-06-23 10:24:01] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=1/4 batch_size=4128 running_batches=1 batch_loss=0.475415 running_loss=0.475415
+[2026-06-23 10:24:13] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=2/4 start path=checkpoint_last.pt
+[2026-06-23 10:24:13] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=2/4 done gpu_used_mib=205 host_available_mib=34451
+[2026-06-23 10:24:13] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=2/4 batch_size=4128 running_batches=2 batch_loss=1.201315 running_loss=0.838365
+[2026-06-23 10:24:23] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=3/4 start path=checkpoint_last.pt
+[2026-06-23 10:24:23] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=3/4 done gpu_used_mib=205 host_available_mib=34304
+[2026-06-23 10:24:23] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=3/4 batch_size=4128 running_batches=3 batch_loss=0.635025 running_loss=0.770585
+[2026-06-23 10:24:33] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=4/4 start path=checkpoint_last.pt
+[2026-06-23 10:24:33] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=4/4 done gpu_used_mib=205 host_available_mib=34032
+[2026-06-23 10:24:33] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 batch=4/4 batch_size=4128 running_batches=4 batch_loss=0.921168 running_loss=0.808231
+[2026-06-23 10:24:33] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 starting validation
+[2026-06-23 10:24:35] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 finished validation val_loss=0.866244
+[2026-06-23 10:24:35] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=50 done path=checkpoint_last.pt gpu_used_mib=205 host_available_mib=33996
+[2026-06-23 10:24:35] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=50 architecture=[1822, 1822, 1822, 1822] train_loss=0.808231 val_loss=0.866244 candidate_best=0.308458 global_best=0.308458 es=3/10
+[2026-06-23 10:24:46] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=1/4 start path=checkpoint_last.pt
+[2026-06-23 10:24:46] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=1/4 done gpu_used_mib=205 host_available_mib=33222
+[2026-06-23 10:24:46] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=1/4 batch_size=4128 running_batches=1 batch_loss=0.883442 running_loss=0.883442
+[2026-06-23 10:24:57] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=2/4 start path=checkpoint_last.pt
+[2026-06-23 10:24:57] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=2/4 done gpu_used_mib=205 host_available_mib=33560
+[2026-06-23 10:24:57] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=2/4 batch_size=4128 running_batches=2 batch_loss=0.641729 running_loss=0.762586
+[2026-06-23 10:25:12] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=3/4 start path=checkpoint_last.pt
+[2026-06-23 10:25:12] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=3/4 done gpu_used_mib=205 host_available_mib=32594
+[2026-06-23 10:25:12] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=3/4 batch_size=4128 running_batches=3 batch_loss=0.513051 running_loss=0.679407
+[2026-06-23 10:25:24] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=4/4 start path=checkpoint_last.pt
+[2026-06-23 10:25:24] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=4/4 done gpu_used_mib=205 host_available_mib=32757
+[2026-06-23 10:25:24] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 batch=4/4 batch_size=4128 running_batches=4 batch_loss=0.558276 running_loss=0.649125
+[2026-06-23 10:25:24] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 starting validation
+[2026-06-23 10:25:25] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 finished validation val_loss=0.445569
+[2026-06-23 10:25:25] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=51 done path=checkpoint_last.pt gpu_used_mib=205 host_available_mib=32823
+[2026-06-23 10:25:25] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=51 architecture=[1822, 1822, 1822, 1822] train_loss=0.649125 val_loss=0.445569 candidate_best=0.308458 global_best=0.308458 es=4/10
+[2026-06-23 10:25:37] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=1/4 start path=checkpoint_last.pt
+[2026-06-23 10:25:38] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=1/4 done gpu_used_mib=205 host_available_mib=32358
+[2026-06-23 10:25:38] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=1/4 batch_size=4128 running_batches=1 batch_loss=0.445360 running_loss=0.445360
+[2026-06-23 10:25:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=2/4 start path=checkpoint_last.pt
+[2026-06-23 10:25:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=2/4 done gpu_used_mib=205 host_available_mib=31580
+[2026-06-23 10:25:50] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=2/4 batch_size=4128 running_batches=2 batch_loss=0.379346 running_loss=0.412353
+[2026-06-23 10:26:03] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=3/4 start path=checkpoint_last.pt
+[2026-06-23 10:26:04] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=3/4 done gpu_used_mib=205 host_available_mib=31468
+[2026-06-23 10:26:04] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=3/4 batch_size=4128 running_batches=3 batch_loss=0.377885 running_loss=0.400864
+[2026-06-23 10:26:19] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=4/4 start path=checkpoint_last.pt
+[2026-06-23 10:26:20] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=4/4 done gpu_used_mib=205 host_available_mib=30813
+[2026-06-23 10:26:20] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 batch=4/4 batch_size=4128 running_batches=4 batch_loss=0.358270 running_loss=0.390215
+[2026-06-23 10:26:20] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 starting validation
+[2026-06-23 10:26:22] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 finished validation val_loss=0.408069
+[2026-06-23 10:26:23] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=52 done path=checkpoint_last.pt gpu_used_mib=205 host_available_mib=30847
+[2026-06-23 10:26:23] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=52 architecture=[1822, 1822, 1822, 1822] train_loss=0.390215 val_loss=0.408069 candidate_best=0.308458 global_best=0.308458 es=5/10
+[2026-06-23 10:26:39] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=1/4 start path=checkpoint_last.pt
+[2026-06-23 10:26:40] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=1/4 done gpu_used_mib=205 host_available_mib=30050
+[2026-06-23 10:26:40] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=1/4 batch_size=4128 running_batches=1 batch_loss=0.382994 running_loss=0.382994
+[2026-06-23 10:26:56] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=2/4 start path=checkpoint_last.pt
+[2026-06-23 10:26:56] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=2/4 done gpu_used_mib=205 host_available_mib=29569
+[2026-06-23 10:26:56] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=2/4 batch_size=4128 running_batches=2 batch_loss=0.310755 running_loss=0.346875
+[2026-06-23 10:27:13] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=3/4 start path=checkpoint_last.pt
+[2026-06-23 10:27:14] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=3/4 done gpu_used_mib=205 host_available_mib=28970
+[2026-06-23 10:27:14] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=3/4 batch_size=4128 running_batches=3 batch_loss=0.607989 running_loss=0.433913
+[2026-06-23 10:27:29] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=4/4 start path=checkpoint_last.pt
+[2026-06-23 10:27:30] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=4/4 done gpu_used_mib=205 host_available_mib=28697
+[2026-06-23 10:27:30] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 batch=4/4 batch_size=4128 running_batches=4 batch_loss=0.644073 running_loss=0.486453
+[2026-06-23 10:27:30] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 starting validation
+[2026-06-23 10:27:31] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 finished validation val_loss=0.431477
+[2026-06-23 10:27:31] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=53 done path=checkpoint_last.pt gpu_used_mib=205 host_available_mib=28652
+[2026-06-23 10:27:31] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=53 architecture=[1822, 1822, 1822, 1822] train_loss=0.486453 val_loss=0.431477 candidate_best=0.308458 global_best=0.308458 es=6/10
+[2026-06-23 10:27:51] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=1/4 start path=checkpoint_last.pt
+[2026-06-23 10:27:51] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=1/4 done gpu_used_mib=205 host_available_mib=27864
+[2026-06-23 10:27:51] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=1/4 batch_size=4128 running_batches=1 batch_loss=0.401148 running_loss=0.401148
+[2026-06-23 10:28:13] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=2/4 start path=checkpoint_last.pt
+[2026-06-23 10:28:14] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=2/4 done gpu_used_mib=205 host_available_mib=26995
+[2026-06-23 10:28:14] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=2/4 batch_size=4128 running_batches=2 batch_loss=0.593778 running_loss=0.497463
+[2026-06-23 10:28:39] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=3/4 start path=checkpoint_last.pt
+[2026-06-23 10:28:40] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=3/4 done gpu_used_mib=205 host_available_mib=27027
+[2026-06-23 10:28:40] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=3/4 batch_size=4128 running_batches=3 batch_loss=0.856806 running_loss=0.617244
+[2026-06-23 10:29:19] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=4/4 start path=checkpoint_last.pt
+[2026-06-23 10:29:20] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=4/4 done gpu_used_mib=205 host_available_mib=25456
+[2026-06-23 10:29:20] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 batch=4/4 batch_size=4128 running_batches=4 batch_loss=0.636690 running_loss=0.622106
+[2026-06-23 10:29:20] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 starting validation
+[2026-06-23 10:29:24] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 finished validation val_loss=0.491769
+[2026-06-23 10:29:25] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=54 done path=checkpoint_last.pt gpu_used_mib=205 host_available_mib=25702
+[2026-06-23 10:29:25] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=54 architecture=[1822, 1822, 1822, 1822] train_loss=0.622106 val_loss=0.491769 candidate_best=0.308458 global_best=0.308458 es=7/10
+[2026-06-23 10:30:03] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=1/4 start path=checkpoint_last.pt
+[2026-06-23 10:30:03] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=1/4 done gpu_used_mib=0 host_available_mib=24066
+[2026-06-23 10:30:03] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=1/4 batch_size=4128 running_batches=1 batch_loss=0.501391 running_loss=0.501391
+[2026-06-23 10:30:41] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=2/4 start path=checkpoint_last.pt
+[2026-06-23 10:30:43] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=2/4 done gpu_used_mib=0 host_available_mib=22921
+[2026-06-23 10:30:43] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=2/4 batch_size=4128 running_batches=2 batch_loss=0.483004 running_loss=0.492197
+[2026-06-23 10:31:23] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=3/4 start path=checkpoint_last.pt
+[2026-06-23 10:31:23] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=3/4 done gpu_used_mib=0 host_available_mib=21649
+[2026-06-23 10:31:23] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=3/4 batch_size=4128 running_batches=3 batch_loss=0.411584 running_loss=0.465326
+[2026-06-23 10:32:12] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=4/4 start path=checkpoint_last.pt
+[2026-06-23 10:32:14] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=4/4 done gpu_used_mib=0 host_available_mib=20003
+[2026-06-23 10:32:14] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 batch=4/4 batch_size=4128 running_batches=4 batch_loss=0.461911 running_loss=0.464472
+[2026-06-23 10:32:14] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 starting validation
+[2026-06-23 10:32:18] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 finished validation val_loss=0.569729
+[2026-06-23 10:32:18] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=55 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=19792
+[2026-06-23 10:32:18] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=55 architecture=[1822, 1822, 1822, 1822] train_loss=0.464472 val_loss=0.569729 candidate_best=0.308458 global_best=0.308458 es=8/10
+[2026-06-23 10:33:09] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=1/4 start path=checkpoint_last.pt
+[2026-06-23 10:33:10] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=1/4 done gpu_used_mib=0 host_available_mib=18601
+[2026-06-23 10:33:10] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=1/4 batch_size=4128 running_batches=1 batch_loss=0.541181 running_loss=0.541181
+[2026-06-23 10:34:00] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=2/4 start path=checkpoint_last.pt
+[2026-06-23 10:34:02] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=2/4 done gpu_used_mib=0 host_available_mib=17007
+[2026-06-23 10:34:02] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=2/4 batch_size=4128 running_batches=2 batch_loss=0.400197 running_loss=0.470689
+[2026-06-23 10:34:55] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=3/4 start path=checkpoint_last.pt
+[2026-06-23 10:34:56] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=3/4 done gpu_used_mib=0 host_available_mib=15411
+[2026-06-23 10:34:56] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=3/4 batch_size=4128 running_batches=3 batch_loss=0.472257 running_loss=0.471212
+[2026-06-23 10:35:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=4/4 start path=checkpoint_last.pt
+[2026-06-23 10:35:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=4/4 done gpu_used_mib=0 host_available_mib=14151
+[2026-06-23 10:35:50] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 batch=4/4 batch_size=4128 running_batches=4 batch_loss=0.466090 running_loss=0.469931
+[2026-06-23 10:35:51] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 starting validation
+[2026-06-23 10:35:56] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 finished validation val_loss=0.384246
+[2026-06-23 10:35:57] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=56 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=13863
+[2026-06-23 10:35:57] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=56 architecture=[1822, 1822, 1822, 1822] train_loss=0.469931 val_loss=0.384246 candidate_best=0.308458 global_best=0.308458 es=9/10
+[2026-06-23 10:36:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=1/4 start path=checkpoint_last.pt
+[2026-06-23 10:36:50] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=1/4 done gpu_used_mib=0 host_available_mib=12330
+[2026-06-23 10:36:50] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=1/4 batch_size=4128 running_batches=1 batch_loss=0.372595 running_loss=0.372595
+[2026-06-23 10:37:46] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=2/4 start path=checkpoint_last.pt
+[2026-06-23 10:37:47] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=2/4 done gpu_used_mib=0 host_available_mib=12678
+[2026-06-23 10:37:47] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=2/4 batch_size=4128 running_batches=2 batch_loss=0.418690 running_loss=0.395642
+[2026-06-23 10:38:39] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=3/4 start path=checkpoint_last.pt
+[2026-06-23 10:38:41] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=3/4 done gpu_used_mib=0 host_available_mib=12562
+[2026-06-23 10:38:41] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=3/4 batch_size=4128 running_batches=3 batch_loss=0.513671 running_loss=0.434985
+[2026-06-23 10:39:35] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=4/4 start path=checkpoint_last.pt
+[2026-06-23 10:39:36] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=4/4 done gpu_used_mib=0 host_available_mib=12434
+[2026-06-23 10:39:36] [BATCH] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 batch=4/4 batch_size=4128 running_batches=4 batch_loss=0.362158 running_loss=0.416778
+[2026-06-23 10:39:36] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 starting validation
+[2026-06-23 10:39:41] [VAL] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 finished validation val_loss=0.371973
+[2026-06-23 10:39:41] [CKPT] task=prediction phase=stl_ablation_r02_d04_w1822_1822_1822_1822_1822 candidate=cand_000_d4_w1822 epoch=57 done path=checkpoint_last.pt gpu_used_mib=0 host_available_mib=12572
+[2026-06-23 10:39:41] [prediction][stl_ablation_r02_d04_w1822_1822_1822_1822_1822][cand_000_d4_w1822] epoch=57 architecture=[1822, 1822, 1822, 1822] train_loss=0.416778 val_loss=0.371973 candidate_best=0.308458 global_best=0.308458 es=10/10

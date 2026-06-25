@@ -1,0 +1,143 @@
+{
+  "architectures": [
+    [
+      1116,
+      1116,
+      1116,
+      1116,
+      1116,
+      1116,
+      1116,
+      1116,
+      1116
+    ]
+  ],
+  "param_band": [
+    7,
+    8
+  ],
+  "repeat_count": 5,
+  "reports": [
+    {
+      "ablation_stl_runs": [
+        {
+          "architecture": [
+            1116,
+            1116,
+            1116,
+            1116,
+            1116,
+            1116,
+            1116,
+            1116,
+            1116
+          ],
+          "best_epoch": 30,
+          "best_val": 0.0018220065394416451,
+          "candidate_dir": "cand_000_d9_w1116",
+          "checkpoint_best": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\simulation\\_children\\stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\simulation\\stl_ablation_r04_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\cand_000_d9_w1116\\checkpoint_best.pt",
+          "checkpoint_last": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\simulation\\_children\\stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\simulation\\stl_ablation_r04_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\cand_000_d9_w1116\\checkpoint_last.pt",
+          "final_epoch": 40,
+          "phase": "stl_ablation_r04_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116",
+          "resumed": false,
+          "source_phase": null,
+          "task": "simulation",
+          "test_metrics": {
+            "test_loss": 0.013493317179381847
+          }
+        },
+        {
+          "architecture": [
+            1116,
+            1116,
+            1116,
+            1116,
+            1116,
+            1116,
+            1116,
+            1116,
+            1116
+          ],
+          "best_epoch": 19,
+          "best_val": 0.0032955205533653498,
+          "candidate_dir": "cand_000_d9_w1116",
+          "checkpoint_best": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\simulation\\_children\\stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\simulation\\stl_ablation_r05_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\cand_000_d9_w1116\\checkpoint_best.pt",
+          "checkpoint_last": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\simulation\\_children\\stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\simulation\\stl_ablation_r05_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\cand_000_d9_w1116\\checkpoint_last.pt",
+          "final_epoch": 29,
+          "phase": "stl_ablation_r05_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116",
+          "resumed": false,
+          "source_phase": null,
+          "task": "simulation",
+          "test_metrics": {
+            "test_loss": 0.015157944522798061
+          }
+        }
+      ],
+      "best_ablation": {
+        "architecture": [
+          1116,
+          1116,
+          1116,
+          1116,
+          1116,
+          1116,
+          1116,
+          1116,
+          1116
+        ],
+        "best_epoch": 30,
+        "best_val": 0.0018220065394416451,
+        "candidate_dir": "cand_000_d9_w1116",
+        "checkpoint_best": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\simulation\\_children\\stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\simulation\\stl_ablation_r04_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\cand_000_d9_w1116\\checkpoint_best.pt",
+        "checkpoint_last": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\simulation\\_children\\stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\simulation\\stl_ablation_r04_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116\\cand_000_d9_w1116\\checkpoint_last.pt",
+        "final_epoch": 40,
+        "parameter_count": 10003825,
+        "phase": "stl_ablation_r04_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116",
+        "repeat": 4,
+        "resumed": false,
+        "source_phase": null,
+        "task": "simulation",
+        "test_metrics": {
+          "test_loss": 0.013493317179381847
+        }
+      },
+      "comparisons": [],
+      "curve_rows": [
+        {
+          "architecture": "[1116, 1116, 1116, 1116, 1116, 1116, 1116, 1116, 1116]",
+          "best_epoch": 30,
+          "best_val": 0.0018220065394416451,
+          "final_epoch": 40,
+          "parameter_count": 10003825,
+          "phase": "stl_ablation_r04_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116",
+          "repeat": 4,
+          "task": "simulation",
+          "test_acc": null,
+          "test_loss": 0.013493317179381847
+        },
+        {
+          "architecture": "[1116, 1116, 1116, 1116, 1116, 1116, 1116, 1116, 1116]",
+          "best_epoch": 19,
+          "best_val": 0.0032955205533653498,
+          "final_epoch": 29,
+          "parameter_count": 10003825,
+          "phase": "stl_ablation_r05_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116",
+          "repeat": 5,
+          "task": "simulation",
+          "test_acc": null,
+          "test_loss": 0.015157944522798061
+        }
+      ],
+      "gpu_vram_avg_mib": null,
+      "gpu_vram_samples_mib": [],
+      "repeat_count": 5,
+      "source_adp_runs": [],
+      "source_paired_stl_runs": [],
+      "task": "simulation"
+    }
+  ],
+  "source_run_root": "MLPS\\tabular\\shared\\dae_dnn\\results\\goliath_w2d_staged_current",
+  "tasks": [
+    "simulation"
+  ]
+}

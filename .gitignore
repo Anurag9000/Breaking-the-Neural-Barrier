@@ -36,8 +36,6 @@ wandb/
 CNN/data/
 
 # Local experiment outputs - never push
-MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow07_08_fresh_v1/
-MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow09_10_fresh_v1/
 
 # Model checkpoints / temporary checkpoint files
 *.pt
@@ -48,4 +46,66 @@ MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10
 # Local thermal/runtime logs
 thermal_guard.log
 thermal_guard.stop
+
+
+# Local Python environment
+.venv/
+__pycache__/
+*.pyc
+
+# Heavy model/checkpoint artifacts - never push
+*.pt
+*.pth
+*.ckpt
+*.tmp
+.checkpoint_*.tmp
+*.pt.*.tmp
+*.pth.*.tmp
+*.ckpt.*.tmp
+
+# Local thermal/runtime files
+thermal_guard.log
+thermal_guard.stop
+awake_guard.log
+
+
+# Local Python environment
+.venv/
+__pycache__/
+*.pyc
+
+# Heavy model/checkpoint artifacts - never push
+*.pt
+*.pth
+*.ckpt
+*.tmp
+.checkpoint_*.tmp
+*.pt.*.tmp
+*.pth.*.tmp
+*.ckpt.*.tmp
+
+# Local thermal/runtime files
+thermal_guard.log
+thermal_guard.stop
+awake_guard.log
+MLPS/tabular/shared/dae_dnn/run_goliath.py.bak
+
+
+# Local Python environment
+.venv/
+__pycache__/
+*.pyc
+
+# Heavy model/checkpoint artifacts - never push
+*.pt
+*.pth
+*.ckpt
+*.tmp
+.checkpoint_*.tmp
+*.pt.*.tmp
+*.pth.*.tmp
+*.ckpt.*.tmp
+
+# Local backup files
+*.bak
 

@@ -1,0 +1,69 @@
+{
+  "candidate_index": 0,
+  "config": {
+    "alt_start_depth": 1,
+    "alt_start_width": 1,
+    "batch_size": 4656,
+    "data_dir": "./data",
+    "delta": 0.0001,
+    "demo": false,
+    "depth_expansion_patience": 2,
+    "grad_clip": 1.0,
+    "lr": 0.001,
+    "max_depth": 10,
+    "max_epochs": 100000000,
+    "max_neurons": 10000000000,
+    "max_width": 10000000000,
+    "metrics_every": 0,
+    "min_width": 1,
+    "num_workers": 0,
+    "parameter_band": [
+      7,
+      8
+    ],
+    "parameter_matched": true,
+    "patience": 10,
+    "phases": [],
+    "results_dir": "MLPS/tabular/shared/dae_dnn/results",
+    "run_root": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\autoencoding\\_children\\stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280",
+    "seed": 0,
+    "stl_depth": 2,
+    "stl_width": 128,
+    "tasks": [
+      "autoencoding"
+    ],
+    "use_bn": true,
+    "weight_decay": 0.0001,
+    "width_count_per_depth": 10,
+    "width_expansion_patience": 10,
+    "width_stage_margin_patience": 10,
+    "width_stage_min_improve_pct": 1.0,
+    "width_step": 1
+  },
+  "dataset_sizes": {
+    "test": 58101,
+    "train": 464810,
+    "val": 58101
+  },
+  "git_commit": "2b88bff11db4b4b6271a0262527256374a1d7dd0",
+  "model": {
+    "hidden_widths": [
+      1280,
+      1280,
+      1280,
+      1280,
+      1280,
+      1280,
+      1280
+    ],
+    "in_dim": 54,
+    "out_dim": 54,
+    "use_bn": true
+  },
+  "phase_kind": "candidate",
+  "phase_name": "stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280",
+  "reconstruct": false,
+  "task": "autoencoding",
+  "task_extra": {},
+  "task_type": "reconstruction"
+}
