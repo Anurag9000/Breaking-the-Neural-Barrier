@@ -27,39 +27,42 @@ function Get-ActiveSchemeGuid {
     return [regex]::Match($line, "[0-9a-fA-F-]{36}").Value
 }
 
-function Set-HighPerformancePlan {
-    $highPerfBase = "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c"
+function Ensure-HighPerformance {
+    $hpBase = "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c"
+    $line = powercfg /l | Where-Object { $_ -match "High performance" } | Select-Object -First 1
 
-    $hpLine = powercfg /l | Where-Object { $_ -match "High performance" } | Select-Object -First 1
-
-    if (-not $hpLine) {
-        $created = powercfg -duplicatescheme $highPerfBase
-        $m = [regex]::Match(($created | Out-String), "[0-9a-fA-F-]{36}")
-        if ($m.Success) {
-            $hp = $m.Value
-        } else {
-            $hp = $highPerfBase
-        }
+    if ($line) {
+        $hp = [regex]::Match($line, "[0-9a-fA-F-]{36}").Value
     } else {
-        $hp = [regex]::Match($hpLine, "[0-9a-fA-F-]{36}").Value
+        $created = powercfg -duplicatescheme $hpBase
+        $hp = [regex]::Match(($created | Out-String), "[0-9a-fA-F-]{36}").Value
+        if (-not $hp) { $hp = $hpBase }
     }
 
     powercfg /s $hp | Out-Null
     return $hp
 }
 
-function Apply-PerformanceNoSleep($scheme) {
-    # Screen off after 5 min, but system does not sleep
+function Apply-RunPowerPolicy($scheme) {
+    # Display off after 5 min; system awake
     powercfg /change monitor-timeout-ac 5 | Out-Null
     powercfg /change standby-timeout-ac 0 | Out-Null
     powercfg /change hibernate-timeout-ac 0 | Out-Null
     powercfg /change disk-timeout-ac 0 | Out-Null
 
-    # CPU: sane performance mode, not forced idle 100%
+    # Sleep/hibernate/hybrid/unattended sleep disabled
+    powercfg /setacvalueindex $scheme 238c9fa8-0aad-41ed-83f4-97be242c8f20 29f6c1db-86da-48c5-9fdb-f2b67b1f44da 0 | Out-Null
+    powercfg /setacvalueindex $scheme 238c9fa8-0aad-41ed-83f4-97be242c8f20 9d7815a6-7ee4-497e-8888-515a05f02364 0 | Out-Null
+    powercfg /setacvalueindex $scheme 238c9fa8-0aad-41ed-83f4-97be242c8f20 94ac6d29-73ce-41a6-809f-6363ba21b47e 0 | Out-Null
+    powercfg /setacvalueindex $scheme 238c9fa8-0aad-41ed-83f4-97be242c8f20 7bc4a2f9-d8fc-4469-b07b-33eb785aaca0 0 | Out-Null
+    powercfg /setacvalueindex $scheme 238c9fa8-0aad-41ed-83f4-97be242c8f20 25dfa149-5dd1-4736-b5ab-e8a37b5b8187 1 | Out-Null
+
+    # Lid close on charger = do nothing
+    powercfg /setacvalueindex $scheme 4f971e89-eebd-4455-a8de-9e59040e7347 5ca83367-6e45-459f-a27b-476b1d01c9360 0 | Out-Null
+
+    # CPU sane performance + active cooling
     powercfg /setacvalueindex $scheme $SUB_PROCESSOR $PROC_MIN 5 | Out-Null
     powercfg /setacvalueindex $scheme $SUB_PROCESSOR $PROC_MAX $NormalCpuMax | Out-Null
-
-    # Active cooling = fan-first policy where firmware supports it
     powercfg /setacvalueindex $scheme $SUB_PROCESSOR $COOLING 1 | Out-Null
 
     powercfg /s $scheme | Out-Null
@@ -75,43 +78,24 @@ function Get-CpuTempC {
         $sensors = Get-CimInstance -Namespace root\LibreHardwareMonitor -ClassName Sensor -ErrorAction Stop |
             Where-Object {
                 $_.SensorType -eq "Temperature" -and
-                (
-                    $_.Name -like "*CPU Package*" -or
-                    $_.Name -like "*CPU Core*" -or
-                    $_.Name -like "*Tctl*" -or
-                    $_.Name -like "*Tdie*"
-                )
+                ($_.Name -like "*CPU Package*" -or $_.Name -like "*CPU Core*" -or $_.Name -like "*Tctl*" -or $_.Name -like "*Tdie*")
             }
-
-        if ($sensors) {
-            return [math]::Round(($sensors | Measure-Object Value -Maximum).Maximum, 1)
-        }
+        if ($sensors) { return [math]::Round(($sensors | Measure-Object Value -Maximum).Maximum, 1) }
     } catch {}
 
     try {
         $sensors = Get-CimInstance -Namespace root\OpenHardwareMonitor -ClassName Sensor -ErrorAction Stop |
             Where-Object {
                 $_.SensorType -eq "Temperature" -and
-                (
-                    $_.Name -like "*CPU Package*" -or
-                    $_.Name -like "*CPU Core*" -or
-                    $_.Name -like "*Tctl*" -or
-                    $_.Name -like "*Tdie*"
-                )
+                ($_.Name -like "*CPU Package*" -or $_.Name -like "*CPU Core*" -or $_.Name -like "*Tctl*" -or $_.Name -like "*Tdie*")
             }
-
-        if ($sensors) {
-            return [math]::Round(($sensors | Measure-Object Value -Maximum).Maximum, 1)
-        }
+        if ($sensors) { return [math]::Round(($sensors | Measure-Object Value -Maximum).Maximum, 1) }
     } catch {}
 
     try {
         $temps = Get-CimInstance -Namespace root/wmi -ClassName MSAcpi_ThermalZoneTemperature -ErrorAction Stop |
             ForEach-Object { ($_.CurrentTemperature / 10) - 273.15 }
-
-        if ($temps) {
-            return [math]::Round(($temps | Measure-Object -Maximum).Maximum, 1)
-        }
+        if ($temps) { return [math]::Round(($temps | Measure-Object -Maximum).Maximum, 1) }
     } catch {}
 
     return $null
@@ -127,20 +111,21 @@ public class Awake {
 }
 "@
 
-$ES_CONTINUOUS = 0x80000000
-$ES_SYSTEM_REQUIRED = 0x00000001
+$ES_CONTINUOUS        = 0x80000000
+$ES_SYSTEM_REQUIRED   = 0x00000001
+$ES_AWAYMODE_REQUIRED = 0x00000040
 
-$scheme = Set-HighPerformancePlan
-Apply-PerformanceNoSleep $scheme
+$scheme = Ensure-HighPerformance
+Apply-RunPowerPolicy $scheme
 
 $throttled = $false
 
 Log "THERMAL GUARD STARTED"
-Log "Power plan set to High Performance: $scheme"
-Log "Screen may turn off, but sleep/hibernate are disabled on AC."
-Log "Active cooling policy enabled continuously."
-Log "CPU > ${HotTempC}C => cap to ${HotCpuMax}%"
-Log "CPU < ${CoolTempC}C => restore to ${NormalCpuMax}%"
+Log "High Performance active: $scheme"
+Log "No sleep/hibernate/disk sleep. Display may turn off."
+Log "Active cooling/fan-first policy repeatedly applied."
+Log "CPU >= ${HotTempC}C -> CPU max ${HotCpuMax}%"
+Log "CPU <= ${CoolTempC}C -> CPU max ${NormalCpuMax}%"
 
 try {
     while ($true) {
@@ -149,14 +134,14 @@ try {
             break
         }
 
-        [Awake]::SetThreadExecutionState($ES_CONTINUOUS -bor $ES_SYSTEM_REQUIRED) | Out-Null
+        [Awake]::SetThreadExecutionState($ES_CONTINUOUS -bor $ES_SYSTEM_REQUIRED -bor $ES_AWAYMODE_REQUIRED) | Out-Null
 
-        Apply-PerformanceNoSleep $scheme
+        Apply-RunPowerPolicy $scheme
 
         $temp = Get-CpuTempC
 
         if ($null -eq $temp) {
-            Log "CPU temp unavailable. Active cooling + no-sleep still active. For accurate temp, run LibreHardwareMonitor."
+            Log "CPU temp unavailable. Active cooling/no-sleep still active. Run LibreHardwareMonitor for accurate temp throttling."
         }
         elseif (-not $throttled -and $temp -ge $HotTempC) {
             Set-CpuMax $scheme $HotCpuMax

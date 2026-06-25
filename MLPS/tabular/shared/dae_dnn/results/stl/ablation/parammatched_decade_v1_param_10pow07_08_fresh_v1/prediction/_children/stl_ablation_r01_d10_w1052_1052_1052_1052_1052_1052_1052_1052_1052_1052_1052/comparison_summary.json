@@ -1,0 +1,147 @@
+{
+  "architectures": [
+    [
+      1052,
+      1052,
+      1052,
+      1052,
+      1052,
+      1052,
+      1052,
+      1052,
+      1052,
+      1052
+    ]
+  ],
+  "param_band": [
+    7,
+    8
+  ],
+  "repeat_count": 5,
+  "reports": [
+    {
+      "ablation_stl_runs": [
+        {
+          "architecture": [
+            1052,
+            1052,
+            1052,
+            1052,
+            1052,
+            1052,
+            1052,
+            1052,
+            1052,
+            1052
+          ],
+          "best_epoch": 16,
+          "best_val": 0.2879674732685089,
+          "candidate_dir": "cand_000_d10_w1052",
+          "checkpoint_best": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\prediction\\_children\\stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\prediction\\stl_ablation_r04_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\cand_000_d10_w1052\\checkpoint_best.pt",
+          "checkpoint_last": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\prediction\\_children\\stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\prediction\\stl_ablation_r04_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\cand_000_d10_w1052\\checkpoint_last.pt",
+          "final_epoch": 26,
+          "phase": "stl_ablation_r04_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052",
+          "resumed": false,
+          "source_phase": null,
+          "task": "prediction",
+          "test_metrics": {
+            "test_loss": 0.27409327030181885
+          }
+        },
+        {
+          "architecture": [
+            1052,
+            1052,
+            1052,
+            1052,
+            1052,
+            1052,
+            1052,
+            1052,
+            1052,
+            1052
+          ],
+          "best_epoch": 21,
+          "best_val": 0.2869188189506531,
+          "candidate_dir": "cand_000_d10_w1052",
+          "checkpoint_best": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\prediction\\_children\\stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\prediction\\stl_ablation_r05_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\cand_000_d10_w1052\\checkpoint_best.pt",
+          "checkpoint_last": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\prediction\\_children\\stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\prediction\\stl_ablation_r05_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\cand_000_d10_w1052\\checkpoint_last.pt",
+          "final_epoch": 31,
+          "phase": "stl_ablation_r05_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052",
+          "resumed": false,
+          "source_phase": null,
+          "task": "prediction",
+          "test_metrics": {
+            "test_loss": 0.28224557638168335
+          }
+        }
+      ],
+      "best_ablation": {
+        "architecture": [
+          1052,
+          1052,
+          1052,
+          1052,
+          1052,
+          1052,
+          1052,
+          1052,
+          1052,
+          1052
+        ],
+        "best_epoch": 21,
+        "best_val": 0.2869188189506531,
+        "candidate_dir": "cand_000_d10_w1052",
+        "checkpoint_best": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\prediction\\_children\\stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\prediction\\stl_ablation_r05_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\cand_000_d10_w1052\\checkpoint_best.pt",
+        "checkpoint_last": "MLPS\\tabular\\shared\\dae_dnn\\results\\stl\\ablation\\parammatched_decade_v1_param_10pow07_08_fresh_v1\\prediction\\_children\\stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\prediction\\stl_ablation_r05_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052\\cand_000_d10_w1052\\checkpoint_last.pt",
+        "final_epoch": 31,
+        "parameter_count": 10001365,
+        "phase": "stl_ablation_r05_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052",
+        "repeat": 5,
+        "resumed": false,
+        "source_phase": null,
+        "task": "prediction",
+        "test_metrics": {
+          "test_loss": 0.28224557638168335
+        }
+      },
+      "comparisons": [],
+      "curve_rows": [
+        {
+          "architecture": "[1052, 1052, 1052, 1052, 1052, 1052, 1052, 1052, 1052, 1052]",
+          "best_epoch": 16,
+          "best_val": 0.2879674732685089,
+          "final_epoch": 26,
+          "parameter_count": 10001365,
+          "phase": "stl_ablation_r04_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052",
+          "repeat": 4,
+          "task": "prediction",
+          "test_acc": null,
+          "test_loss": 0.27409327030181885
+        },
+        {
+          "architecture": "[1052, 1052, 1052, 1052, 1052, 1052, 1052, 1052, 1052, 1052]",
+          "best_epoch": 21,
+          "best_val": 0.2869188189506531,
+          "final_epoch": 31,
+          "parameter_count": 10001365,
+          "phase": "stl_ablation_r05_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052",
+          "repeat": 5,
+          "task": "prediction",
+          "test_acc": null,
+          "test_loss": 0.28224557638168335
+        }
+      ],
+      "gpu_vram_avg_mib": null,
+      "gpu_vram_samples_mib": [],
+      "repeat_count": 5,
+      "source_adp_runs": [],
+      "source_paired_stl_runs": [],
+      "task": "prediction"
+    }
+  ],
+  "source_run_root": "MLPS\\tabular\\shared\\dae_dnn\\results\\goliath_w2d_staged_current",
+  "tasks": [
+    "prediction"
+  ]
+}
