@@ -1,626 +1,415 @@
-[2026-06-23 21:49:35] Initialized ContinuousLogger for stl_ablation_parallel (Mode: stl_ablation_parallel)
-[2026-06-23 21:49:35] Logs: MLPS\tabular\shared\dae_dnn\results\stl\ablation\parammatched_decade_v1_param_10pow07_08_fresh_v1\training_log.txt
-[2026-06-23 21:49:35] CSV: MLPS\tabular\shared\dae_dnn\results\stl\ablation\parammatched_decade_v1_param_10pow07_08_fresh_v1\training_stats.csv
-[2026-06-23 21:49:35] Run root: MLPS\tabular\shared\dae_dnn\results\stl\ablation\parammatched_decade_v1_param_10pow07_08_fresh_v1
-[2026-06-23 21:49:35] Tasks: ['classification', 'autoencoding', 'generation', 'denoising', 'anomaly', 'simulation', 'prediction']
-[2026-06-23 21:49:35] Architectures: ['[1]', '[2]', '[3]', '[4]', '[5]', '[6]', '[7]', '[8]', '[9]', '[10]']
-[2026-06-23 21:49:35] Parameter decade band: [7, 8]
-[2026-06-23 21:49:35] Repeat count: 5
-[2026-06-23 21:49:35] Scheduler: pressure_aware
-[2026-06-23 21:49:35] Concurrency: 10
-[2026-06-23 21:49:35] Host RAM pressure limit pct: 85.00
-[2026-06-23 21:49:35] Host RAM resume pct: 80.00
-[2026-06-23 21:49:35] GPU memory pressure limit pct: 90.00
-[2026-06-23 21:49:35] GPU memory resume pct: 85.00
-[2026-06-23 21:49:35] GPU device index: 0
-[2026-06-23 21:49:35] Max active jobs: 0
-[2026-06-23 21:49:35] Max retries per job: 0
-[2026-06-23 21:49:35] Batch backoff factor: 0.500
-[2026-06-23 21:49:35] Batch backoff scale: 0.250000
-[2026-06-23 21:49:35] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
-[2026-06-23 21:49:35] Device: cpu
-[2026-06-23 21:49:35] Git commit: 263a46d90b91ef16f66016d0848a569e658ff86f
-[2026-06-23 21:49:41] [TASK] launch task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=25.54 avail_mib=48566/65220 gpu_used_pct=3.32 gpu_used_mib=272/8188 active=1/1330
-[2026-06-23 21:50:13] [TASK] launch task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=25.03 avail_mib=48893/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=2/1330
-[2026-06-23 21:50:43] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=25.63 avail_mib=48507/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=3/1330
-[2026-06-23 21:51:15] [TASK] launch task=generation phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=26.87 avail_mib=47696/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=4/1330
-[2026-06-23 21:51:47] [TASK] launch task=prediction phase=stl_ablation_r01_d07_w1288_1288_1288_1288_1288_1288_1288_1288 params=9992305 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=28.04 avail_mib=46930/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=5/1330
-[2026-06-23 21:52:19] [TASK] launch task=simulation phase=stl_ablation_r01_d07_w1288_1288_1288_1288_1288_1288_1288_1288 params=9992305 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=29.02 avail_mib=46290/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=6/1330
-[2026-06-23 21:52:52] [TASK] launch task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=30.25 avail_mib=45494/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=7/1330
-[2026-06-23 21:53:24] [TASK] launch task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=31.51 avail_mib=44672/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=8/1330
-[2026-06-23 21:53:56] [TASK] launch task=autoencoding phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=32.36 avail_mib=44115/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=9/1330
-[2026-06-23 21:54:26] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=33.85 avail_mib=43143/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=10/1330
-[2026-06-23 21:54:58] [TASK] launch task=generation phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=35.22 avail_mib=42248/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=11/1330
-[2026-06-23 21:55:30] [TASK] launch task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=36.12 avail_mib=41660/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=12/1330
-[2026-06-23 21:56:01] [TASK] launch task=classification phase=stl_ablation_r01_d07_w1284_1284_1284_1284_1284_1284_1284_1284 params=9997231 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=37.48 avail_mib=40773/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=13/1330
-[2026-06-23 21:56:33] [TASK] launch task=prediction phase=stl_ablation_r01_d04_w1822_1822_1822_1822_1822 params=9997315 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=38.77 avail_mib=39935/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=14/1330
-[2026-06-23 21:57:05] [TASK] launch task=simulation phase=stl_ablation_r01_d04_w1822_1822_1822_1822_1822 params=9997315 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=39.49 avail_mib=39465/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=15/1330
-[2026-06-23 21:57:37] [TASK] launch task=prediction phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=40.40 avail_mib=38874/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=16/1330
-[2026-06-23 21:58:08] [TASK] launch task=simulation phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=42.26 avail_mib=37661/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=17/1330
-[2026-06-23 21:58:38] [TASK] launch task=classification phase=stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049 params=9999075 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=42.85 avail_mib=37276/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=18/1330
-[2026-06-23 21:59:08] [TASK] launch task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=44.49 avail_mib=36202/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=19/1330
-[2026-06-23 21:59:39] [TASK] launch task=autoencoding phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=45.64 avail_mib=35456/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=20/1330
-[2026-06-23 22:00:09] [TASK] launch task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=46.89 avail_mib=34637/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=21/1330
-[2026-06-23 22:00:16] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=1
-[2026-06-23 22:00:17] [STATE] admission gate reopened by genuine process completion
-[2026-06-23 22:00:40] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=47.39 avail_mib=34310/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=21/1330
-[2026-06-23 22:01:11] [TASK] launch task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=48.68 avail_mib=33474/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=22/1330
-[2026-06-23 22:01:44] [TASK] launch task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=49.58 avail_mib=32886/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=23/1330
-[2026-06-23 22:02:15] [TASK] launch task=prediction phase=stl_ablation_r01_d02_w3155_3155_3155 params=10001351 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=51.34 avail_mib=31734/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=24/1330
-[2026-06-23 22:02:45] [TASK] launch task=simulation phase=stl_ablation_r01_d02_w3155_3155_3155 params=10001351 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=52.05 avail_mib=31270/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=25/1330
-[2026-06-23 22:03:15] [TASK] launch task=prediction phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=53.66 avail_mib=30222/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=26/1330
-[2026-06-23 22:03:46] [TASK] launch task=simulation phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=54.54 avail_mib=29651/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=27/1330
-[2026-06-23 22:04:16] [TASK] launch task=anomaly phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=55.98 avail_mib=28711/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=28/1330
-[2026-06-23 22:04:47] [TASK] launch task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=56.04 avail_mib=28672/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=29/1330
-[2026-06-23 22:05:17] [TASK] launch task=denoising phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=58.62 avail_mib=26986/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=30/1330
-[2026-06-23 22:05:48] [TASK] launch task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=59.00 avail_mib=26740/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=31/1330
-[2026-06-23 22:06:18] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=60.50 avail_mib=25761/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=32/1330
-[2026-06-23 22:06:43] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=1
-[2026-06-23 22:06:43] [STATE] admission gate reopened by genuine process completion
-[2026-06-23 22:06:49] [TASK] launch task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=60.65 avail_mib=25663/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=32/1330
-[2026-06-23 22:07:19] [TASK] launch task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=61.85 avail_mib=24881/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=33/1330
-[2026-06-23 22:07:49] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209 exit=1 retry_count=1
-[2026-06-23 22:07:49] [STATE] admission gate reopened by genuine process completion
-[2026-06-23 22:07:50] [TASK] launch task=simulation phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=61.98 avail_mib=24799/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=33/1330
-[2026-06-23 22:08:21] [TASK] launch task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=63.03 avail_mib=24112/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=34/1330
-[2026-06-23 22:08:51] [TASK] launch task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=64.79 avail_mib=22967/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=35/1330
-[2026-06-23 22:09:22] [TASK] launch task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=65.70 avail_mib=22370/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=36/1330
-[2026-06-23 22:09:53] [TASK] launch task=autoencoding phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=67.47 avail_mib=21218/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=37/1330
-[2026-06-23 22:10:24] [TASK] launch task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=68.57 avail_mib=20499/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=38/1330
-[2026-06-23 22:10:54] [TASK] launch task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=69.53 avail_mib=19874/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=39/1330
-[2026-06-23 22:11:24] [TASK] launch task=prediction phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=70.48 avail_mib=19250/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=40/1330
-[2026-06-23 22:11:55] [TASK] already_complete task=prediction phase=stl_ablation_r01_d833333_parammatched params=9999997
-[2026-06-23 22:11:55] [TASK] already_complete task=simulation phase=stl_ablation_r01_d833333_parammatched params=9999997
-[2026-06-23 22:11:55] [TASK] already_complete task=classification phase=stl_ablation_r01_d156250_parammatched params=10000007
-[2026-06-23 22:11:55] [TASK] already_complete task=anomaly phase=stl_ablation_r01_d90090_parammatched params=10000044
-[2026-06-23 22:11:55] [TASK] already_complete task=autoencoding phase=stl_ablation_r01_d90090_parammatched params=10000044
-[2026-06-23 22:11:55] [TASK] already_complete task=denoising phase=stl_ablation_r01_d90090_parammatched params=10000044
-[2026-06-23 22:11:55] [TASK] already_complete task=generation phase=stl_ablation_r01_d90090_parammatched params=10000044
-[2026-06-23 22:11:55] [TASK] launch task=simulation phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=71.95 avail_mib=18295/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=41/1330
-[2026-06-23 22:12:26] [TASK] launch task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=72.39 avail_mib=18004/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-23 22:12:57] [TASK] launch task=autoencoding phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=74.21 avail_mib=16822/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-23 22:13:28] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=74.60 avail_mib=16566/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-23 22:13:58] [TASK] launch task=generation phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=76.72 avail_mib=15182/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-23 22:14:29] [TASK] launch task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=76.68 avail_mib=15212/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
-[2026-06-23 22:15:00] [TASK] launch task=prediction phase=stl_ablation_r01_d03_w2232_2232_2232_2232 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=78.79 avail_mib=13836/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
-[2026-06-23 22:15:31] [TASK] launch task=simulation phase=stl_ablation_r01_d03_w2232_2232_2232_2232 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=78.46 avail_mib=14046/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=48/1330
-[2026-06-23 22:16:26] [TASK] launch task=prediction phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.90 avail_mib=13106/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-23 22:23:57] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=2
-[2026-06-23 22:23:57] [STATE] admission gate reopened by genuine process completion
-[2026-06-23 22:23:58] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.69 avail_mib=13243/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-23 22:35:56] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=1
-[2026-06-23 22:35:57] [STATE] admission gate reopened by genuine process completion
-[2026-06-23 22:35:57] [TASK] launch task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.65 avail_mib=13273/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-23 22:47:32] [TASK] launch task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.88 avail_mib=13122/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=50/1330
-[2026-06-23 22:47:48] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209 exit=1 retry_count=2
-[2026-06-23 22:47:49] [STATE] admission gate reopened by genuine process completion
-[2026-06-23 22:48:31] [TASK] launch task=simulation phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13058/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=50/1330
-[2026-06-23 23:11:39] [TASK] launch task=classification phase=stl_ablation_r01_d05_w1572_1572_1572_1572_1572_1572 params=10004215 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.96 avail_mib=13068/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=51/1330
-[2026-06-23 23:26:21] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 exit=1 retry_count=1
-[2026-06-23 23:26:22] [STATE] admission gate reopened by genuine process completion
-[2026-06-23 23:26:26] [TASK] launch task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.87 avail_mib=13130/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=51/1330
-[2026-06-24 00:04:16] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d02_w3155_3155_3155 params=10001351 exit=1 retry_count=1
-[2026-06-24 00:04:16] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 00:04:16] [TASK] launch task=simulation phase=stl_ablation_r01_d02_w3155_3155_3155 params=10001351 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.94 avail_mib=13081/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=51/1330
-[2026-06-24 00:07:32] [TASK] retry_forever task=generation phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=1
-[2026-06-24 00:07:32] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 00:07:32] [TASK] launch task=generation phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.80 avail_mib=13172/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=51/1330
-[2026-06-24 00:18:11] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=1
-[2026-06-24 00:18:11] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 00:19:02] [TASK] launch task=autoencoding phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.86 avail_mib=13138/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=51/1330
-[2026-06-24 01:03:35] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=2
-[2026-06-24 01:03:36] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 01:26:40] [TASK] launch task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.87 avail_mib=13127/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=51/1330
-[2026-06-24 01:28:01] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=2
-[2026-06-24 01:28:02] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 01:58:53] [TASK] retry_forever task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 exit=1 retry_count=1
-[2026-06-24 01:58:54] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 01:59:32] [TASK] launch task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.87 avail_mib=13129/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=50/1330
-[2026-06-24 02:02:57] [TASK] retry_forever task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=1
-[2026-06-24 02:02:58] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 02:03:12] [TASK] launch task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.90 avail_mib=13106/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=50/1330
-[2026-06-24 03:12:54] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=1
-[2026-06-24 03:12:54] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 03:19:47] [TASK] launch task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.99 avail_mib=13049/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=50/1330
-[2026-06-24 03:22:45] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209 exit=1 retry_count=3
-[2026-06-24 03:22:46] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 03:30:03] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=2
-[2026-06-24 03:30:04] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 03:30:12] [TASK] launch task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13058/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 03:38:32] [TASK] retry_forever task=generation phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=1
-[2026-06-24 03:38:33] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 03:38:33] [TASK] launch task=generation phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.27 avail_mib=13523/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 04:12:30] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d04_w1822_1822_1822_1822_1822 params=9997315 exit=1 retry_count=1
-[2026-06-24 04:12:31] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 04:12:33] [TASK] launch task=prediction phase=stl_ablation_r01_d04_w1822_1822_1822_1822_1822 params=9997315 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.89 avail_mib=13114/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 04:14:08] [TASK] completed task=simulation phase=stl_ablation_r01_d02_w3155_3155_3155 params=10001351
-[2026-06-24 04:14:08] [TASK] launch task=simulation phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.39 avail_mib=13439/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 04:14:12] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=1
-[2026-06-24 04:14:13] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 04:14:40] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.75 avail_mib=13207/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 04:20:04] [TASK] launch task=autoencoding phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.99 avail_mib=13050/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=50/1330
-[2026-06-24 04:38:23] [TASK] retry_forever task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 exit=1 retry_count=2
-[2026-06-24 04:38:24] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 04:42:29] [TASK] launch task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13057/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=50/1330
-[2026-06-24 04:42:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d07_w1284_1284_1284_1284_1284_1284_1284_1284 params=9997231 exit=1 retry_count=1
-[2026-06-24 04:42:56] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 04:43:23] [TASK] launch task=classification phase=stl_ablation_r01_d07_w1284_1284_1284_1284_1284_1284_1284_1284 params=9997231 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.88 avail_mib=13123/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=50/1330
-[2026-06-24 05:09:00] [TASK] completed task=simulation phase=stl_ablation_r01_d04_w1822_1822_1822_1822_1822 params=9997315
-[2026-06-24 05:11:46] [TASK] retry_forever task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=2
-[2026-06-24 05:11:47] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 05:11:48] [TASK] launch task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.45 avail_mib=13401/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 05:12:10] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 exit=1 retry_count=2
-[2026-06-24 05:12:11] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 05:12:23] [TASK] launch task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13060/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 05:16:01] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=1
-[2026-06-24 05:16:02] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 05:16:02] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.75 avail_mib=13208/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 05:28:40] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=1
-[2026-06-24 05:28:41] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 05:28:41] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.74 avail_mib=13216/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 05:30:33] [TASK] launch task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.90 avail_mib=13106/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=50/1330
-[2026-06-24 05:31:48] [TASK] completed task=prediction phase=stl_ablation_r01_d04_w1822_1822_1822_1822_1822 params=9997315
-[2026-06-24 05:33:11] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=3
-[2026-06-24 05:33:12] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 05:33:46] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.89 avail_mib=13117/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 05:45:09] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=2
-[2026-06-24 05:45:10] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 05:45:11] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.83 avail_mib=13156/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 05:46:17] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365 exit=1 retry_count=1
-[2026-06-24 05:46:17] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 05:46:26] [TASK] launch task=prediction phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.90 avail_mib=13110/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 05:55:13] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=1
-[2026-06-24 05:55:14] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 05:55:31] [TASK] launch task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.90 avail_mib=13108/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 06:08:46] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365 exit=1 retry_count=1
-[2026-06-24 06:08:47] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 06:09:15] [TASK] launch task=simulation phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.85 avail_mib=13140/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 06:26:58] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d02_w3155_3155_3155 params=10001351 exit=1 retry_count=1
-[2026-06-24 06:26:59] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 06:26:59] [TASK] launch task=prediction phase=stl_ablation_r01_d02_w3155_3155_3155 params=10001351 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.47 avail_mib=13387/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 06:29:42] [TASK] launch task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13060/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=50/1330
-[2026-06-24 06:50:40] [TASK] completed task=prediction phase=stl_ablation_r01_d02_w3155_3155_3155 params=10001351
-[2026-06-24 07:19:54] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=2
-[2026-06-24 07:19:54] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 07:19:54] [TASK] launch task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.87 avail_mib=13130/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 07:38:08] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 exit=1 retry_count=1
-[2026-06-24 07:38:08] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 07:38:30] [TASK] launch task=prediction phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.92 avail_mib=13097/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 07:46:05] [TASK] completed task=simulation phase=stl_ablation_r01_d07_w1288_1288_1288_1288_1288_1288_1288_1288 params=9992305
-[2026-06-24 07:46:07] [TASK] launch task=autoencoding phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.91 avail_mib=13104/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 07:56:28] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=1
-[2026-06-24 07:56:28] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 07:56:41] [TASK] launch task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.99 avail_mib=13049/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 08:00:05] [TASK] retry_forever task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=1
-[2026-06-24 08:00:06] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 08:00:08] [TASK] launch task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.82 avail_mib=13160/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 08:39:05] [TASK] completed task=prediction phase=stl_ablation_r01_d03_w2232_2232_2232_2232 params=10003825
-[2026-06-24 08:40:41] [TASK] launch task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.99 avail_mib=13051/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 20:13:02] [TASK] launch task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.84 avail_mib=13147/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=50/1330
-[2026-06-24 20:13:48] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=1
-[2026-06-24 20:13:49] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:15:06] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d07_w1288_1288_1288_1288_1288_1288_1288_1288 params=9992305 exit=1 retry_count=1
-[2026-06-24 20:15:07] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:16:50] [TASK] launch task=prediction phase=stl_ablation_r01_d07_w1288_1288_1288_1288_1288_1288_1288_1288 params=9992305 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.84 avail_mib=13150/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 20:25:20] [TASK] completed task=prediction phase=stl_ablation_r01_d07_w1288_1288_1288_1288_1288_1288_1288_1288 params=9992305
-[2026-06-24 20:25:21] [TASK] launch task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.91 avail_mib=13105/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 20:28:16] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=1
-[2026-06-24 20:28:16] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:28:49] [TASK] launch task=autoencoding phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.82 avail_mib=13164/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=49/1330
-[2026-06-24 20:31:52] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=1
-[2026-06-24 20:31:53] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:35:43] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=1
-[2026-06-24 20:35:43] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:37:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 exit=1 retry_count=1
-[2026-06-24 20:37:14] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:37:18] [TASK] launch task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.90 avail_mib=13112/65220 gpu_used_pct=1.94 gpu_used_mib=159/8188 active=47/1330
-[2026-06-24 20:38:00] [TASK] retry_forever task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=3
-[2026-06-24 20:38:00] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:38:16] [TASK] launch task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.96 avail_mib=13068/65220 gpu_used_pct=1.27 gpu_used_mib=104/8188 active=47/1330
-[2026-06-24 20:39:11] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=2
-[2026-06-24 20:39:11] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:39:20] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.88 avail_mib=13125/65220 gpu_used_pct=1.83 gpu_used_mib=150/8188 active=47/1330
-[2026-06-24 20:41:21] [TASK] retry_forever task=generation phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=1
-[2026-06-24 20:41:21] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:42:05] [TASK] completed task=prediction phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209
-[2026-06-24 20:42:05] [TASK] launch task=generation phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13060/65220 gpu_used_pct=2.08 gpu_used_mib=170/8188 active=46/1330
-[2026-06-24 20:42:34] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=3
-[2026-06-24 20:42:34] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:42:42] [TASK] launch task=autoencoding phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=80.00 avail_mib=13044/65220 gpu_used_pct=2.20 gpu_used_mib=180/8188 active=46/1330
-[2026-06-24 20:43:37] [TASK] launch task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.97 avail_mib=13065/65220 gpu_used_pct=1.83 gpu_used_mib=150/8188 active=47/1330
-[2026-06-24 20:47:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 exit=1 retry_count=1
-[2026-06-24 20:47:07] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:48:05] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=2
-[2026-06-24 20:48:05] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:48:22] [TASK] launch task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.99 avail_mib=13049/65220 gpu_used_pct=2.94 gpu_used_mib=241/8188 active=46/1330
-[2026-06-24 20:50:31] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=4
-[2026-06-24 20:50:33] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 20:52:47] [TASK] launch task=autoencoding phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.89 avail_mib=13116/65220 gpu_used_pct=2.78 gpu_used_mib=228/8188 active=46/1330
-[2026-06-24 20:56:50] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 exit=1 retry_count=3
-[2026-06-24 20:56:50] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 21:01:16] [TASK] retry_forever task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=1
-[2026-06-24 21:01:16] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 21:04:29] [TASK] launch task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.97 avail_mib=13064/65220 gpu_used_pct=0.72 gpu_used_mib=59/8188 active=45/1330
-[2026-06-24 21:07:25] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=1
-[2026-06-24 21:07:25] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 21:11:50] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365 exit=1 retry_count=2
-[2026-06-24 21:11:51] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 21:11:51] [TASK] launch task=prediction phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.99 avail_mib=13050/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-24 21:12:51] [TASK] launch task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.77 avail_mib=13193/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 21:18:12] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=3
-[2026-06-24 21:18:12] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 21:18:41] [TASK] launch task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.90 avail_mib=13112/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 21:23:39] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=4
-[2026-06-24 21:23:39] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 21:23:43] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13055/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 21:26:58] [TASK] completed task=simulation phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209
-[2026-06-24 21:28:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 exit=1 retry_count=2
-[2026-06-24 21:28:28] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 21:28:29] [TASK] launch task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.57 avail_mib=13324/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-24 21:34:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 exit=1 retry_count=3
-[2026-06-24 21:34:51] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 21:34:51] [TASK] launch task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.58 avail_mib=13318/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-24 21:35:48] [TASK] launch task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.84 avail_mib=13148/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 21:50:26] [TASK] launch task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.58 avail_mib=13318/65220 gpu_used_pct=0.85 gpu_used_mib=70/8188 active=46/1330
-[2026-06-24 21:56:24] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=2
-[2026-06-24 21:56:24] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 21:57:54] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 exit=1 retry_count=2
-[2026-06-24 21:57:54] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 21:57:55] [TASK] launch task=prediction phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.84 avail_mib=13146/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 21:58:25] [TASK] launch task=autoencoding phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.83 avail_mib=13155/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
-[2026-06-24 22:00:28] [TASK] completed task=simulation phase=stl_ablation_r01_d03_w2232_2232_2232_2232 params=10003825
-[2026-06-24 22:02:10] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=3
-[2026-06-24 22:02:11] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 22:02:11] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.78 avail_mib=13188/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 22:09:44] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 exit=1 retry_count=1
-[2026-06-24 22:09:44] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 22:09:56] [TASK] launch task=simulation phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=80.00 avail_mib=13047/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 22:18:46] [TASK] retry_forever task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 exit=1 retry_count=2
-[2026-06-24 22:18:46] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 22:18:47] [TASK] launch task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.31 avail_mib=13495/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 22:20:15] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 exit=1 retry_count=4
-[2026-06-24 22:20:16] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 22:20:21] [TASK] launch task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.81 avail_mib=13171/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 22:20:25] [TASK] retry_forever task=generation phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=2
-[2026-06-24 22:20:25] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 22:20:58] [TASK] launch task=generation phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13058/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 22:30:32] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=1
-[2026-06-24 22:30:32] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 22:30:32] [TASK] launch task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.84 avail_mib=13149/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 22:31:25] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=1
-[2026-06-24 22:31:25] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 22:31:33] [TASK] launch task=denoising phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.81 avail_mib=13166/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-24 22:38:10] [TASK] launch task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.91 avail_mib=13101/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
-[2026-06-24 22:38:48] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=1
-[2026-06-24 22:38:48] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 22:56:19] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=4
-[2026-06-24 22:56:19] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:04:03] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=2
-[2026-06-24 23:04:03] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:04:14] [TASK] launch task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.90 avail_mib=13106/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-24 23:17:35] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=3
-[2026-06-24 23:17:36] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:17:36] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.95 avail_mib=13077/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-24 23:19:03] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 exit=1 retry_count=1
-[2026-06-24 23:19:03] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:20:24] [TASK] launch task=prediction phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.96 avail_mib=13069/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-24 23:21:29] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=4
-[2026-06-24 23:21:29] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:21:29] [TASK] launch task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.57 avail_mib=13322/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-24 23:23:59] [TASK] retry_forever task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 exit=1 retry_count=1
-[2026-06-24 23:23:59] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:24:06] [TASK] launch task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.81 avail_mib=13170/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-24 23:29:27] [TASK] retry_forever task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 exit=1 retry_count=3
-[2026-06-24 23:29:28] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:29:40] [TASK] launch task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.89 avail_mib=13113/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-24 23:36:11] [TASK] retry_forever task=classification phase=stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049 params=9999075 exit=1 retry_count=1
-[2026-06-24 23:36:14] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:39:56] [TASK] retry_forever task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=2
-[2026-06-24 23:39:57] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:40:03] [TASK] launch task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.88 avail_mib=13124/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-24 23:40:29] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365 exit=1 retry_count=3
-[2026-06-24 23:40:29] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:40:42] [TASK] launch task=prediction phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.97 avail_mib=13062/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-24 23:41:59] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=3
-[2026-06-24 23:41:59] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:42:03] [TASK] launch task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.94 avail_mib=13083/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-24 23:43:38] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=1
-[2026-06-24 23:43:38] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:43:39] [TASK] launch task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.81 avail_mib=13169/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-24 23:45:05] [TASK] launch task=classification phase=stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049 params=9999075 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.89 avail_mib=13118/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-24 23:46:29] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=2
-[2026-06-24 23:46:30] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:49:16] [TASK] retry_forever task=classification phase=stl_ablation_r01_d05_w1572_1572_1572_1572_1572_1572 params=10004215 exit=1 retry_count=1
-[2026-06-24 23:49:17] [STATE] admission gate reopened by genuine process completion
-[2026-06-24 23:49:22] [TASK] launch task=classification phase=stl_ablation_r01_d05_w1572_1572_1572_1572_1572_1572 params=10004215 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.80 avail_mib=13174/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-24 23:58:41] [TASK] launch task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.89 avail_mib=13113/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-24 23:58:43] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=2
-[2026-06-24 23:58:43] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 00:03:17] [TASK] launch task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.79 avail_mib=13182/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 00:06:31] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 exit=1 retry_count=5
-[2026-06-25 00:06:31] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 00:09:55] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=1
-[2026-06-25 00:09:57] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 00:09:58] [TASK] launch task=autoencoding phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13060/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 00:17:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 exit=1 retry_count=1
-[2026-06-25 00:17:45] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 00:18:35] [TASK] launch task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.92 avail_mib=13099/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 00:22:07] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 exit=1 retry_count=2
-[2026-06-25 00:22:07] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 00:22:13] [TASK] launch task=prediction phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=80.00 avail_mib=13045/65220 gpu_used_pct=2.02 gpu_used_mib=165/8188 active=43/1330
-[2026-06-25 00:22:44] [TASK] launch task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.79 avail_mib=13184/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 00:23:28] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.90 avail_mib=13109/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 00:33:07] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=2
-[2026-06-25 00:33:08] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 00:33:08] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.80 avail_mib=13174/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 00:33:44] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=5
-[2026-06-25 00:33:45] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 00:33:54] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.96 avail_mib=13072/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 00:35:48] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=2
-[2026-06-25 00:35:48] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 00:35:50] [TASK] launch task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.96 avail_mib=13068/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 00:48:20] [TASK] retry_forever task=generation phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=2
-[2026-06-25 00:48:21] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 00:48:22] [TASK] launch task=generation phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.74 avail_mib=13213/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 00:52:04] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=1
-[2026-06-25 00:52:04] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 00:52:16] [TASK] launch task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.93 avail_mib=13091/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 00:56:32] [TASK] retry_forever task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=1
-[2026-06-25 00:56:32] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 00:56:51] [TASK] launch task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.83 avail_mib=13156/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 01:00:44] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=2
-[2026-06-25 01:00:45] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 01:00:46] [TASK] launch task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.67 avail_mib=13262/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 01:07:40] [TASK] retry_forever task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 exit=1 retry_count=4
-[2026-06-25 01:07:40] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 01:07:40] [TASK] launch task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.75 avail_mib=13209/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 01:23:58] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=2
-[2026-06-25 01:23:59] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 01:23:59] [TASK] launch task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.75 avail_mib=13208/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 01:29:18] [TASK] retry_forever task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=4
-[2026-06-25 01:29:19] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 01:29:21] [TASK] launch task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.83 avail_mib=13158/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 01:39:30] [TASK] retry_forever task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=3
-[2026-06-25 01:39:31] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 01:39:32] [TASK] launch task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.84 avail_mib=13146/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 01:42:55] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=3
-[2026-06-25 01:42:56] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 01:42:57] [TASK] launch task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.92 avail_mib=13099/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 01:56:11] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=3
-[2026-06-25 01:56:11] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 01:56:11] [TASK] launch task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.87 avail_mib=13126/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 02:52:36] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 exit=1 retry_count=2
-[2026-06-25 02:52:37] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 02:58:32] [TASK] launch task=simulation phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.96 avail_mib=13069/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 03:05:30] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 exit=1 retry_count=6
-[2026-06-25 03:05:31] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 03:05:49] [TASK] launch task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.93 avail_mib=13090/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 03:12:10] [TASK] completed task=simulation phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113
-[2026-06-25 03:17:11] [TASK] launch task=autoencoding phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.93 avail_mib=13091/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 03:21:19] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 exit=1 retry_count=3
-[2026-06-25 03:21:20] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 03:22:03] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 exit=1 retry_count=3
-[2026-06-25 03:22:03] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 03:22:04] [TASK] launch task=prediction phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.96 avail_mib=13073/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 03:29:16] [TASK] launch task=prediction phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.96 avail_mib=13068/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 03:46:18] [TASK] retry_forever task=generation phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=2
-[2026-06-25 03:46:20] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 03:52:36] [TASK] completed task=prediction phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365
-[2026-06-25 03:52:38] [TASK] launch task=generation phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.44 avail_mib=13411/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 03:57:23] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=4
-[2026-06-25 03:57:24] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 03:57:37] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.92 avail_mib=13099/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 03:57:39] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=3
-[2026-06-25 03:57:42] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 03:58:10] [TASK] launch task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.93 avail_mib=13087/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 04:00:10] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 exit=1 retry_count=7
-[2026-06-25 04:00:11] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 04:00:45] [TASK] launch task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.93 avail_mib=13092/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 04:10:37] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=4
-[2026-06-25 04:10:38] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 04:10:58] [TASK] launch task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.97 avail_mib=13061/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 04:18:17] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=4
-[2026-06-25 04:18:18] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 04:18:24] [TASK] launch task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.95 avail_mib=13076/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 04:23:58] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=2
-[2026-06-25 04:23:59] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 04:23:59] [TASK] launch task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.70 avail_mib=13237/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 04:27:01] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=5
-[2026-06-25 04:27:01] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 04:27:01] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.92 avail_mib=13098/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 04:29:21] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 exit=1 retry_count=4
-[2026-06-25 04:29:21] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 04:30:03] [TASK] launch task=prediction phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113 device=cpu batch_size=2064 batch_scale=0.250000 host_used_pct=79.77 avail_mib=13193/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 04:48:51] [TASK] retry_forever task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=5
-[2026-06-25 04:48:52] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 04:48:57] [TASK] launch task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.95 avail_mib=13075/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 04:54:45] [TASK] retry_forever task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 exit=1 retry_count=2
-[2026-06-25 04:54:46] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 04:54:46] [TASK] launch task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.78 avail_mib=13186/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 04:58:29] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=2
-[2026-06-25 04:58:29] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 04:58:29] [TASK] launch task=autoencoding phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.92 avail_mib=13097/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 05:05:56] [TASK] retry_forever task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 exit=1 retry_count=3
-[2026-06-25 05:05:57] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 05:05:57] [TASK] launch task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.82 avail_mib=13160/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 05:15:23] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=3
-[2026-06-25 05:15:23] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 05:15:43] [TASK] launch task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=80.00 avail_mib=13047/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 05:16:50] [TASK] retry_forever task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 exit=1 retry_count=5
-[2026-06-25 05:16:51] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 05:16:54] [TASK] launch task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=80.00 avail_mib=13044/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 05:26:08] [TASK] launch task=anomaly phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.87 avail_mib=13127/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
-[2026-06-25 05:26:08] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=5
-[2026-06-25 05:26:08] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 05:29:35] [TASK] completed task=simulation phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365
-[2026-06-25 05:29:38] [TASK] launch task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.87 avail_mib=13131/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 05:29:51] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=3
-[2026-06-25 05:29:52] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 05:30:23] [TASK] launch task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.80 avail_mib=13174/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 05:32:34] [TASK] retry_forever task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=2
-[2026-06-25 05:32:35] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 05:32:45] [TASK] launch task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.89 avail_mib=13116/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 05:47:04] [TASK] retry_forever task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 exit=1 retry_count=3
-[2026-06-25 05:47:04] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 05:49:09] [TASK] launch task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.88 avail_mib=13122/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 05:51:27] [TASK] retry_forever task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 exit=1 retry_count=2
-[2026-06-25 05:51:27] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 05:56:09] [TASK] launch task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.95 avail_mib=13075/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 06:00:35] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=6
-[2026-06-25 06:00:35] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 06:01:05] [TASK] launch task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.95 avail_mib=13078/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 06:01:10] [TASK] retry_forever task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 exit=1 retry_count=3
-[2026-06-25 06:01:10] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 06:01:41] [TASK] launch task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.97 avail_mib=13061/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
-[2026-06-25 06:07:54] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=2
-[2026-06-25 06:07:55] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 06:19:34] [TASK] retry_forever task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=3
-[2026-06-25 06:19:35] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 06:19:35] [TASK] launch task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.26 avail_mib=13524/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 06:43:40] [TASK] retry_forever task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 exit=1 retry_count=4
-[2026-06-25 06:43:41] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 06:43:47] [TASK] launch task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.99 avail_mib=13049/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 06:48:14] [TASK] retry_forever task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=4
-[2026-06-25 06:48:14] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 06:48:14] [TASK] launch task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.18 avail_mib=13580/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 06:53:09] [TASK] retry_forever task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=4
-[2026-06-25 06:53:09] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 06:53:09] [TASK] launch task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=78.83 avail_mib=13809/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 06:55:40] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=3
-[2026-06-25 06:55:41] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 06:56:11] [TASK] launch task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.87 avail_mib=13130/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 07:00:59] [TASK] completed task=prediction phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825
-[2026-06-25 07:01:18] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=6
-[2026-06-25 07:01:18] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 07:01:18] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.08 avail_mib=13643/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 07:02:34] [TASK] launch task=autoencoding phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=80.00 avail_mib=13044/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 07:09:27] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=3
-[2026-06-25 07:09:28] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 07:09:28] [TASK] launch task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.96 avail_mib=13071/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 07:27:51] [TASK] retry_forever task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=5
-[2026-06-25 07:27:51] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 07:27:51] [TASK] launch task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.94 avail_mib=13085/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 07:48:24] [TASK] completed task=prediction phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113
-[2026-06-25 07:54:01] [TASK] launch task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13056/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 08:11:06] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=7
-[2026-06-25 08:11:07] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 08:13:54] [TASK] launch task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.93 avail_mib=13088/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 09:10:11] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=4
-[2026-06-25 09:10:12] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 09:17:47] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=5
-[2026-06-25 09:17:48] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 09:18:01] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.99 avail_mib=13052/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 09:19:38] [TASK] retry_forever task=classification phase=stl_ablation_r01_d05_w1572_1572_1572_1572_1572_1572 params=10004215 exit=1 retry_count=2
-[2026-06-25 09:19:38] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 09:19:40] [TASK] launch task=classification phase=stl_ablation_r01_d05_w1572_1572_1572_1572_1572_1572 params=10004215 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.99 avail_mib=13049/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 09:22:41] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=4
-[2026-06-25 09:22:42] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 09:23:06] [TASK] launch task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13059/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 09:41:29] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=3
-[2026-06-25 09:41:29] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 09:41:35] [TASK] launch task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=80.00 avail_mib=13045/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 09:59:35] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=3
-[2026-06-25 09:59:36] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 09:59:36] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.76 avail_mib=13199/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 10:04:59] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=2
-[2026-06-25 10:05:00] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 10:05:12] [TASK] launch task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.84 avail_mib=13150/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 10:13:10] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=5
-[2026-06-25 10:13:11] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 10:13:12] [TASK] launch task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.68 avail_mib=13254/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 10:18:27] [TASK] retry_forever task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=2
-[2026-06-25 10:18:27] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 10:19:11] [TASK] launch task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.97 avail_mib=13063/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 10:26:40] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=8
-[2026-06-25 10:26:41] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 10:27:23] [TASK] launch task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13054/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 10:27:56] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=3
-[2026-06-25 10:27:57] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 10:28:01] [TASK] launch task=autoencoding phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.91 avail_mib=13100/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 10:37:30] [TASK] completed task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825
-[2026-06-25 10:40:13] [TASK] launch task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13060/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 10:46:49] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=3
-[2026-06-25 10:46:51] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 10:46:59] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=4
-[2026-06-25 10:47:03] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 10:47:03] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.66 avail_mib=13263/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=41/1330
-[2026-06-25 10:50:47] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=1
-[2026-06-25 10:50:48] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 10:50:49] [TASK] launch task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.38 avail_mib=13450/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=41/1330
-[2026-06-25 10:54:40] [TASK] launch task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.97 avail_mib=13062/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 10:56:18] [TASK] retry_forever task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=1
-[2026-06-25 10:56:21] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 10:59:08] [TASK] launch task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.94 avail_mib=13082/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 11:01:32] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=9
-[2026-06-25 11:01:33] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 11:01:37] [TASK] retry_forever task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 exit=1 retry_count=4
-[2026-06-25 11:01:38] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 11:01:39] [TASK] launch task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.98 avail_mib=13054/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=41/1330
-[2026-06-25 11:02:10] [TASK] launch task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.83 avail_mib=13153/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 11:04:46] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=5
-[2026-06-25 11:04:47] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 11:06:16] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.94 avail_mib=13081/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 11:07:38] [TASK] retry_forever task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=5
-[2026-06-25 11:07:40] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 11:09:41] [TASK] launch task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.94 avail_mib=13080/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 11:17:31] [TASK] retry_forever task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=2
-[2026-06-25 11:17:31] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 11:19:25] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=2
-[2026-06-25 11:19:25] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 11:19:27] [TASK] launch task=denoising phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.46 avail_mib=13394/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=41/1330
-[2026-06-25 11:20:50] [TASK] launch task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.99 avail_mib=13053/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 11:29:42] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=1
-[2026-06-25 11:29:45] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 11:30:06] [TASK] launch task=autoencoding phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.78 avail_mib=13186/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 11:35:46] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=2
-[2026-06-25 11:35:46] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 11:36:07] [TASK] launch task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=79.82 avail_mib=13164/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 12:02:51] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=4
-[2026-06-25 12:02:53] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 12:02:53] [TASK] launch task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.64 avail_mib=13276/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
-[2026-06-25 12:19:40] [TASK] launch task=denoising phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.95 avail_mib=13075/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 12:40:26] [TASK] retry_forever task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 exit=1 retry_count=4
-[2026-06-25 12:40:27] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 12:40:31] [TASK] launch task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.82 avail_mib=13164/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 12:46:59] [TASK] retry_forever task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=3
-[2026-06-25 12:47:01] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 12:47:01] [TASK] launch task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.96 avail_mib=13068/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 12:50:49] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=6
-[2026-06-25 12:50:51] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 12:50:57] [TASK] launch task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=79.92 avail_mib=13093/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 13:01:35] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=6
-[2026-06-25 13:01:37] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 13:09:18] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=80.00 avail_mib=13046/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
-[2026-06-25 13:35:58] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=1
-[2026-06-25 21:35:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 exit=1 retry_count=5
-[2026-06-25 21:35:14] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=7
-[2026-06-25 21:35:14] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 21:35:14] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=49.01 avail_mib=33258/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=41/1330
-[2026-06-25 21:35:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d07_w1284_1284_1284_1284_1284_1284_1284_1284 params=9997231 exit=1 retry_count=2
-[2026-06-25 21:35:14] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=5
-[2026-06-25 21:35:14] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=5
-[2026-06-25 21:35:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049 params=9999075 exit=1 retry_count=2
-[2026-06-25 21:35:14] [TASK] retry_forever task=generation phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=3
-[2026-06-25 21:35:14] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=6
-[2026-06-25 21:35:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 exit=1 retry_count=6
-[2026-06-25 21:35:14] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=1
-[2026-06-25 21:35:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 exit=1 retry_count=4
-[2026-06-25 21:35:14] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=4
-[2026-06-25 21:35:14] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=7
-[2026-06-25 21:35:14] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=3
-[2026-06-25 21:35:14] [TASK] retry_forever task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=6
-[2026-06-25 21:35:14] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=1
-[2026-06-25 21:35:14] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=6
-[2026-06-25 21:35:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d05_w1572_1572_1572_1572_1572_1572 params=10004215 exit=1 retry_count=3
-[2026-06-25 21:35:14] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=4
-[2026-06-25 21:35:14] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=10
-[2026-06-25 21:35:14] [TASK] retry_forever task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=6
-[2026-06-25 21:35:14] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=3
-[2026-06-25 21:35:14] [TASK] retry_forever task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=3
-[2026-06-25 21:35:14] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=2
-[2026-06-25 21:35:14] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=3
-[2026-06-25 21:35:14] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=5
-[2026-06-25 21:35:14] [STATE] admission gate reopened by genuine process completion
-[2026-06-25 21:35:47] [TASK] launch task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=48.84 avail_mib=33368/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=18/1330
-[2026-06-25 21:36:18] [TASK] launch task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=2120 batch_scale=0.250000 host_used_pct=49.30 avail_mib=33069/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=19/1330
-[2026-06-25 21:36:48] [TASK] launch task=autoencoding phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1164 batch_scale=0.250000 host_used_pct=49.49 avail_mib=32945/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=20/1330
+[2026-06-25 21:59:09] Initialized ContinuousLogger for stl_ablation_parallel (Mode: stl_ablation_parallel)
+[2026-06-25 21:59:09] Logs: MLPS\tabular\shared\dae_dnn\results\stl\ablation\parammatched_decade_v1_param_10pow07_08_fresh_v1\training_log.txt
+[2026-06-25 21:59:09] CSV: MLPS\tabular\shared\dae_dnn\results\stl\ablation\parammatched_decade_v1_param_10pow07_08_fresh_v1\training_stats.csv
+[2026-06-25 21:59:09] Run root: MLPS\tabular\shared\dae_dnn\results\stl\ablation\parammatched_decade_v1_param_10pow07_08_fresh_v1
+[2026-06-25 21:59:09] Tasks: ['classification', 'autoencoding', 'generation', 'denoising', 'anomaly', 'simulation', 'prediction']
+[2026-06-25 21:59:09] Architectures: ['[1]', '[2]', '[3]', '[4]', '[5]', '[6]', '[7]', '[8]', '[9]', '[10]']
+[2026-06-25 21:59:09] Parameter decade band: [7, 8]
+[2026-06-25 21:59:09] Repeat count: 5
+[2026-06-25 21:59:09] Scheduler: pressure_aware
+[2026-06-25 21:59:09] Concurrency: 10
+[2026-06-25 21:59:09] Host RAM pressure limit pct: 85.00
+[2026-06-25 21:59:09] Host RAM resume pct: 80.00
+[2026-06-25 21:59:09] GPU memory pressure limit pct: 90.00
+[2026-06-25 21:59:09] GPU memory resume pct: 85.00
+[2026-06-25 21:59:09] GPU device index: 0
+[2026-06-25 21:59:09] Max active jobs: 0
+[2026-06-25 21:59:09] Max retries per job: 0
+[2026-06-25 21:59:09] Batch backoff factor: 0.500
+[2026-06-25 21:59:09] Batch backoff scale: 0.250000
+[2026-06-25 21:59:09] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-25 21:59:09] Device: cpu
+[2026-06-25 21:59:09] Git commit: c36c30622c7fc2d465e8681857222b2620ead56d
+[2026-06-25 21:59:15] [STATE] batch_backoff reason=retry batch_scale=0.125000 previous_scale=0.250000
+[2026-06-25 21:59:45] [TASK] launch task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=27.41 avail_mib=47344/65220 gpu_used_pct=3.37 gpu_used_mib=276/8188 active=1/1330
+[2026-06-25 22:00:16] [TASK] launch task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=26.71 avail_mib=47798/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=2/1330
+[2026-06-25 22:00:46] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=30.51 avail_mib=45323/65220 gpu_used_pct=2.58 gpu_used_mib=211/8188 active=3/1330
+[2026-06-25 22:01:17] [TASK] launch task=generation phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=31.32 avail_mib=44794/65220 gpu_used_pct=1.72 gpu_used_mib=141/8188 active=4/1330
+[2026-06-25 22:01:48] [TASK] launch task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=32.20 avail_mib=44222/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=5/1330
+[2026-06-25 22:02:20] [TASK] launch task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=32.25 avail_mib=44184/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=6/1330
+[2026-06-25 22:02:51] [TASK] launch task=autoencoding phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=33.09 avail_mib=43641/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=7/1330
+[2026-06-25 22:03:22] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=34.35 avail_mib=42816/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=8/1330
+[2026-06-25 22:03:54] [TASK] launch task=generation phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=35.71 avail_mib=41931/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=9/1330
+[2026-06-25 22:04:24] [TASK] launch task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=37.18 avail_mib=40973/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=10/1330
+[2026-06-25 22:04:54] [TASK] launch task=classification phase=stl_ablation_r01_d07_w1284_1284_1284_1284_1284_1284_1284_1284 params=9997231 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=38.17 avail_mib=40324/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=11/1330
+[2026-06-25 22:05:25] [TASK] launch task=classification phase=stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049 params=9999075 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=39.27 avail_mib=39611/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=12/1330
+[2026-06-25 22:05:57] [TASK] launch task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=40.52 avail_mib=38791/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=13/1330
+[2026-06-25 22:06:27] [TASK] launch task=autoencoding phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=41.53 avail_mib=38136/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=14/1330
+[2026-06-25 22:06:57] [TASK] launch task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=43.31 avail_mib=36976/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=15/1330
+[2026-06-25 22:07:28] [TASK] launch task=generation phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=44.34 avail_mib=36299/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=16/1330
+[2026-06-25 22:07:59] [TASK] launch task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=45.66 avail_mib=35438/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=17/1330
+[2026-06-25 22:08:31] [TASK] launch task=anomaly phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=46.80 avail_mib=34695/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=18/1330
+[2026-06-25 22:09:02] [TASK] launch task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=48.60 avail_mib=33520/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=19/1330
+[2026-06-25 22:09:32] [TASK] launch task=denoising phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=52.62 avail_mib=30901/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=20/1330
+[2026-06-25 22:10:03] [TASK] launch task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=51.46 avail_mib=31659/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=21/1330
+[2026-06-25 22:10:33] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=52.86 avail_mib=30746/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=22/1330
+[2026-06-25 22:11:04] [TASK] launch task=autoencoding phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=54.12 avail_mib=29925/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=23/1330
+[2026-06-25 22:11:35] [TASK] launch task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=56.66 avail_mib=28266/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=24/1330
+[2026-06-25 22:12:06] [TASK] launch task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=57.74 avail_mib=27560/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=25/1330
+[2026-06-25 22:12:37] [TASK] launch task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=58.81 avail_mib=26863/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=26/1330
+[2026-06-25 22:13:07] [TASK] launch task=autoencoding phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=58.87 avail_mib=26823/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=27/1330
+[2026-06-25 22:13:37] [TASK] launch task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=59.86 avail_mib=26180/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=28/1330
+[2026-06-25 22:14:09] [TASK] launch task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=61.46 avail_mib=25135/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=29/1330
+[2026-06-25 22:14:40] [TASK] launch task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=63.33 avail_mib=23915/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=30/1330
+[2026-06-25 22:15:11] [TASK] launch task=autoencoding phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=63.86 avail_mib=23569/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=31/1330
+[2026-06-25 22:15:41] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=64.99 avail_mib=22832/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=32/1330
+[2026-06-25 22:16:12] [TASK] launch task=generation phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=66.24 avail_mib=22016/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=33/1330
+[2026-06-25 22:16:43] [TASK] launch task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=67.30 avail_mib=21330/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=34/1330
+[2026-06-25 22:17:14] [TASK] launch task=classification phase=stl_ablation_r01_d05_w1572_1572_1572_1572_1572_1572 params=10004215 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=68.85 avail_mib=20314/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=35/1330
+[2026-06-25 22:17:46] [TASK] launch task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=69.88 avail_mib=19644/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=36/1330
+[2026-06-25 22:18:17] [TASK] launch task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=71.42 avail_mib=18639/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=37/1330
+[2026-06-25 22:18:48] [TASK] launch task=autoencoding phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=72.28 avail_mib=18076/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=38/1330
+[2026-06-25 22:19:20] [TASK] launch task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=73.25 avail_mib=17444/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=39/1330
+[2026-06-25 22:19:51] [TASK] launch task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=74.67 avail_mib=16523/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=40/1330
+[2026-06-25 22:20:22] [TASK] launch task=anomaly phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=76.30 avail_mib=15457/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=41/1330
+[2026-06-25 22:20:54] [TASK] launch task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=77.29 avail_mib=14813/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
+[2026-06-25 22:21:25] [TASK] launch task=denoising phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=78.06 avail_mib=14307/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
+[2026-06-25 22:21:56] [TASK] already_complete task=prediction phase=stl_ablation_r01_d07_w1288_1288_1288_1288_1288_1288_1288_1288 params=9992305
+[2026-06-25 22:21:56] [TASK] already_complete task=simulation phase=stl_ablation_r01_d07_w1288_1288_1288_1288_1288_1288_1288_1288 params=9992305
+[2026-06-25 22:21:56] [TASK] already_complete task=prediction phase=stl_ablation_r01_d04_w1822_1822_1822_1822_1822 params=9997315
+[2026-06-25 22:21:57] [TASK] already_complete task=simulation phase=stl_ablation_r01_d04_w1822_1822_1822_1822_1822 params=9997315
+[2026-06-25 22:21:58] [TASK] already_complete task=prediction phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209
+[2026-06-25 22:21:58] [TASK] already_complete task=simulation phase=stl_ablation_r01_d05_w1578_1578_1578_1578_1578_1578 params=9998209
+[2026-06-25 22:21:58] [TASK] already_complete task=prediction phase=stl_ablation_r01_d833333_parammatched params=9999997
+[2026-06-25 22:21:58] [TASK] already_complete task=simulation phase=stl_ablation_r01_d833333_parammatched params=9999997
+[2026-06-25 22:21:58] [TASK] already_complete task=classification phase=stl_ablation_r01_d156250_parammatched params=10000007
+[2026-06-25 22:21:58] [TASK] already_complete task=anomaly phase=stl_ablation_r01_d90090_parammatched params=10000044
+[2026-06-25 22:21:59] [TASK] already_complete task=autoencoding phase=stl_ablation_r01_d90090_parammatched params=10000044
+[2026-06-25 22:22:00] [TASK] already_complete task=denoising phase=stl_ablation_r01_d90090_parammatched params=10000044
+[2026-06-25 22:22:01] [TASK] already_complete task=generation phase=stl_ablation_r01_d90090_parammatched params=10000044
+[2026-06-25 22:22:02] [TASK] already_complete task=prediction phase=stl_ablation_r01_d02_w3155_3155_3155 params=10001351
+[2026-06-25 22:22:03] [TASK] already_complete task=simulation phase=stl_ablation_r01_d02_w3155_3155_3155 params=10001351
+[2026-06-25 22:22:04] [TASK] already_complete task=prediction phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365
+[2026-06-25 22:22:04] [TASK] already_complete task=simulation phase=stl_ablation_r01_d10_w1052_1052_1052_1052_1052_1052_1052_1052_1052_1052_1052 params=10001365
+[2026-06-25 22:22:04] [TASK] already_complete task=prediction phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113
+[2026-06-25 22:22:04] [TASK] already_complete task=simulation phase=stl_ablation_r01_d08_w1193_1193_1193_1193_1193_1193_1193_1193_1193 params=10002113
+[2026-06-25 22:22:05] [TASK] already_complete task=prediction phase=stl_ablation_r01_d03_w2232_2232_2232_2232 params=10003825
+[2026-06-25 22:22:05] [TASK] already_complete task=simulation phase=stl_ablation_r01_d03_w2232_2232_2232_2232 params=10003825
+[2026-06-25 22:22:05] [TASK] already_complete task=prediction phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825
+[2026-06-25 22:22:06] [TASK] already_complete task=simulation phase=stl_ablation_r01_d09_w1116_1116_1116_1116_1116_1116_1116_1116_1116_1116 params=10003825
+[2026-06-25 22:22:07] [TASK] launch task=generation phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=78.90 avail_mib=13763/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-25 22:22:12] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=1
+[2026-06-25 22:22:16] [STATE] admission gate reopened by genuine process completion
+[2026-06-25 22:22:39] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=78.86 avail_mib=13789/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-25 22:23:23] [TASK] launch task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.98 avail_mib=13054/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
+[2026-06-25 22:23:26] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=1
+[2026-06-25 22:23:28] [STATE] admission gate reopened by genuine process completion
+[2026-06-25 22:23:54] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.39 avail_mib=13444/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
+[2026-06-25 23:04:02] [TASK] launch task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.82 avail_mib=13159/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-25 23:05:31] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=1
+[2026-06-25 23:05:33] [STATE] admission gate reopened by genuine process completion
+[2026-06-25 23:05:33] [TASK] launch task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.93 avail_mib=13087/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-25 23:14:46] [TASK] retry_forever task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=1
+[2026-06-25 23:14:48] [STATE] admission gate reopened by genuine process completion
+[2026-06-25 23:14:48] [TASK] launch task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.40 avail_mib=13435/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-25 23:18:52] [TASK] launch task=classification phase=stl_ablation_r01_d09_w1113_1113_1113_1113_1113_1113_1113_1113_1113_1113 params=10008103 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.76 avail_mib=13201/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-25 23:18:54] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=1
+[2026-06-25 23:18:56] [STATE] admission gate reopened by genuine process completion
+[2026-06-25 23:19:29] [TASK] launch task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.94 avail_mib=13083/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-25 23:22:20] [TASK] retry_forever task=classification phase=stl_ablation_r01_d05_w1572_1572_1572_1572_1572_1572 params=10004215 exit=1 retry_count=1
+[2026-06-25 23:22:22] [STATE] admission gate reopened by genuine process completion
+[2026-06-25 23:26:18] [TASK] launch task=classification phase=stl_ablation_r01_d05_w1572_1572_1572_1572_1572_1572 params=10004215 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.90 avail_mib=13106/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-25 23:31:10] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=2
+[2026-06-25 23:31:12] [STATE] admission gate reopened by genuine process completion
+[2026-06-25 23:31:28] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.84 avail_mib=13147/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-25 23:33:27] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=3
+[2026-06-25 23:33:29] [STATE] admission gate reopened by genuine process completion
+[2026-06-25 23:33:29] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.76 avail_mib=13202/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-25 23:40:02] [TASK] launch task=anomaly phase=stl_ablation_r01_d06_w1987_1987_1987_1987_1987_1987_1987 params=19991261 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.95 avail_mib=13075/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=48/1330
+[2026-06-25 23:40:02] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=1
+[2026-06-25 23:40:03] [STATE] admission gate reopened by genuine process completion
+[2026-06-25 23:52:12] [TASK] retry_forever task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 exit=1 retry_count=1
+[2026-06-25 23:52:14] [STATE] admission gate reopened by genuine process completion
+[2026-06-25 23:52:15] [TASK] launch task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.74 avail_mib=13211/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-25 23:55:19] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=1
+[2026-06-25 23:55:21] [STATE] admission gate reopened by genuine process completion
+[2026-06-25 23:55:33] [TASK] launch task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.89 avail_mib=13113/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 00:10:41] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=1
+[2026-06-26 00:10:42] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:10:42] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.82 avail_mib=13159/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 00:14:57] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=1
+[2026-06-26 00:14:59] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:15:04] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.55 avail_mib=13336/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 00:17:15] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=1
+[2026-06-26 00:17:17] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:17:23] [TASK] launch task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.73 avail_mib=13223/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 00:19:42] [TASK] launch task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.98 avail_mib=13058/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=48/1330
+[2026-06-26 00:19:42] [TASK] retry_forever task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 exit=1 retry_count=1
+[2026-06-26 00:19:43] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:25:04] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=2
+[2026-06-26 00:25:05] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:25:06] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.70 avail_mib=13242/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 00:25:21] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=2
+[2026-06-26 00:25:23] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:25:37] [TASK] launch task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.89 avail_mib=13115/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 00:37:42] [TASK] launch task=classification phase=stl_ablation_r01_d03_w2219_2219_2219_2219 params=10003259 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.09 avail_mib=13639/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=48/1330
+[2026-06-26 00:37:42] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=2
+[2026-06-26 00:37:42] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:43:12] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=3
+[2026-06-26 00:43:14] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:43:14] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.31 avail_mib=13494/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 00:44:43] [TASK] launch task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.91 avail_mib=13101/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=48/1330
+[2026-06-26 00:44:50] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=1
+[2026-06-26 00:44:52] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:44:58] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=1
+[2026-06-26 00:44:59] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:45:14] [TASK] launch task=denoising phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.71 avail_mib=13234/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 00:45:37] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=1
+[2026-06-26 00:45:38] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:45:46] [TASK] launch task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.95 avail_mib=13075/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 00:46:28] [TASK] launch task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.93 avail_mib=13091/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=48/1330
+[2026-06-26 00:46:28] [TASK] retry_forever task=classification phase=stl_ablation_r01_d05_w1572_1572_1572_1572_1572_1572 params=10004215 exit=1 retry_count=2
+[2026-06-26 00:46:29] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:59:54] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=1
+[2026-06-26 00:59:54] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 00:59:55] [TASK] launch task=denoising phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.25 avail_mib=13532/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 01:45:59] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=4
+[2026-06-26 01:46:00] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 01:46:01] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.59 avail_mib=13309/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 01:55:43] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=2
+[2026-06-26 01:55:44] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 01:55:46] [TASK] launch task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.99 avail_mib=13053/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 02:03:14] [TASK] retry_forever task=classification phase=stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049 params=9999075 exit=1 retry_count=1
+[2026-06-26 02:03:14] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 02:03:16] [TASK] launch task=classification phase=stl_ablation_r01_d10_w1049_1049_1049_1049_1049_1049_1049_1049_1049_1049_1049 params=9999075 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=80.00 avail_mib=13045/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 02:07:45] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=1
+[2026-06-26 02:07:46] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 02:07:55] [TASK] launch task=autoencoding phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.99 avail_mib=13049/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 02:11:05] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=2
+[2026-06-26 02:11:07] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 02:11:07] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.90 avail_mib=13109/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 02:20:41] [TASK] retry_forever task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 exit=1 retry_count=1
+[2026-06-26 02:20:42] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 02:21:53] [TASK] retry_forever task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=2
+[2026-06-26 02:21:55] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 02:21:55] [TASK] launch task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.12 avail_mib=13620/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 02:23:11] [TASK] launch task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.98 avail_mib=13059/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 02:32:37] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=1
+[2026-06-26 02:32:38] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 02:46:46] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=1
+[2026-06-26 02:46:47] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 02:46:48] [TASK] launch task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.51 avail_mib=13361/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 02:50:36] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=1
+[2026-06-26 02:50:37] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 02:50:37] [TASK] launch task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.49 avail_mib=13379/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 03:01:30] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=3
+[2026-06-26 03:01:32] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 03:01:32] [TASK] launch task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.75 avail_mib=13207/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 03:02:12] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=1
+[2026-06-26 03:02:14] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 03:02:14] [TASK] launch task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.57 avail_mib=13324/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 03:05:28] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=2
+[2026-06-26 03:05:29] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 03:05:29] [TASK] launch task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.64 avail_mib=13277/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 03:17:34] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=2
+[2026-06-26 03:17:35] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 03:17:35] [TASK] launch task=denoising phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.67 avail_mib=13259/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 03:19:34] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=2
+[2026-06-26 03:19:36] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 03:19:36] [TASK] launch task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.73 avail_mib=13220/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 03:19:39] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=3
+[2026-06-26 03:19:41] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 03:20:08] [TASK] launch task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.96 avail_mib=13068/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 03:31:07] [TASK] launch task=anomaly phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.70 avail_mib=13242/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 03:31:10] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=2
+[2026-06-26 03:31:11] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 03:33:13] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=4
+[2026-06-26 03:33:14] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 03:33:15] [TASK] launch task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.68 avail_mib=13254/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 03:40:38] [TASK] launch task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.55 avail_mib=13338/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 03:40:38] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=3
+[2026-06-26 03:40:41] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 03:45:36] [TASK] launch task=anomaly phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.99 avail_mib=13052/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 03:49:32] [TASK] retry_forever task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 exit=1 retry_count=2
+[2026-06-26 03:49:33] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 03:53:53] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=5
+[2026-06-26 03:53:53] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 03:53:54] [TASK] launch task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.78 avail_mib=13188/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 03:55:28] [TASK] launch task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.61 avail_mib=13297/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 03:57:28] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=2
+[2026-06-26 03:57:30] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 04:01:34] [TASK] launch task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.89 avail_mib=13113/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 04:13:05] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=4
+[2026-06-26 04:13:07] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 04:15:08] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=4
+[2026-06-26 04:15:09] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 04:15:10] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.80 avail_mib=13174/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 04:23:32] [TASK] launch task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.99 avail_mib=13048/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 04:31:42] [TASK] retry_forever task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=3
+[2026-06-26 04:31:43] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 04:32:12] [TASK] launch task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=80.00 avail_mib=13045/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 04:44:18] [TASK] retry_forever task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 exit=1 retry_count=1
+[2026-06-26 04:44:19] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 05:05:08] [TASK] retry_forever task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 exit=1 retry_count=1
+[2026-06-26 05:05:09] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 05:05:09] [TASK] launch task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.26 avail_mib=13526/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 05:11:53] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=1
+[2026-06-26 05:11:55] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 05:11:55] [TASK] launch task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.55 avail_mib=13337/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 05:34:34] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=3
+[2026-06-26 05:34:35] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 05:34:35] [TASK] launch task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.42 avail_mib=13424/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 05:40:34] [TASK] launch task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.97 avail_mib=13064/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 05:40:40] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=1
+[2026-06-26 05:40:40] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 05:45:12] [TASK] launch task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.90 avail_mib=13112/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 05:47:31] [TASK] retry_forever task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=1
+[2026-06-26 05:47:33] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 05:47:42] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=5
+[2026-06-26 05:47:43] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 05:47:44] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.83 avail_mib=13157/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 05:49:52] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=5
+[2026-06-26 05:49:53] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 05:49:53] [TASK] launch task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.83 avail_mib=13157/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 05:55:26] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=3
+[2026-06-26 05:55:27] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 05:55:28] [TASK] launch task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.37 avail_mib=13452/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 06:01:24] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=2
+[2026-06-26 06:01:24] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 06:01:26] [TASK] launch task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.50 avail_mib=13373/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 06:05:37] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=3
+[2026-06-26 06:05:39] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 06:05:39] [TASK] launch task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.23 avail_mib=13549/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 06:08:54] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=1
+[2026-06-26 06:08:56] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 06:08:56] [TASK] launch task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.67 avail_mib=13261/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 06:14:13] [TASK] launch task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.94 avail_mib=13081/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 06:14:15] [TASK] retry_forever task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=1
+[2026-06-26 06:14:16] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 06:26:53] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=6
+[2026-06-26 06:26:54] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 06:26:54] [TASK] launch task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.80 avail_mib=13173/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 06:28:19] [TASK] launch task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.84 avail_mib=13146/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=47/1330
+[2026-06-26 06:28:20] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=3
+[2026-06-26 06:28:22] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 06:35:10] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=2
+[2026-06-26 06:35:11] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 06:35:12] [TASK] launch task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.99 avail_mib=13049/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 06:43:16] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=1
+[2026-06-26 06:43:18] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 06:43:19] [TASK] launch task=autoencoding phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.89 avail_mib=13116/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 06:52:59] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=4
+[2026-06-26 06:53:00] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 06:53:02] [TASK] launch task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.92 avail_mib=13096/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 06:54:46] [TASK] completed task=anomaly phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374
+[2026-06-26 06:54:47] [TASK] launch task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.87 avail_mib=13129/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 07:14:35] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=7
+[2026-06-26 07:14:36] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 07:14:57] [TASK] launch task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.97 avail_mib=13063/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 07:46:41] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d06_w1987_1987_1987_1987_1987_1987_1987 params=19991261 exit=1 retry_count=1
+[2026-06-26 07:46:42] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 07:46:43] [TASK] launch task=anomaly phase=stl_ablation_r01_d06_w1987_1987_1987_1987_1987_1987_1987 params=19991261 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.87 avail_mib=13131/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 07:46:44] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=2
+[2026-06-26 07:46:45] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 07:53:22] [TASK] launch task=autoencoding phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.93 avail_mib=13087/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 07:53:36] [TASK] retry_forever task=generation phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=1
+[2026-06-26 07:53:38] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 07:54:45] [TASK] launch task=generation phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.98 avail_mib=13058/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 08:05:52] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=1
+[2026-06-26 08:05:54] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 08:08:59] [TASK] launch task=denoising phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.98 avail_mib=13059/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=46/1330
+[2026-06-26 08:24:40] [TASK] retry_forever task=prediction phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=8
+[2026-06-26 08:24:42] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 08:31:25] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=1 retry_count=6
+[2026-06-26 08:31:27] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 08:31:27] [TASK] launch task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 device=cpu batch_size=1032 batch_scale=0.125000 host_used_pct=79.86 avail_mib=13137/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
+[2026-06-26 08:36:13] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=1
+[2026-06-26 08:36:15] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 08:36:15] [TASK] launch task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.75 avail_mib=13204/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
+[2026-06-26 08:43:55] [TASK] retry_forever task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 exit=1 retry_count=2
+[2026-06-26 08:43:57] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 08:57:30] [TASK] retry_forever task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=2
+[2026-06-26 08:57:34] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:09:00] [TASK] launch task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=80.00 avail_mib=13045/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:23:34] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=2
+[2026-06-26 09:23:37] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:26:20] [TASK] launch task=autoencoding phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.40 avail_mib=13435/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:26:20] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=2
+[2026-06-26 09:26:20] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:27:43] [TASK] launch task=anomaly phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.81 avail_mib=13171/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:27:46] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=2
+[2026-06-26 09:27:47] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:28:34] [TASK] launch task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.68 avail_mib=13255/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:28:39] [TASK] retry_forever task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=1 retry_count=1
+[2026-06-26 09:28:40] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:30:01] [TASK] launch task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.98 avail_mib=13057/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:31:37] [TASK] retry_forever task=generation phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=1
+[2026-06-26 09:31:37] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:32:22] [TASK] launch task=generation phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.88 avail_mib=13122/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:33:17] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=5
+[2026-06-26 09:33:19] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:34:17] [TASK] launch task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.98 avail_mib=13060/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:36:43] [TASK] retry_forever task=generation phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=1
+[2026-06-26 09:36:44] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:38:20] [TASK] launch task=generation phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.96 avail_mib=13067/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:43:33] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=1 retry_count=4
+[2026-06-26 09:43:34] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:44:53] [TASK] launch task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.95 avail_mib=13077/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:46:25] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=1 retry_count=1
+[2026-06-26 09:46:28] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:46:45] [TASK] launch task=autoencoding phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.98 avail_mib=13059/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:48:22] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=1 retry_count=2
+[2026-06-26 09:48:24] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:48:49] [TASK] launch task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.91 avail_mib=13100/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:57:28] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=1 retry_count=6
+[2026-06-26 09:57:34] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:58:59] [TASK] launch task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=80.00 avail_mib=13044/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:59:12] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=2
+[2026-06-26 09:59:15] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 09:59:44] [TASK] launch task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.89 avail_mib=13116/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 09:59:57] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=1 retry_count=3
+[2026-06-26 09:59:58] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=1 retry_count=2
+[2026-06-26 09:59:58] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 10:00:15] [TASK] launch task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 device=cpu batch_size=1060 batch_scale=0.125000 host_used_pct=79.10 avail_mib=13633/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=43/1330
+[2026-06-26 10:01:20] [TASK] launch task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.70 avail_mib=13239/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 10:01:39] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=1 retry_count=3
+[2026-06-26 10:01:40] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 10:02:16] [TASK] launch task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.82 avail_mib=13159/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 10:05:40] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=4
+[2026-06-26 10:05:40] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 10:05:40] [TASK] launch task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.99 avail_mib=13051/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 10:10:16] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=1 retry_count=2
+[2026-06-26 10:10:17] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 10:10:17] [TASK] launch task=denoising phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.75 avail_mib=13207/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 10:14:30] [TASK] retry_forever task=classification phase=stl_ablation_r01_d09_w1113_1113_1113_1113_1113_1113_1113_1113_1113_1113 params=10008103 exit=1 retry_count=1
+[2026-06-26 10:14:31] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 10:14:33] [TASK] launch task=classification phase=stl_ablation_r01_d09_w1113_1113_1113_1113_1113_1113_1113_1113_1113_1113 params=10008103 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.79 avail_mib=13182/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=44/1330
+[2026-06-26 10:18:55] [TASK] launch task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=79.34 avail_mib=13476/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=45/1330
+[2026-06-26 10:22:06] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=3221225786 retry_count=5
+[2026-06-26 10:22:07] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=3221225786 retry_count=3
+[2026-06-26 10:22:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d09_w1113_1113_1113_1113_1113_1113_1113_1113_1113_1113 params=10008103 exit=3221225786 retry_count=2
+[2026-06-26 10:22:07] [TASK] retry_forever task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 exit=3221225786 retry_count=3
+[2026-06-26 10:22:07] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 10:22:07] [TASK] launch task=classification phase=stl_ablation_r01_d08_w1189_1189_1189_1189_1189_1189_1189_1189_1189 params=9997119 device=cpu batch_size=582 batch_scale=0.125000 host_used_pct=78.05 avail_mib=14318/65220 gpu_used_pct=0.00 gpu_used_mib=0/8188 active=42/1330
+[2026-06-26 10:22:07] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=3221225786 retry_count=3
+[2026-06-26 10:22:08] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=3221225786 retry_count=7
+[2026-06-26 10:22:08] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=3221225786 retry_count=3
+[2026-06-26 10:22:08] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=3221225786 retry_count=4
+[2026-06-26 10:22:08] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=3221225786 retry_count=4
+[2026-06-26 10:22:08] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 10:22:09] [TASK] retry_forever task=generation phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=3221225786 retry_count=3
+[2026-06-26 10:22:10] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=3221225786 retry_count=3
+[2026-06-26 10:22:10] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=3221225786 retry_count=3
+[2026-06-26 10:22:10] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d04_w1806_1806_1806_1806_1806 params=10001682 exit=3221225786 retry_count=3
+[2026-06-26 10:22:10] [TASK] retry_forever task=generation phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=3221225786 retry_count=2
+[2026-06-26 10:22:10] [TASK] retry_forever task=generation phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=3221225786 retry_count=2
+[2026-06-26 10:22:10] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d07_w1280_1280_1280_1280_1280_1280_1280_1280 params=9995574 exit=3221225786 retry_count=6
+[2026-06-26 10:22:10] [TASK] retry_forever task=generation phase=stl_ablation_r01_d09_w1110_1110_1110_1110_1110_1110_1110_1110_1110_1110 params=10006704 exit=3221225786 retry_count=2
+[2026-06-26 10:22:10] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=3221225786 retry_count=5
+[2026-06-26 10:22:10] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=3221225786 retry_count=2
+[2026-06-26 10:22:10] [STATE] admission gate reopened by genuine process completion
+[2026-06-26 10:22:12] [TASK] retry_forever task=classification phase=stl_ablation_r01_d04_w1814_1814_1814_1814_1814 params=10004217 exit=3221225786 retry_count=3
+[2026-06-26 10:22:13] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=3221225786 retry_count=3
+[2026-06-26 10:22:13] [TASK] retry_forever task=generation phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=3221225786 retry_count=4
+[2026-06-26 10:22:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d02_w3129_3129_3129 params=10000291 exit=3221225786 retry_count=2
+[2026-06-26 10:22:13] [TASK] retry_forever task=denoising phase=stl_ablation_r01_d03_w2207_2207_2207_2207 params=9999971 exit=3221225786 retry_count=4
+[2026-06-26 10:22:13] [TASK] retry_forever task=classification phase=stl_ablation_r01_d06_w1406_1406_1406_1406_1406_1406_1406 params=9995261 exit=3221225786 retry_count=2
+[2026-06-26 10:22:13] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=3221225786 retry_count=2
+[2026-06-26 10:22:13] [TASK] retry_forever task=generation phase=stl_ablation_r01_d02_w3106_3106_3106 params=10001374 exit=3221225786 retry_count=2
+[2026-06-26 10:22:13] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d10_w1046_1046_1046_1046_1046_1046_1046_1046_1046_1046_1046 params=9991446 exit=3221225786 retry_count=3
+[2026-06-26 10:22:13] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d06_w1402_1402_1402_1402_1402_1402_1402 params=10004726 exit=3221225786 retry_count=5
+[2026-06-26 10:22:13] [TASK] retry_forever task=anomaly phase=stl_ablation_r01_d06_w1987_1987_1987_1987_1987_1987_1987 params=19991261 exit=3221225786 retry_count=2
+[2026-06-26 10:22:13] [TASK] retry_forever task=autoencoding phase=stl_ablation_r01_d05_w1566_1566_1566_1566_1566_1566 params=10002096 exit=3221225786 retry_count=3
+[2026-06-26 10:22:13] [TASK] retry_forever task=generation phase=stl_ablation_r01_d08_w1186_1186_1186_1186_1186_1186_1186_1186_1186 params=10002778 exit=3221225786 retry_count=2
+[2026-06-26 10:22:13] [TASK] retry_forever task=simulation phase=stl_ablation_r01_d06_w1412_1412_1412_1412_1412_1412_1412 params=10006845 exit=3221225786 retry_count=7
+[2026-06-26 10:22:13] [STATE] admission gate reopened by genuine process completion
