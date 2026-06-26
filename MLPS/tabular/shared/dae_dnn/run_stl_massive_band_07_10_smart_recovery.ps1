@@ -50,7 +50,7 @@ $awakeProc = $null
 $thermalProc = $null
 
 try {
-    $awakeProc = Start-Process powershell -ArgumentList @(
+    $awakeProc = Start-Process powershell -WorkingDirectory $repoRoot -ArgumentList @(
         "-NoProfile",
         "-ExecutionPolicy", "Bypass",
         "-File", "`"$strongAwakeGuard`""
@@ -58,7 +58,7 @@ try {
 
     Start-Sleep -Seconds 2
 
-    $thermalProc = Start-Process powershell -ArgumentList @(
+    $thermalProc = Start-Process powershell -WorkingDirectory $repoRoot -ArgumentList @(
         "-NoProfile",
         "-ExecutionPolicy", "Bypass",
         "-File", "`"$thermalGuard`"",
@@ -108,3 +108,4 @@ finally {
 
     Write-Host "Full guarded runner stopped. Previous power plan restored."
 }
+
