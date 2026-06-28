@@ -1,0 +1,562 @@
+[2026-06-19 14:55:27] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-19 14:55:27] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/training_log.txt
+[2026-06-19 14:55:27] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/training_stats.csv
+[2026-06-19 14:55:27] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1
+[2026-06-19 14:55:27] Tasks: ['classification']
+[2026-06-19 14:55:27] Architectures: ['[1, 1, 1, 1]']
+[2026-06-19 14:55:27] Parameter decade band: [1, 3]
+[2026-06-19 14:55:27] Repeat count: 5
+[2026-06-19 14:55:27] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-19 14:55:27] Device: cpu
+[2026-06-19 14:55:27] Git commit: b78b1df5e6300487b36e241f922be744f8196110
+[2026-06-19 14:55:30] [ABLATION:classification] STL phase start: stl_ablation_r01_d04_w0001_1_1_1_1 architecture=[1, 1, 1, 1]
+[2026-06-19 14:55:31] Initialized ContinuousLogger for classification_stl_ablation_r01_d04_w0001_1_1_1_1 (Mode: stl_ablation_r01_d04_w0001_1_1_1_1)
+[2026-06-19 14:55:31] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/classification/stl_ablation_r01_d04_w0001_1_1_1_1/cand_000_d4_w1/training_log.txt
+[2026-06-19 14:55:31] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/classification/stl_ablation_r01_d04_w0001_1_1_1_1/cand_000_d4_w1/training_stats.csv
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:55:36] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:55:37] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 batch=1/3 done gpu_used_mib=None host_available_mib=623
+[2026-06-19 14:55:37] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.831033 running_loss=1.831033 running_acc=0.235390
+[2026-06-19 14:55:45] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:55:45] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 batch=2/3 done gpu_used_mib=None host_available_mib=943
+[2026-06-19 14:55:45] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.829301 running_loss=1.830167 running_acc=0.235352
+[2026-06-19 14:55:46] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:55:46] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 batch=3/3 done gpu_used_mib=None host_available_mib=691
+[2026-06-19 14:55:46] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.826125 running_loss=1.829364 running_acc=0.235875
+[2026-06-19 14:55:46] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 starting validation
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:55:48] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 finished validation val_loss=1.825990
+[2026-06-19 14:55:48] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=1 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=760
+[2026-06-19 14:55:48] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=1 architecture=[1, 1, 1, 1] train_loss=1.829364 val_loss=1.825990 candidate_best=1.825990 global_best=1.825990 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:56:01] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:01] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 batch=1/3 done gpu_used_mib=None host_available_mib=1073
+[2026-06-19 14:56:01] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.827389 running_loss=1.827389 running_acc=0.034719
+[2026-06-19 14:56:03] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:03] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 batch=2/3 done gpu_used_mib=None host_available_mib=927
+[2026-06-19 14:56:03] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.824211 running_loss=1.825800 running_acc=0.035231
+[2026-06-19 14:56:04] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:04] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 batch=3/3 done gpu_used_mib=None host_available_mib=890
+[2026-06-19 14:56:04] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.823574 running_loss=1.825358 running_acc=0.035176
+[2026-06-19 14:56:04] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 starting validation
+[2026-06-19 14:56:05] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 finished validation val_loss=1.820303
+[2026-06-19 14:56:06] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=2 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=836
+[2026-06-19 14:56:06] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=2 architecture=[1, 1, 1, 1] train_loss=1.825358 val_loss=1.820303 candidate_best=1.820303 global_best=1.820303 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:56:09] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:09] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 batch=1/3 done gpu_used_mib=None host_available_mib=1192
+[2026-06-19 14:56:09] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.820739 running_loss=1.820739 running_acc=0.035723
+[2026-06-19 14:56:11] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:11] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 batch=2/3 done gpu_used_mib=None host_available_mib=1137
+[2026-06-19 14:56:11] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.819737 running_loss=1.820238 running_acc=0.035264
+[2026-06-19 14:56:11] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:12] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 batch=3/3 done gpu_used_mib=None host_available_mib=980
+[2026-06-19 14:56:12] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.817205 running_loss=1.819635 running_acc=0.035176
+[2026-06-19 14:56:12] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 starting validation
+[2026-06-19 14:56:13] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 finished validation val_loss=1.814576
+[2026-06-19 14:56:14] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=3 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=807
+[2026-06-19 14:56:14] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=3 architecture=[1, 1, 1, 1] train_loss=1.819635 val_loss=1.814576 candidate_best=1.814576 global_best=1.814576 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:56:18] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:18] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 batch=1/3 done gpu_used_mib=None host_available_mib=829
+[2026-06-19 14:56:18] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.815163 running_loss=1.815163 running_acc=0.035486
+[2026-06-19 14:56:20] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:20] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 batch=2/3 done gpu_used_mib=None host_available_mib=918
+[2026-06-19 14:56:20] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.813197 running_loss=1.814180 running_acc=0.035253
+[2026-06-19 14:56:21] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:21] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 batch=3/3 done gpu_used_mib=None host_available_mib=899
+[2026-06-19 14:56:21] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.812820 running_loss=1.813910 running_acc=0.035176
+[2026-06-19 14:56:21] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 starting validation
+[2026-06-19 14:56:22] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 finished validation val_loss=1.808896
+[2026-06-19 14:56:23] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=4 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=801
+[2026-06-19 14:56:23] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=4 architecture=[1, 1, 1, 1] train_loss=1.813910 val_loss=1.808896 candidate_best=1.808896 global_best=1.808896 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:56:26] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:27] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 batch=1/3 done gpu_used_mib=None host_available_mib=839
+[2026-06-19 14:56:27] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.809349 running_loss=1.809349 running_acc=0.035239
+[2026-06-19 14:56:29] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:29] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 batch=2/3 done gpu_used_mib=None host_available_mib=1246
+[2026-06-19 14:56:29] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.807999 running_loss=1.808674 running_acc=0.035266
+[2026-06-19 14:56:30] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:30] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 batch=3/3 done gpu_used_mib=None host_available_mib=1208
+[2026-06-19 14:56:30] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.806467 running_loss=1.808236 running_acc=0.035176
+[2026-06-19 14:56:30] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 starting validation
+[2026-06-19 14:56:31] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 finished validation val_loss=1.803291
+[2026-06-19 14:56:31] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=5 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1152
+[2026-06-19 14:56:31] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=5 architecture=[1, 1, 1, 1] train_loss=1.808236 val_loss=1.803291 candidate_best=1.803291 global_best=1.803291 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:56:35] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:36] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 batch=1/3 done gpu_used_mib=None host_available_mib=774
+[2026-06-19 14:56:36] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.803525 running_loss=1.803525 running_acc=0.034912
+[2026-06-19 14:56:38] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:38] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 batch=2/3 done gpu_used_mib=None host_available_mib=865
+[2026-06-19 14:56:38] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.802744 running_loss=1.803134 running_acc=0.035092
+[2026-06-19 14:56:39] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:40] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 batch=3/3 done gpu_used_mib=None host_available_mib=918
+[2026-06-19 14:56:40] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.800674 running_loss=1.802646 running_acc=0.035176
+[2026-06-19 14:56:40] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 starting validation
+[2026-06-19 14:56:41] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 finished validation val_loss=1.797774
+[2026-06-19 14:56:41] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=6 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=915
+[2026-06-19 14:56:41] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=6 architecture=[1, 1, 1, 1] train_loss=1.802646 val_loss=1.797774 candidate_best=1.797774 global_best=1.797774 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:56:45] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:45] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 batch=1/3 done gpu_used_mib=None host_available_mib=889
+[2026-06-19 14:56:45] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.799309 running_loss=1.799309 running_acc=0.035449
+[2026-06-19 14:56:47] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:48] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 batch=2/3 done gpu_used_mib=None host_available_mib=756
+[2026-06-19 14:56:48] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.795924 running_loss=1.797617 running_acc=0.035285
+[2026-06-19 14:56:48] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:49] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 batch=3/3 done gpu_used_mib=None host_available_mib=785
+[2026-06-19 14:56:49] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.795224 running_loss=1.797141 running_acc=0.035176
+[2026-06-19 14:56:49] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 starting validation
+[2026-06-19 14:56:50] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 finished validation val_loss=1.792350
+[2026-06-19 14:56:51] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=7 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=831
+[2026-06-19 14:56:51] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=7 architecture=[1, 1, 1, 1] train_loss=1.797141 val_loss=1.792350 candidate_best=1.792350 global_best=1.792350 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:56:55] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:55] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 batch=1/3 done gpu_used_mib=None host_available_mib=837
+[2026-06-19 14:56:55] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.793737 running_loss=1.793737 running_acc=0.035320
+[2026-06-19 14:56:56] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:58] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 batch=2/3 done gpu_used_mib=None host_available_mib=839
+[2026-06-19 14:56:58] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.790916 running_loss=1.792326 running_acc=0.035341
+[2026-06-19 14:56:58] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:56:58] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 batch=3/3 done gpu_used_mib=None host_available_mib=847
+[2026-06-19 14:56:58] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.789336 running_loss=1.791732 running_acc=0.035176
+[2026-06-19 14:56:59] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 starting validation
+[2026-06-19 14:56:59] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 finished validation val_loss=1.787024
+[2026-06-19 14:57:00] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=8 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=869
+[2026-06-19 14:57:00] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=8 architecture=[1, 1, 1, 1] train_loss=1.791732 val_loss=1.787024 candidate_best=1.787024 global_best=1.787024 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:57:04] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:04] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 batch=1/3 done gpu_used_mib=None host_available_mib=910
+[2026-06-19 14:57:04] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.788054 running_loss=1.788054 running_acc=0.035406
+[2026-06-19 14:57:05] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:06] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 batch=2/3 done gpu_used_mib=None host_available_mib=770
+[2026-06-19 14:57:06] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.786017 running_loss=1.787035 running_acc=0.035425
+[2026-06-19 14:57:07] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:07] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 batch=3/3 done gpu_used_mib=None host_available_mib=928
+[2026-06-19 14:57:07] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.783949 running_loss=1.786422 running_acc=0.035176
+[2026-06-19 14:57:08] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 starting validation
+[2026-06-19 14:57:08] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 finished validation val_loss=1.781795
+[2026-06-19 14:57:09] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=9 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=894
+[2026-06-19 14:57:10] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=9 architecture=[1, 1, 1, 1] train_loss=1.786422 val_loss=1.781795 candidate_best=1.781795 global_best=1.781795 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:57:13] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:13] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 batch=1/3 done gpu_used_mib=None host_available_mib=805
+[2026-06-19 14:57:13] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.783440 running_loss=1.783440 running_acc=0.034638
+[2026-06-19 14:57:15] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:16] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 batch=2/3 done gpu_used_mib=None host_available_mib=789
+[2026-06-19 14:57:16] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.779640 running_loss=1.781540 running_acc=0.035119
+[2026-06-19 14:57:16] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:16] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 batch=3/3 done gpu_used_mib=None host_available_mib=850
+[2026-06-19 14:57:16] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.779891 running_loss=1.781212 running_acc=0.035176
+[2026-06-19 14:57:17] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 starting validation
+[2026-06-19 14:57:18] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 finished validation val_loss=1.776665
+[2026-06-19 14:57:18] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=10 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=835
+[2026-06-19 14:57:18] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=10 architecture=[1, 1, 1, 1] train_loss=1.781212 val_loss=1.776665 candidate_best=1.776665 global_best=1.776665 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:57:21] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:21] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 batch=1/3 done gpu_used_mib=None host_available_mib=833
+[2026-06-19 14:57:21] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.775932 running_loss=1.775932 running_acc=0.035793
+[2026-06-19 14:57:24] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:25] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 batch=2/3 done gpu_used_mib=None host_available_mib=774
+[2026-06-19 14:57:25] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.775928 running_loss=1.775930 running_acc=0.035207
+[2026-06-19 14:57:25] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:25] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 batch=3/3 done gpu_used_mib=None host_available_mib=799
+[2026-06-19 14:57:25] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.776790 running_loss=1.776101 running_acc=0.035176
+[2026-06-19 14:57:25] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 starting validation
+[2026-06-19 14:57:26] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 finished validation val_loss=1.771635
+[2026-06-19 14:57:27] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=11 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=835
+[2026-06-19 14:57:27] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=11 architecture=[1, 1, 1, 1] train_loss=1.776101 val_loss=1.771635 candidate_best=1.771635 global_best=1.771635 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:57:31] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:31] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 batch=1/3 done gpu_used_mib=None host_available_mib=795
+[2026-06-19 14:57:31] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.772991 running_loss=1.772991 running_acc=0.035470
+[2026-06-19 14:57:34] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:34] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 batch=2/3 done gpu_used_mib=None host_available_mib=758
+[2026-06-19 14:57:34] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.769764 running_loss=1.771378 running_acc=0.035339
+[2026-06-19 14:57:35] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:36] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 batch=3/3 done gpu_used_mib=None host_available_mib=756
+[2026-06-19 14:57:36] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.769916 running_loss=1.771087 running_acc=0.035176
+[2026-06-19 14:57:36] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 starting validation
+[2026-06-19 14:57:36] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 finished validation val_loss=1.766703
+[2026-06-19 14:57:37] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=12 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=791
+[2026-06-19 14:57:37] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=12 architecture=[1, 1, 1, 1] train_loss=1.771087 val_loss=1.766703 candidate_best=1.766703 global_best=1.766703 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 14:57:40] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=13 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:40] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=13 batch=1/3 done gpu_used_mib=None host_available_mib=948
+[2026-06-19 14:57:40] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=13 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.766879 running_loss=1.766879 running_acc=0.035519
+[2026-06-19 14:57:42] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=13 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:43] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=13 batch=2/3 done gpu_used_mib=None host_available_mib=708
+[2026-06-19 14:57:43] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=13 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.766390 running_loss=1.766634 running_acc=0.035057
+[2026-06-19 14:57:43] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=13 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 14:57:44] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=13 batch=3/3 done gpu_used_mib=None host_available_mib=546
+[2026-06-19 14:57:44] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=13 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.764306 running_loss=1.766172 running_acc=0.035176
+[2026-06-19 14:57:46] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=13 starting validation
+[2026-06-19 15:17:17] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-19 15:17:17] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/training_log.txt
+[2026-06-19 15:17:17] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/training_stats.csv
+[2026-06-19 15:17:17] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1
+[2026-06-19 15:17:17] Tasks: ['classification']
+[2026-06-19 15:17:17] Architectures: ['[1, 1, 1, 1]']
+[2026-06-19 15:17:17] Parameter decade band: [1, 3]
+[2026-06-19 15:17:17] Repeat count: 5
+[2026-06-19 15:17:17] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-19 15:17:17] Device: cpu
+[2026-06-19 15:17:17] Git commit: b78b1df5e6300487b36e241f922be744f8196110
+[2026-06-19 15:17:20] [ABLATION:classification] STL phase start: stl_ablation_r01_d04_w0001_1_1_1_1 architecture=[1, 1, 1, 1]
+[2026-06-19 15:17:21] Initialized ContinuousLogger for classification_stl_ablation_r01_d04_w0001_1_1_1_1 (Mode: stl_ablation_r01_d04_w0001_1_1_1_1)
+[2026-06-19 15:17:21] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/classification/stl_ablation_r01_d04_w0001_1_1_1_1/cand_000_d4_w1/training_log.txt
+[2026-06-19 15:17:21] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/classification/stl_ablation_r01_d04_w0001_1_1_1_1/cand_000_d4_w1/training_stats.csv
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:17:26] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:17:26] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 batch=1/3 done gpu_used_mib=None host_available_mib=602
+[2026-06-19 15:17:26] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.759076 running_loss=1.759076 running_acc=0.461399
+[2026-06-19 15:17:29] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:17:30] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 batch=2/3 done gpu_used_mib=None host_available_mib=782
+[2026-06-19 15:17:30] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.759274 running_loss=1.759175 running_acc=0.460916
+[2026-06-19 15:17:31] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:17:32] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 batch=3/3 done gpu_used_mib=None host_available_mib=855
+[2026-06-19 15:17:32] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.755139 running_loss=1.758374 running_acc=0.461438
+[2026-06-19 15:17:32] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 starting validation
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:17:51] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 finished validation val_loss=1.759545
+[2026-06-19 15:17:54] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=14 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=759
+[2026-06-19 15:17:54] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=14 architecture=[1, 1, 1, 1] train_loss=1.758374 val_loss=1.759545 candidate_best=1.759545 global_best=1.759545 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:18:38] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:18:39] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 batch=1/3 done gpu_used_mib=None host_available_mib=966
+[2026-06-19 15:18:39] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.760587 running_loss=1.760587 running_acc=0.035341
+[2026-06-19 15:18:45] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:18:45] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 batch=2/3 done gpu_used_mib=None host_available_mib=1189
+[2026-06-19 15:18:45] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.757830 running_loss=1.759209 running_acc=0.035001
+[2026-06-19 15:18:46] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:18:47] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 batch=3/3 done gpu_used_mib=None host_available_mib=1169
+[2026-06-19 15:18:47] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.758328 running_loss=1.759034 running_acc=0.035176
+[2026-06-19 15:18:47] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 starting validation
+[2026-06-19 15:18:48] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 finished validation val_loss=1.754823
+[2026-06-19 15:18:49] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=15 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1154
+[2026-06-19 15:18:49] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=15 architecture=[1, 1, 1, 1] train_loss=1.759034 val_loss=1.754823 candidate_best=1.754823 global_best=1.754823 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:29:46] Initialized ContinuousLogger for stl_ablation (Mode: stl_ablation)
+[2026-06-19 15:29:47] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/training_log.txt
+[2026-06-19 15:29:47] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/training_stats.csv
+[2026-06-19 15:29:47] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1
+[2026-06-19 15:29:47] Tasks: ['classification']
+[2026-06-19 15:29:47] Architectures: ['[1, 1, 1, 1]']
+[2026-06-19 15:29:47] Parameter decade band: [1, 3]
+[2026-06-19 15:29:47] Repeat count: 5
+[2026-06-19 15:29:47] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-19 15:29:48] Device: cpu
+[2026-06-19 15:29:49] Git commit: b78b1df5e6300487b36e241f922be744f8196110
+[2026-06-19 15:31:29] [ABLATION:classification] STL phase start: stl_ablation_r01_d04_w0001_1_1_1_1 architecture=[1, 1, 1, 1]
+[2026-06-19 15:31:35] Initialized ContinuousLogger for classification_stl_ablation_r01_d04_w0001_1_1_1_1 (Mode: stl_ablation_r01_d04_w0001_1_1_1_1)
+[2026-06-19 15:31:35] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/classification/stl_ablation_r01_d04_w0001_1_1_1_1/cand_000_d4_w1/training_log.txt
+[2026-06-19 15:31:35] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/classification/_children/stl_ablation_r01_d04_parammatched/classification/stl_ablation_r01_d04_w0001_1_1_1_1/classification/stl_ablation_r01_d04_w0001_1_1_1_1/cand_000_d4_w1/training_stats.csv
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:53:00] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:53:06] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 batch=1/3 done gpu_used_mib=None host_available_mib=935
+[2026-06-19 15:53:06] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.747914 running_loss=1.747914 running_acc=0.467563
+[2026-06-19 15:53:07] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:53:08] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 batch=2/3 done gpu_used_mib=None host_available_mib=1320
+[2026-06-19 15:53:08] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.746960 running_loss=1.747437 running_acc=0.467268
+[2026-06-19 15:53:09] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:53:09] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 batch=3/3 done gpu_used_mib=None host_available_mib=1100
+[2026-06-19 15:53:09] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.747149 running_loss=1.747380 running_acc=0.467718
+[2026-06-19 15:53:09] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 starting validation
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:56:50] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 finished validation val_loss=1.753462
+[2026-06-19 15:56:51] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=16 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1046
+[2026-06-19 15:56:51] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=16 architecture=[1, 1, 1, 1] train_loss=1.747380 val_loss=1.753462 candidate_best=1.753462 global_best=1.753462 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:56:54] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:56:55] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 batch=1/3 done gpu_used_mib=None host_available_mib=1043
+[2026-06-19 15:56:55] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.753871 running_loss=1.753871 running_acc=0.035207
+[2026-06-19 15:56:56] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:56:57] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 batch=2/3 done gpu_used_mib=None host_available_mib=904
+[2026-06-19 15:56:57] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.752607 running_loss=1.753239 running_acc=0.035245
+[2026-06-19 15:56:57] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:56:57] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 batch=3/3 done gpu_used_mib=None host_available_mib=937
+[2026-06-19 15:56:57] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.751770 running_loss=1.752947 running_acc=0.035176
+[2026-06-19 15:56:58] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 starting validation
+[2026-06-19 15:56:58] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 finished validation val_loss=1.748771
+[2026-06-19 15:56:59] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=17 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=826
+[2026-06-19 15:56:59] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=17 architecture=[1, 1, 1, 1] train_loss=1.752947 val_loss=1.748771 candidate_best=1.748771 global_best=1.748771 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:57:02] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:03] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 batch=1/3 done gpu_used_mib=None host_available_mib=1214
+[2026-06-19 15:57:03] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.749993 running_loss=1.749993 running_acc=0.035282
+[2026-06-19 15:57:04] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:05] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 batch=2/3 done gpu_used_mib=None host_available_mib=1262
+[2026-06-19 15:57:05] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.747158 running_loss=1.748576 running_acc=0.035156
+[2026-06-19 15:57:05] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:06] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 batch=3/3 done gpu_used_mib=None host_available_mib=1057
+[2026-06-19 15:57:06] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.746927 running_loss=1.748248 running_acc=0.035176
+[2026-06-19 15:57:06] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 starting validation
+[2026-06-19 15:57:07] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 finished validation val_loss=1.744092
+[2026-06-19 15:57:08] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=18 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1233
+[2026-06-19 15:57:08] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=18 architecture=[1, 1, 1, 1] train_loss=1.748248 val_loss=1.744092 candidate_best=1.744092 global_best=1.744092 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:57:11] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:11] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 batch=1/3 done gpu_used_mib=None host_available_mib=1255
+[2026-06-19 15:57:11] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.744683 running_loss=1.744683 running_acc=0.035213
+[2026-06-19 15:57:13] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:13] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 batch=2/3 done gpu_used_mib=None host_available_mib=1465
+[2026-06-19 15:57:13] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.743978 running_loss=1.744330 running_acc=0.035183
+[2026-06-19 15:57:14] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:14] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 batch=3/3 done gpu_used_mib=None host_available_mib=1326
+[2026-06-19 15:57:14] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.740490 running_loss=1.743567 running_acc=0.035176
+[2026-06-19 15:57:14] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 starting validation
+[2026-06-19 15:57:15] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 finished validation val_loss=1.739455
+[2026-06-19 15:57:16] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=19 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1109
+[2026-06-19 15:57:16] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=19 architecture=[1, 1, 1, 1] train_loss=1.743567 val_loss=1.739455 candidate_best=1.739455 global_best=1.739455 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:57:19] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:19] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 batch=1/3 done gpu_used_mib=None host_available_mib=1220
+[2026-06-19 15:57:19] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.739310 running_loss=1.739310 running_acc=0.035095
+[2026-06-19 15:57:21] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:21] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 batch=2/3 done gpu_used_mib=None host_available_mib=1182
+[2026-06-19 15:57:21] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.739073 running_loss=1.739191 running_acc=0.035105
+[2026-06-19 15:57:22] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:22] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 batch=3/3 done gpu_used_mib=None host_available_mib=1620
+[2026-06-19 15:57:22] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.737924 running_loss=1.738940 running_acc=0.035176
+[2026-06-19 15:57:22] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 starting validation
+[2026-06-19 15:57:23] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 finished validation val_loss=1.734879
+[2026-06-19 15:57:24] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=20 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1315
+[2026-06-19 15:57:24] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=20 architecture=[1, 1, 1, 1] train_loss=1.738940 val_loss=1.734879 candidate_best=1.734879 global_best=1.734879 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:57:27] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:27] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 batch=1/3 done gpu_used_mib=None host_available_mib=1188
+[2026-06-19 15:57:27] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.735856 running_loss=1.735856 running_acc=0.035723
+[2026-06-19 15:57:29] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:29] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 batch=2/3 done gpu_used_mib=None host_available_mib=1170
+[2026-06-19 15:57:29] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.733642 running_loss=1.734749 running_acc=0.035390
+[2026-06-19 15:57:30] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:30] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 batch=3/3 done gpu_used_mib=None host_available_mib=1203
+[2026-06-19 15:57:30] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.732856 running_loss=1.734373 running_acc=0.035176
+[2026-06-19 15:57:31] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 starting validation
+[2026-06-19 15:57:31] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 finished validation val_loss=1.730378
+[2026-06-19 15:57:32] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=21 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1562
+[2026-06-19 15:57:32] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=21 architecture=[1, 1, 1, 1] train_loss=1.734373 val_loss=1.730378 candidate_best=1.730378 global_best=1.730378 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:57:35] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:35] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 batch=1/3 done gpu_used_mib=None host_available_mib=1037
+[2026-06-19 15:57:35] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.731829 running_loss=1.731829 running_acc=0.035175
+[2026-06-19 15:57:37] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:38] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 batch=2/3 done gpu_used_mib=None host_available_mib=1114
+[2026-06-19 15:57:38] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.730006 running_loss=1.730917 running_acc=0.034963
+[2026-06-19 15:57:38] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:38] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 batch=3/3 done gpu_used_mib=None host_available_mib=1151
+[2026-06-19 15:57:38] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.725727 running_loss=1.729886 running_acc=0.035176
+[2026-06-19 15:57:39] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 starting validation
+[2026-06-19 15:57:39] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 finished validation val_loss=1.725959
+[2026-06-19 15:57:40] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=22 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1263
+[2026-06-19 15:57:40] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=22 architecture=[1, 1, 1, 1] train_loss=1.729886 val_loss=1.725959 candidate_best=1.725959 global_best=1.725959 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:57:43] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:44] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 batch=1/3 done gpu_used_mib=None host_available_mib=1320
+[2026-06-19 15:57:44] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.726728 running_loss=1.726728 running_acc=0.035878
+[2026-06-19 15:57:45] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:46] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 batch=2/3 done gpu_used_mib=None host_available_mib=1097
+[2026-06-19 15:57:46] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.725555 running_loss=1.726141 running_acc=0.035274
+[2026-06-19 15:57:46] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:47] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 batch=3/3 done gpu_used_mib=None host_available_mib=1174
+[2026-06-19 15:57:47] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.722811 running_loss=1.725480 running_acc=0.035176
+[2026-06-19 15:57:47] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 starting validation
+[2026-06-19 15:57:47] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 finished validation val_loss=1.721628
+[2026-06-19 15:57:48] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=23 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1131
+[2026-06-19 15:57:48] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=23 architecture=[1, 1, 1, 1] train_loss=1.725480 val_loss=1.721628 candidate_best=1.721628 global_best=1.721628 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:57:51] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:52] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 batch=1/3 done gpu_used_mib=None host_available_mib=1504
+[2026-06-19 15:57:52] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.723043 running_loss=1.723043 running_acc=0.034998
+[2026-06-19 15:57:53] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:53] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 batch=2/3 done gpu_used_mib=None host_available_mib=1259
+[2026-06-19 15:57:53] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.720744 running_loss=1.721894 running_acc=0.035183
+[2026-06-19 15:57:54] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:57:54] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 batch=3/3 done gpu_used_mib=None host_available_mib=1005
+[2026-06-19 15:57:54] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.718239 running_loss=1.721168 running_acc=0.124679
+[2026-06-19 15:57:54] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 starting validation
+[2026-06-19 15:57:55] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 finished validation val_loss=1.717383
+[2026-06-19 15:57:56] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=24 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1218
+[2026-06-19 15:57:56] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=24 architecture=[1, 1, 1, 1] train_loss=1.721168 val_loss=1.717383 candidate_best=1.717383 global_best=1.717383 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:57:59] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:00] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 batch=1/3 done gpu_used_mib=None host_available_mib=1231
+[2026-06-19 15:58:00] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.718632 running_loss=1.718632 running_acc=0.487677
+[2026-06-19 15:58:09] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:09] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 batch=2/3 done gpu_used_mib=None host_available_mib=1316
+[2026-06-19 15:58:09] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.715780 running_loss=1.717206 running_acc=0.488042
+[2026-06-19 15:58:10] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:10] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 batch=3/3 done gpu_used_mib=None host_available_mib=1281
+[2026-06-19 15:58:10] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.715850 running_loss=1.716937 running_acc=0.487767
+[2026-06-19 15:58:10] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 starting validation
+[2026-06-19 15:58:11] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 finished validation val_loss=1.713228
+[2026-06-19 15:58:11] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=25 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1082
+[2026-06-19 15:58:11] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=25 architecture=[1, 1, 1, 1] train_loss=1.716937 val_loss=1.713228 candidate_best=1.713228 global_best=1.713228 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:58:15] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:15] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 batch=1/3 done gpu_used_mib=None host_available_mib=1056
+[2026-06-19 15:58:15] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.713159 running_loss=1.713159 running_acc=0.488187
+[2026-06-19 15:58:16] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:17] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 batch=2/3 done gpu_used_mib=None host_available_mib=1537
+[2026-06-19 15:58:17] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.712461 running_loss=1.712810 running_acc=0.487967
+[2026-06-19 15:58:17] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:18] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 batch=3/3 done gpu_used_mib=None host_available_mib=1362
+[2026-06-19 15:58:18] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.712742 running_loss=1.712796 running_acc=0.487767
+[2026-06-19 15:58:18] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 starting validation
+[2026-06-19 15:58:18] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 finished validation val_loss=1.709159
+[2026-06-19 15:58:19] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=26 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1245
+[2026-06-19 15:58:19] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=26 architecture=[1, 1, 1, 1] train_loss=1.712796 val_loss=1.709159 candidate_best=1.709159 global_best=1.709159 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:58:22] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:22] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 batch=1/3 done gpu_used_mib=None host_available_mib=974
+[2026-06-19 15:58:22] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.709473 running_loss=1.709473 running_acc=0.488520
+[2026-06-19 15:58:24] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:24] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 batch=2/3 done gpu_used_mib=None host_available_mib=1129
+[2026-06-19 15:58:24] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.708996 running_loss=1.709234 running_acc=0.487680
+[2026-06-19 15:58:25] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:25] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 batch=3/3 done gpu_used_mib=None host_available_mib=1138
+[2026-06-19 15:58:25] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.706756 running_loss=1.708742 running_acc=0.487767
+[2026-06-19 15:58:25] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 starting validation
+[2026-06-19 15:58:26] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 finished validation val_loss=1.705175
+[2026-06-19 15:58:27] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=27 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1530
+[2026-06-19 15:58:27] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=27 architecture=[1, 1, 1, 1] train_loss=1.708742 val_loss=1.705175 candidate_best=1.705175 global_best=1.705175 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:58:30] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:30] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 batch=1/3 done gpu_used_mib=None host_available_mib=881
+[2026-06-19 15:58:30] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.705571 running_loss=1.705571 running_acc=0.486082
+[2026-06-19 15:58:32] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:32] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 batch=2/3 done gpu_used_mib=None host_available_mib=1002
+[2026-06-19 15:58:32] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.704563 running_loss=1.705067 running_acc=0.487218
+[2026-06-19 15:58:33] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:33] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 batch=3/3 done gpu_used_mib=None host_available_mib=1061
+[2026-06-19 15:58:33] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.703571 running_loss=1.704770 running_acc=0.487767
+[2026-06-19 15:58:33] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 starting validation
+[2026-06-19 15:58:34] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 finished validation val_loss=1.701273
+[2026-06-19 15:58:35] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=28 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1087
+[2026-06-19 15:58:35] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=28 architecture=[1, 1, 1, 1] train_loss=1.704770 val_loss=1.701273 candidate_best=1.701273 global_best=1.701273 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:58:38] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:38] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 batch=1/3 done gpu_used_mib=None host_available_mib=1171
+[2026-06-19 15:58:38] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.701585 running_loss=1.701585 running_acc=0.489218
+[2026-06-19 15:58:40] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:41] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 batch=2/3 done gpu_used_mib=None host_available_mib=776
+[2026-06-19 15:58:41] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.700302 running_loss=1.700943 running_acc=0.487806
+[2026-06-19 15:58:42] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:42] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 batch=3/3 done gpu_used_mib=None host_available_mib=662
+[2026-06-19 15:58:42] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.700651 running_loss=1.700885 running_acc=0.487767
+[2026-06-19 15:58:42] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 starting validation
+[2026-06-19 15:58:43] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 finished validation val_loss=1.697450
+[2026-06-19 15:58:44] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=29 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=662
+[2026-06-19 15:58:44] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=29 architecture=[1, 1, 1, 1] train_loss=1.700885 val_loss=1.697450 candidate_best=1.697450 global_best=1.697450 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:58:48] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:48] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 batch=1/3 done gpu_used_mib=None host_available_mib=814
+[2026-06-19 15:58:48] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.697443 running_loss=1.697443 running_acc=0.488203
+[2026-06-19 15:58:58] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:58:58] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 batch=2/3 done gpu_used_mib=None host_available_mib=845
+[2026-06-19 15:58:58] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.698242 running_loss=1.697843 running_acc=0.487889
+[2026-06-19 15:59:01] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:01] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 batch=3/3 done gpu_used_mib=None host_available_mib=586
+[2026-06-19 15:59:01] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.693972 running_loss=1.697074 running_acc=0.487767
+[2026-06-19 15:59:01] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 starting validation
+[2026-06-19 15:59:02] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 finished validation val_loss=1.693704
+[2026-06-19 15:59:03] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=30 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=664
+[2026-06-19 15:59:03] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=30 architecture=[1, 1, 1, 1] train_loss=1.697074 val_loss=1.693704 candidate_best=1.693704 global_best=1.693704 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:59:07] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:08] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 batch=1/3 done gpu_used_mib=None host_available_mib=683
+[2026-06-19 15:59:08] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.694068 running_loss=1.694068 running_acc=0.488595
+[2026-06-19 15:59:10] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:10] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 batch=2/3 done gpu_used_mib=None host_available_mib=549
+[2026-06-19 15:59:10] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.693103 running_loss=1.693585 running_acc=0.487986
+[2026-06-19 15:59:12] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:12] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 batch=3/3 done gpu_used_mib=None host_available_mib=554
+[2026-06-19 15:59:12] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.692356 running_loss=1.693341 running_acc=0.487767
+[2026-06-19 15:59:12] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 starting validation
+[2026-06-19 15:59:13] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 finished validation val_loss=1.690032
+[2026-06-19 15:59:14] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=31 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=651
+[2026-06-19 15:59:14] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=31 architecture=[1, 1, 1, 1] train_loss=1.693341 val_loss=1.690032 candidate_best=1.690032 global_best=1.690032 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:59:18] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:18] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 batch=1/3 done gpu_used_mib=None host_available_mib=1026
+[2026-06-19 15:59:18] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.690529 running_loss=1.690529 running_acc=0.487006
+[2026-06-19 15:59:21] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:21] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 batch=2/3 done gpu_used_mib=None host_available_mib=658
+[2026-06-19 15:59:21] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.688892 running_loss=1.689710 running_acc=0.488091
+[2026-06-19 15:59:25] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:25] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 batch=3/3 done gpu_used_mib=None host_available_mib=682
+[2026-06-19 15:59:25] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.689556 running_loss=1.689680 running_acc=0.487767
+[2026-06-19 15:59:25] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 starting validation
+[2026-06-19 15:59:31] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 finished validation val_loss=1.686430
+[2026-06-19 15:59:31] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=32 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1016
+[2026-06-19 15:59:31] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=32 architecture=[1, 1, 1, 1] train_loss=1.689680 val_loss=1.686430 candidate_best=1.686430 global_best=1.686430 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:59:36] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:37] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 batch=1/3 done gpu_used_mib=None host_available_mib=980
+[2026-06-19 15:59:37] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.686761 running_loss=1.686761 running_acc=0.486636
+[2026-06-19 15:59:39] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:39] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 batch=2/3 done gpu_used_mib=None host_available_mib=1072
+[2026-06-19 15:59:39] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.685305 running_loss=1.686033 running_acc=0.487503
+[2026-06-19 15:59:40] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:41] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 batch=3/3 done gpu_used_mib=None host_available_mib=1082
+[2026-06-19 15:59:41] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.686314 running_loss=1.686089 running_acc=0.487767
+[2026-06-19 15:59:41] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 starting validation
+[2026-06-19 15:59:42] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 finished validation val_loss=1.682897
+[2026-06-19 15:59:42] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=33 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=1226
+[2026-06-19 15:59:42] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=33 architecture=[1, 1, 1, 1] train_loss=1.686089 val_loss=1.682897 candidate_best=1.682897 global_best=1.682897 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
+[2026-06-19 15:59:47] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 batch=1/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:47] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 batch=1/3 done gpu_used_mib=None host_available_mib=928
+[2026-06-19 15:59:47] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 batch=1/3 batch_size=186240 running_batches=1 batch_loss=1.683439 running_loss=1.683439 running_acc=0.487468
+[2026-06-19 15:59:56] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 batch=2/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:57] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 batch=2/3 done gpu_used_mib=None host_available_mib=983
+[2026-06-19 15:59:57] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 batch=2/3 batch_size=186240 running_batches=2 batch_loss=1.681925 running_loss=1.682682 running_acc=0.487554
+[2026-06-19 15:59:59] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 batch=3/3 start path=checkpoint_last.pt
+[2026-06-19 15:59:59] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 batch=3/3 done gpu_used_mib=None host_available_mib=1248
+[2026-06-19 15:59:59] [BATCH] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 batch=3/3 batch_size=92330 running_batches=3 batch_loss=1.682097 running_loss=1.682566 running_acc=0.487767
+[2026-06-19 15:59:59] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 starting validation
+[2026-06-19 16:00:00] [VAL] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 finished validation val_loss=1.679428
+[2026-06-19 16:00:00] [CKPT] task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 candidate=cand_000_d4_w1 epoch=34 done path=checkpoint_last.pt gpu_used_mib=None host_available_mib=922
+[2026-06-19 16:00:00] [classification][stl_ablation_r01_d04_w0001_1_1_1_1][cand_000_d4_w1] epoch=34 architecture=[1, 1, 1, 1] train_loss=1.682566 val_loss=1.679428 candidate_best=1.679428 global_best=1.679428 es=0/10
+/home/anurag/Projects/Breaking-the-Neural-Barrier/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py:1095: UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.
+  super().__init__(loader)
