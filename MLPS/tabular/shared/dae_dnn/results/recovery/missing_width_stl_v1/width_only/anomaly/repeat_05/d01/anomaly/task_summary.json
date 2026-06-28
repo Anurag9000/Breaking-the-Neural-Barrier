@@ -1,0 +1,109 @@
+{
+  "adp_runs": [
+    {
+      "architecture": [
+        55
+      ],
+      "best_candidate_dir": "cand_054_d1_w55",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_05/d01/anomaly/ae_width_only/cand_054_d1_w55/checkpoint_best.pt",
+      "best_epoch": 29,
+      "best_val": 0.0006888178736033081,
+      "final_epoch": 29,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "anomaly"
+    }
+  ],
+  "comparisons": [
+    {
+      "adp_architecture": [
+        55
+      ],
+      "adp_best_val": 0.0006888178736033081,
+      "adp_phase": "ae_width_only",
+      "stl_architecture": [
+        55
+      ],
+      "stl_best_val": 0.0011508472904416447,
+      "stl_phase": "stl_from_ae_width_only",
+      "task": "anomaly",
+      "winner": "adp",
+      "winner_phase": "ae_width_only",
+      "winner_value": 0.0006888178736033081
+    }
+  ],
+  "paired_stl_runs": [
+    {
+      "architecture": [
+        55
+      ],
+      "best_epoch": 106,
+      "best_val": 0.0011508472904416447,
+      "candidate_dir": "cand_000_d1_w55",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_05/d01/anomaly/stl_from_ae_width_only/cand_000_d1_w55/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_05/d01/anomaly/stl_from_ae_width_only/cand_000_d1_w55/checkpoint_last.pt",
+      "final_epoch": 116,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "anomaly",
+      "test_metrics": {
+        "auroc": 0.7053370675157906,
+        "test_loss": 0.2762022854757436
+      }
+    }
+  ],
+  "phases": [
+    {
+      "architecture": [
+        55
+      ],
+      "best_candidate_dir": "cand_054_d1_w55",
+      "best_checkpoint": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_05/d01/anomaly/ae_width_only/cand_054_d1_w55/checkpoint_best.pt",
+      "best_epoch": 29,
+      "best_val": 0.0006888178736033081,
+      "final_epoch": 29,
+      "mode": "width_only",
+      "phase": "ae_width_only",
+      "reconstruct": true,
+      "task": "anomaly"
+    },
+    {
+      "architecture": [
+        55
+      ],
+      "best_epoch": 106,
+      "best_val": 0.0011508472904416447,
+      "candidate_dir": "cand_000_d1_w55",
+      "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_05/d01/anomaly/stl_from_ae_width_only/cand_000_d1_w55/checkpoint_best.pt",
+      "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/anomaly/repeat_05/d01/anomaly/stl_from_ae_width_only/cand_000_d1_w55/checkpoint_last.pt",
+      "final_epoch": 116,
+      "phase": "stl_from_ae_width_only",
+      "resumed": false,
+      "source_phase": "ae_width_only",
+      "task": "anomaly",
+      "test_metrics": {
+        "auroc": 0.7053370675157906,
+        "test_loss": 0.2762022854757436
+      }
+    }
+  ],
+  "task": "anomaly",
+  "winner": {
+    "adp_architecture": [
+      55
+    ],
+    "adp_best_val": 0.0006888178736033081,
+    "adp_phase": "ae_width_only",
+    "stl_architecture": [
+      55
+    ],
+    "stl_best_val": 0.0011508472904416447,
+    "stl_phase": "stl_from_ae_width_only",
+    "task": "anomaly",
+    "winner": "adp",
+    "winner_phase": "ae_width_only",
+    "winner_value": 0.0006888178736033081
+  }
+}
