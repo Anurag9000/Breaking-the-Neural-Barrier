@@ -130,13 +130,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--host-ram-pressure-limit-pct",
         type=float,
-        default=90.0,
+        default=95.0,
         help="Pause the largest active child when used host RAM exceeds this percentage.",
     )
     p.add_argument(
         "--host-ram-resume-pct",
         type=float,
-        default=85.0,
+        default=90.0,
         help="Only launch or relaunch a child when used host RAM is at or below this percentage.",
     )
     p.add_argument(

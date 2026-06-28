@@ -1,13 +1,59 @@
-[2026-06-13 13:24:04] Initialized ContinuousLogger for stl_ablation_parallel (Mode: stl_ablation_parallel)
-[2026-06-13 13:24:04] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/training_log.txt
-[2026-06-13 13:24:04] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/training_stats.csv
-[2026-06-13 13:24:04] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03
-[2026-06-13 13:24:04] Tasks: ['classification', 'autoencoding', 'generation', 'denoising', 'anomaly', 'simulation', 'prediction']
-[2026-06-13 13:24:04] Architectures: ['[1]', '[2]', '[3]', '[4]', '[5]', '[6]', '[7]', '[8]', '[9]', '[10]']
-[2026-06-13 13:24:04] Parameter decade band: [1, 3]
-[2026-06-13 13:24:04] Repeat count: 5
-[2026-06-13 13:24:04] Concurrency: 7
-[2026-06-13 13:24:04] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
-[2026-06-13 13:24:04] Device: cpu
-[2026-06-13 13:24:04] Git commit: 45499e60ad6fe4b30942242d70176888c5f6481a
-[2026-06-13 13:24:04] [TASK] start classification
+[2026-06-19 15:25:11] Initialized ContinuousLogger for stl_ablation_parallel (Mode: stl_ablation_parallel)
+[2026-06-19 15:25:11] Logs: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/training_log.txt
+[2026-06-19 15:25:11] CSV: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03/training_stats.csv
+[2026-06-19 15:25:11] Run root: MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow01_03
+[2026-06-19 15:25:11] Tasks: ['classification', 'autoencoding', 'generation', 'denoising', 'anomaly', 'simulation', 'prediction']
+[2026-06-19 15:25:11] Architectures: ['[1]', '[2]', '[3]', '[4]', '[5]', '[6]', '[7]', '[8]', '[9]', '[10]']
+[2026-06-19 15:25:11] Parameter decade band: [1, 3]
+[2026-06-19 15:25:11] Repeat count: 5
+[2026-06-19 15:25:11] Scheduler: pressure_aware
+[2026-06-19 15:25:11] Concurrency: 50
+[2026-06-19 15:25:11] Host RAM pressure limit pct: 95.00
+[2026-06-19 15:25:11] Host RAM resume pct: 90.00
+[2026-06-19 15:25:11] GPU memory pressure limit pct: 90.00
+[2026-06-19 15:25:11] GPU memory resume pct: 85.00
+[2026-06-19 15:25:11] GPU device index: 0
+[2026-06-19 15:25:11] Max active jobs: 50
+[2026-06-19 15:25:11] Max retries per job: 0
+[2026-06-19 15:25:11] Source run root: MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current
+[2026-06-19 15:25:11] Device: cpu
+[2026-06-19 15:25:11] Git commit: b78b1df5e6300487b36e241f922be744f8196110
+[2026-06-19 15:25:33] [TASK] launch task=classification phase=stl_ablation_r01_d01_parammatched params=71 device=cpu host_used_pct=27.87 avail_mib=4228/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=1/50
+[2026-06-19 15:26:03] [TASK] launch task=classification phase=stl_ablation_r01_d02_w0001_1_1 params=75 device=cpu host_used_pct=53.07 avail_mib=2751/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=2/50
+[2026-06-19 15:26:33] [TASK] launch task=classification phase=stl_ablation_r01_d03_w0001_1_1_1 params=79 device=cpu host_used_pct=67.40 avail_mib=1911/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=3/50
+[2026-06-19 15:27:05] [TASK] launch task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 params=83 device=cpu host_used_pct=88.71 avail_mib=662/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=4/50
+[2026-06-19 15:27:36] [TASK] launch task=classification phase=stl_ablation_r01_d05_w0001_1_1_1_1_1 params=87 device=cpu host_used_pct=78.86 avail_mib=1239/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=5/50
+[2026-06-19 15:28:09] [TASK] launch task=classification phase=stl_ablation_r01_d06_w0001_1_1_1_1_1_1 params=91 device=cpu host_used_pct=82.28 avail_mib=1039/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=6/50
+[2026-06-19 15:28:42] [TASK] launch task=classification phase=stl_ablation_r01_d07_w0001_1_1_1_1_1_1_1 params=95 device=cpu host_used_pct=88.42 avail_mib=679/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=7/50
+[2026-06-19 15:29:18] [TASK] launch task=classification phase=stl_ablation_r01_d08_w0001_1_1_1_1_1_1_1_1 params=99 device=cpu host_used_pct=86.08 avail_mib=816/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=8/50
+[2026-06-19 15:29:52] [TASK] launch task=classification phase=stl_ablation_r01_d09_w0001_1_1_1_1_1_1_1_1_1 params=103 device=cpu host_used_pct=84.07 avail_mib=934/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=9/50
+[2026-06-19 15:30:28] [TASK] launch task=classification phase=stl_ablation_r01_d10_w0001_1_1_1_1_1_1_1_1_1_1 params=107 device=cpu host_used_pct=86.49 avail_mib=792/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=10/50
+[2026-06-19 15:31:01] [TASK] launch task=classification phase=stl_ablation_r01_d04_w0002_2_2_2_2 params=165 device=cpu host_used_pct=86.08 avail_mib=816/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=11/50
+[2026-06-19 15:31:37] [TASK] launch task=classification phase=stl_ablation_r01_d05_w0002_2_2_2_2_2 params=175 device=cpu host_used_pct=81.25 avail_mib=1099/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=12/50
+[2026-06-19 15:32:19] [TASK] launch task=classification phase=stl_ablation_r01_d06_w0002_2_2_2_2_2_2 params=185 device=cpu host_used_pct=85.96 avail_mib=823/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=13/50
+[2026-06-19 15:33:31] [TASK] launch task=classification phase=stl_ablation_r01_d07_w0002_2_2_2_2_2_2_2 params=195 device=cpu host_used_pct=89.59 avail_mib=610/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=14/50
+[2026-06-19 15:34:22] [TASK] launch task=classification phase=stl_ablation_r01_d08_w0002_2_2_2_2_2_2_2_2 params=205 device=cpu host_used_pct=89.83 avail_mib=596/5862 gpu_used_pct=0.00 gpu_used_mib=0/0 active=15/50
+[2026-06-19 15:35:34] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d08_w0002_2_2_2_2_2_2_2_2 params=205 used_pct=95.09 avail_mib=288/5862
+[2026-06-19 15:36:19] [PRESSURE] paused task=classification phase=stl_ablation_r01_d08_w0002_2_2_2_2_2_2_2_2 params=205 exit=-15
+[2026-06-19 15:36:50] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d07_w0002_2_2_2_2_2_2_2 params=195 used_pct=95.07 avail_mib=289/5862
+[2026-06-19 15:37:22] [PRESSURE] paused task=classification phase=stl_ablation_r01_d07_w0002_2_2_2_2_2_2_2 params=195 exit=-15
+[2026-06-19 15:38:24] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d06_w0002_2_2_2_2_2_2 params=185 used_pct=95.02 avail_mib=292/5862
+[2026-06-19 15:38:58] [PRESSURE] paused task=classification phase=stl_ablation_r01_d06_w0002_2_2_2_2_2_2 params=185 exit=-15
+[2026-06-19 15:39:05] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d05_w0002_2_2_2_2_2 params=175 used_pct=97.20 avail_mib=164/5862
+[2026-06-19 15:39:37] [PRESSURE] paused task=classification phase=stl_ablation_r01_d05_w0002_2_2_2_2_2 params=175 exit=-15
+[2026-06-19 15:39:45] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d04_w0002_2_2_2_2 params=165 used_pct=95.16 avail_mib=284/5862
+[2026-06-19 15:40:15] [PRESSURE] paused task=classification phase=stl_ablation_r01_d04_w0002_2_2_2_2 params=165 exit=-15
+[2026-06-19 15:43:55] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d10_w0001_1_1_1_1_1_1_1_1_1_1 params=107 used_pct=95.22 avail_mib=280/5862
+[2026-06-19 15:44:26] [PRESSURE] paused task=classification phase=stl_ablation_r01_d10_w0001_1_1_1_1_1_1_1_1_1_1 params=107 exit=-15
+[2026-06-19 15:44:54] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d09_w0001_1_1_1_1_1_1_1_1_1 params=103 used_pct=95.09 avail_mib=288/5862
+[2026-06-19 15:45:24] [PRESSURE] paused task=classification phase=stl_ablation_r01_d09_w0001_1_1_1_1_1_1_1_1_1 params=103 exit=-15
+[2026-06-19 15:49:41] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d08_w0001_1_1_1_1_1_1_1_1 params=99 used_pct=96.84 avail_mib=185/5862
+[2026-06-19 15:50:12] [PRESSURE] paused task=classification phase=stl_ablation_r01_d08_w0001_1_1_1_1_1_1_1_1 params=99 exit=-15
+[2026-06-19 15:50:16] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d07_w0001_1_1_1_1_1_1_1 params=95 used_pct=95.74 avail_mib=250/5862
+[2026-06-19 15:50:47] [PRESSURE] paused task=classification phase=stl_ablation_r01_d07_w0001_1_1_1_1_1_1_1 params=95 exit=-15
+[2026-06-19 15:52:07] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d06_w0001_1_1_1_1_1_1 params=91 used_pct=96.18 avail_mib=224/5862
+[2026-06-19 15:52:37] [PRESSURE] paused task=classification phase=stl_ablation_r01_d06_w0001_1_1_1_1_1_1 params=91 exit=-15
+[2026-06-19 15:53:56] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d05_w0001_1_1_1_1_1 params=87 used_pct=95.00 avail_mib=293/5862
+[2026-06-19 15:54:27] [PRESSURE] paused task=classification phase=stl_ablation_r01_d05_w0001_1_1_1_1_1 params=87 exit=-15
+[2026-06-19 16:00:09] [PRESSURE] request_pause task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 params=83 used_pct=95.10 avail_mib=287/5862
+[2026-06-19 16:00:42] [PRESSURE] paused task=classification phase=stl_ablation_r01_d04_w0001_1_1_1_1 params=83 exit=-15
