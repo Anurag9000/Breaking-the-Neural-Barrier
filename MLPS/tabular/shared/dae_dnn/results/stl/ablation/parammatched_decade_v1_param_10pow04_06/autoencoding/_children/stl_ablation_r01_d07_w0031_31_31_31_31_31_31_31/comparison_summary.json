@@ -1,0 +1,243 @@
+{
+  "architectures": [
+    [
+      31,
+      31,
+      31,
+      31,
+      31,
+      31,
+      31
+    ]
+  ],
+  "param_band": [
+    4,
+    6
+  ],
+  "repeat_count": 5,
+  "reports": [
+    {
+      "ablation_stl_runs": [
+        {
+          "architecture": [
+            31,
+            31,
+            31,
+            31,
+            31,
+            31,
+            31
+          ],
+          "best_epoch": 62,
+          "best_val": 0.254195550943391,
+          "candidate_dir": "cand_000_d7_w31",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_last.pt",
+          "final_epoch": 72,
+          "phase": "stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31",
+          "resumed": false,
+          "source_phase": null,
+          "task": "autoencoding",
+          "test_metrics": {
+            "test_loss": 0.32678243213804886
+          }
+        },
+        {
+          "architecture": [
+            31,
+            31,
+            31,
+            31,
+            31,
+            31,
+            31
+          ],
+          "best_epoch": 55,
+          "best_val": 0.26668225430987386,
+          "candidate_dir": "cand_000_d7_w31",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r02_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r02_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_last.pt",
+          "final_epoch": 65,
+          "phase": "stl_ablation_r02_d07_w0031_31_31_31_31_31_31_31",
+          "resumed": false,
+          "source_phase": null,
+          "task": "autoencoding",
+          "test_metrics": {
+            "test_loss": 0.327728248346681
+          }
+        },
+        {
+          "architecture": [
+            31,
+            31,
+            31,
+            31,
+            31,
+            31,
+            31
+          ],
+          "best_epoch": 57,
+          "best_val": 0.25770615494515314,
+          "candidate_dir": "cand_000_d7_w31",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r03_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r03_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_last.pt",
+          "final_epoch": 67,
+          "phase": "stl_ablation_r03_d07_w0031_31_31_31_31_31_31_31",
+          "resumed": false,
+          "source_phase": null,
+          "task": "autoencoding",
+          "test_metrics": {
+            "test_loss": 0.32596761645003747
+          }
+        },
+        {
+          "architecture": [
+            31,
+            31,
+            31,
+            31,
+            31,
+            31,
+            31
+          ],
+          "best_epoch": 35,
+          "best_val": 0.27009569046087034,
+          "candidate_dir": "cand_000_d7_w31",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r04_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r04_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_last.pt",
+          "final_epoch": 45,
+          "phase": "stl_ablation_r04_d07_w0031_31_31_31_31_31_31_31",
+          "resumed": false,
+          "source_phase": null,
+          "task": "autoencoding",
+          "test_metrics": {
+            "test_loss": 0.33086518024557443
+          }
+        },
+        {
+          "architecture": [
+            31,
+            31,
+            31,
+            31,
+            31,
+            31,
+            31
+          ],
+          "best_epoch": 42,
+          "best_val": 0.2691535026076632,
+          "candidate_dir": "cand_000_d7_w31",
+          "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r05_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_best.pt",
+          "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r05_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_last.pt",
+          "final_epoch": 52,
+          "phase": "stl_ablation_r05_d07_w0031_31_31_31_31_31_31_31",
+          "resumed": false,
+          "source_phase": null,
+          "task": "autoencoding",
+          "test_metrics": {
+            "test_loss": 0.32982904612771824
+          }
+        }
+      ],
+      "best_ablation": {
+        "architecture": [
+          31,
+          31,
+          31,
+          31,
+          31,
+          31,
+          31
+        ],
+        "best_epoch": 62,
+        "best_val": 0.254195550943391,
+        "candidate_dir": "cand_000_d7_w31",
+        "checkpoint_best": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_best.pt",
+        "checkpoint_last": "MLPS/tabular/shared/dae_dnn/results/stl/ablation/parammatched_decade_v1_param_10pow04_06/autoencoding/_children/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/autoencoding/stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31/cand_000_d7_w31/checkpoint_last.pt",
+        "final_epoch": 72,
+        "parameter_count": 9819,
+        "phase": "stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31",
+        "repeat": 1,
+        "resumed": false,
+        "source_phase": null,
+        "task": "autoencoding",
+        "test_metrics": {
+          "test_loss": 0.32678243213804886
+        }
+      },
+      "comparisons": [],
+      "curve_rows": [
+        {
+          "architecture": "[31, 31, 31, 31, 31, 31, 31]",
+          "best_epoch": 62,
+          "best_val": 0.254195550943391,
+          "final_epoch": 72,
+          "parameter_count": 9819,
+          "phase": "stl_ablation_r01_d07_w0031_31_31_31_31_31_31_31",
+          "repeat": 1,
+          "task": "autoencoding",
+          "test_acc": null,
+          "test_loss": 0.32678243213804886
+        },
+        {
+          "architecture": "[31, 31, 31, 31, 31, 31, 31]",
+          "best_epoch": 55,
+          "best_val": 0.26668225430987386,
+          "final_epoch": 65,
+          "parameter_count": 9819,
+          "phase": "stl_ablation_r02_d07_w0031_31_31_31_31_31_31_31",
+          "repeat": 2,
+          "task": "autoencoding",
+          "test_acc": null,
+          "test_loss": 0.327728248346681
+        },
+        {
+          "architecture": "[31, 31, 31, 31, 31, 31, 31]",
+          "best_epoch": 57,
+          "best_val": 0.25770615494515314,
+          "final_epoch": 67,
+          "parameter_count": 9819,
+          "phase": "stl_ablation_r03_d07_w0031_31_31_31_31_31_31_31",
+          "repeat": 3,
+          "task": "autoencoding",
+          "test_acc": null,
+          "test_loss": 0.32596761645003747
+        },
+        {
+          "architecture": "[31, 31, 31, 31, 31, 31, 31]",
+          "best_epoch": 35,
+          "best_val": 0.27009569046087034,
+          "final_epoch": 45,
+          "parameter_count": 9819,
+          "phase": "stl_ablation_r04_d07_w0031_31_31_31_31_31_31_31",
+          "repeat": 4,
+          "task": "autoencoding",
+          "test_acc": null,
+          "test_loss": 0.33086518024557443
+        },
+        {
+          "architecture": "[31, 31, 31, 31, 31, 31, 31]",
+          "best_epoch": 42,
+          "best_val": 0.2691535026076632,
+          "final_epoch": 52,
+          "parameter_count": 9819,
+          "phase": "stl_ablation_r05_d07_w0031_31_31_31_31_31_31_31",
+          "repeat": 5,
+          "task": "autoencoding",
+          "test_acc": null,
+          "test_loss": 0.32982904612771824
+        }
+      ],
+      "gpu_vram_avg_mib": null,
+      "gpu_vram_samples_mib": [],
+      "repeat_count": 5,
+      "source_adp_runs": [],
+      "source_paired_stl_runs": [],
+      "task": "autoencoding"
+    }
+  ],
+  "source_run_root": "MLPS/tabular/shared/dae_dnn/results/goliath_w2d_staged_current",
+  "tasks": [
+    "autoencoding"
+  ]
+}
