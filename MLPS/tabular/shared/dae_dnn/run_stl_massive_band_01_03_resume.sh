@@ -21,8 +21,8 @@ CUDA_VISIBLE_DEVICES="" \
   --param-band 1 3 \
   --repeat-count 5 \
   --scheduler pressure_aware \
-  --host-ram-pressure-limit-pct 95 \
-  --host-ram-resume-pct 90 \
+  --host-ram-pressure-limit-pct 85 \
+  --host-ram-resume-pct 80 \
   --gpu-memory-pressure-limit-pct 90 \
   --gpu-memory-resume-pct 85 \
   --gpu-device-index 0 \
@@ -30,9 +30,8 @@ CUDA_VISIBLE_DEVICES="" \
   --max-active-gpu-jobs 0 \
   --concurrency "${CONCURRENCY}" \
   --pressure-poll-interval-sec 0.5 \
-  --pressure-settle-sec 30 \
+  --post-launch-sample-delay-sec 30 \
   --max-epochs 100000000 \
   --num-workers 0 \
-  --pin-memory \
   --batch-size 186240 \
   "$@"

@@ -111,6 +111,18 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--repeat-count", type=int, default=5)
     p.add_argument("--concurrency", type=int, default=10)
     p.add_argument(
+        "--job-start-index",
+        type=int,
+        default=0,
+        help="Zero-based start index into the globally sorted job queue. Useful for splitting a band across machines.",
+    )
+    p.add_argument(
+        "--job-limit",
+        type=int,
+        default=0,
+        help="Maximum number of jobs to take from the globally sorted queue after --job-start-index. 0 means no limit.",
+    )
+    p.add_argument(
         "--concurrency-file",
         default=None,
         help="Optional text file containing the concurrency value to use instead of --concurrency.",
@@ -130,13 +142,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--host-ram-pressure-limit-pct",
         type=float,
-        default=95.0,
+        default=85.0,
         help="Pause the largest active child when used host RAM exceeds this percentage.",
     )
     p.add_argument(
         "--host-ram-resume-pct",
         type=float,
-        default=90.0,
+        default=80.0,
         help="Only launch or relaunch a child when used host RAM is at or below this percentage.",
     )
     p.add_argument(
@@ -892,6 +904,17 @@ def active_gpu_job_limit(args: argparse.Namespace) -> int:
     return max(0, int(getattr(args, "max_active_gpu_jobs", 0) or 0))
 
 
+def slice_pending_jobs(jobs: Sequence[ChildJob], start_index: int, job_limit: int) -> List[ChildJob]:
+    start_index = max(0, int(start_index))
+    job_limit = max(0, int(job_limit))
+    if start_index <= 0 and job_limit <= 0:
+        return list(jobs)
+    if start_index >= len(jobs):
+        return []
+    end_index = len(jobs) if job_limit <= 0 else min(len(jobs), start_index + job_limit)
+    return list(jobs[start_index:end_index])
+
+
 def launch_child_process(
     cmd: Sequence[str],
     env: Optional[Dict[str, str]] = None,
@@ -996,7 +1019,13 @@ def run_parallel_task(args: argparse.Namespace, task_name: str, run_root: Path, 
 def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence[str], logger: ContinuousLogger) -> List[Dict[str, Any]]:
     jobs_by_task = build_task_jobs(args, tasks, run_root)
     task_base_batch_sizes = resolve_task_base_batch_sizes(args, tasks)
-    pending: Deque[ChildJob] = deque(sorted((job for jobs in jobs_by_task.values() for job in jobs), key=pending_job_sort_key))
+    sorted_jobs = sorted((job for jobs in jobs_by_task.values() for job in jobs), key=pending_job_sort_key)
+    pending_jobs = slice_pending_jobs(
+        sorted_jobs,
+        int(getattr(args, "job_start_index", 0) or 0),
+        int(getattr(args, "job_limit", 0) or 0),
+    )
+    pending: Deque[ChildJob] = deque(pending_jobs)
     task_child_roots: Dict[str, List[Path]] = {task_name: [job.child_root for job in jobs] for task_name, jobs in jobs_by_task.items()}
     active: Dict[subprocess.Popen[Any], ActiveChildJob] = {}
     slot_count = max(1, int(active_job_limit(args, len(pending))))
@@ -1335,6 +1364,8 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
             "tasks": list(tasks),
             "scheduler": "pressure_aware",
             "param_band": list(stl.normalize_param_band(getattr(args, "param_band", None))) if getattr(args, "param_band", None) else None,
+            "job_start_index": int(getattr(args, "job_start_index", 0) or 0),
+            "job_limit": int(getattr(args, "job_limit", 0) or 0),
             "host_ram_pressure_limit_pct": float(args.host_ram_pressure_limit_pct),
             "host_ram_resume_pct": float(args.host_ram_resume_pct),
             "gpu_memory_pressure_limit_pct": float(args.gpu_memory_pressure_limit_pct),
@@ -1381,6 +1412,8 @@ def main() -> None:
     logger.log_console(f"Repeat count: {int(args.repeat_count)}")
     logger.log_console(f"Scheduler: {args.scheduler}")
     logger.log_console(f"Concurrency: {int(args.concurrency)}")
+    logger.log_console(f"Job start index: {int(getattr(args, 'job_start_index', 0) or 0)}")
+    logger.log_console(f"Job limit: {int(getattr(args, 'job_limit', 0) or 0)}")
     if getattr(args, "concurrency_file", None):
         logger.log_console(f"Concurrency file: {args.concurrency_file}")
     if args.scheduler == "pressure_aware":
