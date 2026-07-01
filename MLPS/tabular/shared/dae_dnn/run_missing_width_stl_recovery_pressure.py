@@ -1125,20 +1125,13 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        import os as _os, signal as _signal, subprocess as _sub, sys as _sys
-        print("\n[INTERRUPT] Caught KeyboardInterrupt. Killing own process group then user Python processes...")
+        import os as _os, subprocess as _sub, sys as _sys
+        print("\n[INTERRUPT] Caught KeyboardInterrupt. Killing user Python processes...")
         try:
-            _os.killpg(_os.getpgid(_os.getpid()), _signal.SIGKILL)
-        except Exception:
-            pass
-        try:
-            _sub.run(
-                ["pkill", "-9", "-u", str(_os.getuid()), "-f", "python"],
-                check=False, timeout=10,
-            )
+            _sub.Popen(["pkill", "-9", "-u", str(_os.getuid()), "-f", "python"])
         except Exception:
             try:
-                _sub.run(["pkill", "-9", "-f", "python"], check=False, timeout=10)
+                _sub.Popen(["pkill", "-9", "-f", "python"])
             except Exception:
                 pass
         _sys.exit(130)

@@ -1935,24 +1935,13 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        import os as _os, signal as _signal, subprocess as _sub, sys as _sys
-        print("\n[INTERRUPT] Caught KeyboardInterrupt. Killing own process group then user Python processes...")
-        # 1. Kill own process group (covers threads and any children that share our session)
+        import os as _os, subprocess as _sub, sys as _sys
+        print("\n[INTERRUPT] Caught KeyboardInterrupt. Killing user Python processes...")
         try:
-            _os.killpg(_os.getpgid(_os.getpid()), _signal.SIGKILL)
-        except Exception:
-            pass
-        # 2. Kill remaining user-owned Python processes (detached children launched with
-        #    start_new_session=True have their own pgids; pkill -u limits to our uid so
-        #    we never get 'Operation not permitted' for root/system processes).
-        try:
-            _sub.run(
-                ["pkill", "-9", "-u", str(_os.getuid()), "-f", "python"],
-                check=False, timeout=10,
-            )
+            _sub.Popen(["pkill", "-9", "-u", str(_os.getuid()), "-f", "python"])
         except Exception:
             try:
-                _sub.run(["pkill", "-9", "-f", "python"], check=False, timeout=10)
+                _sub.Popen(["pkill", "-9", "-f", "python"])
             except Exception:
                 pass
         _sys.exit(130)
