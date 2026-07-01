@@ -2,6 +2,7 @@ $ErrorActionPreference = "Stop"
 
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "../../../..")).Path
 Set-Location $RepoRoot
+$env:PYTHONPATH = $RepoRoot
 
 $CpuCores = [Environment]::ProcessorCount
 if (-not $env:OMP_NUM_THREADS) { $env:OMP_NUM_THREADS = "$CpuCores" }

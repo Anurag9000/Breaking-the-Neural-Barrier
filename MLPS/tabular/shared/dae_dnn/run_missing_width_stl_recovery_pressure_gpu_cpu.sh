@@ -2,6 +2,7 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/../../../.."
+export PYTHONPATH="${PWD}${PYTHONPATH:+:${PYTHONPATH}}"
 
 # Mixed GPU+CPU recovery runner.
 # It shares the same run root as the CPU default runner so checkpoints and

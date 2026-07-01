@@ -1,11 +1,15 @@
-[2026-06-26 21:01:22] Initialized ContinuousLogger for goliath (Mode: sequential)
-[2026-06-26 21:01:22] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_02/d01/training_log.txt
-[2026-06-26 21:01:22] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_02/d01/training_stats.csv
-[2026-06-26 21:01:22] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_02/d01
-[2026-06-26 21:01:22] Tasks: ['autoencoding']
-[2026-06-26 21:01:22] Phases: ['ae_width_only']
-[2026-06-26 21:01:22] Device: cpu
-[2026-06-26 21:01:22] Git commit: 366e70069c3a957faddea7de730df3c7474e5982
-[2026-06-26 21:01:37] === Task start: autoencoding ===
-[2026-06-26 21:01:37] [TASK] start autoencoding
-[2026-06-26 21:01:37] [TASK:autoencoding] ADP phase start: ae_width_only
+[2026-07-01 17:11:34] Initialized ContinuousLogger for goliath (Mode: sequential)
+[2026-07-01 17:11:34] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_02/d01/training_log.txt
+[2026-07-01 17:11:34] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_02/d01/training_stats.csv
+[2026-07-01 17:11:34] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_02/d01
+[2026-07-01 17:11:34] Tasks: ['autoencoding']
+[2026-07-01 17:11:34] Phases: ['ae_width_only']
+[2026-07-01 17:11:34] Device: cuda
+[2026-07-01 17:11:34] Git commit: e81c9a7a20f6137408639f3213bb3a5aaefc218d
+[2026-07-01 17:11:44] === Task start: autoencoding ===
+[2026-07-01 17:11:44] [TASK] start autoencoding
+[2026-07-01 17:11:44] [TASK:autoencoding] ADP phase start: ae_width_only
+[2026-07-01 19:32:11] [TASK:autoencoding] ADP=ae_width_only best_val=0.000539 STL=stl_from_ae_width_only best_val=0.001155 winner=adp
+[2026-07-01 19:32:11] [TASK] done autoencoding
+[2026-07-01 19:32:11] === Task done: autoencoding ===
+[2026-07-01 19:32:11] Final report written to MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/width_only/autoencoding/repeat_02/d01/final_report.json

@@ -22,8 +22,8 @@
     "lr": 0.001,
     "max_depth": 10,
     "max_epochs": 100000000,
-    "max_neurons": 10000000000,
-    "max_width": 10000000000,
+    "max_neurons": 10000000,
+    "max_width": 4096,
     "metrics_every": 0,
     "min_width": 16,
     "num_workers": 0,
@@ -52,10 +52,10 @@
   "default_batch_sizes": {
     "autoencoding": 4656
   },
-  "device": "cpu",
-  "git_commit": "366e70069c3a957faddea7de730df3c7474e5982",
+  "device": "cuda",
+  "git_commit": "e81c9a7a20f6137408639f3213bb3a5aaefc218d",
   "tasks": [
     "autoencoding"
   ],
-  "timestamp": "20260628_003128"
+  "timestamp": "20260701_195017"
 }

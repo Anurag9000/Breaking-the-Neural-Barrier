@@ -2,6 +2,7 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/../../../.."
+export PYTHONPATH="${PWD}${PYTHONPATH:+:${PYTHONPATH}}"
 
 # CPU-only default for this recovery family.
 # The mixed GPU+CPU launcher lives in

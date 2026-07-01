@@ -1263,3 +1263,448 @@
 [2026-06-23 15:40:56] [TASK] launch width_only:classification:r02:d01 params=640000000007 device=cpu batch_scale=1.000000 host_used_pct=38.13 swap_used_pct=61.20 gpu_used_pct=0.24 active=1/189
 [2026-06-23 15:41:01] [TASK] requeued width_only:classification:r02:d01 exit=1 pause=False
 [2026-06-23 15:41:01] [STATE] admission gate reopened by genuine process completion
+[2026-07-01 13:10:16] Initialized ContinuousLogger for missing_width_stl_recovery (Mode: pressure_aware_recovery)
+[2026-07-01 13:10:16] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_log.txt
+[2026-07-01 13:10:16] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_stats.csv
+[2026-07-01 13:10:22] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1
+[2026-07-01 13:10:22] Jobs: 189
+[2026-07-01 13:10:22] Max active jobs: 189
+[2026-07-01 13:10:22] Max active GPU jobs: 0
+[2026-07-01 13:10:22] Batch backoff factor: 0.500
+[2026-07-01 13:10:22] Batch backoff scale: 1.000000
+[2026-07-01 13:10:24] [TASK] launch width_only:classification:r02:d01 params=640000000007 device=cpu batch_scale=1.000000 host_used_pct=37.81 swap_used_pct=44.08 gpu_used_pct=0.24 active=1/189
+[2026-07-01 13:10:55] [TASK] launch width_only:classification:r03:d01 params=640000000007 device=cpu batch_scale=1.000000 host_used_pct=40.18 swap_used_pct=44.08 gpu_used_pct=0.24 active=2/189
+[2026-07-01 13:11:25] [TASK] launch width_only:classification:r04:d01 params=640000000007 device=cpu batch_scale=1.000000 host_used_pct=57.62 swap_used_pct=44.05 gpu_used_pct=0.24 active=3/189
+[2026-07-01 13:11:55] [TASK] launch width_only:classification:r05:d01 params=640000000007 device=cpu batch_scale=1.000000 host_used_pct=62.42 swap_used_pct=43.66 gpu_used_pct=0.24 active=4/189
+[2026-07-01 13:12:25] [TASK] launch width_only:autoencoding:r02:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=66.34 swap_used_pct=43.64 gpu_used_pct=0.24 active=5/189
+[2026-07-01 13:12:56] [TASK] launch width_only:autoencoding:r03:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=71.17 swap_used_pct=45.54 gpu_used_pct=0.24 active=6/189
+[2026-07-01 13:13:26] [TASK] launch width_only:autoencoding:r04:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=76.63 swap_used_pct=51.16 gpu_used_pct=0.24 active=7/189
+[2026-07-01 13:13:56] [TASK] launch width_only:autoencoding:r05:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=79.32 swap_used_pct=51.14 gpu_used_pct=0.24 active=8/189
+[2026-07-01 13:17:53] [TASK] launch width_only:denoising:r02:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=79.53 swap_used_pct=57.22 gpu_used_pct=0.24 active=9/189
+[2026-07-01 13:21:20] [PRESSURE] pause_host width_only:denoising:r02:d01 host_used_pct=86.37 swap_used_pct=63.44
+[2026-07-01 13:21:20] [STATE] host admission gate blocked until a child completes
+[2026-07-01 13:21:21] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 13:27:36] [PRESSURE] pause_host width_only:autoencoding:r05:d01 host_used_pct=85.03 swap_used_pct=58.44
+[2026-07-01 13:27:37] [TASK] requeued width_only:autoencoding:r05:d01 exit=-15 pause=True
+[2026-07-01 13:28:06] [STATE] admission gate reopened by >500MiB external drop or thresholds met host_drop=652.0 gpu_drop=0.0 host_used_pct=77.83
+[2026-07-01 13:28:06] [TASK] launch width_only:autoencoding:r05:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=77.83 swap_used_pct=58.36 gpu_used_pct=0.24 active=8/189
+[2026-07-01 13:28:40] [TASK] launch width_only:denoising:r02:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=79.17 swap_used_pct=61.49 gpu_used_pct=0.24 active=9/189
+[2026-07-01 13:29:43] [PRESSURE] pause_host width_only:denoising:r02:d01 host_used_pct=85.19 swap_used_pct=66.67
+[2026-07-01 13:29:44] [STATE] host admission gate blocked until a child completes
+[2026-07-01 13:29:44] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 13:34:34] [STATE] admission gate reopened by >500MiB external drop or thresholds met host_drop=406.3 gpu_drop=0.0 host_used_pct=79.82
+[2026-07-01 13:34:35] [TASK] launch width_only:denoising:r02:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=79.82 swap_used_pct=63.69 gpu_used_pct=0.24 active=9/189
+[2026-07-01 13:36:03] [PRESSURE] pause_host width_only:denoising:r02:d01 host_used_pct=85.01 swap_used_pct=64.44
+[2026-07-01 13:36:03] [STATE] host admission gate blocked until a child completes
+[2026-07-01 13:36:04] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 13:36:16] [STATE] admission gate reopened by >500MiB external drop or thresholds met host_drop=134.0 gpu_drop=0.0 host_used_pct=79.97
+[2026-07-01 13:36:18] [TASK] launch width_only:denoising:r02:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=79.79 swap_used_pct=64.42 gpu_used_pct=0.24 active=9/189
+[2026-07-01 13:36:58] [PRESSURE] pause_host width_only:denoising:r02:d01 host_used_pct=85.23 swap_used_pct=63.44
+[2026-07-01 13:36:59] [STATE] host admission gate blocked until a child completes
+[2026-07-01 13:36:59] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 13:37:04] [STATE] admission gate reopened by >500MiB external drop or thresholds met host_drop=300.0 gpu_drop=0.0 host_used_pct=79.52
+[2026-07-01 13:37:04] [TASK] launch width_only:denoising:r02:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=79.52 swap_used_pct=63.30 gpu_used_pct=0.24 active=9/189
+[2026-07-01 13:38:28] [PRESSURE] pause_host width_only:denoising:r02:d01 host_used_pct=85.10 swap_used_pct=62.56
+[2026-07-01 13:38:29] [STATE] host admission gate blocked until a child completes
+[2026-07-01 13:38:29] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 13:38:30] [STATE] admission gate reopened by >500MiB external drop or thresholds met host_drop=0.0 gpu_drop=0.0 host_used_pct=79.79
+[2026-07-01 13:38:30] [TASK] launch width_only:denoising:r02:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=79.79 swap_used_pct=62.42 gpu_used_pct=0.24 active=9/189
+[2026-07-01 13:39:32] [PRESSURE] pause_host width_only:denoising:r02:d01 host_used_pct=85.31 swap_used_pct=62.34
+[2026-07-01 13:39:32] [STATE] host admission gate blocked until a child completes
+[2026-07-01 13:39:33] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 13:40:12] [STATE] admission gate reopened by >500MiB external drop or thresholds met host_drop=435.0 gpu_drop=0.0 host_used_pct=79.37
+[2026-07-01 13:40:13] [TASK] launch width_only:denoising:r02:d01 params=1110000000054 device=cpu batch_scale=1.000000 host_used_pct=79.37 swap_used_pct=62.27 gpu_used_pct=0.24 active=9/189
+[2026-07-01 13:41:39] [PRESSURE] pause_host width_only:denoising:r02:d01 host_used_pct=85.05 swap_used_pct=61.98
+[2026-07-01 13:41:40] [STATE] host admission gate blocked until a child completes
+[2026-07-01 13:41:40] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 14:00:09] [STATE] admission gate reopened by >500MiB external drop or thresholds met host_drop=509.1 gpu_drop=0.0 host_used_pct=80.41
+[2026-07-01 14:09:13] Initialized ContinuousLogger for missing_width_stl_recovery (Mode: pressure_aware_recovery)
+[2026-07-01 14:09:13] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_log.txt
+[2026-07-01 14:09:13] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_stats.csv
+[2026-07-01 14:09:19] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1
+[2026-07-01 14:09:19] Jobs: 189
+[2026-07-01 14:09:19] Max active jobs: 189
+[2026-07-01 14:09:19] Max active GPU jobs: 0
+[2026-07-01 14:09:19] Batch backoff factor: 0.500
+[2026-07-01 14:09:19] Batch backoff scale: 1.000000
+[2026-07-01 14:09:21] [TASK] launch width_only:classification:r02:d01 params=262151 device=cuda batch_scale=1.000000 ram=52.49% swap=60.10% gpu=0.24% active=1/189 gpu_gate=True cpu_gate=True
+[2026-07-01 14:09:21] [TASK] launch width_only:classification:r03:d01 params=262151 device=cpu batch_scale=1.000000 ram=50.81% swap=60.10% gpu=0.29% active=2/189 gpu_gate=True cpu_gate=True
+[2026-07-01 14:09:52] [TASK] launch width_only:classification:r04:d01 params=262151 device=cuda batch_scale=1.000000 ram=61.68% swap=60.02% gpu=2.62% active=3/189 gpu_gate=True cpu_gate=True
+[2026-07-01 14:09:52] [TASK] launch width_only:classification:r05:d01 params=262151 device=cpu batch_scale=1.000000 ram=61.88% swap=59.95% gpu=2.62% active=4/189 gpu_gate=True cpu_gate=True
+[2026-07-01 14:10:22] [TASK] launch width_only:autoencoding:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=76.97% swap=59.07% gpu=4.95% active=5/189 gpu_gate=True cpu_gate=True
+[2026-07-01 14:10:22] [TASK] launch width_only:autoencoding:r03:d01 params=454710 device=cpu batch_scale=1.000000 ram=76.81% swap=59.07% gpu=4.95% active=6/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:31:01] Initialized ContinuousLogger for missing_width_stl_recovery (Mode: pressure_aware_recovery)
+[2026-07-01 16:31:01] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_log.txt
+[2026-07-01 16:31:01] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_stats.csv
+[2026-07-01 16:31:07] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1
+[2026-07-01 16:31:07] Jobs: 189
+[2026-07-01 16:31:07] Max active jobs: 189
+[2026-07-01 16:31:07] Max active GPU jobs: 0
+[2026-07-01 16:31:07] Batch backoff factor: 0.500
+[2026-07-01 16:31:07] Batch backoff scale: 1.000000
+[2026-07-01 16:31:09] [TASK] launch width_only:classification:r02:d01 params=262151 device=cuda batch_scale=1.000000 ram=57.29% swap=55.92% gpu=0.24% active=1/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:31:40] [TASK] launch width_only:classification:r03:d01 params=262151 device=cuda batch_scale=1.000000 ram=61.09% swap=55.92% gpu=2.62% active=2/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:32:10] [TASK] launch width_only:classification:r04:d01 params=262151 device=cuda batch_scale=1.000000 ram=69.49% swap=55.92% gpu=4.95% active=3/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:32:40] [TASK] launch width_only:classification:r05:d01 params=262151 device=cuda batch_scale=1.000000 ram=76.81% swap=55.92% gpu=7.28% active=4/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:33:11] [TASK] launch width_only:autoencoding:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=79.26% swap=56.09% gpu=8.72% active=5/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:38:18] [TASK] launch width_only:autoencoding:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.40% swap=65.76% gpu=12.32% active=6/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:39:10] [RAM_PRESSURE] evict width_only:autoencoding:r03:d01 host=90.01%
+[2026-07-01 16:39:11] [CPU_GATE] closed by RAM/swap pressure
+[2026-07-01 16:39:11] [GPU_GATE] closed reason=host_ram_pressure peak=757 MiB
+[2026-07-01 16:39:11] [TASK] requeued width_only:autoencoding:r03:d01 exit=-15 pause=True
+[2026-07-01 16:39:11] [GPU_GATE] reopened gpu_drop=0.0 MiB gpu_used_pct=12.32
+[2026-07-01 16:39:11] [CPU_GATE] reopened host_drop=-392.4 MiB
+[2026-07-01 16:39:11] [TASK] launch width_only:autoencoding:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.62% swap=72.87% gpu=12.32% active=6/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:40:04] [RAM_PRESSURE] evict width_only:autoencoding:r03:d01 host=90.10%
+[2026-07-01 16:40:05] [CPU_GATE] closed by RAM/swap pressure
+[2026-07-01 16:40:05] [GPU_GATE] closed reason=host_ram_pressure peak=757 MiB
+[2026-07-01 16:40:05] [TASK] requeued width_only:autoencoding:r03:d01 exit=-15 pause=True
+[2026-07-01 16:40:05] [GPU_GATE] reopened gpu_drop=0.0 MiB gpu_used_pct=12.32
+[2026-07-01 16:40:05] [CPU_GATE] reopened host_drop=-179.6 MiB
+[2026-07-01 16:40:05] [TASK] launch width_only:autoencoding:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=82.33% swap=78.68% gpu=12.32% active=6/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:40:36] [TASK] launch width_only:autoencoding:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.08% swap=84.59% gpu=12.35% active=7/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:40:54] [RAM_PRESSURE] evict width_only:autoencoding:r04:d01 host=90.34%
+[2026-07-01 16:40:55] [CPU_GATE] closed by RAM/swap pressure
+[2026-07-01 16:40:55] [GPU_GATE] closed reason=host_ram_pressure peak=924 MiB
+[2026-07-01 16:40:55] [TASK] requeued width_only:autoencoding:r04:d01 exit=-15 pause=True
+[2026-07-01 16:40:55] [GPU_GATE] reopened gpu_drop=0.0 MiB gpu_used_pct=15.04
+[2026-07-01 16:41:37] [RAM_PRESSURE] evict width_only:autoencoding:r03:d01 host=90.13%
+[2026-07-01 16:41:37] [GPU_GATE] closed reason=host_ram_pressure peak=759 MiB
+[2026-07-01 16:41:37] [TASK] requeued width_only:autoencoding:r03:d01 exit=-15 pause=True
+[2026-07-01 16:41:38] [GPU_GATE] reopened gpu_drop=0.0 MiB gpu_used_pct=12.35
+[2026-07-01 16:41:38] [CPU_GATE] reopened host_drop=-1288.4 MiB
+[2026-07-01 16:41:38] [TASK] launch width_only:autoencoding:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.14% swap=83.69% gpu=12.35% active=6/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:42:08] [TASK] launch width_only:autoencoding:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.97% swap=85.23% gpu=12.35% active=7/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:43:01] [RAM_PRESSURE] evict width_only:autoencoding:r04:d01 host=90.05%
+[2026-07-01 16:43:02] [CPU_GATE] closed by RAM/swap pressure
+[2026-07-01 16:43:02] [GPU_GATE] closed reason=host_ram_pressure peak=926 MiB
+[2026-07-01 16:43:02] [TASK] requeued width_only:autoencoding:r04:d01 exit=-15 pause=True
+[2026-07-01 16:43:02] [GPU_GATE] reopened gpu_drop=0.0 MiB gpu_used_pct=15.07
+[2026-07-01 16:44:23] [CPU_GATE] reopened host_drop=-173.1 MiB
+[2026-07-01 16:44:24] [TASK] launch width_only:autoencoding:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.76% swap=85.93% gpu=15.07% active=7/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:44:54] [TASK] launch width_only:autoencoding:r05:d01 params=454710 device=cuda batch_scale=1.000000 ram=76.09% swap=66.08% gpu=15.07% active=8/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:45:24] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.27% swap=64.10% gpu=17.48% active=9/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:46:30] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.27%
+[2026-07-01 16:46:30] [CPU_GATE] closed by RAM/swap pressure
+[2026-07-01 16:46:30] [GPU_GATE] closed reason=host_ram_pressure peak=1243 MiB
+[2026-07-01 16:46:30] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 16:46:31] [GPU_GATE] reopened gpu_drop=0.0 MiB gpu_used_pct=20.23
+[2026-07-01 16:46:36] [CPU_GATE] reopened host_drop=-62.2 MiB
+[2026-07-01 16:46:36] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.91% swap=63.13% gpu=20.23% active=9/189 gpu_gate=True cpu_gate=True
+[2026-07-01 16:51:02] Initialized ContinuousLogger for missing_width_stl_recovery (Mode: pressure_aware_recovery)
+[2026-07-01 16:51:02] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_log.txt
+[2026-07-01 16:51:02] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_stats.csv
+[2026-07-01 16:51:09] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1
+[2026-07-01 16:51:09] Jobs: 189
+[2026-07-01 16:51:09] Max active jobs: 189
+[2026-07-01 16:51:09] Max active GPU jobs: 0
+[2026-07-01 16:51:09] Batch backoff factor: 0.500
+[2026-07-01 16:51:09] Batch backoff scale: 1.000000
+[2026-07-01 16:51:11] [TASK] launch width_only:classification:r02:d01 params=262151 device=cuda batch_scale=1.000000 ram=34.17% swap=59.32% active_sys=1/189 active_gpu=0/inf gpu_gate=True cpu_gate=True
+[2026-07-01 16:51:41] [TASK] launch width_only:classification:r03:d01 params=262151 device=cuda batch_scale=1.000000 ram=39.24% swap=59.27% active_sys=2/189 active_gpu=1/inf gpu_gate=True cpu_gate=True
+[2026-07-01 16:52:11] [TASK] launch width_only:classification:r04:d01 params=262151 device=cuda batch_scale=1.000000 ram=47.46% swap=59.22% active_sys=3/189 active_gpu=2/inf gpu_gate=True cpu_gate=True
+[2026-07-01 16:52:41] [TASK] launch width_only:classification:r05:d01 params=262151 device=cuda batch_scale=1.000000 ram=53.23% swap=59.19% active_sys=4/189 active_gpu=3/inf gpu_gate=True cpu_gate=True
+[2026-07-01 16:53:12] [TASK] launch width_only:autoencoding:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=60.55% swap=59.05% active_sys=5/189 active_gpu=4/inf gpu_gate=True cpu_gate=True
+[2026-07-01 16:53:42] [TASK] launch width_only:autoencoding:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=67.54% swap=58.97% active_sys=6/189 active_gpu=5/inf gpu_gate=True cpu_gate=True
+[2026-07-01 16:54:13] [TASK] launch width_only:autoencoding:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=71.72% swap=58.95% active_sys=7/189 active_gpu=6/inf gpu_gate=True cpu_gate=True
+[2026-07-01 16:54:43] [TASK] launch width_only:autoencoding:r05:d01 params=454710 device=cuda batch_scale=1.000000 ram=69.64% swap=26.23% active_sys=8/189 active_gpu=7/inf gpu_gate=True cpu_gate=True
+[2026-07-01 16:55:14] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=74.96% swap=26.23% active_sys=9/189 active_gpu=8/inf gpu_gate=True cpu_gate=True
+[2026-07-01 16:55:44] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=79.19% swap=26.23% active_sys=10/189 active_gpu=9/inf gpu_gate=True cpu_gate=True
+[2026-07-01 16:56:14] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=82.01% swap=26.32% active_sys=11/189 active_gpu=10/inf gpu_gate=True cpu_gate=True
+[2026-07-01 16:56:28] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=93.46%
+[2026-07-01 16:56:28] [CPU_GATE] closed by RAM/swap pressure
+[2026-07-01 16:56:28] [GPU_GATE] closed reason=host_ram_pressure peak=1332 MiB
+[2026-07-01 16:56:28] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 16:56:29] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=91.32%
+[2026-07-01 16:56:58] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 16:56:59] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=93.89%
+[2026-07-01 16:57:29] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 16:57:29] [GPU_GATE] reopened gpu_drop=0.0 MiB gpu_used_pct=20.23
+[2026-07-01 16:57:29] [CPU_GATE] reopened host_drop=143.8 MiB
+[2026-07-01 16:57:29] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=74.51% swap=29.74% active_sys=9/189 active_gpu=8/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:09:18] Initialized ContinuousLogger for missing_width_stl_recovery (Mode: pressure_aware_recovery)
+[2026-07-01 17:09:18] Logs: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_log.txt
+[2026-07-01 17:09:18] CSV: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1/training_stats.csv
+[2026-07-01 17:09:25] Run root: MLPS/tabular/shared/dae_dnn/results/recovery/missing_width_stl_v1
+[2026-07-01 17:09:25] Jobs: 189
+[2026-07-01 17:09:25] Max active jobs: 189
+[2026-07-01 17:09:25] Max active GPU jobs: 0
+[2026-07-01 17:09:25] Batch backoff factor: 0.500
+[2026-07-01 17:09:25] Batch backoff scale: 1.000000
+[2026-07-01 17:09:25] [TASK] launch width_only:classification:r02:d01 params=262151 device=cuda batch_scale=1.000000 ram=22.45% swap=27.16% active_sys=1/189 active_gpu=1/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:09:55] [TASK] launch width_only:classification:r03:d01 params=262151 device=cuda batch_scale=1.000000 ram=29.28% swap=27.13% active_sys=2/189 active_gpu=2/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:10:26] [TASK] launch width_only:classification:r04:d01 params=262151 device=cuda batch_scale=1.000000 ram=37.64% swap=27.08% active_sys=3/189 active_gpu=3/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:10:56] [TASK] launch width_only:classification:r05:d01 params=262151 device=cuda batch_scale=1.000000 ram=45.88% swap=27.06% active_sys=4/189 active_gpu=4/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:11:27] [TASK] launch width_only:autoencoding:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=53.37% swap=27.03% active_sys=5/189 active_gpu=5/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:11:57] [TASK] launch width_only:autoencoding:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=59.64% swap=26.98% active_sys=6/189 active_gpu=6/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:12:27] [TASK] launch width_only:autoencoding:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=64.58% swap=26.98% active_sys=7/189 active_gpu=7/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:12:58] [TASK] launch width_only:autoencoding:r05:d01 params=454710 device=cuda batch_scale=1.000000 ram=71.68% swap=26.96% active_sys=8/189 active_gpu=8/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:13:28] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=78.59% swap=26.96% active_sys=9/189 active_gpu=9/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:13:58] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=80.93% swap=27.01% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:14:32] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.46% swap=26.98% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=True
+[2026-07-01 17:14:50] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.07%
+[2026-07-01 17:14:51] [CPU_GATE] closed by RAM/swap pressure
+[2026-07-01 17:14:51] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 17:15:00] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.78%
+[2026-07-01 17:15:23] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:15:24] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.68%
+[2026-07-01 17:15:51] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 17:15:57] [RAM_PRESSURE] evict width_only:autoencoding:r05:d01 host=90.08%
+[2026-07-01 17:16:21] [TASK] requeued width_only:autoencoding:r05:d01 exit=-15 pause=True
+[2026-07-01 17:16:22] [TASK] launch width_only:autoencoding:r05:d01 params=454710 device=cuda batch_scale=1.000000 ram=70.85% swap=33.28% active_sys=8/189 active_gpu=8/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:16:53] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=72.93% swap=33.04% active_sys=9/189 active_gpu=9/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:17:23] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=78.90% swap=32.92% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:17:53] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.35% swap=32.70% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:18:12] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.01%
+[2026-07-01 17:18:12] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 17:18:46] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.06%
+[2026-07-01 17:18:47] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:18:47] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.13% swap=32.63% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:19:58] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.88% swap=32.55% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:20:19] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.25%
+[2026-07-01 17:20:19] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 17:20:37] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.19%
+[2026-07-01 17:20:50] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:20:51] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.88% swap=32.43% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:21:49] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.84% swap=32.38% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:22:04] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.14%
+[2026-07-01 17:22:04] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 17:22:36] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.33%
+[2026-07-01 17:22:37] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:22:38] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.86% swap=32.53% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:24:38] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.19%
+[2026-07-01 17:24:39] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:24:39] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.09% swap=32.48% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:26:49] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.16%
+[2026-07-01 17:26:50] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:26:51] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.58% swap=32.19% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:28:04] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=91.49%
+[2026-07-01 17:28:04] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:40:38] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=82.89% swap=31.16% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:42:43] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.07%
+[2026-07-01 17:42:45] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:42:45] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.58% swap=31.26% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:44:35] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.02%
+[2026-07-01 17:44:36] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:44:36] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.12% swap=31.60% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:45:12] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.78% swap=31.70% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:45:26] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.09%
+[2026-07-01 17:45:27] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 17:46:29] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.12%
+[2026-07-01 17:46:30] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:46:33] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.92% swap=31.82% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:47:16] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.66% swap=31.84% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:47:37] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.49%
+[2026-07-01 17:47:37] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 17:48:31] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.12%
+[2026-07-01 17:48:32] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:48:33] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.74% swap=31.94% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:50:45] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.44%
+[2026-07-01 17:50:46] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:50:47] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.00% swap=32.21% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:52:36] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.29%
+[2026-07-01 17:52:37] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:52:38] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.73% swap=32.50% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:53:18] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.88% swap=32.50% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:53:41] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.91%
+[2026-07-01 17:53:42] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 17:54:17] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.14%
+[2026-07-01 17:54:19] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:54:19] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.46% swap=32.48% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:56:33] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.49%
+[2026-07-01 17:56:35] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:56:36] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.90% swap=32.48% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 17:58:41] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.34%
+[2026-07-01 17:58:42] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 17:58:42] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.60% swap=32.43% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:00:41] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.51%
+[2026-07-01 18:00:43] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:00:43] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.85% swap=32.36% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:02:48] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.00%
+[2026-07-01 18:02:49] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:02:50] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.56% swap=32.28% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:05:04] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.22%
+[2026-07-01 18:05:05] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:05:06] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.79% swap=32.28% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:07:24] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.80%
+[2026-07-01 18:07:25] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:07:26] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.74% swap=32.23% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:08:15] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.92% swap=32.23% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:08:38] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.14%
+[2026-07-01 18:08:39] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 18:09:30] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.35%
+[2026-07-01 18:09:32] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:09:32] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.80% swap=32.21% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:10:06] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.23% swap=32.19% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:10:28] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.53%
+[2026-07-01 18:10:29] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 18:11:15] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.19%
+[2026-07-01 18:11:16] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:11:17] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.56% swap=32.19% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:11:57] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.73% swap=32.16% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:12:20] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.01%
+[2026-07-01 18:12:21] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 18:13:17] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=91.11%
+[2026-07-01 18:13:19] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:13:19] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.78% swap=32.16% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:13:50] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.30% swap=32.16% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:14:07] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=92.04%
+[2026-07-01 18:14:08] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 18:15:00] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.03%
+[2026-07-01 18:15:02] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:15:02] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.81% swap=32.14% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:16:57] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.32%
+[2026-07-01 18:16:58] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:16:59] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.60% swap=32.14% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:18:31] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.35%
+[2026-07-01 18:18:32] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:18:33] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.94% swap=32.09% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:19:05] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.83% swap=32.09% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:19:16] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.01%
+[2026-07-01 18:19:16] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 18:20:41] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.12%
+[2026-07-01 18:20:42] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:20:43] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.92% swap=32.09% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:22:30] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.30%
+[2026-07-01 18:22:31] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:22:31] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.64% swap=32.06% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:24:11] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.19%
+[2026-07-01 18:24:12] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:24:13] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.43% swap=32.04% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:24:52] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.64% swap=32.04% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:25:02] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.17%
+[2026-07-01 18:25:02] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 18:25:56] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.01%
+[2026-07-01 18:25:57] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:25:57] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.72% swap=32.04% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:27:40] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.31%
+[2026-07-01 18:27:41] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:27:41] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.74% swap=31.97% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:29:30] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.19%
+[2026-07-01 18:29:31] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:29:31] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.07% swap=31.97% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:31:31] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.47%
+[2026-07-01 18:31:32] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:31:33] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.44% swap=31.94% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:33:19] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.37%
+[2026-07-01 18:33:20] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:33:21] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.88% swap=31.92% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:35:15] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.40%
+[2026-07-01 18:35:16] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:35:17] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.39% swap=31.92% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:37:13] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.46%
+[2026-07-01 18:37:14] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:37:14] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.33% swap=31.89% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:39:32] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.03%
+[2026-07-01 18:39:33] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:39:33] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.07% swap=31.89% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:41:31] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.81%
+[2026-07-01 18:41:33] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:41:33] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.43% swap=31.89% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:43:44] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.81%
+[2026-07-01 18:43:46] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:43:46] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.91% swap=31.87% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:45:42] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.90%
+[2026-07-01 18:45:43] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:45:43] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.90% swap=31.87% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:47:31] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.21%
+[2026-07-01 18:47:32] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:47:32] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.74% swap=31.87% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:49:23] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.46%
+[2026-07-01 18:49:25] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:49:25] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.70% swap=31.84% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:51:24] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.26%
+[2026-07-01 18:51:25] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:51:26] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.60% swap=31.84% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:53:43] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.44%
+[2026-07-01 18:53:45] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:53:45] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.16% swap=31.84% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:54:30] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.83% swap=31.82% active_sys=11/189 active_gpu=11/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:54:51] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.14%
+[2026-07-01 18:54:52] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 18:55:35] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.33%
+[2026-07-01 18:55:37] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:55:37] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.16% swap=31.82% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:57:19] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.53%
+[2026-07-01 18:57:20] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:57:21] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.63% swap=31.82% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 18:59:31] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.06%
+[2026-07-01 18:59:32] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 18:59:32] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.54% swap=31.82% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:01:17] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.51%
+[2026-07-01 19:01:19] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 19:01:19] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.32% swap=31.79% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:03:24] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.40%
+[2026-07-01 19:03:25] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 19:03:26] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.32% swap=31.79% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:03:50] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=92.58%
+[2026-07-01 19:03:55] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 19:03:57] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.73%
+[2026-07-01 19:04:26] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 19:04:52] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=85.00% swap=45.13% active_sys=9/189 active_gpu=9/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:05:24] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.31%
+[2026-07-01 19:05:24] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 19:05:34] [RAM_PRESSURE] evict width_only:autoencoding:r05:d01 host=90.20%
+[2026-07-01 19:05:55] [TASK] requeued width_only:autoencoding:r05:d01 exit=-15 pause=True
+[2026-07-01 19:05:55] [TASK] launch width_only:autoencoding:r05:d01 params=454710 device=cuda batch_scale=1.000000 ram=82.71% swap=44.08% active_sys=8/189 active_gpu=8/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:20:12] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.88% swap=43.00% active_sys=9/189 active_gpu=9/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:20:31] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.18%
+[2026-07-01 19:20:32] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 19:26:05] [RAM_PRESSURE] evict width_only:autoencoding:r05:d01 host=90.28%
+[2026-07-01 19:26:06] [TASK] requeued width_only:autoencoding:r05:d01 exit=-15 pause=True
+[2026-07-01 19:26:06] [TASK] launch width_only:autoencoding:r05:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.77% swap=43.08% active_sys=8/189 active_gpu=8/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:26:37] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.37% swap=42.91% active_sys=9/189 active_gpu=9/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:27:20] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.45%
+[2026-07-01 19:27:20] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 19:29:49] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.58% swap=49.62% active_sys=9/189 active_gpu=9/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:31:11] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.58% swap=57.95% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:31:34] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.43%
+[2026-07-01 19:31:34] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 19:31:36] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.70%
+[2026-07-01 19:32:05] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 19:32:05] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=82.27% swap=56.92% active_sys=9/189 active_gpu=9/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:32:29] [TASK] completed width_only:autoencoding:r02:d01 params=454710 device=cuda
+[2026-07-01 19:32:29] [CPU_GATE] reopened by completion width_only:autoencoding:r02:d01
+[2026-07-01 19:32:36] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=80.82% swap=56.31% active_sys=9/189 active_gpu=9/inf gpu_gate=True cpu_gate=True
+[2026-07-01 19:33:07] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=82.79% swap=53.65% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=True
+[2026-07-01 19:33:43] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.19%
+[2026-07-01 19:33:43] [CPU_GATE] closed by RAM/swap pressure
+[2026-07-01 19:33:43] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 19:33:50] [TASK] launch width_only:denoising:r04:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.98% swap=51.45% active_sys=10/189 active_gpu=10/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:33:56] [RAM_PRESSURE] evict width_only:denoising:r04:d01 host=90.23%
+[2026-07-01 19:34:13] [TASK] requeued width_only:denoising:r04:d01 exit=-15 pause=True
+[2026-07-01 19:34:14] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.14%
+[2026-07-01 19:34:44] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 19:35:27] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.77% swap=54.33% active_sys=9/189 active_gpu=9/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:37:23] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=91.19%
+[2026-07-01 19:37:24] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 19:38:00] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.73% swap=55.12% active_sys=9/189 active_gpu=9/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:38:26] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.01%
+[2026-07-01 19:38:27] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 19:39:35] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.32%
+[2026-07-01 19:39:36] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 19:39:37] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=81.82% swap=51.11% active_sys=8/189 active_gpu=8/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:40:07] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=83.49% swap=50.53% active_sys=9/189 active_gpu=9/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:40:31] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.88%
+[2026-07-01 19:40:31] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 19:47:03] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.89%
+[2026-07-01 19:47:07] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 19:47:54] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.81% swap=81.44% active_sys=8/189 active_gpu=8/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:49:06] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.42%
+[2026-07-01 19:49:07] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 19:49:54] [RAM_PRESSURE] evict width_only:autoencoding:r05:d01 host=90.03%
+[2026-07-01 19:49:55] [TASK] requeued width_only:autoencoding:r05:d01 exit=-15 pause=True
+[2026-07-01 19:49:55] [TASK] launch width_only:autoencoding:r05:d01 params=454710 device=cuda batch_scale=1.000000 ram=82.54% swap=86.89% active_sys=7/189 active_gpu=7/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:50:40] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.53% swap=86.45% active_sys=8/189 active_gpu=8/inf gpu_gate=True cpu_gate=False
+[2026-07-01 19:51:19] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.29%
+[2026-07-01 19:51:19] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 19:53:11] [TASK] completed width_only:autoencoding:r03:d01 params=454710 device=cuda
+[2026-07-01 19:53:11] [CPU_GATE] reopened by completion width_only:autoencoding:r03:d01
+[2026-07-01 19:53:11] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=82.24% swap=82.49% active_sys=7/189 active_gpu=7/inf gpu_gate=True cpu_gate=True
+[2026-07-01 19:53:41] [TASK] launch width_only:denoising:r03:d01 params=454710 device=cuda batch_scale=1.000000 ram=84.21% swap=82.88% active_sys=8/189 active_gpu=8/inf gpu_gate=True cpu_gate=True
+[2026-07-01 19:54:37] [RAM_PRESSURE] evict width_only:denoising:r03:d01 host=90.35%
+[2026-07-01 19:54:38] [CPU_GATE] closed by RAM/swap pressure
+[2026-07-01 19:54:38] [TASK] requeued width_only:denoising:r03:d01 exit=-15 pause=True
+[2026-07-01 19:58:03] [RAM_PRESSURE] evict width_only:denoising:r02:d01 host=90.29%
+[2026-07-01 19:58:05] [TASK] requeued width_only:denoising:r02:d01 exit=-15 pause=True
+[2026-07-01 19:58:05] [TASK] launch width_only:denoising:r02:d01 params=454710 device=cuda batch_scale=1.000000 ram=82.63% swap=83.25% active_sys=7/189 active_gpu=7/inf gpu_gate=True cpu_gate=False
