@@ -13,6 +13,10 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple
 
 import torch
 
+REPO_ROOT = Path(__file__).resolve().parents[4]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 from MLPS.tabular.shared.dae_dnn.platform_runtime import popen_process_group_kwargs, terminate_process_tree
 from MLPS.tabular.shared.dae_dnn.tasks import build_task, stl_batch_size_for_task
 from MLPS.tabular.shared.dae_dnn.runtime_tuning import bootstrap_runtime, launcher_child_env
@@ -137,6 +141,17 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--no-include-width-only", dest="include_width_only", action="store_false")
     p.add_argument("--include-small-stl", action="store_true", default=True)
     p.add_argument("--no-include-small-stl", dest="include_small_stl", action="store_false")
+    p.add_argument(
+        "--scheduler",
+        choices=["pressure_aware", "gpu_first"],
+        default="pressure_aware",
+        help=(
+            "'pressure_aware': single combined admission gate (current default). "
+            "'gpu_first': dual-gate mode — GPU gate closes on GPU pressure/OOM and reopens "
+            "only on GPU job completion or >500 MiB GPU VRAM drop; CPU gate uses existing "
+            "RAM logic. Shared queue, manifest, and batch scale."
+        ),
+    )
     p.add_argument(
         "--dry-run",
         action="store_true",
@@ -564,7 +579,7 @@ def write_plan(run_root: Path, jobs: Sequence[RecoveryJob]) -> None:
     )
 
 
-def run(args: argparse.Namespace) -> None:
+def run(args: argparse.Namespace, gpu_first: bool = False) -> None:
     run_root = Path(args.run_root)
     run_root.mkdir(parents=True, exist_ok=True)
     logger = ContinuousLogger(run_root, "missing_width_stl_recovery", "pressure_aware_recovery", resume=(run_root / "training_log.txt").exists())
@@ -596,6 +611,12 @@ def run(args: argparse.Namespace) -> None:
             logger.log_console(f"[PLAN] {idx:03d} {job.name} params={job.parameter_count} root={job.root}")
         logger.log_console("[DRY_RUN] plan written; no children launched")
         logger.close()
+        return
+
+    if gpu_first:
+        _run_gpu_first_recovery(args, run_root, jobs, limit, forced_cpu_jobs, logger,
+                                launch_sample_delay_sec, batch_backoff_state, batch_scale,
+                                pressure_backoff_pending, pressure_backoff_reason)
         return
 
     pending: Deque[RecoveryJob] = deque(jobs)
@@ -821,6 +842,255 @@ def run(args: argparse.Namespace) -> None:
     logger.close()
 
 
+def _run_gpu_first_recovery(
+    args: argparse.Namespace,
+    run_root: "Path",
+    jobs: "List[RecoveryJob]",
+    limit: int,
+    forced_cpu_jobs: "set[str]",
+    logger: "Any",
+    launch_sample_delay_sec: float,
+    batch_backoff_state: "Dict[str, Any]",
+    batch_scale: float,
+    pressure_backoff_pending: bool,
+    pressure_backoff_reason: "Optional[str]",
+) -> None:
+    """GPU-first dual-gate recovery scheduler.
+
+    GPU gate closes on GPU VRAM pressure / OOM and reopens ONLY on GPU job
+    completion or >500 MiB GPU VRAM drop.  CPU gate uses existing RAM logic.
+    Job queue, manifest, and batch scale are shared with pressure_aware.
+    """
+    pending: "Deque[RecoveryJob]" = deque(jobs)
+    active: "Dict[subprocess.Popen[Any], ActiveRecoveryJob]" = {}
+    slot_count = max(1, int(limit))
+    free_slots = set(range(slot_count))
+
+    gpu_launches_enabled = True
+    cpu_launches_enabled = True
+    gpu_hold_until = 0.0
+    cpu_hold_until = 0.0
+    gpu_peak_vram_mib = 0.0
+    cpu_peak_host_mib = 0.0
+
+    def _snap_gpu_mib() -> float:
+        gp = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index))
+        return float(gp.total_mib * gp.used_pct / 100.0)
+
+    def _snap_host_net_mib() -> float:
+        h = pressure.sample_host_memory_pressure()
+        return float(h.total_mib * h.used_pct / 100.0) - pressure.sample_python_host_memory_mib()
+
+    while pending or active:
+        finished: "List[subprocess.Popen[Any]]" = []
+        for proc, active_job in list(active.items()):
+            code = proc.poll()
+            if code is None:
+                continue
+            finished.append(proc)
+            try:
+                if active_job.log_handle is not None:
+                    active_job.log_handle.close()
+            except Exception:
+                pass
+            job = active_job.job
+            if job_completed(job):
+                update_job_state(job.root, {"status": "completed", "completed": True, "exit_code": int(code or 0), "completed_at": time.time()})
+                logger.log_console(f"[TASK] completed {job.name} params={job.parameter_count} device={active_job.device_mode}")
+                if active_job.device_mode == "cuda" and not gpu_launches_enabled:
+                    gpu_launches_enabled = True
+                    logger.log_console(f"[GPU_GATE] reopened by GPU completion {job.name}")
+                if not cpu_launches_enabled:
+                    cpu_launches_enabled = True
+                    logger.log_console(f"[CPU_GATE] reopened by completion {job.name}")
+                pressure_backoff_pending = False
+                pressure_backoff_reason = None
+                continue
+
+            gpu_pause_count, host_pause_count = job_pause_counts(job)
+            if active_job.pause_requested and active_job.pause_reason == "gpu_memory_pressure":
+                gpu_pause_count += 1
+            if active_job.pause_requested and active_job.pause_reason in {"host_ram_pressure", "swap_pressure"}:
+                host_pause_count += 1
+
+            if active_job.pause_requested and active_job.device_mode == "cuda":
+                if gpu_launches_enabled:
+                    gpu_launches_enabled = False
+                    gpu_peak_vram_mib = _snap_gpu_mib()
+                    logger.log_console(f"[GPU_GATE] closed reason={active_job.pause_reason} peak={gpu_peak_vram_mib:.0f} MiB")
+            elif active_job.pause_requested:
+                if cpu_launches_enabled:
+                    cpu_launches_enabled = False
+                    cpu_peak_host_mib = _snap_host_net_mib()
+                    logger.log_console(f"[CPU_GATE] closed reason={active_job.pause_reason} peak={cpu_peak_host_mib:.0f} MiB")
+
+            pressure_backoff_pending = True
+            pressure_backoff_reason = active_job.pause_reason or "retry"
+            update_job_state(job.root, {"status": "paused" if active_job.pause_requested else "retrying", "completed": False, "exit_code": int(code or 0), "updated_at": time.time()})
+            if gpu_pause_count or host_pause_count:
+                update_job_state(job.root, {"gpu_pause_count": int(gpu_pause_count), "host_pause_count": int(host_pause_count), "last_pause_reason": active_job.pause_reason})
+            pending.appendleft(job)
+            logger.log_console(f"[TASK] requeued {job.name} exit={code} pause={active_job.pause_requested}")
+
+        for proc in finished:
+            entry = active.pop(proc, None)
+            if entry is not None:
+                free_slots.add(entry.slot_index)
+                if entry.pause_requested:
+                    if entry.device_mode == "cuda":
+                        gpu_peak_vram_mib = _snap_gpu_mib()
+                    else:
+                        cpu_peak_host_mib = _snap_host_net_mib()
+                else:
+                    if not cpu_launches_enabled:
+                        cpu_launches_enabled = True
+                        pressure_backoff_pending = False
+                        logger.log_console("[CPU_GATE] reopened by genuine process exit")
+                    if entry.device_mode == "cuda" and not gpu_launches_enabled:
+                        gpu_launches_enabled = True
+                        logger.log_console("[GPU_GATE] reopened by genuine GPU process exit")
+
+        if not active and pending and pressure_backoff_pending:
+            previous_scale = batch_scale
+            batch_backoff_state = pressure.apply_batch_backoff(
+                run_root, batch_backoff_state,
+                float(getattr(args, "batch_backoff_factor", 0.5)),
+                str(pressure_backoff_reason or "pressure_stall"),
+            )
+            batch_scale = float(batch_backoff_state.get("batch_scale", previous_scale))
+            pressure_backoff_pending = False
+            gpu_launches_enabled = True
+            cpu_launches_enabled = True
+            gpu_hold_until = time.time() + launch_sample_delay_sec
+            cpu_hold_until = time.time() + launch_sample_delay_sec
+            logger.log_console(f"[STATE] batch_backoff reason={pressure_backoff_reason or 'pressure_stall'} batch_scale={batch_scale:.6f}")
+            continue
+
+        host = pressure.sample_host_memory_pressure()
+        swap = sample_swap_pressure()
+        gpu = pressure.sample_gpu_memory_pressure(int(args.gpu_device_index))
+        current_gpu_mib = float(gpu.total_mib * gpu.used_pct / 100.0)
+        current_host_net = float(host.total_mib * host.used_pct / 100.0) - pressure.sample_python_host_memory_mib()
+
+        # GPU VRAM over limit → evict largest GPU child, close GPU gate
+        if active and gpu.total_mib > 0 and gpu.used_pct > float(args.gpu_memory_pressure_limit_pct):
+            gpu_active = [e for e in active.values() if e.device_mode == "cuda" and not e.pause_requested]
+            if gpu_active:
+                victim = max(gpu_active, key=lambda e: (e.job.parameter_count, e.job.depth, e.job.name))
+                victim.pause_requested = True
+                victim.pause_reason = "gpu_memory_pressure"
+                update_job_state(victim.job.root, {"status": "pausing", "reason": "gpu_memory_pressure", "completed": False})
+                if gpu_launches_enabled:
+                    gpu_launches_enabled = False
+                    gpu_peak_vram_mib = current_gpu_mib
+                    logger.log_console(f"[GPU_GATE] closed by VRAM pressure gpu_used_pct={gpu.used_pct:.2f}")
+                logger.log_console(f"[GPU_PRESSURE] evict {victim.job.name}")
+                terminate(next(proc for proc, e in active.items() if e is victim))
+                continue
+
+        # Host RAM / swap over limit → evict largest ANY child, close CPU gate
+        swap_pressure_hit = swap.total_mib > 0 and swap.used_pct > float(args.swap_pressure_limit_pct)
+        if active and (host.used_pct > float(args.host_ram_pressure_limit_pct) or swap_pressure_hit):
+            pausable = [e for e in active.values() if not e.pause_requested]
+            if pausable:
+                pause_count = 1
+                if len(pausable) > 1 and (host.used_pct >= float(args.host_ram_pressure_limit_pct) + 5.0 or swap_pressure_hit):
+                    pause_count = max(1, min(len(pausable) - 1, len(pausable) // 3))
+                victims = sorted(pausable, key=lambda e: (e.job.parameter_count, e.job.depth, e.job.name), reverse=True)[:pause_count]
+                for victim in victims:
+                    reason = "swap_pressure" if swap_pressure_hit else "host_ram_pressure"
+                    victim.pause_requested = True
+                    victim.pause_reason = reason
+                    update_job_state(victim.job.root, {"status": "pausing", "reason": reason, "completed": False})
+                    logger.log_console(f"[RAM_PRESSURE] evict {victim.job.name} host={host.used_pct:.2f}%")
+                    terminate(next(proc for proc, e in active.items() if e is victim))
+                if cpu_launches_enabled:
+                    cpu_launches_enabled = False
+                    cpu_peak_host_mib = current_host_net
+                    logger.log_console(f"[CPU_GATE] closed by RAM/swap pressure")
+                continue
+
+        # GPU gate reopen: 500 MiB VRAM drop or below resume threshold
+        if not gpu_launches_enabled:
+            gpu_drop = gpu_peak_vram_mib - current_gpu_mib
+            if gpu_drop >= 500.0 or gpu.used_pct <= float(args.gpu_memory_resume_pct):
+                gpu_launches_enabled = True
+                logger.log_console(f"[GPU_GATE] reopened gpu_drop={gpu_drop:.1f} MiB gpu_used_pct={gpu.used_pct:.2f}")
+
+        # CPU gate reopen: 500 MiB RAM drop or below resume thresholds
+        if not cpu_launches_enabled:
+            host_drop = cpu_peak_host_mib - current_host_net
+            if host_drop >= 500.0 or (host.used_pct <= float(args.host_ram_resume_pct) and gpu.used_pct <= float(args.gpu_memory_resume_pct)):
+                cpu_launches_enabled = True
+                logger.log_console(f"[CPU_GATE] reopened host_drop={host_drop:.1f} MiB")
+
+        now = time.time()
+        active_gpu_jobs = sum(1 for e in active.values() if e.device_mode == "cuda")
+        gpu_limit_val = gpu_active_limit(args)
+        gpu_count_ok = gpu_limit_val <= 0 or active_gpu_jobs < gpu_limit_val
+
+        can_gpu = (
+            gpu_launches_enabled
+            and now >= gpu_hold_until
+            and torch.cuda.is_available()
+            and gpu.total_mib > 0
+            and host.used_pct <= float(args.host_ram_resume_pct)
+            and swap.used_pct <= float(args.swap_resume_pct)
+            and gpu.used_pct <= float(args.gpu_memory_resume_pct)
+            and gpu_count_ok
+        )
+        can_cpu = (
+            cpu_launches_enabled
+            and now >= cpu_hold_until
+            and host.used_pct <= float(args.host_ram_resume_pct)
+            and (swap.total_mib == 0 or swap.used_pct <= float(args.swap_resume_pct))
+        )
+
+        if pending and len(active) < limit and free_slots:
+            if can_gpu:
+                chosen = "cuda"
+            elif can_cpu:
+                chosen = "cpu"
+            else:
+                time.sleep(max(0.1, float(args.pressure_poll_interval_sec)))
+                continue
+
+            job = pending.popleft()
+            if job_completed(job):
+                update_job_state(job.root, {"status": "completed", "completed": True, "completed_at": time.time()})
+                logger.log_console(f"[TASK] already_complete {job.name}")
+                continue
+            if job_should_force_cpu(job, forced_cpu_jobs):
+                chosen = "cpu"
+                forced_cpu_jobs.add(str(job.root))
+            slot_index = min(free_slots)
+            free_slots.remove(slot_index)
+            proc, handle = launch(job, chosen, int(args.gpu_device_index), concurrency_hint=int(limit), slot_index=slot_index, batch_scale=batch_scale)
+            active[proc] = ActiveRecoveryJob(job=job, device_mode=chosen, log_path=job_log_path(job.root), log_handle=handle, slot_index=slot_index)
+            update_job_state(
+                job.root,
+                {"status": "running", "completed": False, "device": chosen, "started_at": time.time(),
+                 "command": scaled_batch_command(command_for_device(job, chosen), batch_scale, job.canonical_batch_size),
+                 "batch_scale": batch_scale},
+            )
+            logger.log_console(
+                f"[TASK] launch {job.name} params={job.parameter_count} device={chosen} "
+                f"batch_scale={batch_scale:.6f} ram={host.used_pct:.2f}% swap={swap.used_pct:.2f}% "
+                f"gpu={gpu.used_pct:.2f}% active={len(active)}/{limit} "
+                f"gpu_gate={gpu_launches_enabled} cpu_gate={cpu_launches_enabled}"
+            )
+            if chosen == "cuda":
+                gpu_hold_until = time.time() + launch_sample_delay_sec
+            else:
+                cpu_hold_until = time.time() + launch_sample_delay_sec
+            continue
+
+        time.sleep(max(0.1, float(args.pressure_poll_interval_sec)))
+
+    logger.log_console("[DONE] all recovery jobs completed (gpu_first)")
+    logger.close()
+
+
 def main() -> None:
     bootstrap_runtime("run_missing_width_stl_recovery_pressure")
 
@@ -833,7 +1103,7 @@ def main() -> None:
         raise SystemExit("--swap-resume-pct must be <= --swap-pressure-limit-pct")
     if not (0.0 < float(getattr(args, "batch_backoff_factor", 0.5)) < 1.0):
         raise SystemExit("--batch-backoff-factor must be between 0 and 1")
-    run(args)
+    run(args, gpu_first=(args.scheduler == "gpu_first"))
 
 
 if __name__ == "__main__":
