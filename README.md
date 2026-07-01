@@ -60,6 +60,11 @@ This implements a dual-admission gate priority system:
 This ensures zero compute cycles are wasted waiting for the GPU if host RAM is available, while strictly preventing the CPU from "stealing" jobs when the GPU is still cooling down or has available space. 
 Counterpart scripts (`*_gpu_first.sh` and `*_gpu_first.ps1`) are provided for the entire 10^1 to 10^10 parameter bands.
 
+### Strict Gate Mechanisms
+The dual-gate system uses mathematically strict mechanisms to prevent infinite eviction loops and false triggers:
+- **True External RAM Tracking**: System RAM pressure explicitly isolates and subtracts the RSS footprint of the running Python orchestration and worker processes. The resulting `current_host_net` tracks *only* external system usage (like web browsers or OS services).
+- **Hard-Locked Reopen Logic**: When a memory limit is hit and a gate is closed, it completely ignores natural memory drops caused by its own forced process evictions. The gate remains permanently locked until either (1) an active child process finishes an epoch and genuinely exits, or (2) a strict `>= 500.0 MiB` memory drop is recorded exclusively on the external tracker (e.g., you closing a heavy application like Chrome).
+
 ## Emergency Operations
 
 If you need to instantly terminate all running MLPS/tabular Python models, generators, or child processes on your system, use the cross-platform emergency kill switch. This will exhaustively scan for and kill all orphaned or running Python processes associated with the pipeline.
