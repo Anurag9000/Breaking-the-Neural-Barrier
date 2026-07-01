@@ -1029,18 +1029,23 @@ def _run_gpu_first_recovery(
         gpu_limit_val = gpu_active_limit(args)
         gpu_count_ok = gpu_limit_val <= 0 or active_gpu_jobs < gpu_limit_val
 
-        can_gpu = (
+        gpu_intended = (
             gpu_launches_enabled
-            and now >= gpu_hold_until
             and torch.cuda.is_available()
             and gpu.total_mib > 0
-            and host.used_pct <= float(args.host_ram_resume_pct)
-            and swap.used_pct <= float(args.swap_resume_pct)
             and gpu.used_pct <= float(args.gpu_memory_resume_pct)
             and gpu_count_ok
         )
+
+        can_gpu = (
+            gpu_intended
+            and now >= gpu_hold_until
+            and host.used_pct <= float(args.host_ram_resume_pct)
+            and swap.used_pct <= float(args.swap_resume_pct)
+        )
         can_cpu = (
             cpu_launches_enabled
+            and not gpu_intended
             and now >= cpu_hold_until
             and host.used_pct <= float(args.host_ram_resume_pct)
             and (swap.total_mib == 0 or swap.used_pct <= float(args.swap_resume_pct))

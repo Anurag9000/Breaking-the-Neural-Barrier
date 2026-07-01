@@ -1693,17 +1693,22 @@ def run_gpu_first(args: argparse.Namespace, run_root: Path, tasks: Sequence[str]
         gpu_count_ok = gpu_limit <= 0 or active_gpu_jobs < gpu_limit
         under_limit = len(active) < int(active_limit)
 
-        can_gpu = (
+        gpu_intended = (
             gpu_launches_enabled
-            and now >= gpu_hold_until
             and gpu_available
             and gpu_pressure.total_mib > 0
-            and pressure.used_pct <= float(args.host_ram_resume_pct)
             and gpu_pressure.used_pct <= float(args.gpu_memory_resume_pct)
             and gpu_count_ok
         )
+
+        can_gpu = (
+            gpu_intended
+            and now >= gpu_hold_until
+            and pressure.used_pct <= float(args.host_ram_resume_pct)
+        )
         can_cpu = (
             cpu_launches_enabled
+            and not gpu_intended
             and now >= cpu_hold_until
             and pressure.used_pct <= float(args.host_ram_resume_pct)
         )
