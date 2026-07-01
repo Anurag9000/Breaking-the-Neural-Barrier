@@ -1499,14 +1499,14 @@ def run_gpu_first(args: argparse.Namespace, run_root: Path, tasks: Sequence[str]
                     f"[PRESSURE] paused task={job.task_name} phase={job.phase_name} "
                     f"device={active_job.device_mode} reason={pause_reason} exit={code}"
                 )
-                if active_job.device_mode == "cuda":
+                if pause_reason in ("gpu_memory_pressure", "peer_cuda_oom", "cuda_oom"):
                     if gpu_launches_enabled:
                         gpu_launches_enabled = False
                         gpu_peak_vram_mib = _snap_gpu()
                         logger.log_console(
                             f"[GPU_GATE] closed reason={pause_reason} peak_vram={gpu_peak_vram_mib:.0f} MiB"
                         )
-                else:
+                elif pause_reason in ("host_ram_pressure", "swap_pressure"):
                     if cpu_launches_enabled:
                         cpu_launches_enabled = False
                         cpu_peak_host_mib = _snap_host_net()
@@ -1663,23 +1663,20 @@ def run_gpu_first(args: argparse.Namespace, run_root: Path, tasks: Sequence[str]
                 terminate_child_process(next(p for p, e in active.items() if e is victim))
                 continue
 
-        # ── 7. Gate reopen: GPU — 500 MiB drop or below resume threshold ────
+        # ── 7. Gate reopen: GPU — 500 MiB drop ────
         if not gpu_launches_enabled:
             gpu_drop = gpu_peak_vram_mib - current_gpu_mib
-            if gpu_drop >= 500.0 or gpu_pressure.used_pct <= float(args.gpu_memory_resume_pct):
+            if gpu_drop >= 500.0:
                 gpu_launches_enabled = True
                 logger.log_console(
                     f"[GPU_GATE] reopened gpu_drop={gpu_drop:.1f} MiB "
                     f"gpu_used_pct={gpu_pressure.used_pct:.2f}"
                 )
 
-        # ── 8. Gate reopen: CPU — 500 MiB drop or below resume thresholds ───
+        # ── 8. Gate reopen: CPU — 500 MiB drop ───
         if not cpu_launches_enabled:
             host_drop = cpu_peak_host_mib - current_host_net
-            if host_drop >= 500.0 or (
-                pressure.used_pct <= float(args.host_ram_resume_pct)
-                and gpu_pressure.used_pct <= float(args.gpu_memory_resume_pct)
-            ):
+            if host_drop >= 500.0:
                 cpu_launches_enabled = True
                 logger.log_console(
                     f"[CPU_GATE] reopened host_drop={host_drop:.1f} MiB "

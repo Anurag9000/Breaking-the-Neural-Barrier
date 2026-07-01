@@ -913,16 +913,17 @@ def _run_gpu_first_recovery(
             if active_job.pause_requested and active_job.pause_reason in {"host_ram_pressure", "swap_pressure"}:
                 host_pause_count += 1
 
-            if active_job.pause_requested and active_job.device_mode == "cuda":
-                if gpu_launches_enabled:
-                    gpu_launches_enabled = False
-                    gpu_peak_vram_mib = _snap_gpu_mib()
-                    logger.log_console(f"[GPU_GATE] closed reason={active_job.pause_reason} peak={gpu_peak_vram_mib:.0f} MiB")
-            elif active_job.pause_requested:
-                if cpu_launches_enabled:
-                    cpu_launches_enabled = False
-                    cpu_peak_host_mib = _snap_host_net_mib()
-                    logger.log_console(f"[CPU_GATE] closed reason={active_job.pause_reason} peak={cpu_peak_host_mib:.0f} MiB")
+            if active_job.pause_requested:
+                if active_job.pause_reason in ("gpu_memory_pressure", "peer_cuda_oom", "cuda_oom"):
+                    if gpu_launches_enabled:
+                        gpu_launches_enabled = False
+                        gpu_peak_vram_mib = _snap_gpu_mib()
+                        logger.log_console(f"[GPU_GATE] closed reason={active_job.pause_reason} peak={gpu_peak_vram_mib:.0f} MiB")
+                elif active_job.pause_reason in ("host_ram_pressure", "swap_pressure"):
+                    if cpu_launches_enabled:
+                        cpu_launches_enabled = False
+                        cpu_peak_host_mib = _snap_host_net_mib()
+                        logger.log_console(f"[CPU_GATE] closed reason={active_job.pause_reason} peak={cpu_peak_host_mib:.0f} MiB")
 
             pressure_backoff_pending = True
             pressure_backoff_reason = active_job.pause_reason or "retry"
@@ -1010,17 +1011,17 @@ def _run_gpu_first_recovery(
                     logger.log_console(f"[CPU_GATE] closed by RAM/swap pressure")
                 continue
 
-        # GPU gate reopen: 500 MiB VRAM drop or below resume threshold
+        # GPU gate reopen: 500 MiB VRAM drop
         if not gpu_launches_enabled:
             gpu_drop = gpu_peak_vram_mib - current_gpu_mib
-            if gpu_drop >= 500.0 or gpu.used_pct <= float(args.gpu_memory_resume_pct):
+            if gpu_drop >= 500.0:
                 gpu_launches_enabled = True
                 logger.log_console(f"[GPU_GATE] reopened gpu_drop={gpu_drop:.1f} MiB gpu_used_pct={gpu.used_pct:.2f}")
 
-        # CPU gate reopen: 500 MiB RAM drop or below resume thresholds
+        # CPU gate reopen: 500 MiB RAM drop
         if not cpu_launches_enabled:
             host_drop = cpu_peak_host_mib - current_host_net
-            if host_drop >= 500.0 or (host.used_pct <= float(args.host_ram_resume_pct) and gpu.used_pct <= float(args.gpu_memory_resume_pct)):
+            if host_drop >= 500.0:
                 cpu_launches_enabled = True
                 logger.log_console(f"[CPU_GATE] reopened host_drop={host_drop:.1f} MiB")
 
