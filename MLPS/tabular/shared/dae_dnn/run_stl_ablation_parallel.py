@@ -1333,7 +1333,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
                 f"device={device_mode} batch_size={effective_batch_size} batch_scale={batch_scale:.6f} "
                 f"host_used_pct={pressure.used_pct:.2f} avail_mib={pressure.available_mib}/{pressure.total_mib} "
                 f"gpu_used_pct={gpu_pressure.used_pct:.2f} gpu_used_mib={gpu_pressure.used_mib}/{gpu_pressure.total_mib} "
-                f"active={len(active)}/{active_limit}"
+                f"active_sys={len(active)}/{active_limit} active_gpu={active_gpu_jobs}/{gpu_limit if gpu_limit > 0 else 'inf'}"
             )
             launch_sample_hold_until = time.time() + launch_sample_delay_sec
             continue
@@ -1764,7 +1764,8 @@ def run_gpu_first(args: argparse.Namespace, run_root: Path, tasks: Sequence[str]
                 f"batch_size={effective_batch_size} batch_scale={batch_scale:.6f} "
                 f"ram_used_pct={pressure.used_pct:.2f} avail_mib={pressure.available_mib}/{pressure.total_mib} "
                 f"gpu_used_pct={gpu_pressure.used_pct:.2f} gpu_mib={gpu_pressure.used_mib}/{gpu_pressure.total_mib} "
-                f"active={len(active)}/{active_limit} gpu_gate={gpu_launches_enabled} cpu_gate={cpu_launches_enabled}"
+                f"active_sys={len(active)}/{active_limit} active_gpu={active_gpu_jobs}/{gpu_limit if gpu_limit > 0 else 'inf'} "
+                f"gpu_gate={gpu_launches_enabled} cpu_gate={cpu_launches_enabled}"
             )
             if device_mode == "cuda":
                 gpu_hold_until = time.time() + launch_sample_delay_sec

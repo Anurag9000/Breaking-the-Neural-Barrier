@@ -50,6 +50,16 @@ Fully wired end-to-end orchestration scripts are provided to natively execute th
 *   **Linux:** `./TRANSFORMERS/vision/run_massive_vision_suite.sh`
 *   **Windows:** `.\TRANSFORMERS\vision\run_massive_vision_suite.ps1`
 
+## GPU-First Dual-Gate Scheduler
+
+In addition to the standard `--scheduler pressure_aware` logic, all major orchestrator entry points now support `--scheduler gpu_first`. 
+This implements a dual-admission gate priority system:
+1. **GPU Priority**: The orchestrator will exhaustively launch jobs on the GPU until the VRAM is fully saturated (or a CUDA OOM forces the GPU gate to close).
+2. **CPU Fallback**: Once the GPU is confirmed to be full, the orchestrator begins launching jobs on the CPU until the system RAM is saturated.
+
+This ensures zero compute cycles are wasted waiting for the GPU if host RAM is available, while strictly preventing the CPU from "stealing" jobs when the GPU is still cooling down or has available space. 
+Counterpart scripts (`*_gpu_first.sh` and `*_gpu_first.ps1`) are provided for the entire 10^1 to 10^10 parameter bands.
+
 ## Emergency Operations
 
 If you need to instantly terminate all running MLPS/tabular Python models, generators, or child processes on your system, use the cross-platform emergency kill switch. This will exhaustively scan for and kill all orphaned or running Python processes associated with the pipeline.
