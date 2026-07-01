@@ -833,7 +833,7 @@ def run(args: argparse.Namespace, gpu_first: bool = False) -> None:
             logger.log_console(
                 f"[TASK] launch {job.name} params={job.parameter_count} device={chosen} batch_scale={batch_scale:.6f} "
                 f"host_used_pct={host.used_pct:.2f} swap_used_pct={swap.used_pct:.2f} "
-                f"gpu_used_pct={gpu.used_pct:.2f} active_sys={len(active)}/{limit} active_gpu={active_gpu_jobs}/{gpu_limit_val if gpu_limit_val > 0 else 'inf'}"
+                f"gpu_used_pct={gpu.used_pct:.2f} active_sys={len(active)}/{limit} active_gpu={active_gpu_jobs + (1 if chosen == 'cuda' else 0)}/{gpu_limit_val if gpu_limit_val > 0 else 'inf'}"
             )
             launch_sample_hold_until = time.time() + launch_sample_delay_sec
             continue
@@ -1082,7 +1082,7 @@ def _run_gpu_first_recovery(
             logger.log_console(
                 f"[TASK] launch {job.name} params={job.parameter_count} device={chosen} "
                 f"batch_scale={batch_scale:.6f} ram={host.used_pct:.2f}% swap={swap.used_pct:.2f}% "
-                f"active_sys={len(active)}/{limit} active_gpu={active_gpu_jobs}/{gpu_limit_val if gpu_limit_val > 0 else 'inf'} "
+                f"active_sys={len(active)}/{limit} active_gpu={active_gpu_jobs + (1 if chosen == 'cuda' else 0)}/{gpu_limit_val if gpu_limit_val > 0 else 'inf'} "
                 f"gpu_gate={gpu_launches_enabled} cpu_gate={cpu_launches_enabled}"
             )
             if chosen == "cuda":
