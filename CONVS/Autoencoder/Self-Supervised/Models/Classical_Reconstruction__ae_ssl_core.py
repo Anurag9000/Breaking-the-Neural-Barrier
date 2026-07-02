@@ -161,7 +161,7 @@ def _resize_linear_(fc, in_f, out_f):
         nn.init.uniform_(fc.bias, -bound, bound)
         if old_b is not None: _overlap_copy_(fc.bias.data, old_b)
 
-def make_real_ssl_loaders(data_root, batch_size, num_workers=4, val_split=0.1, seed=0, two_views=True):
+def make_real_ssl_loaders(data_root, batch_size, num_workers=0, val_split=0.1, seed=0, two_views=True):
     dl_train, dl_val, dl_test = make_real_image_loaders(
         data_root=data_root,
         batch_size=batch_size,
@@ -174,8 +174,8 @@ def make_real_ssl_loaders(data_root, batch_size, num_workers=4, val_split=0.1, s
             x1 = torch.stack([b[0] for b in batch], 0)
             x2 = torch.stack([b[0] for b in batch], 0)
             return (x1, x2)
-        dl_train = DataLoader(dl_train.dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True, collate_fn=collate)
-        dl_val = DataLoader(dl_val.dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True, collate_fn=collate)
+        dl_train = DataLoader(dl_train.dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=False, collate_fn=collate)
+        dl_val = DataLoader(dl_val.dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False, collate_fn=collate)
     return dl_train, dl_val, dl_test
 
 @dataclass

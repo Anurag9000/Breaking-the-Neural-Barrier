@@ -14,8 +14,8 @@ def loaders(root, bs, workers):
     full_ev = datasets.CIFAR10(root=root, train=True, download=False, transform=tf_ev)
     _, val_set = random_split(full_ev, [n_tr, n_val], generator=torch.Generator().manual_seed(42))
     return (
-        DataLoader(tr_set, batch_size=bs, shuffle=True, num_workers=workers, pin_memory=True),
-        DataLoader(val_set, batch_size=bs, shuffle=False, num_workers=workers, pin_memory=True),
+        DataLoader(tr_set, batch_size=bs, shuffle=True, num_workers=workers, pin_memory=False),
+        DataLoader(val_set, batch_size=bs, shuffle=False, num_workers=workers, pin_memory=False),
     )
 
 @torch.no_grad()

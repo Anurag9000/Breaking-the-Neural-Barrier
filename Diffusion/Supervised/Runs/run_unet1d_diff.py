@@ -15,7 +15,7 @@ from runs._common_public_benchmarks import LibriSpeechWaveformDataset
 def main() -> None:
     root = Path(os.environ.get("BBNB_LIBRISPEECH_ROOT", "./data/LibriSpeech"))
     dataset = LibriSpeechWaveformDataset(root=root, url=os.environ.get("BBNB_LIBRISPEECH_URL", "train-clean-100"), segment_seconds=2.0, sample_rate=16000, train=True)
-    loader = DataLoader(dataset, batch_size=64, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
+    loader = DataLoader(dataset, batch_size=64, shuffle=True, num_workers=0, pin_memory=torch.cuda.is_available())
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = UNet1dDiff().to(device)

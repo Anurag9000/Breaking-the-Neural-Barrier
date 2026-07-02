@@ -43,7 +43,7 @@ def set_seed(seed):
 
 
 def make_loaders(cfg: Config):
-    return make_two_crops_loaders(cfg.data_root, cfg.batch_size, image_size=cfg.img_size, num_workers=4)
+    return make_two_crops_loaders(cfg.data_root, cfg.batch_size, image_size=cfg.img_size, num_workers=0)
 
 
 def save_plot(curve, title, path, semilogy=False):

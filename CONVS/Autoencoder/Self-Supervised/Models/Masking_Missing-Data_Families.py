@@ -195,11 +195,11 @@ def main():
         args.dataset, args.data_root, args.img_size, args.val_split, args.download, args.seed
     )
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
-                              num_workers=args.num_workers, pin_memory=True, persistent_workers=(args.num_workers>0))
+                              num_workers=args.num_workers, pin_memory=False, persistent_workers=(args.num_workers>0))
     val_loader   = DataLoader(val_set, batch_size=args.batch_size, shuffle=False,
-                              num_workers=args.num_workers, pin_memory=True, persistent_workers=(args.num_workers>0))
+                              num_workers=args.num_workers, pin_memory=False, persistent_workers=(args.num_workers>0))
     test_loader  = DataLoader(test_set, batch_size=args.batch_size*2, shuffle=False,
-                              num_workers=args.num_workers, pin_memory=True, persistent_workers=(args.num_workers>0))
+                              num_workers=args.num_workers, pin_memory=False, persistent_workers=(args.num_workers>0))
 
     # Model
     cfg = AEConfig(

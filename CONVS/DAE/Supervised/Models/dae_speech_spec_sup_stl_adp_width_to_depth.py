@@ -131,10 +131,10 @@ def make_loaders(
         return specs_padded, lab_padded, lab_len
 
     dl_train = DataLoader(
-        train_loader.dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True, collate_fn=collate_batch
+        train_loader.dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=False, collate_fn=collate_batch
     )
     dl_val = DataLoader(
-        val_loader.dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True, collate_fn=collate_batch
+        val_loader.dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False, collate_fn=collate_batch
     )
     return dl_train, dl_val, num_labels + 1
 

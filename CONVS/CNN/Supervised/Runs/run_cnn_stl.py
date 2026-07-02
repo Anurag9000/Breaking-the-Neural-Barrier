@@ -34,7 +34,7 @@ def make_loaders(
     data_root: str = "data",
     batch_size: int = 128,
     val_split: int = 5000,
-    num_workers: int = 4,
+    num_workers: int = 0,
     pin_memory: bool = True,
     download: bool = False,
     use_augment: bool = True,

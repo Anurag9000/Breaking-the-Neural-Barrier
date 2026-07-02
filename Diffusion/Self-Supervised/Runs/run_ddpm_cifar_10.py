@@ -92,7 +92,7 @@ def main():
         batch_size=args.batch_size,
         val_ratio=0.1,
         test_ratio=0.1,
-        num_workers=4,
+        num_workers=0,
         image_size=32,
     )
 

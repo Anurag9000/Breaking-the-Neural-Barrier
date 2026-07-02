@@ -44,7 +44,7 @@ class ImageRowsAsSequence(torch.utils.data.Dataset):
 class DataConfig:
     root: str = "./data"
     batch_size: int = 128
-    num_workers: int = 4
+    num_workers: int = 0
     val_split: float = 0.1
     seed: int = 31415
 
@@ -83,9 +83,9 @@ def make_dataloaders(dc: DataConfig):
     train_set = ImageRowsAsSequence(base_train.dataset)
     val_set = ImageRowsAsSequence(base_val.dataset)
     test_set = ImageRowsAsSequence(base_test.dataset)
-    train_loader = DataLoader(train_set, batch_size=dc.batch_size, shuffle=True, num_workers=dc.num_workers, pin_memory=True)
-    val_loader = DataLoader(val_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=True)
-    test_loader = DataLoader(test_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=True)
+    train_loader = DataLoader(train_set, batch_size=dc.batch_size, shuffle=True, num_workers=dc.num_workers, pin_memory=False)
+    val_loader = DataLoader(val_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=False)
+    test_loader = DataLoader(test_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=False)
     return train_loader, val_loader, test_loader, 32, 3*32
 
 # -----------------------------

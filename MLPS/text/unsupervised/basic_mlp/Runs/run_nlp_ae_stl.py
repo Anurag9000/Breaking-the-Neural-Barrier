@@ -29,8 +29,8 @@ def main():
     vocab = build_vocab_from_csv(args.train_csv, min_freq=args.min_freq, max_size=args.max_size)
     tr = TextOnlyCSV(args.train_csv); va = TextOnlyCSV(args.val_csv)
     collate = lambda batch: collate_unsup(batch, vocab, args.max_len, view_word_dropout=args.word_dropout)
-    trl = DataLoader(tr, batch_size=args.batch_size, shuffle=True, num_workers=2, collate_fn=collate)
-    val = DataLoader(va, batch_size=args.batch_size, shuffle=False, num_workers=2, collate_fn=collate)
+    trl = DataLoader(tr, batch_size=args.batch_size, shuffle=True, num_workers=0, collate_fn=collate)
+    val = DataLoader(va, batch_size=args.batch_size, shuffle=False, num_workers=0, collate_fn=collate)
 
     model = MLPTextAE(len(vocab), args.emb_dim, args.hidden, args.rep_dim).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=args.lr)

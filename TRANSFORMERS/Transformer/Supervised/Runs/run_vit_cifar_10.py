@@ -66,9 +66,9 @@ def main():
     val_ds, _ = random_split(val_ds, [val_len, len(val_ds)-val_len])
     test_ds = tv.datasets.CIFAR10(root='./data', train=False, download=True, transform=tf_eval)
 
-    train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, num_workers=2)
-    val_loader = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, num_workers=2)
-    test_loader = DataLoader(test_ds, batch_size=args.batch_size, shuffle=False, num_workers=2)
+    train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, num_workers=0)
+    val_loader = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, num_workers=0)
+    test_loader = DataLoader(test_ds, batch_size=args.batch_size, shuffle=False, num_workers=0)
 
     model = ViT(num_classes=10, img_size=args.img_size, patch_size=args.patch, embed_dim=args.embed,
                 depth=args.depth, nhead=args.nhead, mlp_ratio=args.mlp_ratio, dropout=args.dropout).to(args.device)

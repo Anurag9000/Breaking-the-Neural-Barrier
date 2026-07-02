@@ -165,8 +165,8 @@ def make_loaders(batch_size: int, val_split: float):
     n_val = int(len(ds) * val_split)
     n_train = len(ds) - n_val
     train_ds, val_ds = random_split(ds, [n_train, n_val])
-    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
-    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)
+    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=False)
+    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=False)
     return dl_train, dl_val
 
 

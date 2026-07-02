@@ -44,8 +44,8 @@ def make_loaders(
     g = torch.Generator().manual_seed(int(seed))
     train_ds, val_ds = random_split(ds, [n_train, n_val], generator=g)
 
-    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
-    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
+    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=False)
+    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False)
 
     in_dim = int(in_ch * img_size[0] * img_size[1])
     return dl_train, dl_val, in_dim, num_classes

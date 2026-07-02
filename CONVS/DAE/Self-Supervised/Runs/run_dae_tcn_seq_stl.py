@@ -125,8 +125,8 @@ def main() -> None:
     n_train = n_total - n_val
     train_ds, val_ds = random_split(dataset, [n_train, n_val], generator=torch.Generator().manual_seed(args.seed))
 
-    dl_train = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
-    dl_val = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True)
+    dl_train = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=False)
+    dl_val = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=False)
 
     in_channels = dataset[0].shape[0]
     model = DAETCNSeq(in_channels=in_channels, width=args.width, depth=args.depth).to(device)

@@ -23,6 +23,12 @@ def _die(message: str) -> None:
 
 _repo_root = Path(__file__).resolve().parent
 _script_path = Path(sys.argv[0]) if sys.argv and sys.argv[0] else None
+_cwd_in_repo = False
+try:
+    _cwd_in_repo = Path.cwd().resolve() == _repo_root
+except Exception:
+    _cwd_in_repo = False
+
 if _script_path is not None and _script_path.exists() and _script_path.is_file():
     try:
         _resolved_script = _script_path.resolve()
@@ -133,3 +139,25 @@ if _script_path is not None and _script_path.exists() and _script_path.is_file()
             for _ds_name in ["MNIST", "FashionMNIST", "KMNIST"]:
                 if hasattr(_tvds, _ds_name):
                     setattr(_tvds, _ds_name, _blocked(_ds_name))
+
+if _script_path is None or not (_script_path.exists() and _script_path.is_file()) or _cwd_in_repo:
+    try:
+        import torch.utils.data as _tud
+    except Exception:
+        _tud = None
+
+    if _tud is not None and hasattr(_tud, "DataLoader"):
+        _dataloader_cls = _tud.DataLoader
+        if not getattr(_dataloader_cls, "_btnb_cpu_only_policy", False):
+            _orig_init = _dataloader_cls.__init__
+
+            def _patched_init(self, *args, **kwargs):
+                kwargs["num_workers"] = 0
+                kwargs["pin_memory"] = False
+                kwargs["persistent_workers"] = False
+                kwargs["prefetch_factor"] = None
+                kwargs["pin_memory_device"] = ""
+                return _orig_init(self, *args, **kwargs)
+
+            _dataloader_cls.__init__ = _patched_init
+            _dataloader_cls._btnb_cpu_only_policy = True

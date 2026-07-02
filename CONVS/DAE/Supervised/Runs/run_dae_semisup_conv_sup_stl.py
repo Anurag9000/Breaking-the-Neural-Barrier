@@ -69,16 +69,16 @@ def build_dataloaders_semisup(
     val_ds = Subset(full, val_idx)
 
     labeled_loader = DataLoader(
-        labeled_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True
+        labeled_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=False
     )
     unlabeled_loader = DataLoader(
-        unlabeled_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True
+        unlabeled_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=False
     )
     val_loader = DataLoader(
-        val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True
+        val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False
     )
     test_loader = DataLoader(
-        test_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True
+        test_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False
     )
     return labeled_loader, unlabeled_loader, val_loader, test_loader, num_classes
 

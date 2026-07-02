@@ -3,7 +3,7 @@ import argparse, torch, torch.optim as optim
 from swav_vit import SwAVViT, SwAVConfig
 from _common_real_image import make_two_crops_loaders
 
-def loaders(dataset, data_dir, batch, workers=2):
+def loaders(dataset, data_dir, batch, workers=0):
     return make_two_crops_loaders(data_dir, batch, image_size=32, num_workers=workers)
 
 

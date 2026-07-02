@@ -1,7 +1,7 @@
 # requirements.txt
 # Keep PyPI as the main index for non-torch deps, and use the CPU PyTorch
-# wheel index for a faster, compatible setup.
---index-url https://download.pytorch.org/whl/cpu
+# wheel index as an extra source for torch packages.
+--extra-index-url https://download.pytorch.org/whl/cpu
 
 torch
 torchvision
@@ -17,3 +17,4 @@ tqdm
 Pillow
 pycocotools
 nltk
+psutil

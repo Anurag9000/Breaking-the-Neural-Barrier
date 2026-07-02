@@ -16,7 +16,7 @@ def main() -> None:
     source_root = Path(os.environ.get("BBNB_CT_SOURCE_ROOT", "./data/ct_source"))
     target_root = Path(os.environ.get("BBNB_CT_TARGET_ROOT", "./data/ct_target"))
     dataset = PairedImageFolderDataset(source_root=source_root, target_root=target_root, image_size=128)
-    loader = DataLoader(dataset, batch_size=32, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
+    loader = DataLoader(dataset, batch_size=32, shuffle=True, num_workers=0, pin_memory=torch.cuda.is_available())
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = HybridCTDiff().to(device)

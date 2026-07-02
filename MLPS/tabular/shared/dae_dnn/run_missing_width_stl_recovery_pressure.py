@@ -227,6 +227,16 @@ def job_should_force_cpu(job: RecoveryJob, forced_cpu_jobs: Optional[set[str]] =
     return False
 
 
+def reset_backoff_state_for_launcher_start(run_root: Path, state: Dict[str, Any]) -> Dict[str, Any]:
+    reset_state = dict(state)
+    reset_state["batch_scale"] = 1.0
+    reset_state["pressure_backoff_pending"] = False
+    reset_state["last_backoff_reason"] = None
+    reset_state["last_backoff_at"] = None
+    pressure.write_batch_backoff_state(run_root, reset_state)
+    return reset_state
+
+
 def task_dims(task_name: str, args: argparse.Namespace, cache: Dict[str, Tuple[int, int]]) -> Tuple[int, int]:
     if task_name not in cache:
         task = build_task(task_name, args.data_dir, 1, int(args.num_workers), int(args.seed), pin_memory=False)
@@ -599,7 +609,7 @@ def run(args: argparse.Namespace, gpu_first: bool = False) -> None:
     logger.log_console(f"Batch backoff factor: {float(args.batch_backoff_factor):.3f}")
     launch_sample_delay_sec = max(0.0, float(getattr(args, "post_launch_sample_delay_sec", 30.0)))
     launch_sample_hold_until = 0.0
-    batch_backoff_state = pressure.load_batch_backoff_state(run_root)
+    batch_backoff_state = reset_backoff_state_for_launcher_start(run_root, pressure.load_batch_backoff_state(run_root))
     batch_scale = float(batch_backoff_state.get("batch_scale", 1.0))
     pressure_backoff_pending = bool(batch_backoff_state.get("pressure_backoff_pending", False))
     pressure_backoff_reason: Optional[str] = batch_backoff_state.get("last_backoff_reason")

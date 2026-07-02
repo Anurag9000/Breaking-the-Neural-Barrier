@@ -398,6 +398,16 @@ def apply_batch_backoff(run_root: Path, state: Dict[str, Any], factor: float, re
     return state
 
 
+def reset_batch_backoff_for_launcher_start(run_root: Path, state: Dict[str, Any]) -> Dict[str, Any]:
+    reset_state = dict(state)
+    reset_state["batch_scale"] = 1.0
+    reset_state["pressure_backoff_pending"] = False
+    reset_state["last_backoff_reason"] = None
+    reset_state["last_backoff_at"] = None
+    write_batch_backoff_state(run_root, reset_state)
+    return reset_state
+
+
 def child_summary_path(child_run_root: Path, task_name: str) -> Path:
     return child_run_root / task_name / "ablation_summary.json"
 
@@ -1046,7 +1056,7 @@ def run_pressure_aware(args: argparse.Namespace, run_root: Path, tasks: Sequence
     launches_enabled = True
     launch_sample_delay_sec = max(0.0, float(getattr(args, "post_launch_sample_delay_sec", 30.0)))
     launch_sample_hold_until = 0.0
-    batch_backoff_state = load_batch_backoff_state(run_root)
+    batch_backoff_state = reset_batch_backoff_for_launcher_start(run_root, load_batch_backoff_state(run_root))
     batch_scale = float(batch_backoff_state.get("batch_scale", 1.0))
     pressure_backoff_pending = bool(batch_backoff_state.get("pressure_backoff_pending", False))
     pressure_backoff_reason: Optional[str] = batch_backoff_state.get("last_backoff_reason")
@@ -1432,7 +1442,7 @@ def run_gpu_first(args: argparse.Namespace, run_root: Path, tasks: Sequence[str]
     gpu_peak_vram_mib = 0.0
     cpu_peak_host_mib = 0.0
 
-    batch_backoff_state = load_batch_backoff_state(run_root)
+    batch_backoff_state = reset_batch_backoff_for_launcher_start(run_root, load_batch_backoff_state(run_root))
     batch_scale = float(batch_backoff_state.get("batch_scale", 1.0))
     pressure_backoff_pending = bool(batch_backoff_state.get("pressure_backoff_pending", False))
     pressure_backoff_reason: Optional[str] = batch_backoff_state.get("last_backoff_reason")

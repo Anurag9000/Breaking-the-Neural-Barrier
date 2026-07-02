@@ -173,8 +173,8 @@ def make_loaders(
     train_ds = Subset(full_train, train_idx)
     val_ds = Subset(full_train_eval, val_idx)
 
-    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
-    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
+    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=False)
+    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False)
     return dl_train, dl_val, num_classes
 
 

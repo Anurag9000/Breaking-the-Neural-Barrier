@@ -79,7 +79,7 @@ class JigsawDataset(torch.utils.data.Dataset):
 class DataConfig:
     root: str = "./data"
     batch_size: int = 256
-    num_workers: int = 4
+    num_workers: int = 0
     val_split: float = 0.1
     seed: int = 123
 
@@ -118,9 +118,9 @@ def make_dataloaders(dc: DataConfig, mc: ModelConfig):
     train_set = JigsawDataset(train_loader.dataset, grid_size=mc.grid_size, perm_set_size=mc.num_permutations, seed=dc.seed)
     val_set = JigsawDataset(val_loader.dataset, grid_size=mc.grid_size, perm_set_size=mc.num_permutations, seed=dc.seed + 1)
     test_set = JigsawDataset(test_loader.dataset, grid_size=mc.grid_size, perm_set_size=mc.num_permutations, seed=dc.seed + 2)
-    train_loader = DataLoader(train_set, batch_size=dc.batch_size, shuffle=True, num_workers=dc.num_workers, pin_memory=True)
-    val_loader = DataLoader(val_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=True)
-    test_loader = DataLoader(test_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=True)
+    train_loader = DataLoader(train_set, batch_size=dc.batch_size, shuffle=True, num_workers=dc.num_workers, pin_memory=False)
+    val_loader = DataLoader(val_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=False)
+    test_loader = DataLoader(test_set, batch_size=dc.batch_size, shuffle=False, num_workers=dc.num_workers, pin_memory=False)
     return train_loader, val_loader, test_loader
 
 # -----------------------------

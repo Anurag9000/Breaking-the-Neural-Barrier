@@ -40,7 +40,7 @@ def make_caltech256_loaders(
     root: str | Path,
     batch_size: int = 128,
     image_size: int = 64,
-    num_workers: int = 2,
+    num_workers: int = 0,
     seed: int = 42,
 ) -> Tuple[DataLoader, DataLoader, DataLoader, int, int]:
     dataset = Caltech256SequenceDataset(root=root, image_size=image_size)

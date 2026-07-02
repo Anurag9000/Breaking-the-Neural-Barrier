@@ -105,8 +105,8 @@ def main():
     train_len = len(train_full) - val_len
     train_set, val_set = random_split(train_full, [train_len, val_len])
 
-    train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers=2, pin_memory=True)
-    val_loader = DataLoader(val_set, batch_size=args.batch_size, shuffle=False, num_workers=2, pin_memory=True)
+    train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers=0, pin_memory=False)
+    val_loader = DataLoader(val_set, batch_size=args.batch_size, shuffle=False, num_workers=0, pin_memory=False)
 
     model = build_autoencoder(in_shape, args.hidden, args.bottleneck, args.output_activation).to(device)
     opt = optim.Adam(model.parameters(), lr=args.lr)

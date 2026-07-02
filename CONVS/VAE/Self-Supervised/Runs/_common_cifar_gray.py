@@ -15,7 +15,7 @@ _DEF_TFM = transforms.Compose([
 ])
 
 
-def make_cifar10_gray_loaders(root: str | Path, batch_size: int, val_split: int = 5000, num_workers: int = 2) -> Tuple[DataLoader, DataLoader, DataLoader]:
+def make_cifar10_gray_loaders(root: str | Path, batch_size: int, val_split: int = 5000, num_workers: int = 0) -> Tuple[DataLoader, DataLoader, DataLoader]:
     train = datasets.CIFAR10(root=root, train=True, download=True, transform=_DEF_TFM)
     test = datasets.CIFAR10(root=root, train=False, download=True, transform=_DEF_TFM)
     tr_len = len(train) - int(val_split)

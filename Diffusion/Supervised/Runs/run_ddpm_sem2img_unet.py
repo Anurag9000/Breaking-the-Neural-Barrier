@@ -17,7 +17,7 @@ def main() -> None:
     root = Path(os.environ.get("BBNB_VOC_ROOT", "./data/VOCdevkit"))
     year = os.environ.get("BBNB_VOC_YEAR", "2012")
     dataset = VocSegmentationDataset(root=root, year=year, image_set="train", image_size=256, target_mode="onehot", num_classes=21)
-    loader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
+    loader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=0, pin_memory=torch.cuda.is_available())
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = Sem2ImgUNet(num_classes=21).to(device)

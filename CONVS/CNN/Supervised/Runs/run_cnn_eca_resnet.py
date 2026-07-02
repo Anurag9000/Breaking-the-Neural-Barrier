@@ -80,9 +80,9 @@ def train(args):
     train_set, _ = random_split(full_train, [n_train, n_val], generator=torch.Generator().manual_seed(args.seed))
     _, val_set = random_split(full_train_eval, [n_train, n_val], generator=torch.Generator().manual_seed(args.seed))
 
-    train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
-    val_loader   = DataLoader(val_set, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True)
-    test_loader  = DataLoader(test_set, batch_size=args.test_batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True)
+    train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=False)
+    val_loader   = DataLoader(val_set, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=False)
+    test_loader  = DataLoader(test_set, batch_size=args.test_batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=False)
 
     # Model/opt/loss
     model = make_eca_resnet_cifar(depth=args.depth, num_classes=num_classes, in_channels=3,

@@ -68,7 +68,7 @@ def make_20newsgroups_loaders(
     def collate(batch):
         return collate_pad(batch, pad_idx=0)
 
-    kwargs = dict(batch_size=batch_size, num_workers=2, collate_fn=collate, pin_memory=torch.cuda.is_available())
+    kwargs = dict(batch_size=batch_size, num_workers=0, collate_fn=collate, pin_memory=torch.cuda.is_available())
     train_loader = DataLoader(train_ds, shuffle=True, **kwargs)
     val_loader = DataLoader(val_ds, shuffle=False, **kwargs)
     test_loader = DataLoader(test_ds, shuffle=False, **kwargs)

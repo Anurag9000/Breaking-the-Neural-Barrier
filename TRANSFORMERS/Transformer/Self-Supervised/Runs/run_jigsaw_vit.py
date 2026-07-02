@@ -31,7 +31,7 @@ class JigsawWrapper:
         x_perm=torch.cat(rows, dim=1)
         return x_perm, k
 
-def loaders(dataset, data_dir, batch, K, workers=2):
+def loaders(dataset, data_dir, batch, K, workers=0):
     perms=fixed_permutations(K)
     jig_tf = JigsawWrapper(perms)
 
@@ -51,9 +51,9 @@ def loaders(dataset, data_dir, batch, K, workers=2):
         for (x,k) in batch: xs.append(x); ys.append(torch.tensor(k))
         return torch.stack(xs,0), torch.stack(ys,0)
 
-    return DataLoader(JigsawDataset(train_loader.dataset), batch, True, num_workers=workers, pin_memory=True, collate_fn=collate), \
-           DataLoader(JigsawDataset(val_loader.dataset), batch, False, num_workers=workers, pin_memory=True, collate_fn=collate), \
-           DataLoader(JigsawDataset(test_loader.dataset), batch, False, num_workers=workers, pin_memory=True, collate_fn=collate)
+    return DataLoader(JigsawDataset(train_loader.dataset), batch, True, num_workers=workers, pin_memory=False, collate_fn=collate), \
+           DataLoader(JigsawDataset(val_loader.dataset), batch, False, num_workers=workers, pin_memory=False, collate_fn=collate), \
+           DataLoader(JigsawDataset(test_loader.dataset), batch, False, num_workers=workers, pin_memory=False, collate_fn=collate)
 
 
 def train_epoch(model, loader, device, opt):

@@ -114,7 +114,7 @@ def make_treebank_loaders(
     val_ds = TreebankConstituentDataset(val_trees, word_vocab, label_vocab, max_trees=max_trees)
     test_ds = TreebankConstituentDataset(test_trees, word_vocab, label_vocab, max_trees=max_trees)
 
-    kwargs = dict(batch_size=batch_size, num_workers=2, collate_fn=collate_tree_batch, pin_memory=torch.cuda.is_available())
+    kwargs = dict(batch_size=batch_size, num_workers=0, collate_fn=collate_tree_batch, pin_memory=torch.cuda.is_available())
     train_loader = DataLoader(train_ds, shuffle=True, **kwargs)
     val_loader = DataLoader(val_ds, shuffle=False, **kwargs)
     test_loader = DataLoader(test_ds, shuffle=False, **kwargs)

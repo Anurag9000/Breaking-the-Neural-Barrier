@@ -15,7 +15,7 @@ def make_ucf101_loaders(
     batch_size: int = 32,
     frames_per_clip: int = 16,
     step_between_clips: int = 8,
-    num_workers: int = 2,
+    num_workers: int = 0,
     seed: int = 42,
 ) -> Tuple[DataLoader, DataLoader, DataLoader, int, int]:
     transform = transforms.Compose(

@@ -68,7 +68,7 @@ def make_librispeech_ctc_loaders(
     val_ds = LibriSpeechCTCDataset(root=root, url="dev-clean", vocab_size=vocab_size)
     test_ds = LibriSpeechCTCDataset(root=root, url="test-clean", vocab_size=vocab_size)
 
-    kwargs = dict(batch_size=batch_size, num_workers=2, collate_fn=collate_ctc, pin_memory=torch.cuda.is_available())
+    kwargs = dict(batch_size=batch_size, num_workers=0, collate_fn=collate_ctc, pin_memory=torch.cuda.is_available())
     train_loader = DataLoader(train_ds, shuffle=True, **kwargs)
     val_loader = DataLoader(val_ds, shuffle=False, **kwargs)
     test_loader = DataLoader(test_ds, shuffle=False, **kwargs)

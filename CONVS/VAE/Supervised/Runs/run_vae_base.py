@@ -12,7 +12,7 @@ from vae_base import VAE, VAEConfig
 # Runner: Vanilla VAE on CIFAR-10
 # ------------------------------
 
-def get_dataloaders(data_root: str, batch_size: int, num_workers: int = 2):
+def get_dataloaders(data_root: str, batch_size: int, num_workers: int = 0):
     tf_train = transforms.Compose([
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
@@ -29,8 +29,8 @@ def get_dataloaders(data_root: str, batch_size: int, num_workers: int = 2):
     full_eval = datasets.CIFAR10(root=data_root, train=True, download=False, transform=tf_eval)
     _, val_set = random_split(full_eval, [n_train, n_val], generator=torch.Generator().manual_seed(42))
 
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
-    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
+    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=False)
+    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False)
     return train_loader, val_loader
 
 @torch.no_grad()

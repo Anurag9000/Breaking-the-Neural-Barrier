@@ -98,8 +98,8 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     tr, va, shape = build_data(args.dataset, args.data_dir, args.img_size, args.val_split)
-    trl = DataLoader(tr, batch_size=args.batch_size, shuffle=True, num_workers=2, pin_memory=True, drop_last=True)
-    val = DataLoader(va, batch_size=args.batch_size, shuffle=False, num_workers=2, pin_memory=True, drop_last=True)
+    trl = DataLoader(tr, batch_size=args.batch_size, shuffle=True, num_workers=0, pin_memory=False, drop_last=True)
+    val = DataLoader(va, batch_size=args.batch_size, shuffle=False, num_workers=0, pin_memory=False, drop_last=True)
 
     in_dim = shape[0]*shape[1]*shape[2]
     model = MLPSSL(in_dim, args.hidden, args.rep_dim, args.proj_dim, use_bn=True).to(device)

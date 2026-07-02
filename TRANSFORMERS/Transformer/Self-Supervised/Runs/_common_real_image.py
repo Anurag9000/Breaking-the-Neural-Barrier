@@ -54,9 +54,9 @@ class TwoCropsTransform:
 
 
 def _make_loaders(train_set, val_set, test_set, batch_size: int, num_workers: int):
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True)
-    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
-    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
+    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=False)
+    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=False)
+    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=False)
     return train_loader, val_loader, test_loader
 
 
@@ -65,7 +65,7 @@ def make_real_image_loaders(
     batch_size: int = 128,
     val_ratio: float = 0.1,
     test_ratio: float = 0.1,
-    num_workers: int = 4,
+    num_workers: int = 0,
     image_size: int = 224,
 ):
     root = Path(data_root)
@@ -122,7 +122,7 @@ def make_two_crops_loaders(
     batch_size: int = 128,
     val_ratio: float = 0.1,
     test_ratio: float = 0.1,
-    num_workers: int = 4,
+    num_workers: int = 0,
     image_size: int = 224,
 ):
     root = Path(data_root)

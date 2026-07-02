@@ -4,7 +4,7 @@ from ae_vit import ViTAE, AEConfig
 from _common_real_image import make_real_image_loaders
 
 
-def loaders(dataset, data_dir, batch, workers=2):
+def loaders(dataset, data_dir, batch, workers=0):
     return make_real_image_loaders(data_dir, batch, image_size=32, num_workers=workers)
 
 

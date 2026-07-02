@@ -32,7 +32,7 @@ class STLConfig:
     dataset: str = "cifar10"
     data_root: str = "./data"
     batch_size: int = 128
-    num_workers: int = 2
+    num_workers: int = 0
     val_split: float = 0.1
     no_augment: bool = False
     num_classes: int = 10

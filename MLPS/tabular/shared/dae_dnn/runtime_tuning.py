@@ -14,6 +14,7 @@ import os
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 from typing import Dict, Optional, Sequence, Tuple
 
 if os.name == "nt":
@@ -367,6 +368,12 @@ def launcher_child_env(
     shared_cpu: bool = False,
 ) -> Dict[str, str]:
     env = dict(os.environ if base_env is None else base_env)
+    repo_root = str(Path(__file__).resolve().parents[4])
+    pythonpath = env.get("PYTHONPATH", "")
+    pythonpath_parts = [repo_root]
+    if pythonpath:
+        pythonpath_parts.extend(part for part in pythonpath.split(os.pathsep) if part)
+    env["PYTHONPATH"] = os.pathsep.join(pythonpath_parts)
     thread_budget, worker_budget, cores = derive_cpu_budget(concurrency_hint)
     hint = current_concurrency_hint(concurrency_hint)
     affinity_cpus = _current_affinity_cpus()

@@ -161,8 +161,8 @@ def make_seq_loaders(batch_size: int = 128, val_split: float = 0.1) -> Tuple[Dat
     train_set = ImageRowsAsSequence(base_train.dataset)
     val_set = ImageRowsAsSequence(base_val.dataset)
 
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
-    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)
+    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=False)
+    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=False)
     return train_loader, val_loader, 3 * 32
 
 

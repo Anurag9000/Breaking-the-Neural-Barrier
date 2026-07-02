@@ -16,7 +16,7 @@ def main() -> None:
     root = Path(os.environ.get("BBNB_COCO_ROOT", "./data/coco"))
     ann_file = Path(os.environ.get("BBNB_COCO_KEYPOINTS_ANN", root / "annotations" / "person_keypoints_train2017.json"))
     dataset = CocoKeypointDataset(root=root, ann_file=ann_file, image_size=128)
-    loader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
+    loader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=0, pin_memory=torch.cuda.is_available())
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = PoseUNet(joints=17).to(device)

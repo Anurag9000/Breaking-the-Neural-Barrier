@@ -56,10 +56,10 @@ def build_dataloaders(
     _, val_ds = random_split(full_eval, [train_size, val_size], generator=g)
 
     train_loader = DataLoader(
-        train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True
+        train_ds, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=False
     )
     val_loader = DataLoader(
-        val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True
+        val_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False
     )
     return train_loader, val_loader
 

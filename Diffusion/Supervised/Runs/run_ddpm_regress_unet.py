@@ -15,7 +15,7 @@ from runs._common_public_benchmarks import VocSegmentationDataset
 def main() -> None:
     root = Path(os.environ.get("BBNB_VOC_ROOT", "./data/VOCdevkit"))
     dataset = VocSegmentationDataset(root=root, year=os.environ.get("BBNB_VOC_YEAR", "2012"), image_set="train", image_size=256, target_mode="mask")
-    loader = DataLoader(dataset, batch_size=32, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
+    loader = DataLoader(dataset, batch_size=32, shuffle=True, num_workers=0, pin_memory=torch.cuda.is_available())
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = RegressUNet(target_ch=1).to(device)

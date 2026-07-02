@@ -16,7 +16,7 @@ def main() -> None:
     root = Path(os.environ.get("BBNB_COCO_ROOT", "./data/coco"))
     ann_file = Path(os.environ.get("BBNB_COCO_TRAIN_ANN", root / "annotations" / "captions_train2017.json"))
     dataset = CocoCaptionDataset(root=root, ann_file=ann_file, image_size=224, text_dim=512)
-    loader = DataLoader(dataset, batch_size=64, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
+    loader = DataLoader(dataset, batch_size=64, shuffle=True, num_workers=0, pin_memory=torch.cuda.is_available())
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = TextCondUNet(text_dim=512).to(device)

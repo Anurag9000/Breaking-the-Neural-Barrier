@@ -19,7 +19,7 @@ from _common_real_image import make_real_image_loaders
 class DataConfig:
     root: str = "./data"
     batch_size: int = 256
-    num_workers: int = 4
+    num_workers: int = 0
     val_split: float = 0.1
     seed: int = 4242
 

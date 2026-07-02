@@ -16,7 +16,7 @@ def main() -> None:
     root = Path(os.environ.get("BBNB_UCF101_ROOT", "./data/UCF101"))
     ann_path = Path(os.environ.get("BBNB_UCF101_ANN_PATH", "./data/UCF101/UCF101TrainTestSplits-RecognitionTask/ucfTrainTestlist"))
     dataset = UCF101TripletDataset(root=root, annotation_path=ann_path, frames_per_clip=7, train=True, image_size=128)
-    loader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
+    loader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=0, pin_memory=torch.cuda.is_available())
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = VFIUNet().to(device)

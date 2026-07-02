@@ -57,13 +57,13 @@ def build_loaders(
     ds_train, ds_val = random_split(full_train, [n_train, n_val], generator=g)
 
     dl_train = DataLoader(
-        ds_train, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True
+        ds_train, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=False
     )
     dl_val = DataLoader(
-        ds_val, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True
+        ds_val, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False
     )
     dl_test = DataLoader(
-        test_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True
+        test_ds, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=False
     )
     return dl_train, dl_val, dl_test, num_classes
 

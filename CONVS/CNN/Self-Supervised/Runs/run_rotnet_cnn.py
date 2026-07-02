@@ -88,7 +88,7 @@ class Args:
     width: int = 64
     depth: int = 4
     pool_after: str = "1,3"      # 0-based indices
-    num_workers: int = 4
+    num_workers: int = 0
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
     seed: int = 42
     linear_eval: bool = False
@@ -117,12 +117,12 @@ def build_dataloaders(args: Args):
     base_train = torchvision.datasets.CIFAR10(args.data, train=True, download=True, transform=T.ToPILImage())
     rotnet_train = RotNetDataset(base_train, tf=tf)
     train_loader = DataLoader(rotnet_train, batch_size=args.batch_size, shuffle=True,
-                              num_workers=args.num_workers, pin_memory=True, drop_last=True)
+                              num_workers=args.num_workers, pin_memory=False, drop_last=True)
 
     # For linear eval: standard eval transform
     eval_tf = T.Compose([T.ToTensor(), T.Normalize((0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616))])
     base_test = torchvision.datasets.CIFAR10(args.data, train=False, download=True, transform=eval_tf)
-    test_loader = DataLoader(base_test, batch_size=512, shuffle=False, num_workers=args.num_workers, pin_memory=True)
+    test_loader = DataLoader(base_test, batch_size=512, shuffle=False, num_workers=args.num_workers, pin_memory=False)
 
     return train_loader, test_loader
 
@@ -218,7 +218,7 @@ def linear_eval(args: Args, encoder: nn.Module, test_loader: DataLoader, device:
     # Build labeled CIFAR-10 train loader
     eval_tf = T.Compose([T.ToTensor(), T.Normalize((0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616))])
     train_set = torchvision.datasets.CIFAR10(args.data, train=True, download=True, transform=eval_tf)
-    train_loader = DataLoader(train_set, batch_size=512, shuffle=True, num_workers=args.num_workers, pin_memory=True)
+    train_loader = DataLoader(train_set, batch_size=512, shuffle=True, num_workers=args.num_workers, pin_memory=False)
 
     # Freeze encoder
     encoder = encoder.to(device).eval()

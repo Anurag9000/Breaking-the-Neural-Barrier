@@ -116,7 +116,7 @@ def make_loaders(batch_size: int = 128, val_split: float = 0.1):
         data_root="./data",
         batch_size=batch_size,
         val_ratio=val_split,
-        num_workers=4,
+        num_workers=0,
         image_size=224,
     )
     return dl_train, dl_val

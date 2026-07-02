@@ -207,8 +207,8 @@ def main():
     n_val = int(len(ds) * 0.1)
     n_train = len(ds) - n_val
     train_ds, val_ds = random_split(ds, [n_train, n_val])
-    dl_train = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=True)
-    dl_val = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, num_workers=4, pin_memory=True)
+    dl_train = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, num_workers=0, pin_memory=False)
+    dl_val = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False, num_workers=0, pin_memory=False)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = BlindSpotConvAE(in_ch=3, widths=args.widths, pooling_indices=args.pool_idx).to(device)

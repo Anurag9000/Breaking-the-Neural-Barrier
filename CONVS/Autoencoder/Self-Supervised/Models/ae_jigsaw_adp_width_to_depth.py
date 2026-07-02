@@ -267,8 +267,8 @@ def make_loaders(batch_size: int, val_split: float, G: int, num_perm: int):
     train_ds, val_ds = random_split(ds, [n_train, n_val])
     perm_set = make_permutation_set(G * G, num_perm)
     collate = lambda batch: jigsaw_collate(batch, G, perm_set)
-    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate)
-    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate)
+    dl_train = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=False, collate_fn=collate)
+    dl_val = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=False, collate_fn=collate)
     return dl_train, dl_val
 
 

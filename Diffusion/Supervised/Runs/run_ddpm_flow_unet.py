@@ -15,7 +15,7 @@ from runs._common_public_benchmarks import FlyingChairsTripletDataset
 def main() -> None:
     root = Path(os.environ.get("BBNB_FLYINGCHAIRS_ROOT", "./data/FlyingChairs"))
     dataset = FlyingChairsTripletDataset(root=root, split="train", image_size=128)
-    loader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=2, pin_memory=torch.cuda.is_available())
+    loader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=0, pin_memory=torch.cuda.is_available())
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = FlowUNet().to(device)

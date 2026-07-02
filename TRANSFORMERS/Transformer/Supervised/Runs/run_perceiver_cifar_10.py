@@ -53,8 +53,8 @@ def main():
     ap.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu')
     args=ap.parse_args()
 
-    train = DataLoader(CIFARAsTokens(True), batch_size=args.batch_size, shuffle=True, num_workers=2)
-    val = DataLoader(CIFARAsTokens(False), batch_size=args.batch_size, shuffle=False, num_workers=2)
+    train = DataLoader(CIFARAsTokens(True), batch_size=args.batch_size, shuffle=True, num_workers=0)
+    val = DataLoader(CIFARAsTokens(False), batch_size=args.batch_size, shuffle=False, num_workers=0)
 
     model = Perceiver(input_dim=64, latent_dim=256, latent_len=64, depth=6, heads=4, num_classes=10).to(args.device)
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr); crit = nn.CrossEntropyLoss()
